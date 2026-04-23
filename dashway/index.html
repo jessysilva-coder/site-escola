@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashway — Escola Karen Abecia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #05090f;
+      --surface: #0d1520;
+      --border: rgba(255,255,255,0.07);
+      --accent: #00d4ff;
+      --accent2: #7b5ea7;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.5);
+      --gold: #c9a84c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(5,9,15,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+    }
+
+    .nav-back:hover { color: var(--white); }
+
+    .nav-back svg {
+      width: 16px; height: 16px;
+      transition: transform 0.3s;
+    }
+
+    .nav-back:hover svg { transform: translateX(-3px); }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-badge {
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+      top: 50%; left: 60%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-glow2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(123,94,167,0.1) 0%, transparent 70%);
+      top: 30%; left: 20%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 750px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .eyebrow-line {
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    .eyebrow-text {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 6.5rem);
+      font-weight: 800;
+      line-height: 0.95;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .outline {
+      -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+      color: transparent;
+    }
+
+    .hero h1 .accent { color: var(--accent); }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 520px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 0.9rem 2.2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: opacity 0.3s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .btn-accent:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      padding: 0.9rem 2.2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: border-color 0.3s, color 0.3s;
+      display: inline-block;
+    }
+
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 0 1rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* O PROGRAMA */
+    .programa {
+      padding: 7rem 4rem;
+    }
+
+    .programa-header {
+      max-width: 600px;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title span { color: var(--accent); }
+
+    .modulos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .modulo {
+      background: var(--bg);
+      padding: 2.5rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modulo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.03) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .modulo:hover { background: var(--surface); }
+    .modulo:hover::after { opacity: 1; }
+
+    .modulo-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
+
+    .modulo-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    .modulo-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* PARA QUEM */
+    .para-quem {
+      padding: 7rem 4rem;
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .para-quem-text p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .lista-perfis {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .perfil-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: border-color 0.3s;
+    }
+
+    .perfil-item:hover { border-color: rgba(0,212,255,0.3); }
+
+    .perfil-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .perfil-item span {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* CTA */
+    .cta {
+      padding: 6rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 100% at 50% 50%, rgba(0,212,255,0.05) 0%, transparent 70%);
+    }
+
+    .cta-content { position: relative; }
+
+    .cta h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .cta h2 span { color: var(--accent); }
+
+    .cta p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #020508;
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.3s;
+    }
+
+    footer a:hover { color: var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 6rem 1.5rem 3rem; }
+      .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem 1.5rem; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 1rem 0; }
+      .programa { padding: 4rem 1.5rem; }
+      .modulos-grid { grid-template-columns: 1fr; }
+      .para-quem { grid-template-columns: 1fr; padding: 4rem 1.5rem; gap: 3rem; }
+      .cta { padding: 4rem 1.5rem; }
+      footer { flex-direction: column; gap: 0.8rem; padding: 2rem 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Escola Karen Abecia
+    </a>
+    <div class="nav-logo">Dash<span>way</span></div>
+    <div class="nav-badge">Treinamento</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <div class="eyebrow-text">Escola Karen Abecia · Treinamento</div>
+      </div>
+      <h1>
+        <span class="outline">Dash</span><br>
+        <span class="accent">way</span>
+      </h1>
+      <p class="hero-desc">O programa definitivo para quem quer dominar a criação de dashboards. Do conceito à entrega, transforme dados brutos em narrativas visuais que movem decisões.</p>
+      <div class="hero-actions">
+        <a href="#programa" class="btn-accent">Ver Programa</a>
+        <a href="#inscrever" class="btn-ghost">Quero me inscrever</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar fade-in">
+    <div class="stat-item">
+      <div class="stat-num">40h</div>
+      <div class="stat-label">Carga horária</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">8</div>
+      <div class="stat-label">Módulos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Online e ao vivo</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Acesso ao material</div>
+    </div>
+  </div>
+
+  <!-- PROGRAMA -->
+  <section class="programa" id="programa">
+    <div class="programa-header fade-in">
+      <div class="section-label">Conteúdo</div>
+      <h2 class="section-title">O que você vai <span>aprender</span></h2>
+    </div>
+
+    <div class="modulos-grid">
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 01</div>
+        <div class="modulo-title">Fundamentos do Design Visual</div>
+        <div class="modulo-desc">Princípios de hierarquia, contraste, espaço e cor aplicados à visualização de dados.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 02</div>
+        <div class="modulo-title">Estrutura de Dados</div>
+        <div class="modulo-desc">Como organizar e modelar dados para consumo eficiente em dashboards interativos.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 03</div>
+        <div class="modulo-title">Ferramentas & Stack</div>
+        <div class="modulo-desc">Power BI, Looker Studio e Metabase — escolha e domine a ferramenta certa para cada cenário.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 04</div>
+        <div class="modulo-title">KPIs e Métricas</div>
+        <div class="modulo-desc">Como definir, calcular e apresentar indicadores que realmente importam para o negócio.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 05</div>
+        <div class="modulo-title">Narrativa com Dados</div>
+        <div class="modulo-desc">Storytelling aplicado: construa dashboards que contam histórias e influenciam decisões.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 06</div>
+        <div class="modulo-title">Dashboards Interativos</div>
+        <div class="modulo-desc">Filtros, drill-downs, e interações que aumentam a exploração e o engajamento do usuário.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 07</div>
+        <div class="modulo-title">Performance & Escala</div>
+        <div class="modulo-desc">Otimização de queries, cache e boas práticas para dashboards rápidos com grandes volumes.</div>
+      </div>
+      <div class="modulo fade-in">
+        <div class="modulo-num">MÓDULO 08</div>
+        <div class="modulo-title">Projeto Final</div>
+        <div class="modulo-desc">Construção de um dashboard completo do zero, com feedback personalizado da instrutora.</div>
+      </div>
+      <div class="modulo fade-in" style="display:flex; align-items:center; justify-content:center; border:1px dashed rgba(0,212,255,0.2); background: transparent;">
+        <div style="text-align:center; color: var(--muted);">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">+</div>
+          <div style="font-size:0.85rem;">Bônus e materiais extras</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARA QUEM -->
+  <section class="para-quem">
+    <div class="para-quem-text fade-in">
+      <div class="section-label">Público-alvo</div>
+      <h2 class="section-title">Para quem é o <span>Dashway?</span></h2>
+      <p>O Dashway foi desenhado para profissionais que trabalham com dados e querem transformar a forma como comunicam informações para suas equipes e lideranças.</p>
+    </div>
+    <div class="lista-perfis fade-in">
+      <div class="perfil-item">
+        <div class="perfil-dot"></div>
+        <span>Analistas de dados e de negócios</span>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-dot"></div>
+        <span>Gestores que tomam decisões baseadas em dados</span>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-dot"></div>
+        <span>Profissionais de BI e engenharia de dados</span>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-dot"></div>
+        <span>Equipes de marketing e produto</span>
+      </div>
+      <div class="perfil-item">
+        <div class="perfil-dot"></div>
+        <span>Consultores e freelancers de dados</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="inscrever">
+    <div class="cta-bg"></div>
+    <div class="cta-content fade-in">
+      <h2>Pronto para dominar o <span>Dashway?</span></h2>
+      <p>Vagas limitadas por turma. Garanta a sua.</p>
+      <a href="mailto:contato@escolakarenabecia.com?subject=Interesse no Dashway" class="btn-accent">Quero me inscrever</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="nav-logo" style="font-family:'Syne',sans-serif; font-weight:800;">Dash<span style="color:var(--accent)">way</span></div>
+    <p>© 2025 Escola Karen Abecia</p>
+    <a href="../index.html">← Voltar para a escola</a>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
