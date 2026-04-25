@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTEÚDO | I.A com Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --cyber-orange: #ff6b35; 
+            --cyber-orange-glow: rgba(255, 107, 53, 0.4);
+            --cyber-black: #050505;
+        }
+        body { background-color: var(--cyber-black); color: #e5e7eb; font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .bg-grid { background-image: linear-gradient(to right, rgba(255, 107, 53, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 107, 53, 0.03) 1px, transparent 1px); background-size: 40px 40px; }
+        .module-card { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 107, 53, 0.15); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .module-card:hover { border-color: var(--cyber-orange); box-shadow: 0 0 20px rgba(255, 107, 53, 0.05); }
+        .module-header { border-bottom: 1px solid rgba(255, 107, 53, 0.1); }
+        .btn-back { border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s; }
+        .btn-back:hover { border-color: var(--cyber-orange); color: var(--cyber-orange); }
+    </style>
+</head>
+<body class="bg-grid min-h-screen">
+
+    <header class="p-6 border-b border-orange-900/20 sticky top-0 bg-black/80 backdrop-blur-md z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="mono text-lg font-bold tracking-tighter">
+                <span class="text-orange-500 uppercase">I.A com Dados</span>
+                <span class="text-white">/ CURRÍCULO</span>
+            </div>
+            <a href="index.html" class="btn-back px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar para Home
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-16 px-6">
+        <div class="text-center mb-20">
+            <h1 class="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight uppercase">Conteúdo do Treinamento</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto uppercase mono text-xs tracking-widest">Currículo Detalhado I.A com Dados</p>
+        </div>
+
+        <div class="space-y-10">
+            <!-- Fundamentos -->
+            <section class="module-card">
+                <div class="module-header p-6 bg-orange-500/5 flex justify-between items-center">
+                    <h3 class="font-black text-orange-500 mono">Módulo: Fundamentos</h3>
+                </div>
+                <div class="p-6 divide-y divide-zinc-900">
+                    <div class="py-4">
+                        <p class="font-bold text-sm text-white">O que cada IA faz de melhor</p>
+                        <p class="text-xs text-gray-500 mt-1">Guia comparativo entre Claude, ChatGPT, Gemini, Manus, NotebookLM, Copilot e Canva.</p>
+                    </div>
+                    <div class="py-4">
+                        <p class="font-bold text-sm text-white">Como escrever prompts que funcionam</p>
+                        <p class="text-xs text-gray-500 mt-1">Estrutura: contexto, instrução, formato e exemplos. Prompts básicos vs avançados.</p>
+                    </div>
+                    <div class="py-4">
+                        <p class="font-bold text-sm text-white">O que fazer com IA no ambiente de trabalho</p>
+                        <p class="text-xs text-gray-500 mt-1">Combinando múltiplas IAs para máxima produtividade nas tarefas do dia a dia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ChatGPT -->
+            <section class="module-card">
+                <div class="module-header p-6 bg-emerald-500/5">
+                    <h3 class="font-black text-emerald-500 mono uppercase">Módulo: ChatGPT</h3>
+                </div>
+                <div class="p-6 grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-zinc-950 rounded">
+                        <p class="font-bold text-white text-xs mb-1 uppercase">Análise de Dados</p>
+                        <p class="text-[11px] text-gray-500">Limpeza e tratamento de dados sujos com Data Analysis.</p>
+                    </div>
+                    <div class="p-4 bg-zinc-950 rounded">
+                        <p class="font-bold text-white text-xs mb-1 uppercase">Agentes de I.A</p>
+                        <p class="text-[11px] text-gray-500">Usando agentes para estruturar relatórios complexos com tabelas e gráficos.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Copilot & Claude -->
+            <section class="grid md:grid-cols-2 gap-10">
+                <div class="module-card">
+                    <div class="module-header p-6 bg-blue-500/5"><h3 class="font-black text-blue-500 mono uppercase">Copilot</h3></div>
+                    <div class="p-6 text-xs space-y-4">
+                        <p class="text-white font-bold">Word, Outlook, Teams & PowerPoint</p>
+                        <p class="text-gray-500 leading-relaxed">Geração de atas, triagem de e-mails, resumos de reuniões em tempo real e criação de apresentações completas.</p>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-header p-6 bg-orange-500/5"><h3 class="font-black text-orange-400 mono uppercase">Claude</h3></div>
+                    <div class="p-6 text-xs space-y-4">
+                        <p class="text-white font-bold">Redação, Contratos & Automação</p>
+                        <p class="text-gray-500 leading-relaxed">Redação profissional de e-mails, análise de riscos em contratos e criação de scripts para automação.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Excel + I.A -->
+            <section class="module-card">
+                <div class="module-header p-6 bg-blue-600/10">
+                    <h3 class="font-black text-blue-400 mono uppercase">Excel + I.A</h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="p-4 border border-zinc-800">
+                            <p class="font-bold text-white text-[10px] uppercase">Fórmulas & VBA</p>
+                            <p class="text-[11px] text-gray-500">Claude gerando fórmulas aninhadas e macros VBA para automação recorrente.</p>
+                        </div>
+                        <div class="p-4 border border-zinc-800">
+                            <p class="font-bold text-white text-[10px] uppercase">Workflow Integrado</p>
+                            <p class="text-[11px] text-gray-500">Copilot e Claude trabalhando juntos na criação de Dashboards dinâmicos.</p>
+                        </div>
+                        <div class="p-4 border border-zinc-800 bg-orange-500/5">
+                            <p class="font-bold text-orange-500 text-[10px] uppercase">Estudo de Caso</p>
+                            <p class="text-[11px] text-gray-500">Projeto RH e Vendas — transformando dados brutos em inteligência.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Power BI + I.A -->
+            <section class="module-card">
+                <div class="module-header p-6 bg-yellow-500/10">
+                    <h3 class="font-black text-yellow-500 mono uppercase">Power BI + I.A</h3>
+                </div>
+                <div class="p-6 grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <p class="text-white font-bold text-sm">Tratamento & Modelagem</p>
+                        <ul class="text-xs text-gray-500 space-y-2">
+                            <li>• Power Query Avançado com linguagem M gerada por I.A</li>
+                            <li>• Modelagem eficiente com boas práticas de esquema estrela</li>
+                            <li>• Copilot gerando visuais e layouts automáticos</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-white font-bold text-sm">Cálculos & Inteligência</p>
+                        <ul class="text-xs text-gray-500 space-y-2">
+                            <li>• DAX complexo: CALCULATE, FILTER, RANKX com Claude</li>
+                            <li>• Depuração e otimização de performance em DAX</li>
+                            <li>• Narrativas inteligentes e Q&A para o usuário final</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ferramentas & Agentes -->
+            <section class="grid md:grid-cols-2 gap-10">
+                <div class="module-card">
+                    <div class="module-header p-6 bg-purple-500/5"><h3 class="font-black text-purple-500 mono uppercase">Criação de Ferramentas</h3></div>
+                    <div class="p-6 text-xs space-y-4">
+                        <p class="text-white font-bold italic underline decoration-purple-500">Desenvolva seus próprios Agentes</p>
+                        <p class="text-gray-500">Criação de GPTs personalizados com ferramentas habilitadas e desenvolvimento de mini-apps em HTML com Claude.</p>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-header p-6 bg-white/5"><h3 class="font-black text-zinc-300 mono uppercase">Outros Agentes</h3></div>
+                    <div class="p-6 grid grid-cols-2 gap-4 text-[10px]">
+                        <div class="p-2 bg-zinc-900 border border-zinc-800">
+                            <p class="text-white font-bold uppercase mb-1">Manus</p>
+                            <p class="text-gray-500">Fluxos de múltiplos passos e pesquisas complexas.</p>
+                        </div>
+                        <div class="p-2 bg-zinc-900 border border-zinc-800">
+                            <p class="text-white font-bold uppercase mb-1">Gemini</p>
+                            <p class="text-gray-500">Deep Research e integração com Google Workspace.</p>
+                        </div>
+                        <div class="p-2 bg-zinc-900 border border-zinc-800">
+                            <p class="text-white font-bold uppercase mb-1">NotebookLM</p>
+                            <p class="text-gray-500">Construção de bases de conhecimento corporativas.</p>
+                        </div>
+                        <div class="p-2 bg-zinc-900 border border-zinc-800">
+                            <p class="text-white font-bold uppercase mb-1">KIMI</p>
+                            <p class="text-gray-500">Extração de dados estruturados de PDFs complexos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="mt-20 text-center">
+            <a href="index.html#oferta" class="btn-primary px-12 py-5 text-lg font-black uppercase tracking-widest transition-all transform hover:scale-105">Quero Garantir minha vaga</a>
+        </div>
+    </main>
+
+    <footer class="py-12 px-6 text-center border-t border-orange-900/10 text-gray-700 text-[10px] mono uppercase">
+        <p>© 2026. TODOS OS DIREITOS RESERVADOS PARA ESCOLA KAREN ABECIA</p>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
