@@ -47,6 +47,7 @@
     }
     .logo-text-fb { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: .05em; color: var(--text); }
     .logo-text-fb span { color: var(--accent); }
+    .header-badges { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .badge {
       font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .1em;
       text-transform: uppercase; background: rgba(217,119,87,.12); color: var(--accent);
@@ -54,6 +55,29 @@
       text-decoration: none; transition: background .2s; white-space: nowrap;
     }
     .badge:hover { background: rgba(217,119,87,.22); }
+    .badge-setup {
+      font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .1em;
+      text-transform: uppercase; background: var(--accent); color: #fff;
+      border: 1px solid var(--accent2); padding: 6px 16px; border-radius: 100px;
+      text-decoration: none; transition: all .2s; white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(217,119,87,.4);
+    }
+    .badge-setup:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(217,119,87,.5); }
+
+    /* ── SETUP CARD HIGHLIGHT ── */
+    .access-card.setup-card {
+      background: var(--accent);
+      border-color: var(--accent2);
+    }
+    .access-card.setup-card h3 { color: #fff; }
+    .access-card.setup-card p { color: rgba(255,255,255,.82); }
+    .access-card.setup-card .ac-icon {
+      background: rgba(255,255,255,.15);
+      border-color: rgba(255,255,255,.3);
+    }
+    .access-card.setup-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+    .btn-setup { background: #fff !important; color: var(--accent) !important; border: none !important; }
+    .btn-setup:hover { background: #f0ebe4 !important; transform: translateY(-2px); }
 
     /* ── HERO ── */
     .hero { padding: 52px 0 38px; text-align: center; position: relative; border-top: none !important; }
@@ -168,7 +192,10 @@
     <img src="logo_branco.png" alt="Implementação Claude"
       onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/>
     <div id="ltxt" style="display:none" class="logo-text-fb">IMPLEMENTAÇÃO <span>CLAUDE</span></div>
-    <a class="badge" href="https://hotmart.com/pt-br/club/karenabecia/products/7622385" target="_blank">▶ Acessar Hotmart</a>
+    <div class="header-badges">
+      <a class="badge-setup" href="./configuracoes.html">🛠️ Configurações Pré-Aula</a>
+      <a class="badge" href="https://hotmart.com/pt-br/club/karenabecia/products/7622385" target="_blank">▶ Acessar Hotmart</a>
+    </div>
   </div>
 </header>
 
@@ -268,6 +295,12 @@
         <h3>Requisito Técnico</h3>
         <p>Para acompanhar os exercícios práticos você precisa de uma conta <strong>Claude Pro</strong> ativa.</p>
         <a class="btn btn-ghost" href="https://claude.ai/upgrade" target="_blank">Contratar Claude Pro</a>
+      </div>
+      <div class="access-card setup-card fi">
+        <div class="ac-icon">🛠️</div>
+        <h3>Configurações Pré-Aula</h3>
+        <p>Passo a passo completo para instalar tudo e chegar pronto(a) desde o primeiro minuto da aula.</p>
+        <a class="btn btn-setup" href="./configuracoes.html">Ver passo a passo</a>
       </div>
     </div>
   </div>
