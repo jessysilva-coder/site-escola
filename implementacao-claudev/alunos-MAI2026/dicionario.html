@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dicionário da Implementação | Claude</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --chat:   #d97757;
+      --bg:     #0c0b0a;
+      --card:   #1a1714;
+      --card2:  #211e1a;
+      --border: #2e2822;
+      --border2:#3d3630;
+      --text:   #f0ebe4;
+      --muted:  #8a7f74;
+      --muted2: #5e5650;
+      --radius: 10px;
+      --hh: 60px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--hh) + 12px); }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .45;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(17,15,13,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      height: var(--hh);
+    }
+    .header-inner { height: var(--hh); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; gap: 12px; }
+    .header-inner img { height: 34px; object-fit: contain; }
+    .logo-fb { font-family: 'Anton', sans-serif; font-size: .95rem; color: var(--text); }
+    .logo-fb span { color: var(--chat); }
+    .hbtn {
+      font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .09em; text-transform: uppercase;
+      padding: 6px 13px; border-radius: 100px; text-decoration: none; transition: all .2s; white-space: nowrap;
+      color: var(--muted); border: 1px solid var(--border2); background: transparent;
+    }
+    .hbtn:hover { color: var(--text); border-color: var(--muted); }
+
+    /* HERO */
+    .hero { padding: 44px 0 28px; text-align: center; }
+    .hero-tag { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .15em; color: var(--muted2); text-transform: uppercase; margin-bottom: 10px; display: block; }
+    h1 { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 10px; }
+    h1 span { color: var(--chat); }
+    .hero-sub { font-size: .88rem; color: var(--muted); max-width: 440px; margin: 0 auto 24px; line-height: 1.7; }
+
+    /* SEARCH */
+    .search-wrap { max-width: 500px; margin: 0 auto 32px; position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 12px 42px 12px 18px;
+      background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius);
+      color: var(--text); font-family: 'Open Sans', sans-serif; font-size: .9rem;
+      outline: none; transition: border-color .2s;
+    }
+    .search-wrap input:focus { border-color: var(--chat); }
+    .search-wrap input::placeholder { color: var(--muted2); }
+    .search-wrap .s-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--muted2); pointer-events: none; }
+
+    /* ALPHABET NAV */
+    .alpha-nav { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 32px; }
+    .alpha-nav a {
+      font-family: 'DM Mono', monospace; font-size: .7rem; font-weight: 500;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+      border-radius: 7px; text-decoration: none; color: var(--muted);
+      border: 1px solid var(--border); transition: all .2s;
+    }
+    .alpha-nav a:hover, .alpha-nav a.active { background: rgba(217,119,87,.12); color: var(--chat); border-color: rgba(217,119,87,.3); }
+    .alpha-nav a.disabled { color: var(--muted2); border-color: var(--border); pointer-events: none; opacity: .4; }
+
+    /* LETTER GROUPS */
+    .letter-group { margin-bottom: 32px; }
+    .letter-anchor { font-family: 'Anton', sans-serif; font-size: 1.8rem; font-weight: 400; color: var(--chat); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .terms-grid { display: flex; flex-direction: column; gap: 8px; }
+    .term-row {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px;
+      transition: border-color .15s;
+    }
+    .term-row:hover { border-color: var(--border2); }
+    .term-name { font-family: 'DM Mono', monospace; font-size: .82rem; font-weight: 500; color: var(--text); min-width: 200px; flex-shrink: 0; }
+    .term-def { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+    .term-row.hidden { display: none; }
+
+    /* NO RESULTS */
+    .no-results { text-align: center; padding: 48px 0; color: var(--muted2); font-size: .88rem; display: none; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; margin-top: 24px; }
+    footer p { font-size: .76rem; color: var(--muted2); }
+
+    @media(max-width:560px) {
+      .term-row { flex-direction: column; gap: 4px; }
+      .term-name { min-width: unset; }
+    }
+
+    @media print {
+      header { position: static; }
+      .search-wrap, .alpha-nav { display: none; }
+      .term-row.hidden { display: flex !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="logo_branco.png" alt="Implementação Claude"
+      onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/>
+    <div id="ltxt" style="display:none" class="logo-fb">IMPL. <span>CLAUDE</span></div>
+    <a class="hbtn" href="./aula1.html">← Voltar ao Material da Aula 1</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="hero-tag">Aula 1 — Material de apoio</span>
+    <h1>Dicionário da <span>Implementação</span></h1>
+    <p class="hero-sub">Todos os termos técnicos usados no treinamento em ordem alfabética.</p>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="Buscar termo..." oninput="filterTerms(this.value)"/>
+      <svg class="s-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="alpha-nav" id="alpha-nav"></div>
+  </div>
+</section>
+
+<div class="wrap" id="dict-content">
+  <div class="no-results" id="no-results">Nenhum termo encontrado para "<span id="search-term"></span>".</div>
+</div>
+
+<footer>
+  <div class="wrap"><p>© 2026 Escola Karen Abecia · Todos os direitos reservados</p></div>
+</footer>
+
+<script>
+const terms = [
+  { term: "API", def: "Application Programming Interface. Forma de sistemas diferentes conversarem entre si." },
+  { term: "API Key", def: "Chave de acesso usada para conectar sistemas a uma API. Deve ser protegida." },
+  { term: "App", def: "Abreviação de aplicativo." },
+  { term: "Artifacts", def: "Área separada da conversa onde o Claude cria documentos, protótipos, códigos e componentes interativos." },
+  { term: "Browser / Navegador", def: "Programa usado para acessar sites, como Chrome, Edge, Safari ou Firefox." },
+  { term: "CLI", def: "Command Line Interface — interface de linha de comando." },
+  { term: "Connector / Conector", def: "Integração que conecta o Claude a ferramentas como Drive, Slack, GitHub ou Gmail." },
+  { term: "Customize", def: "Área de personalização das preferências e instruções do Claude." },
+  { term: "Debug / Depurar", def: "Encontrar e corrigir erros em códigos ou processos." },
+  { term: "Deploy", def: "Processo de publicar uma aplicação, site ou sistema." },
+  { term: "Desktop App", def: "Aplicativo instalado no computador." },
+  { term: "Diretório", def: "Pasta ou caminho onde arquivos ficam armazenados." },
+  { term: "Dispatch", def: "Recurso de delegação de tarefas para o Claude executar em etapas." },
+  { term: "Git", def: "Sistema de controle de versões usado em projetos de código." },
+  { term: "GitHub", def: "Plataforma para armazenar, compartilhar e versionar código." },
+  { term: "Integração", def: "Conexão entre ferramentas diferentes." },
+  { term: "Interface", def: "Forma como o usuário interage com uma ferramenta." },
+  { term: "Iterar", def: "Repetir, testar e ajustar até melhorar o resultado." },
+  { term: "Knowledge Base", def: "Base de conhecimento com arquivos que a IA pode consultar." },
+  { term: "MCP", def: "Model Context Protocol. Padrão que conecta IA a ferramentas e fontes externas." },
+  { term: "Mobile", def: "Uso em celular ou tablet." },
+  { term: "Model Context Protocol", def: "Nome completo de MCP. Funciona como ponte entre a IA e sistemas externos." },
+  { term: "Multistep / Múltiplos passos", def: "Tarefa que exige várias etapas sequenciais." },
+  { term: "Node", def: "Plataforma usada para executar JavaScript fora do navegador." },
+  { term: "Plugin", def: "Extensão ou recurso adicional que amplia uma ferramenta." },
+  { term: "Preview", def: "Pré-visualização de um conteúdo." },
+  { term: "Project", def: "Espaço organizado no Claude para reunir conversas, arquivos e contexto sobre um mesmo tema." },
+  { term: "Prompt", def: "Pedido ou instrução enviada para a IA." },
+  { term: "Prompt base", def: "Modelo inicial de comando que pode ser reutilizado." },
+  { term: "Prototipar", def: "Criar uma primeira versão de uma ideia, tela ou sistema." },
+  { term: "Repositório", def: "Pasta ou ambiente onde ficam os arquivos de um projeto de código." },
+  { term: "SaaS", def: "Software as a Service. Software acessado como serviço online." },
+  { term: "Sandbox", def: "Ambiente isolado para executar ou testar ações com mais segurança." },
+  { term: "Shell", def: "Ambiente usado para digitar e executar comandos." },
+  { term: "Shell completo", def: "Ambiente com mais liberdade para executar comandos. Exige mais cuidado." },
+  { term: "Shell Sandbox", def: "Ambiente limitado para execução de comandos ou códigos." },
+  { term: "Skill / Habilidade", def: "Capacidade específica que ajuda o Claude a executar certos tipos de tarefa." },
+  { term: "Slack", def: "Ferramenta de comunicação em equipe." },
+  { term: "Supabase", def: "Plataforma para banco de dados, autenticação e aplicações." },
+  { term: "Terminal", def: "Tela onde o usuário digita comandos para executar ações no computador." },
+  { term: "Token", def: "Unidade de processamento usada pela IA para ler e gerar informações." },
+  { term: "Token de acesso", def: "Código de autorização para acessar sistemas, APIs ou sessões." },
+  { term: "UX", def: "User Experience — experiência do usuário." },
+  { term: "Web", def: "Ambiente acessado pela internet, geralmente pelo navegador." },
+  { term: "Workflow", def: "Fluxo de trabalho com etapas organizadas." },
+];
+
+// Sort alphabetically
+terms.sort((a,b) => a.term.localeCompare(b.term, 'pt-BR', {sensitivity:'base'}));
+
+// Group by first letter
+const groups = {};
+terms.forEach(t => {
+  const letter = t.term[0].toUpperCase().replace(/[^A-Z]/g,'#');
+  if (!groups[letter]) groups[letter] = [];
+  groups[letter].push(t);
+});
+
+const letters = Object.keys(groups).sort();
+
+// Build alphabet nav
+const alphaNav = document.getElementById('alpha-nav');
+'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(l => {
+  const a = document.createElement('a');
+  a.textContent = l;
+  if (groups[l]) { a.href = '#letter-'+l; } else { a.className = 'disabled'; }
+  alphaNav.appendChild(a);
+});
+
+// Build content
+const content = document.getElementById('dict-content');
+letters.forEach(letter => {
+  const group = document.createElement('div');
+  group.className = 'letter-group';
+  group.id = 'letter-'+letter;
+  const heading = document.createElement('div');
+  heading.className = 'letter-anchor';
+  heading.textContent = letter;
+  group.appendChild(heading);
+  const grid = document.createElement('div');
+  grid.className = 'terms-grid';
+  groups[letter].forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'term-row';
+    row.dataset.term = t.term.toLowerCase();
+    row.innerHTML = `<div class="term-name">${t.term}</div><div class="term-def">${t.def}</div>`;
+    grid.appendChild(row);
+  });
+  group.appendChild(grid);
+  content.appendChild(group);
+});
+
+// Search filter
+function filterTerms(query) {
+  const q = query.toLowerCase().trim();
+  const noRes = document.getElementById('no-results');
+  const searchTerm = document.getElementById('search-term');
+  let anyVisible = false;
+
+  document.querySelectorAll('.term-row').forEach(row => {
+    const match = !q || row.dataset.term.includes(q) || row.querySelector('.term-def').textContent.toLowerCase().includes(q);
+    row.classList.toggle('hidden', !match);
+    if (match) anyVisible = true;
+  });
+
+  document.querySelectorAll('.letter-group').forEach(g => {
+    const visible = g.querySelectorAll('.term-row:not(.hidden)').length > 0;
+    g.style.display = visible ? '' : 'none';
+  });
+
+  noRes.style.display = (!anyVisible && q) ? 'block' : 'none';
+  searchTerm.textContent = query;
+}
+</script>
+</body>
+</html>
