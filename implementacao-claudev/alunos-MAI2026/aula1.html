@@ -340,7 +340,6 @@
       <li><a href="#cowork">Cowork em detalhe</a></li>
       <li><a href="#seguranca">Segurança e LGPD</a></li>
       <li><a href="#contexto">Memória e contexto</a></li>
-      <li><a href="#glossario">Dicionário da Implementação</a></li>
     </ul>
   </div>
 </div>
@@ -776,9 +775,9 @@
     <div class="section-label">Dicionário da Implementação</div>
     <h2>Termos e definições</h2>
     <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;line-height:1.7">Todos os termos técnicos usados no treinamento reunidos em uma página com busca e navegação por letra.</p>
-    <a class="btn-dict" href="./dicionario.html">
-      📖 Abrir dicionário completo em ordem alfabética →
-    </a>
+    <div style="display:flex;justify-content:center">
+      <a class="btn-dict" href="./dicionario.html">📖 Abrir Dicionário</a>
+    </div>
   </div>
 </div>
 
@@ -824,14 +823,51 @@
 
 <!-- Print styles for PDF -->
 <style media="print">
-  @page { margin: 18mm; size: A4; }
-  header { position: static !important; }
+  @page { margin: 14mm; size: A4; background: #1a1714; }
+
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body {
+    background: #1a1714 !important;
+    color: #f0ebe4 !important;
+  }
   body::before, body::after { display: none; }
+
+  header { position: static !important; background: #111 !important; }
   .hbtn-pdf, .hbtn-hotmart, .hbtn-back, .qp-filter, .use-tabs { display: none !important; }
+
+  /* Show all content */
   .tab-panel { display: block !important; }
   .qp-row.qp-hidden { display: flex !important; }
-  .section, .wrap { break-inside: avoid; }
-  a { color: inherit; text-decoration: none; }
+
+  /* Keep card backgrounds */
+  .tool-block   { background: #1a1714 !important; border: 1px solid #3d3630 !important; }
+  .power-card.chat  { background: rgba(217,119,87,.07) !important; border: 2px solid rgba(217,119,87,.35) !important; }
+  .power-card.cwork { background: rgba(124,92,191,.07) !important; border: 2px solid rgba(124,92,191,.35) !important; }
+  .power-card.ccode { background: rgba(196,92,138,.07) !important; border: 2px solid rgba(196,92,138,.35) !important; }
+  .tbl-wrap  { border: 1px solid #3d3630 !important; }
+  .tbl th    { background: #211e1a !important; color: #8a7f74 !important; }
+  .tbl tr:hover td { background: transparent !important; }
+  .info-box  { background: rgba(255,255,255,.03) !important; border: 1px solid #3d3630 !important; }
+  .index-nav { background: #211e1a !important; border: 1px solid #2e2822 !important; }
+  .use-list li, .nope-list li { background: #1a1714 !important; }
+  .sec-row   { background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .ctx-card  { background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .qp-row    { background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .plan-card { background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .limit-card{ background: #211e1a !important; border: 1px solid #3d3630 !important; }
+  .token-card{ background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .model-card{ background: #1a1714 !important; border: 1px solid #2e2822 !important; }
+  .feature-block { background: transparent !important; border: 1px solid #2e2822 !important; }
+
+  /* Keep tool colors */
+  .chip-chat  { background: rgba(217,119,87,.15) !important; color: #d97757 !important; }
+  .chip-cwork { background: rgba(124,92,191,.15) !important; color: #9b7dd4 !important; }
+  .chip-code  { background: rgba(196,92,138,.15) !important; color: #d97aaa !important; }
+
+  .section { break-inside: avoid; }
+  a { color: inherit !important; text-decoration: none !important; }
+  footer { border-top: 1px solid #2e2822 !important; }
 </style>
 
 </body>
