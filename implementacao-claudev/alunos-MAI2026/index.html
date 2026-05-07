@@ -112,18 +112,23 @@
     .aula::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
     .aula.next::before { background: var(--accent); }
     .aula.soon::before { background: var(--border2); }
+    .aula.done::before { background: #4caf7d; }
     .aula.next { border-color: rgba(217,119,87,.35); background: rgba(217,119,87,.05); }
+    .aula.done { border-color: rgba(76,175,125,.2); background: rgba(76,175,125,.03); }
     .aula-date { flex-shrink: 0; text-align: center; min-width: 52px; }
     .day { font-family: 'Anton', sans-serif; font-size: 1.7rem; font-weight: 400; line-height: 1; color: var(--accent); }
     .aula.soon .day { color: var(--muted2); }
+    .aula.done .day { color: #4caf7d; }
     .month-lbl { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
     .aula-info { flex: 1; }
     .aula-info h3 { font-family: 'Anton', sans-serif; font-size: 1rem; font-weight: 400; letter-spacing: .02em; margin-bottom: 4px; }
     .aula.soon .aula-info h3 { color: var(--muted); }
+    .aula.done .aula-info h3 { color: var(--muted); }
     .aula-info p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
     .aula-badge { flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; align-self: center; }
     .aula.next .aula-badge { background: rgba(217,119,87,.15); color: var(--accent); border: 1px solid rgba(217,119,87,.3); }
     .aula.soon .aula-badge { background: rgba(94,86,80,.12); color: var(--muted2); border: 1px solid var(--border); }
+    .aula.done .aula-badge { background: rgba(76,175,125,.12); color: #4caf7d; border: 1px solid rgba(76,175,125,.25); }
     .aula.next .aula-badge::before { content: '● '; animation: pdot 1.5s infinite; }
     @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.3} }
 
@@ -215,21 +220,24 @@
     <h2>Aulas ao Vivo</h2>
 
     <div class="schedule">
-      <div class="aula next fi">
+      <div class="aula done fi">
         <div class="aula-date"><div class="day">06</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>O que precisa saber sobre o Claude I.A</h3>
           <p>Configuração profissional e fundamentos de engenharia de prompts.</p>
         </div>
-        <div class="aula-badge">Próxima</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+          <div class="aula-badge">Concluída</div>
+          <a href="./aula1.html" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.25);text-decoration:none;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='rgba(76,175,125,.22)'" onmouseout="this.style.background='rgba(76,175,125,.12)'">📄 Material da Aula</a>
+        </div>
       </div>
-      <div class="aula soon fi">
+      <div class="aula next fi">
         <div class="aula-date"><div class="day">13</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Claude no Excel</h3>
           <p>Limpeza de dados, tratamento e fórmulas avançadas em segundos.</p>
         </div>
-        <div class="aula-badge">Em breve</div>
+        <div class="aula-badge">Próxima</div>
       </div>
       <div class="aula soon fi">
         <div class="aula-date"><div class="day">20</div><div class="month-lbl">Mai</div></div>
