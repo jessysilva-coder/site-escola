@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Agentes I.A. | Escola Karen Abecia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .tower-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tower-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .agent-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Cores de destaque por agente */
+        .tabelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(236, 72, 153, 0.3); }
+        .excelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(239, 68, 68, 0.3); }
+        .tarsilia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(168, 85, 247, 0.3); }
+        .gaia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3); }
+        .midasia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(234, 179, 8, 0.3); }
+        .abecia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(34, 197, 94, 0.3); }
+
+        .btn-access {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+
+        .btn-access:hover {
+            filter: brightness(1.2);
+            letter-spacing: 1px;
+        }
+
+        .btn-disabled {
+            background: #334155;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .coming-soon-badge {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+            Escola Karen Abecia
+        </h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+            Acesse seus assistentes inteligentes especializados para transformar sua produtividade.
+        </p>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 max-w-[1800px] mx-auto">
+        
+        <!-- Tabeli.A -->
+        <article class="tower-card tabelia-shadow p-6 rounded-2xl">
+            <img src="ChatGPT Image 27 de abr. de 2026, 13_37_45.png" alt="Tabeli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/pink/white?text=Tabeli.A'">
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-pink-400">Tabeli.A</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Especialista em estruturação, limpeza, organização, modelagem e preparação de bases de dados.
+                </p>
+            </div>
+            <a href="https://chatgpt.com/g/g-69d655eefc1c81918fe0e5afa35202b5-tabeli-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+                Acessar Agente
+            </a>
+        </article>
+
+        <!-- Exceli.A -->
+        <article class="tower-card excelia-shadow p-6 rounded-2xl">
+            <img src="ChatGPT Image 27 de abr. de 2026, 13_37_17.png" alt="Exceli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/red/white?text=Exceli.A'">
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-red-500">Exceli.A</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Especialista em fórmulas, funções, cálculos, correção e construção lógica no Excel.
+                </p>
+            </div>
+            <a href="https://chatgpt.com/g/g-69fd606c7c448191b96ca12b49b05d0c-exceli-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+                Acessar Agente
+            </a>
+        </article>
+
+        <!-- Tarsili.A -->
+        <article class="tower-card tarsilia-shadow p-6 rounded-2xl">
+            <img src="dfbc6858-ee67-44e7-8f35-22ebedaafdd7.png" alt="Tarsili.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/purple/white?text=Tarsili.A'">
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-purple-400">Tarsili.A</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Especialista em layout, visual, design de dashboards e apresentação visual de planilhas.
+                </p>
+            </div>
+            <a href="https://chatgpt.com/g/g-69ef949d96408191b5e43e2621da8ac2-tarsili-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+                Acessar Agente
+            </a>
+        </article>
+
+        <!-- Ga.iA -->
+        <article class="tower-card gaia-shadow p-6 rounded-2xl">
+            <img src="ChatGPT Image 27 de abr. de 2026, 13_36_49.png" alt="Ga.iA" class="agent-img" onerror="this.src='https://placehold.co/400x600/blue/white?text=Ga.iA'">
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-blue-400">Ga.iA</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Especialista em escolha de análises, indicadores, leitura gerencial e interpretação estratégica.
+                </p>
+            </div>
+            <a href="https://chatgpt.com/g/g-69b8c77e52dc819184d8426208787981-ga-ia" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+                Acessar Agente
+            </a>
+        </article>
+
+        <!-- Midas.IA -->
+        <article class="tower-card midasia-shadow p-6 rounded-2xl border-yellow-900/30">
+            <div class="relative">
+                <img src="ChatGPT Image 27 de abr. de 2026, 13_36_58.png" alt="Midas.IA" class="agent-img grayscale opacity-60" onerror="this.src='https://placehold.co/400x600/gold/black?text=Midas.IA'">
+                <div class="absolute top-4 right-4 coming-soon-badge text-yellow-400">Em Breve</div>
+            </div>
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-yellow-500">Midas.IA</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Ajudará na precificação e monetização de conhecimentos e serviços estratégicos.
+                </p>
+            </div>
+            <button disabled class="btn-disabled text-slate-400 font-semibold py-3 px-4 rounded-xl text-center">
+                Disponível em breve
+            </button>
+        </article>
+
+        <!-- Abeci.A -->
+        <article class="tower-card abecia-shadow p-6 rounded-2xl border-emerald-900/30">
+            <div class="relative">
+                <img src="ChatGPT Image 27 de abr. de 2026, 13_37_08.png" alt="Abeci.A" class="agent-img grayscale opacity-60" onerror="this.src='https://placehold.co/400x600/green/white?text=Abeci.A'">
+                <div class="absolute top-4 right-4 coming-soon-badge text-emerald-400">Em Breve</div>
+            </div>
+            <div class="flex-grow">
+                <h2 class="text-2xl font-bold mb-3 text-emerald-500">Abeci.A</h2>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    Sua guia para encontrar todos os conteúdos e treinamentos da Escola Karen Abecia.
+                </p>
+            </div>
+            <button disabled class="btn-disabled text-slate-400 font-semibold py-3 px-4 rounded-xl text-center">
+                Disponível em breve
+            </button>
+        </article>
+
+    </main>
+
+    <footer class="mt-20 text-center text-slate-500 text-sm">
+        <p>&copy; 2024 Escola Karen Abecia. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
