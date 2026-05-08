@@ -9,188 +9,245 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
+            background-color: #121212; /* Grafite mais profundo */
             color: #f1f5f9;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efeito de Textura Tecnológica (Grid) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 102, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 102, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+        }
+
+        /* Gradiente Radial para Profundidade */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(38, 38, 38, 0) 0%, rgba(18, 18, 18, 0.8) 100%);
+            z-index: -1;
         }
 
         .tower-card {
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             height: 100%;
             display: flex;
             flex-direction: column;
         }
 
         .tower-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #ff6600;
         }
 
         .agent-img {
             width: 100%;
-            height: 400px;
+            height: 380px;
             object-fit: cover;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Cores de destaque por agente */
-        .tabelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(236, 72, 153, 0.3); }
-        .excelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(239, 68, 68, 0.3); }
-        .tarsilia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(168, 85, 247, 0.3); }
-        .gaia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3); }
-        .midasia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(234, 179, 8, 0.3); }
-        .abecia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(34, 197, 94, 0.3); }
+        /* Cores de destaque específicas por agente */
+        .tabelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(249, 119, 180, 0.4); }
+        .excelia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(230, 41, 55, 0.4); }
+        .tarsilia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(140, 51, 186, 0.4); }
+        .gaia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(1, 188, 220, 0.4); }
+        .midasia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(229, 159, 62, 0.4); }
+        .abecia-shadow:hover { box-shadow: 0 20px 40px -10px rgba(43, 98, 25, 0.4); }
 
         .btn-access {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            background: #ff6600;
+            color: white;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
         }
 
         .btn-access:hover {
-            filter: brightness(1.2);
-            letter-spacing: 1px;
+            background: #e65c00;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
         }
 
         .btn-disabled {
-            background: #334155;
+            background: #2d2d2d;
             cursor: not-allowed;
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
-        .coming-soon-badge {
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            border: 1px solid rgba(255,255,255,0.2);
+        .step-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            backdrop-filter: blur(8px);
         }
 
         header::after {
             content: '';
             display: block;
-            width: 80px;
+            width: 100px;
             height: 4px;
-            background: linear-gradient(90deg, #3b82f6, #10b981);
-            margin: 1rem auto;
+            background: #ff6600;
+            margin: 1.5rem auto;
             border-radius: 2px;
         }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-6 md:p-12">
 
-    <header class="text-center mb-16">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+    <header class="text-center mb-16 relative z-10">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 text-[#ff6600]">
             Escola Karen Abecia
         </h1>
         <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-            Acesse seus assistentes inteligentes especializados para transformar sua produtividade.
+            Explore a fronteira da produtividade com assistentes de I.A. treinados para o sucesso.
         </p>
     </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 max-w-[1800px] mx-auto">
+    <!-- Grade de Agentes -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 max-w-[1800px] mx-auto mb-20 relative z-10">
         
         <!-- Tabeli.A -->
-        <article class="tower-card tabelia-shadow p-6 rounded-2xl">
-            <img src="ChatGPT Image 27 de abr. de 2026, 13_37_45.png" alt="Tabeli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/pink/white?text=Tabeli.A'">
+        <article class="tower-card tabelia-shadow p-5 rounded-2xl">
+            <img src="tabelia.png" alt="Tabeli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/F977B4/ffffff?text=Tabeli.A'">
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-pink-400">Tabeli.A</h2>
+                <h2 class="text-2xl font-bold mb-3 text-[#F977B4]">Tabeli.A</h2>
                 <p class="text-slate-300 text-sm leading-relaxed mb-6">
                     Especialista em estruturação, limpeza, organização, modelagem e preparação de bases de dados.
                 </p>
             </div>
-            <a href="https://chatgpt.com/g/g-69d655eefc1c81918fe0e5afa35202b5-tabeli-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+            <a href="https://chatgpt.com/g/g-69d655eefc1c81918fe0e5afa35202b5-tabeli-a" target="_blank" class="btn-access font-bold py-3 px-4 rounded-xl text-center">
                 Acessar Agente
             </a>
         </article>
 
         <!-- Exceli.A -->
-        <article class="tower-card excelia-shadow p-6 rounded-2xl">
-            <img src="ChatGPT Image 27 de abr. de 2026, 13_37_17.png" alt="Exceli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/red/white?text=Exceli.A'">
+        <article class="tower-card excelia-shadow p-5 rounded-2xl">
+            <img src="excelia.png" alt="Exceli.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/E62937/ffffff?text=Exceli.A'">
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-red-500">Exceli.A</h2>
+                <h2 class="text-2xl font-bold mb-3 text-[#E62937]">Exceli.A</h2>
                 <p class="text-slate-300 text-sm leading-relaxed mb-6">
                     Especialista em fórmulas, funções, cálculos, correção e construção lógica no Excel.
                 </p>
             </div>
-            <a href="https://chatgpt.com/g/g-69fd606c7c448191b96ca12b49b05d0c-exceli-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+            <a href="https://chatgpt.com/g/g-69fd606c7c448191b96ca12b49b05d0c-exceli-a" target="_blank" class="btn-access font-bold py-3 px-4 rounded-xl text-center">
                 Acessar Agente
             </a>
         </article>
 
         <!-- Tarsili.A -->
-        <article class="tower-card tarsilia-shadow p-6 rounded-2xl">
-            <img src="dfbc6858-ee67-44e7-8f35-22ebedaafdd7.png" alt="Tarsili.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/purple/white?text=Tarsili.A'">
+        <article class="tower-card tarsilia-shadow p-5 rounded-2xl">
+            <img src="tarsilia.png" alt="Tarsili.A" class="agent-img" onerror="this.src='https://placehold.co/400x600/8C33BA/ffffff?text=Tarsili.A'">
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-purple-400">Tarsili.A</h2>
+                <h2 class="text-2xl font-bold mb-3 text-[#8C33BA]">Tarsili.A</h2>
                 <p class="text-slate-300 text-sm leading-relaxed mb-6">
                     Especialista em layout, visual, design de dashboards e apresentação visual de planilhas.
                 </p>
             </div>
-            <a href="https://chatgpt.com/g/g-69ef949d96408191b5e43e2621da8ac2-tarsili-a" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+            <a href="https://chatgpt.com/g/g-69ef949d96408191b5e43e2621da8ac2-tarsili-a" target="_blank" class="btn-access font-bold py-3 px-4 rounded-xl text-center">
                 Acessar Agente
             </a>
         </article>
 
         <!-- Ga.iA -->
-        <article class="tower-card gaia-shadow p-6 rounded-2xl">
-            <img src="ChatGPT Image 27 de abr. de 2026, 13_36_49.png" alt="Ga.iA" class="agent-img" onerror="this.src='https://placehold.co/400x600/blue/white?text=Ga.iA'">
+        <article class="tower-card gaia-shadow p-5 rounded-2xl">
+            <img src="gaia.png" alt="Ga.iA" class="agent-img" onerror="this.src='https://placehold.co/400x600/01BCDC/ffffff?text=Ga.iA'">
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-blue-400">Ga.iA</h2>
+                <h2 class="text-2xl font-bold mb-3 text-[#01BCDC]">Ga.iA</h2>
                 <p class="text-slate-300 text-sm leading-relaxed mb-6">
                     Especialista em escolha de análises, indicadores, leitura gerencial e interpretação estratégica.
                 </p>
             </div>
-            <a href="https://chatgpt.com/g/g-69b8c77e52dc819184d8426208787981-ga-ia" target="_blank" class="btn-access text-white font-semibold py-3 px-4 rounded-xl text-center">
+            <a href="https://chatgpt.com/g/g-69b8c77e52dc819184d8426208787981-ga-ia" target="_blank" class="btn-access font-bold py-3 px-4 rounded-xl text-center">
                 Acessar Agente
             </a>
         </article>
 
         <!-- Midas.IA -->
-        <article class="tower-card midasia-shadow p-6 rounded-2xl border-yellow-900/30">
+        <article class="tower-card midasia-shadow p-5 rounded-2xl">
             <div class="relative">
-                <img src="ChatGPT Image 27 de abr. de 2026, 13_36_58.png" alt="Midas.IA" class="agent-img grayscale opacity-60" onerror="this.src='https://placehold.co/400x600/gold/black?text=Midas.IA'">
-                <div class="absolute top-4 right-4 coming-soon-badge text-yellow-400">Em Breve</div>
+                <img src="midas.png" alt="Midas.IA" class="agent-img opacity-40 grayscale" onerror="this.src='https://placehold.co/400x600/E59F3E/000000?text=Midas.IA'">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="bg-black/80 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20 uppercase">Em Breve</span>
+                </div>
             </div>
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-yellow-500">Midas.IA</h2>
-                <p class="text-slate-300 text-sm leading-relaxed mb-6">
-                    Ajudará na precificação e monetização de conhecimentos e serviços estratégicos.
+                <h2 class="text-2xl font-bold mb-3 text-[#E59F3E]">Midas.IA</h2>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                    Ajudará na precificação e monetização dos seus conhecimentos e estratégias de lucro.
                 </p>
             </div>
-            <button disabled class="btn-disabled text-slate-400 font-semibold py-3 px-4 rounded-xl text-center">
-                Disponível em breve
+            <button disabled class="btn-disabled text-slate-500 font-bold py-3 px-4 rounded-xl text-center">
+                Indisponível
             </button>
         </article>
 
         <!-- Abeci.A -->
-        <article class="tower-card abecia-shadow p-6 rounded-2xl border-emerald-900/30">
+        <article class="tower-card abecia-shadow p-5 rounded-2xl">
             <div class="relative">
-                <img src="ChatGPT Image 27 de abr. de 2026, 13_37_08.png" alt="Abeci.A" class="agent-img grayscale opacity-60" onerror="this.src='https://placehold.co/400x600/green/white?text=Abeci.A'">
-                <div class="absolute top-4 right-4 coming-soon-badge text-emerald-400">Em Breve</div>
+                <img src="abecia.png" alt="Abeci.A" class="agent-img opacity-40 grayscale" onerror="this.src='https://placehold.co/400x600/2B6219/ffffff?text=Abeci.A'">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="bg-black/80 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20 uppercase">Em Breve</span>
+                </div>
             </div>
             <div class="flex-grow">
-                <h2 class="text-2xl font-bold mb-3 text-emerald-500">Abeci.A</h2>
-                <p class="text-slate-300 text-sm leading-relaxed mb-6">
-                    Sua guia para encontrar todos os conteúdos e treinamentos da Escola Karen Abecia.
+                <h2 class="text-2xl font-bold mb-3 text-[#2B6219]">Abeci.A</h2>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                    Sua guia inteligente para encontrar todos os conteúdos e aulas da Escola Karen Abecia.
                 </p>
             </div>
-            <button disabled class="btn-disabled text-slate-400 font-semibold py-3 px-4 rounded-xl text-center">
-                Disponível em breve
+            <button disabled class="btn-disabled text-slate-500 font-bold py-3 px-4 rounded-xl text-center">
+                Indisponível
             </button>
         </article>
 
     </main>
 
-    <footer class="mt-20 text-center text-slate-500 text-sm">
-        <p>&copy; 2024 Escola Karen Abecia. Todos os direitos reservados.</p>
+    <!-- Passo a Passo -->
+    <section class="max-w-4xl mx-auto mb-20 p-8 rounded-3xl step-card relative z-10">
+        <h3 class="text-2xl font-bold mb-8 text-[#ff6600] flex items-center gap-3">
+            <span>🚀</span> Como começar a usar agora:
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex gap-4">
+                <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">1</div>
+                <p class="text-slate-300">Certifique-se de que está <strong>logado na sua conta do ChatGPT</strong> no navegador.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">2</div>
+                <p class="text-slate-300">Escolha o <strong>Agente Especialista</strong> ideal para o seu desafio do momento.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">3</div>
+                <p class="text-slate-300">Clique em <strong>"Acessar Agente"</strong> para iniciar uma nova conversa personalizada.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">4</div>
+                <p class="text-slate-300">Interaja com a <strong>I.A.</strong> e deixe que ela automatize e otimize os seus resultados!</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center text-slate-500 text-sm border-t border-white/5 pt-10 relative z-10">
+        <p>&copy; 2026 Escola Karen Abecia. Todos os direitos reservados.</p>
     </footer>
 
 </body>
