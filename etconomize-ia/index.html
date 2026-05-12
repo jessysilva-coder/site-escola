@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETconomize · Sua estação financeira em outro planeta</title>
+  <meta name="description" content="Controle de finanças pessoais com mascotes ETs neon." />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./config.js"></script>
+</head>
+<body>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="header">
+      <div class="brand">
+        <i class="ti ti-rocket" aria-hidden="true"></i>
+        <span>ETconomize</span>
+      </div>
+      <button id="theme-toggle" class="icon-btn" aria-label="Alternar entre modo claro e escuro">
+        <i class="ti ti-sun" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <main class="main">
+      <section id="auth-section" class="screen">
+        <div class="hero">
+          <h1 class="hero-title">Bem-vindo, comandante</h1>
+          <p class="hero-subtitle">Sua estação financeira em outro planeta</p>
+          <div id="signin-container" class="signin-container"></div>
+          <p class="hero-note">
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
+            <span>Em fase de testes &mdash; só usuários autorizados conseguem entrar.</span>
+          </p>
+        </div>
+      </section>
+
+      <section id="dashboard-section" class="screen hidden">
+        <div class="card user-card">
+          <div class="avatar" id="user-avatar"></div>
+          <div class="user-info">
+            <p class="user-name" id="user-name">—</p>
+            <p class="user-email" id="user-email">—</p>
+          </div>
+          <button id="logout-btn" class="icon-btn" aria-label="Sair">
+            <i class="ti ti-logout" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Teste de conexão</h2>
+            <span class="badge">v0.1</span>
+          </div>
+          <p class="card-text">
+            Clique no botão pra confirmar que o frontend está conversando com o backend Apps Script.
+          </p>
+          <button id="ping-btn" class="btn btn-primary">
+            <i class="ti ti-satellite" aria-hidden="true"></i>
+            <span>Pingar API</span>
+          </button>
+          <pre id="ping-result" class="result hidden"></pre>
+        </div>
+
+        <p class="footnote">
+          <i class="ti ti-rocket" aria-hidden="true"></i>
+          Fase 0 completa. Próximo passo: construir o app de verdade.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>ETconomize · Controle de despesas pessoais</span>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
