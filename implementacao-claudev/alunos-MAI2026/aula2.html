@@ -129,10 +129,6 @@
     .exercise-badge.b-purple { border-color: rgba(124,92,191,.35); background: rgba(124,92,191,.14); color: var(--cwork2); }
     .exercise-badge.b-pink { border-color: rgba(196,92,138,.35); background: rgba(196,92,138,.14); color: var(--code2); }
     .exercise-body { padding: 18px; }
-    .learn-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
-    .learn-item { border: 1px solid var(--border); background: var(--card2); border-radius: 9px; padding: 11px 12px; }
-    .learn-item strong { display: block; font-size: .77rem; color: var(--text); margin-bottom: 3px; }
-    .learn-item span { display: block; font-size: .76rem; color: var(--muted); line-height: 1.5; }
     .prompt-label { font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted2); margin-bottom: 9px; display: block; }
     .prompt-box { background: #11100f; border: 1px solid var(--border2); border-radius: 11px; overflow: hidden; }
     .prompt-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
@@ -222,7 +218,7 @@
     footer p { font-size: .78rem; color: var(--muted2); }
 
     @media(max-width:780px) {
-      .learn-grid, .homework-grid { grid-template-columns: 1fr; }
+      .homework-grid { grid-template-columns: 1fr; }
       .exercise-head { flex-direction: column; }
       .exercise-badge { align-self: flex-start; }
     }
@@ -315,7 +311,7 @@
     </div>
 
     <div class="download-row">
-      <a class="resource-btn primary" href="#" download>⬇ Baixar planilha da aula</a>
+      <a class="resource-btn primary" href="https://docs.google.com/spreadsheets/d/1zvpzdn8V6Ovjp0Y50OJgXmPpSGJ31FJo/export?format=xlsx">⬇ Baixar planilha da aula</a>
     </div>
 
     <div class="exercise" id="padronizacao">
@@ -328,11 +324,6 @@
         <span class="exercise-badge">Modelagem</span>
       </div>
       <div class="exercise-body">
-        <div class="learn-grid">
-          <div class="learn-item"><strong>Nome</strong><span>Primeira letra maiúscula em cada palavra.</span></div>
-          <div class="learn-item"><strong>Telefone</strong><span>Formato brasileiro para 10 ou 11 dígitos.</span></div>
-          <div class="learn-item"><strong>CEP e CPF</strong><span>Padrões fixos com pontuação correta.</span></div>
-        </div>
         <span class="prompt-label">Prompt para copiar</span>
         <div class="prompt-box">
           <div class="prompt-tools">
@@ -367,11 +358,6 @@ Coluna de CPF - Padronize todos os CPFs no formato XXX.XXX.XXX-XX.</textarea>
         <span class="exercise-badge">Recorrência</span>
       </div>
       <div class="exercise-body">
-        <div class="learn-grid">
-          <div class="learn-item"><strong>Status do cadastro</strong><span>Completo ou Pendente.</span></div>
-          <div class="learn-item"><strong>Telefone personalizado</strong><span>Nova coluna pronta para uso.</span></div>
-          <div class="learn-item"><strong>Excel Online</strong><span>Fórmulas compatíveis e atualizáveis.</span></div>
-        </div>
         <span class="prompt-label">Prompt para copiar</span>
         <div class="prompt-box">
           <div class="prompt-tools">
@@ -428,11 +414,6 @@ Regras de construção:
         <span class="exercise-badge b-purple">Validação</span>
       </div>
       <div class="exercise-body">
-        <div class="learn-grid">
-          <div class="learn-item"><strong>Parâmetros</strong><span>Guia exclusiva para listas de apoio.</span></div>
-          <div class="learn-item"><strong>Departamento</strong><span>Seleção padronizada na base principal.</span></div>
-          <div class="learn-item"><strong>Escolaridade</strong><span>Novos itens entram automaticamente na lista.</span></div>
-        </div>
         <span class="prompt-label">Prompt para copiar</span>
         <div class="prompt-box">
           <div class="prompt-tools">
@@ -467,11 +448,6 @@ Execute as etapas abaixo:
         <span class="exercise-badge b-purple">RH</span>
       </div>
       <div class="exercise-body">
-        <div class="learn-grid">
-          <div class="learn-item"><strong>Últimas férias</strong><span>Coluna usada como referência de cálculo.</span></div>
-          <div class="learn-item"><strong>Status de férias</strong><span>Em dia ou Férias vencidas.</span></div>
-          <div class="learn-item"><strong>Formatação condicional</strong><span>Marcação vermelha para vencimentos.</span></div>
-        </div>
         <span class="prompt-label">Prompt para copiar</span>
         <div class="prompt-box">
           <div class="prompt-tools">
@@ -514,22 +490,29 @@ Depois disso, crie uma formatação condicional:
         <span class="exercise-badge b-pink">Dashboard</span>
       </div>
       <div class="exercise-body">
-        <div class="learn-grid">
-          <div class="learn-item"><strong>Base de vendas</strong><span>Ponto de partida da análise.</span></div>
-          <div class="learn-item"><strong>Tabelas Dinâmicas</strong><span>Estrutura para atualização automática.</span></div>
-          <div class="learn-item"><strong>Segmentações</strong><span>Filtros interativos no Dashboard.</span></div>
-        </div>
         <span class="prompt-label">Prompt para copiar</span>
         <div class="prompt-box">
           <div class="prompt-tools">
             <span>Prompt · Dashboard automático</span>
             <button class="copy-btn" onclick="copyPrompt('prompt5', this)">⧉ Copiar prompt</button>
           </div>
-          <textarea id="prompt5" class="prompt-text" readonly>Considere a base de vendas desta pasta de trabalho e crie um Dashboard automático a partir dela.
+          <textarea id="prompt5" class="prompt-text mid" readonly>Considere a base de vendas desta pasta de trabalho e crie um Dashboard automático a partir dela.
 
 Use Tabelas Dinâmicas e segmentações de dados para que o Dashboard possa ser atualizado e filtrado com facilidade.
 
-Escolha os principais indicadores, análises e gráficos com base nas colunas disponíveis, organizando tudo em uma nova guia de Dashboard com boa leitura visual.</textarea>
+Considere os filtros:
+- Ano
+- Mês
+- Categoria
+
+E os indicadores:
+- Total faturado
+- Top 5 produtos mais vendidos
+- Categoria mais vendida
+- Categoria menos vendida
+- Mês com maior faturamento
+- Mês com menos faturamento
+- Faturamento ao longo do ano</textarea>
         </div>
       </div>
     </div>
@@ -557,7 +540,7 @@ Escolha os principais indicadores, análises e gráficos com base nas colunas di
 </div>
 
 <div class="download-row">
-  <a class="resource-btn primary" href="#" download>⬇ Baixar planilha da aula</a>
+  <a class="resource-btn primary" href="https://docs.google.com/spreadsheets/d/1zvpzdn8V6Ovjp0Y50OJgXmPpSGJ31FJo/export?format=xlsx">⬇ Baixar planilha da aula</a>
 </div>
 
 <div class="section" id="arquivos">
@@ -573,17 +556,6 @@ Escolha os principais indicadores, análises e gráficos com base nas colunas di
       </div>
       <div class="drive-arrow">Abrir →</div>
     </a>
-  </div>
-</div>
-
-<div class="section" id="glossario">
-  <div class="wrap">
-    <div class="section-label">Dicionário da Implementação</div>
-    <h2>Termos e definições</h2>
-    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;line-height:1.7">Consulte o dicionário da Implementação para revisar os termos técnicos usados ao longo do treinamento.</p>
-    <div style="display:flex;justify-content:center">
-      <a class="btn-dict" href="./dicionario.html">📖 Abrir Dicionário</a>
-    </div>
   </div>
 </div>
 
@@ -644,7 +616,6 @@ Escolha os principais indicadores, análises e gráficos com base nas colunas di
   .exercise, .sec-row, .part-intro { background: #1a1714 !important; border-color: #2e2822 !important; }
   .prompt-box { background: #11100f !important; border-color: #3d3630 !important; }
   .prompt-tools { background: rgba(255,255,255,.02) !important; }
-  .learn-item { background: #211e1a !important; border-color: #2e2822 !important; }
   a { color: inherit !important; text-decoration: none !important; }
   footer { border-top: 1px solid #2e2822 !important; }
 </style>
