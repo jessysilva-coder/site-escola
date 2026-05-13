@@ -84,11 +84,11 @@
   <!-- ============== APP (telas pós-login) ============== -->
   <div id="app-container" class="hidden">
     <header class="app-header">
+      <button class="icon-btn logout-btn-top" id="logout-btn" aria-label="Sair">
+        <i class="ti ti-logout" aria-hidden="true"></i>
+      </button>
       <div class="header-controls">
         <span class="header-user" id="header-user"></span>
-        <button class="icon-btn" id="logout-btn" aria-label="Sair">
-          <i class="ti ti-logout" aria-hidden="true"></i>
-        </button>
       </div>
     </header>
 
@@ -105,7 +105,10 @@
 
         <div class="card dashboard-intro">
           <div>
-            <h2>ETconomize</h2>
+            <div class="dashboard-title-row">
+              <i class="ti ti-chart-pie-filled" aria-hidden="true"></i>
+              <h2>ETconomize</h2>
+            </div>
             <p class="muted">Seu painel financeiro intergaláctico</p>
           </div>
           <img class="js-mascote-img dashboard-mascote" src="./verde.png" alt="Mascote escolhido" />
