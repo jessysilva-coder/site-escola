@@ -1515,32 +1515,3 @@ body {
     padding-top: 4px;
   }
 }
-
-
-/* ============================================================
-   ETconomize — ajustes visuais v5
-   ============================================================ */
-
-.dashboard-analysis-grid.expenses-grid {
-  grid-template-columns: minmax(240px, 0.92fr) minmax(420px, 1.62fr) minmax(210px, 0.68fr);
-  align-items: stretch;
-}
-
-.despesas-mensal-card .chart-wrap {
-  height: 330px;
-}
-
-.recorrencia-card .chart-wrap {
-  height: 245px;
-}
-
-@media (max-width: 1180px) {
-  .dashboard-analysis-grid.expenses-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .despesas-mensal-card .chart-wrap,
-  .recorrencia-card .chart-wrap {
-    height: 300px;
-  }
-}
