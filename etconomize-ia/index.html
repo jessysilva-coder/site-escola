@@ -84,11 +84,11 @@
   <!-- ============== APP (telas pós-login) ============== -->
   <div id="app-container" class="hidden">
     <header class="app-header">
-      <button class="icon-btn logout-btn-top" id="logout-btn" aria-label="Sair">
-        <i class="ti ti-logout" aria-hidden="true"></i>
-      </button>
       <div class="header-controls">
         <span class="header-user" id="header-user"></span>
+        <button class="icon-btn logout-btn-top" id="logout-btn" aria-label="Sair">
+          <i class="ti ti-logout" aria-hidden="true"></i>
+        </button>
       </div>
     </header>
 
@@ -134,22 +134,36 @@
           </div>
         </div>
 
-        <div class="dashboard-analysis-grid">
+        <div class="dashboard-analysis-grid two-col-grid">
           <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-trending-up" aria-hidden="true"></i><span>Receitas por categoria</span></div>
+            <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Receitas por categoria</span></div>
             <div class="chart-wrap"><canvas id="chart-receitas-categoria"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-chart-line" aria-hidden="true"></i><span>Receitas mês a mês</span></div>
+            <div class="chart-title"><i class="ti ti-chart-line" aria-hidden="true"></i><span>Receitas por mês</span></div>
             <div class="chart-wrap"><canvas id="chart-receitas-mensal"></canvas></div>
           </div>
+        </div>
+
+        <div class="dashboard-analysis-grid three-col-grid">
           <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-trending-down" aria-hidden="true"></i><span>Despesas por categoria</span></div>
+            <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Despesas por categoria</span></div>
             <div class="chart-wrap"><canvas id="chart-despesas-categoria"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Despesas mês a mês</span></div>
+            <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Despesas por mês</span></div>
             <div class="chart-wrap"><canvas id="chart-despesas-mensal"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <div class="chart-title"><i class="ti ti-repeat" aria-hidden="true"></i><span>% Recorrente vs % não recorrente</span></div>
+            <div class="chart-wrap"><canvas id="chart-despesas-recorrencia"></canvas></div>
+          </div>
+        </div>
+
+        <div class="dashboard-analysis-grid single-col-grid">
+          <div class="card chart-card chart-card-wide">
+            <div class="chart-title"><i class="ti ti-chart-line" aria-hidden="true"></i><span>Receitas vs despesas vs saldo (mês a mês)</span></div>
+            <div class="chart-wrap chart-wrap-wide"><canvas id="chart-fluxo-mensal"></canvas></div>
           </div>
         </div>
 
@@ -161,23 +175,33 @@
           <img class="js-mascote-img empty-panel-mascote" src="./verde.png" alt="Mascote escolhido" />
         </div>
 
-        <div id="cartao-summary" class="dashboard-analysis-grid hidden">
-          <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-credit-card" aria-hidden="true"></i><span>Fatura do cartão mês a mês</span></div>
-            <div class="chart-wrap"><canvas id="chart-cartao-proximos"></canvas></div>
-          </div>
-          <div class="card chart-card">
-            <div class="chart-title"><i class="ti ti-category" aria-hidden="true"></i><span>Cartão por categoria</span></div>
-            <div class="chart-wrap"><canvas id="chart-cartao-categoria"></canvas></div>
-          </div>
-          <div class="card chart-card chart-card-mascote">
-            <div class="chart-title"><i class="ti ti-users" aria-hidden="true"></i><span>Cartão por responsável</span></div>
-            <div class="chart-with-mascote">
+        <div id="cartao-summary" class="hidden">
+          <div class="dashboard-analysis-grid two-col-grid">
+            <div class="card chart-card">
+              <div class="chart-title"><i class="ti ti-users" aria-hidden="true"></i><span>Pagamento por responsável</span></div>
               <div class="chart-wrap"><canvas id="chart-cartao-responsavel"></canvas></div>
-              <img class="js-mascote-img chart-side-mascote" src="./verde.png" alt="Mascote escolhido" />
+            </div>
+            <div class="card chart-card">
+              <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Pagamento por responsável mês a mês</span></div>
+              <div class="chart-wrap"><canvas id="chart-cartao-responsavel-mensal"></canvas></div>
+            </div>
+          </div>
+
+          <div class="dashboard-analysis-grid two-col-grid">
+            <div class="card chart-card">
+              <div class="chart-title"><i class="ti ti-credit-card" aria-hidden="true"></i><span>Fatura do cartão por mês</span></div>
+              <div class="chart-wrap"><canvas id="chart-cartao-proximos"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-title"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>Análise de parcelamento</span></div>
+              <div class="chart-wrap"><canvas id="chart-cartao-parcelamento"></canvas></div>
             </div>
           </div>
         </div>
+
+        <a class="promo-banner" href="https://sites.karenabecia.com.br/" target="_blank" rel="noopener noreferrer">
+          <img src="./banner%20vitrine.png" alt="Banner vitrine da Escola Karen Abecia" />
+        </a>
       </section>
 
       <!-- RECEITAS -->
@@ -207,6 +231,11 @@
             <p>Nenhuma receita cadastrada ainda neste setor.</p>
           </div>
         </div>
+
+
+        <a class="promo-banner" href="https://sites.karenabecia.com.br/" target="_blank" rel="noopener noreferrer">
+          <img src="./banner%20vitrine.png" alt="Banner vitrine da Escola Karen Abecia" />
+        </a>
       </section>
 
       <!-- DESPESAS -->
@@ -236,6 +265,11 @@
             <p>Nenhuma despesa cadastrada ainda neste setor.</p>
           </div>
         </div>
+
+
+        <a class="promo-banner" href="https://sites.karenabecia.com.br/" target="_blank" rel="noopener noreferrer">
+          <img src="./banner%20vitrine.png" alt="Banner vitrine da Escola Karen Abecia" />
+        </a>
       </section>
 
       <!-- CARTAO -->
@@ -343,6 +377,11 @@
             </div>
           </div>
         </div>
+
+
+        <a class="promo-banner" href="https://sites.karenabecia.com.br/" target="_blank" rel="noopener noreferrer">
+          <img src="./banner%20vitrine.png" alt="Banner vitrine da Escola Karen Abecia" />
+        </a>
       </section>
 
       <!-- CONFIG -->
@@ -351,8 +390,7 @@
           <h1>Configurações</h1>
         </div>
         <div class="card">
-          <h3>Meu mascote</h3>
-          <p class="muted">A cor de destaque do app muda conforme o mascote.</p>
+          <h3>Escolha seu mascote:</h3>
           <div class="mascote-grid mascote-grid-compact" id="mascote-grid-config"></div>
         </div>
         <div class="card">
@@ -366,26 +404,28 @@
             <button class="btn btn-primary" id="btn-save-saldo">Salvar</button>
           </div>
         </div>
-        <div class="card">
-          <h3>Sobre o aplicativo</h3>
-          <p class="muted">ETconomize v1 — controle de despesas pessoais com mascotes ETs.</p>
-          <p class="muted small" id="config-user-info">—</p>
-        </div>
+
+
+        <a class="promo-banner" href="https://sites.karenabecia.com.br/" target="_blank" rel="noopener noreferrer">
+          <img src="./banner%20vitrine.png" alt="Banner vitrine da Escola Karen Abecia" />
+        </a>
       </section>
 
     </main>
+
+    <footer class="app-footer">Todos os direitos reservados para Escola Karen Abecia, 2026</footer>
 
     <nav class="side-nav">
       <div class="sidebar-brand">
         <img class="js-mascote-img sidebar-mascote" src="./verde.png" alt="Mascote escolhido" />
         <div>
           <strong>ETconomize</strong>
-          <span>Painel de gastos</span>
+          <span>Painel de controle de gastos</span>
         </div>
       </div>
       <div class="sidebar-links">
       <button class="nav-item active" data-view="dashboard" aria-label="Dashboard">
-        <i class="ti ti-chart-pie-filled" aria-hidden="true"></i>
+        <i class="ti ti-chart-bar" aria-hidden="true"></i>
         <span>Dashboard</span>
       </button>
       <button class="nav-item" data-view="receitas" aria-label="Receitas">
