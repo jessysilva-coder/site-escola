@@ -54,6 +54,10 @@
     return (parseFloat(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
+  function labelNumber(v) {
+    return Math.round(parseFloat(v) || 0).toLocaleString('pt-BR');
+  }
+
   function formatDate(s) {
     if (!s) return '';
     const d = new Date(s);
@@ -398,6 +402,7 @@
      ============================================================ */
   function switchView(name) {
     state.currentView = name;
+    $('app-container').setAttribute('data-current-view', name);
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     $('view-' + name).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === name));
@@ -432,11 +437,11 @@
     $('receitas-total').textContent = brl(d.receitas.total_mes);
     $('despesas-total').textContent = brl(d.despesas.total_mes);
 
-    renderCategoryBarChart('chart-receitas-categoria', d.receitas.por_categoria, 'categoria');
+    renderCategoryColumnChart('chart-receitas-categoria', d.receitas.por_categoria, 'categoria');
     renderLineChart('chart-receitas-mensal', d.receitas.mensal, 'Receitas');
 
-    renderCategoryBarChart('chart-despesas-categoria', d.despesas.por_categoria, 'categoria');
-    renderDualLineChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
+    renderCategoryColumnChart('chart-despesas-categoria', d.despesas.por_categoria, 'categoria');
+    renderStackedBarChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
 
     if (d.cartao.has_cartao) {
       $('cartao-empty').classList.add('hidden');
@@ -448,8 +453,8 @@
         d.cartao.proximos_12_meses.map(p => ({ mes_label: p.mes_label, total: p.total })),
         'Cartão'
       );
-      renderCategoryBarChart('chart-cartao-categoria', d.cartao.por_categoria, 'categoria');
-      renderCategoryBarChart('chart-cartao-responsavel', d.cartao.por_responsavel, 'responsavel');
+      renderCategoryColumnChart('chart-cartao-categoria', d.cartao.por_categoria, 'categoria');
+      renderCategoryColumnChart('chart-cartao-responsavel', d.cartao.por_responsavel, 'responsavel');
     } else {
       $('cartao-empty').classList.remove('hidden');
       $('cartao-summary').classList.add('hidden');
@@ -480,7 +485,7 @@
           const value = typeof rawValue === 'object'
             ? (rawValue.y ?? rawValue.x ?? 0)
             : rawValue;
-          const label = brl(value);
+          const label = labelNumber(value);
           const pos = element.tooltipPosition();
 
           if (chart.config.type === 'bar' && chart.options.indexAxis === 'y') {
@@ -543,7 +548,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function renderCategoryBarChart(canvasId, items, labelKey = 'categoria') {
+  function renderCategoryColumnChart(canvasId, items, labelKey = 'categoria') {
     destroyChart(canvasId);
     if (!items || items.length === 0) {
       clearChart(canvasId);
@@ -566,15 +571,15 @@
       },
       options: {
         ...chartCommonOptions(false),
-        indexAxis: 'y',
         scales: {
           x: {
-            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
-            grid: { color: 'rgba(255,255,255,0.04)' }
+            ticks: { color: textColor, font: { size: 10 } },
+            grid: { display: false }
           },
           y: {
-            ticks: { color: textColor, font: { size: 11 } },
-            grid: { display: false }
+            beginAtZero: true,
+            ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) },
+            grid: { color: 'rgba(255,255,255,0.04)' }
           }
         }
       }
@@ -612,7 +617,7 @@
           x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
           y: {
             beginAtZero: true,
-            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
+            ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) },
             grid: { color: 'rgba(255,255,255,0.04)' }
           }
         }
@@ -620,7 +625,7 @@
     });
   }
 
-  function renderDualLineChart(canvasId, items) {
+  function renderStackedBarChart(canvasId, items) {
     destroyChart(canvasId);
     if (!items || items.length === 0) {
       clearChart(canvasId);
@@ -628,47 +633,38 @@
     }
     const textColor = cssvar('--text-tertiary');
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: items.map(i => shortMonthLabel(i.mes_label)),
         datasets: [
           {
             label: 'Gerais',
             data: items.map(i => i.geral || 0),
+            backgroundColor: cssvar('--accent-fill'),
             borderColor: cssvar('--accent-fill'),
-            backgroundColor: cssvar('--accent-soft'),
-            pointBackgroundColor: cssvar('--accent-fill'),
-            pointBorderColor: cssvar('--accent-fill'),
-            pointRadius: 4,
-            pointHoverRadius: 5,
-            borderWidth: 3,
-            tension: 0.28,
-            fill: false
+            borderWidth: 1,
+            borderRadius: 6,
+            maxBarThickness: 34
           },
           {
             label: 'Cartão',
             data: items.map(i => i.cartao || 0),
+            backgroundColor: 'rgba(255,255,255,0.18)',
             borderColor: cssvar('--accent-fill'),
-            backgroundColor: 'transparent',
-            pointBackgroundColor: cssvar('--accent-fill'),
-            pointBorderColor: cssvar('--accent-fill'),
-            pointStyle: 'rectRot',
-            pointRadius: 5,
-            pointHoverRadius: 6,
-            borderWidth: 2,
-            borderDash: [6, 4],
-            tension: 0.28,
-            fill: false
+            borderWidth: 1,
+            borderRadius: 6,
+            maxBarThickness: 34
           }
         ]
       },
       options: {
         ...chartCommonOptions(true),
         scales: {
-          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
+          x: { stacked: true, ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
           y: {
+            stacked: true,
             beginAtZero: true,
-            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
+            ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) },
             grid: { color: 'rgba(255,255,255,0.04)' }
           }
         }
