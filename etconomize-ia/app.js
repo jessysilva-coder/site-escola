@@ -58,6 +58,45 @@
     return Math.round(parseFloat(v) || 0).toLocaleString('pt-BR');
   }
 
+
+  function monthKeyFromDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return '';
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    return `${y}-${m}`;
+  }
+
+  function isWithinCurrentFilters(dateStr) {
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return false;
+    if (state.filters.ano != null && d.getFullYear() !== state.filters.ano) return false;
+    if (state.filters.mes != null && (d.getMonth() + 1) !== state.filters.mes) return false;
+    return true;
+  }
+
+  function isRecurringItem(item) {
+    return item?.origem === 'recorrencia' || item?.recorrente === true || item?.recorrente === 'true' || !!item?.ref_recorrencia || !!item?.dia_do_mes;
+  }
+
+  function compraValorParcela(compra) {
+    const valorParcela = parseFloat(compra?.valor_parcela);
+    if (!Number.isNaN(valorParcela) && valorParcela > 0) return valorParcela;
+    const valorTotal = parseFloat(compra?.valor_total) || 0;
+    const parcelas = Math.max(parseInt(compra?.parcelas, 10) || 1, 1);
+    return valorTotal / parcelas;
+  }
+
+  function aggregateByKey(items, keyGetter, valueGetter) {
+    return items.reduce((acc, item) => {
+      const key = keyGetter(item);
+      if (!key) return acc;
+      acc[key] = (acc[key] || 0) + (valueGetter(item) || 0);
+      return acc;
+    }, {});
+  }
+
   function formatDate(s) {
     if (!s) return '';
     const d = new Date(s);
@@ -419,16 +458,23 @@
      ============================================================ */
   async function loadDashboard() {
     showLoader();
-    const r = await api.dashboard(currentFilterPayload());
+    const [r, despesasRes, comprasRes] = await Promise.all([
+      api.dashboard(currentFilterPayload()),
+      api.listDespesas(currentFilterPayload()),
+      api.listComprasCartao()
+    ]);
     hideLoader();
     if (!r.ok) {
       toast('Erro ao carregar dashboard', 'neg');
       return;
     }
-    renderDashboard(r);
+    renderDashboard(r, {
+      despesasLista: despesasRes.ok ? (despesasRes.despesas || []) : [],
+      comprasLista: comprasRes.ok ? (comprasRes.compras || []) : []
+    });
   }
 
-  function renderDashboard(d) {
+  function renderDashboard(d, extras = {}) {
     const saldoEl = $('saldo-atual');
     saldoEl.textContent = brl(d.saldo_atual);
     saldoEl.classList.toggle('neg', d.saldo_atual < 0);
@@ -443,6 +489,26 @@
     renderCategoryColumnChart('chart-despesas-categoria', d.despesas.por_categoria, 'categoria');
     renderStackedBarChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
 
+    const despesasLista = extras.despesasLista || [];
+    const totalRecorrente = despesasLista.filter(isRecurringItem).reduce((sum, item) => sum + (parseFloat(item.valor) || 0), 0);
+    const totalNaoRecorrente = despesasLista.filter(item => !isRecurringItem(item)).reduce((sum, item) => sum + (parseFloat(item.valor) || 0), 0);
+    renderDoughnutChart('chart-despesas-recorrencia', [
+      { label: 'Recorrente', total: totalRecorrente },
+      { label: 'Não recorrente', total: totalNaoRecorrente }
+    ]);
+
+    const receitasMap = aggregateByKey(d.receitas.mensal || [], item => item.mes_label, item => parseFloat(item.total) || 0);
+    const despesasMap = aggregateByKey(d.despesas.mensal_empilhada || [], item => item.mes_label, item => (parseFloat(item.geral) || 0) + (parseFloat(item.cartao) || 0));
+    const monthKeys = [...new Set([...(d.receitas.mensal || []).map(i => i.mes_label), ...(d.despesas.mensal_empilhada || []).map(i => i.mes_label)])].sort();
+    let runningSaldo = parseFloat(d.user.saldo_inicial) || 0;
+    const fluxoMensal = monthKeys.map(key => {
+      const receitas = receitasMap[key] || 0;
+      const despesas = despesasMap[key] || 0;
+      runningSaldo += receitas - despesas;
+      return { mes_label: key, receitas, despesas, saldo: runningSaldo };
+    });
+    renderFluxoChart('chart-fluxo-mensal', fluxoMensal);
+
     if (d.cartao.has_cartao) {
       $('cartao-empty').classList.add('hidden');
       $('cartao-summary').classList.remove('hidden');
@@ -453,15 +519,41 @@
         d.cartao.proximos_12_meses.map(p => ({ mes_label: p.mes_label, total: p.total })),
         'Cartão'
       );
-      renderCategoryColumnChart('chart-cartao-categoria', d.cartao.por_categoria, 'categoria');
-      renderCategoryColumnChart('chart-cartao-responsavel', d.cartao.por_responsavel, 'responsavel');
+
+      const comprasFiltradas = (extras.comprasLista || []).filter(compra => isWithinCurrentFilters(compra.data_compra));
+      const responsavelMap = {};
+      state.responsaveis.forEach(r => { responsavelMap[r.id] = r.nome; });
+
+      const porResponsavel = Object.entries(aggregateByKey(
+        comprasFiltradas,
+        compra => responsavelMap[compra.responsavel_id] || 'Sem responsável',
+        compra => compraValorParcela(compra)
+      )).map(([label, total]) => ({ label, total }));
+      renderCategoryColumnChart('chart-cartao-responsavel', porResponsavel, 'label');
+
+      const comprasMensalMap = {};
+      comprasFiltradas.forEach(compra => {
+        const mes = monthKeyFromDate(compra.data_compra);
+        const resp = responsavelMap[compra.responsavel_id] || 'Sem responsável';
+        if (!mes) return;
+        if (!comprasMensalMap[mes]) comprasMensalMap[mes] = {};
+        comprasMensalMap[mes][resp] = (comprasMensalMap[mes][resp] || 0) + compraValorParcela(compra);
+      });
+      renderResponsavelMensalChart('chart-cartao-responsavel-mensal', comprasMensalMap);
+
+      const comprasParceladas = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) > 1).length;
+      const comprasVista = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) === 1).length;
+      const comprasRecorrentes = comprasFiltradas.filter(isRecurringItem).length;
+      renderDoughnutChart('chart-cartao-parcelamento', [
+        { label: 'Parceladas', total: comprasParceladas },
+        { label: 'À vista', total: comprasVista },
+        { label: 'Recorrentes', total: comprasRecorrentes }
+      ]);
     } else {
       $('cartao-empty').classList.remove('hidden');
       $('cartao-summary').classList.add('hidden');
       $('cartao-kpi').classList.add('hidden');
-      destroyChart('chart-cartao-proximos');
-      destroyChart('chart-cartao-categoria');
-      destroyChart('chart-cartao-responsavel');
+      ['chart-cartao-proximos', 'chart-cartao-responsavel', 'chart-cartao-responsavel-mensal', 'chart-cartao-parcelamento'].forEach(clearChart);
     }
   }
 
@@ -485,6 +577,7 @@
           const value = typeof rawValue === 'object'
             ? (rawValue.y ?? rawValue.x ?? 0)
             : rawValue;
+          if (!value) return;
           const label = labelNumber(value);
           const pos = element.tooltipPosition();
 
@@ -667,6 +760,135 @@
             ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) },
             grid: { color: 'rgba(255,255,255,0.04)' }
           }
+        }
+      }
+    });
+  }
+
+  function renderDoughnutChart(canvasId, items) {
+    destroyChart(canvasId);
+    const validItems = (items || []).filter(item => (item.total || 0) > 0);
+    if (validItems.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
+    const textColor = cssvar('--text-tertiary');
+    state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: validItems.map(item => item.label),
+        datasets: [{
+          data: validItems.map(item => item.total),
+          backgroundColor: [cssvar('--accent-fill'), 'rgba(255,255,255,0.2)', '#8B7DFF', '#F9C74F'],
+          borderColor: cssvar('--bg-card'),
+          borderWidth: 4,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        ...chartCommonOptions(true),
+        cutout: '62%',
+        plugins: {
+          ...chartCommonOptions(true).plugins,
+          tooltip: {
+            ...chartCommonOptions(true).plugins.tooltip,
+            callbacks: {
+              label: ctx => {
+                const total = ctx.dataset.data.reduce((sum, v) => sum + v, 0) || 1;
+                const value = ctx.parsed || 0;
+                const pct = Math.round((value / total) * 100);
+                return ` ${ctx.label}: ${labelNumber(value)} (${pct}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function renderFluxoChart(canvasId, items) {
+    destroyChart(canvasId);
+    if (!items || items.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
+    const textColor = cssvar('--text-tertiary');
+    state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: items.map(i => shortMonthLabel(i.mes_label)),
+        datasets: [
+          {
+            label: 'Receitas',
+            data: items.map(i => i.receitas || 0),
+            borderColor: cssvar('--accent-fill'),
+            backgroundColor: cssvar('--accent-fill'),
+            pointRadius: 4,
+            borderWidth: 3,
+            tension: 0.28,
+            fill: false
+          },
+          {
+            label: 'Despesas',
+            data: items.map(i => i.despesas || 0),
+            borderColor: '#FF7A8A',
+            backgroundColor: '#FF7A8A',
+            pointRadius: 4,
+            borderWidth: 3,
+            tension: 0.28,
+            fill: false
+          },
+          {
+            label: 'Saldo',
+            data: items.map(i => i.saldo || 0),
+            borderColor: 'rgba(255,255,255,0.75)',
+            backgroundColor: 'rgba(255,255,255,0.75)',
+            pointRadius: 4,
+            borderWidth: 2,
+            borderDash: [6, 4],
+            tension: 0.22,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        ...chartCommonOptions(true),
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+      }
+    });
+  }
+
+  function renderResponsavelMensalChart(canvasId, comprasMensalMap) {
+    destroyChart(canvasId);
+    const meses = Object.keys(comprasMensalMap || {}).sort();
+    if (meses.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
+    const responsaveis = [...new Set(meses.flatMap(mes => Object.keys(comprasMensalMap[mes] || {})))];
+    const textColor = cssvar('--text-tertiary');
+    state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: meses.map(shortMonthLabel),
+        datasets: responsaveis.map((resp, idx) => ({
+          label: resp,
+          data: meses.map(mes => (comprasMensalMap[mes] && comprasMensalMap[mes][resp]) || 0),
+          backgroundColor: CHART_PALETTE[idx % CHART_PALETTE.length],
+          borderColor: CHART_PALETTE[idx % CHART_PALETTE.length],
+          borderWidth: 1,
+          borderRadius: 6,
+          maxBarThickness: 34
+        }))
+      },
+      options: {
+        ...chartCommonOptions(true),
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: textColor, font: { size: 10 }, callback: v => labelNumber(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
         }
       }
     });
@@ -1314,7 +1536,6 @@
       }
     });
     $('config-saldo').value = state.user.saldo_inicial;
-    $('config-user-info').textContent = state.user.email + ' · cadastrado em ' + formatDate(state.user.data_cadastro);
   }
 
   async function saveSaldoInicial() {
