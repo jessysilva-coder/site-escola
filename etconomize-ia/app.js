@@ -147,68 +147,6 @@
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-
-  function hexToRgb(hex) {
-    const clean = String(hex || '').replace('#', '').trim();
-    if (clean.length !== 6) return { r: 198, g: 244, b: 4 };
-    return {
-      r: parseInt(clean.slice(0, 2), 16),
-      g: parseInt(clean.slice(2, 4), 16),
-      b: parseInt(clean.slice(4, 6), 16)
-    };
-  }
-
-  function rgbToHex(r, g, b) {
-    return '#' + [r, g, b]
-      .map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0'))
-      .join('');
-  }
-
-  function rgbToHsl(r, g, b) {
-    r /= 255; g /= 255; b /= 255;
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h = 0;
-    const l = (max + min) / 2;
-    const d = max - min;
-    const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
-    if (d !== 0) {
-      switch (max) {
-        case r: h = 60 * (((g - b) / d) % 6); break;
-        case g: h = 60 * (((b - r) / d) + 2); break;
-        default: h = 60 * (((r - g) / d) + 4); break;
-      }
-    }
-    if (h < 0) h += 360;
-    return { h, s, l };
-  }
-
-  function hslToRgb(h, s, l) {
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    const m = l - c / 2;
-    let rp = 0, gp = 0, bp = 0;
-    if (h < 60) [rp, gp, bp] = [c, x, 0];
-    else if (h < 120) [rp, gp, bp] = [x, c, 0];
-    else if (h < 180) [rp, gp, bp] = [0, c, x];
-    else if (h < 240) [rp, gp, bp] = [0, x, c];
-    else if (h < 300) [rp, gp, bp] = [x, 0, c];
-    else [rp, gp, bp] = [c, 0, x];
-    return {
-      r: (rp + m) * 255,
-      g: (gp + m) * 255,
-      b: (bp + m) * 255
-    };
-  }
-
-  function complementaryAccentColor() {
-    const accent = cssvar('--accent-fill');
-    const { r, g, b } = hexToRgb(accent);
-    const hsl = rgbToHsl(r, g, b);
-    const rgb = hslToRgb((hsl.h + 180) % 360, hsl.s, hsl.l);
-    return rgbToHex(rgb.r, rgb.g, rgb.b);
-  }
-
   function toast(msg, kind = '') {
     const el = $('toast');
     el.textContent = msg;
@@ -594,20 +532,14 @@
       renderCategoryColumnChart('chart-cartao-responsavel', porResponsavel, 'label');
 
       const comprasMensalMap = {};
-      const comprasParaSerieMensal = extras.comprasLista || [];
-      comprasParaSerieMensal.forEach(compra => {
+      comprasFiltradas.forEach(compra => {
         const mes = monthKeyFromDate(compra.data_compra);
         const resp = responsavelMap[compra.responsavel_id] || 'Sem responsável';
         if (!mes) return;
         if (!comprasMensalMap[mes]) comprasMensalMap[mes] = {};
         comprasMensalMap[mes][resp] = (comprasMensalMap[mes][resp] || 0) + compraValorParcela(compra);
       });
-
-      const serieAno = state.filters.ano != null
-        ? state.filters.ano
-        : new Date().getFullYear();
-      const mesesDoAno = Array.from({ length: 12 }, (_, index) => `${serieAno}-${String(index + 1).padStart(2, '0')}`);
-      renderResponsavelMensalChart('chart-cartao-responsavel-mensal', comprasMensalMap, mesesDoAno);
+      renderResponsavelMensalChart('chart-cartao-responsavel-mensal', comprasMensalMap);
 
       const comprasParceladas = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) > 1).length;
       const comprasVista = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) === 1).length;
@@ -793,7 +725,6 @@
       return;
     }
     const textColor = cssvar('--text-tertiary');
-    const oppositeColor = complementaryAccentColor();
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
       type: 'bar',
       data: {
@@ -811,8 +742,8 @@
           {
             label: 'Cartão',
             data: items.map(i => i.cartao || 0),
-            backgroundColor: oppositeColor,
-            borderColor: oppositeColor,
+            backgroundColor: 'rgba(255,255,255,0.18)',
+            borderColor: cssvar('--accent-fill'),
             borderWidth: 1,
             borderRadius: 6,
             maxBarThickness: 34
@@ -882,48 +813,41 @@
       return;
     }
     const textColor = cssvar('--text-tertiary');
-    const oppositeColor = complementaryAccentColor();
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: items.map(i => shortMonthLabel(i.mes_label)),
         datasets: [
           {
-            type: 'bar',
             label: 'Receitas',
             data: items.map(i => i.receitas || 0),
-            backgroundColor: cssvar('--accent-fill'),
             borderColor: cssvar('--accent-fill'),
-            borderWidth: 1,
-            borderRadius: 7,
-            maxBarThickness: 30,
-            order: 2
+            backgroundColor: cssvar('--accent-fill'),
+            pointRadius: 4,
+            borderWidth: 3,
+            tension: 0.28,
+            fill: false
           },
           {
-            type: 'bar',
             label: 'Despesas',
             data: items.map(i => i.despesas || 0),
-            backgroundColor: oppositeColor,
-            borderColor: oppositeColor,
-            borderWidth: 1,
-            borderRadius: 7,
-            maxBarThickness: 30,
-            order: 2
+            borderColor: '#FF7A8A',
+            backgroundColor: '#FF7A8A',
+            pointRadius: 4,
+            borderWidth: 3,
+            tension: 0.28,
+            fill: false
           },
           {
-            type: 'line',
             label: 'Saldo',
             data: items.map(i => i.saldo || 0),
-            borderColor: 'rgba(255,255,255,0.92)',
-            backgroundColor: 'rgba(255,255,255,0.92)',
-            pointBackgroundColor: 'rgba(255,255,255,0.92)',
-            pointBorderColor: 'rgba(255,255,255,0.92)',
+            borderColor: 'rgba(255,255,255,0.75)',
+            backgroundColor: 'rgba(255,255,255,0.75)',
             pointRadius: 4,
-            pointHoverRadius: 5,
-            borderWidth: 3,
+            borderWidth: 2,
+            borderDash: [6, 4],
             tension: 0.22,
-            fill: false,
-            order: 1
+            fill: false
           }
         ]
       },
@@ -937,25 +861,24 @@
     });
   }
 
-  function renderResponsavelMensalChart(canvasId, comprasMensalMap, monthKeys = []) {
+  function renderResponsavelMensalChart(canvasId, comprasMensalMap) {
     destroyChart(canvasId);
-    const meses = monthKeys.length ? monthKeys : Object.keys(comprasMensalMap || {}).sort();
+    const meses = Object.keys(comprasMensalMap || {}).sort();
     if (meses.length === 0) {
       clearChart(canvasId);
       return;
     }
-    const responsaveis = [...new Set(meses.flatMap(mes => Object.keys((comprasMensalMap || {})[mes] || {})))];
+    const responsaveis = [...new Set(meses.flatMap(mes => Object.keys(comprasMensalMap[mes] || {})))];
     const textColor = cssvar('--text-tertiary');
-    const chartColors = [cssvar('--accent-fill'), complementaryAccentColor()];
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
       type: 'bar',
       data: {
         labels: meses.map(shortMonthLabel),
         datasets: responsaveis.map((resp, idx) => ({
           label: resp,
-          data: meses.map(mes => ((comprasMensalMap || {})[mes] && comprasMensalMap[mes][resp]) || 0),
-          backgroundColor: chartColors[idx % chartColors.length],
-          borderColor: chartColors[idx % chartColors.length],
+          data: meses.map(mes => (comprasMensalMap[mes] && comprasMensalMap[mes][resp]) || 0),
+          backgroundColor: CHART_PALETTE[idx % CHART_PALETTE.length],
+          borderColor: CHART_PALETTE[idx % CHART_PALETTE.length],
           borderWidth: 1,
           borderRadius: 6,
           maxBarThickness: 34
@@ -973,9 +896,8 @@
 
   function shortMonthLabel(yyyymm) {
     if (!yyyymm) return '—';
-    const parts = String(yyyymm).split('-');
-    const m = parts.length > 1 ? parts[1] : parts[0];
-    return MES_NOMES[parseInt(m, 10) - 1] || '—';
+    const [y, m] = String(yyyymm).split('-');
+    return MES_NOMES[parseInt(m, 10) - 1] + '/' + String(y).slice(-2);
   }
 
   /* ============================================================
