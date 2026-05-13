@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="dark" data-mascote="verde">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ETconomize · Sua estação financeira em outro planeta</title>
-  <meta name="description" content="Controle de finanças pessoais com mascotes ETs neon." />
+  <title>ETconomize · Controle de despesas pessoais</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <link rel="stylesheet" href="./styles.css" />
   <script src="./config.js"></script>
@@ -20,67 +20,406 @@
 <body>
   <div class="stars" id="stars" aria-hidden="true"></div>
 
-  <div class="app-shell">
-    <header class="header">
+  <!-- ============== AUTH SCREEN ============== -->
+  <section id="screen-auth" class="screen-full">
+    <div class="auth-container">
+      <div class="brand brand-large">
+        <i class="ti ti-rocket" aria-hidden="true"></i>
+        <span>ETconomize</span>
+      </div>
+      <h1 class="auth-title">Bem-vindo, comandante</h1>
+      <p class="auth-subtitle">Sua estação financeira em outro planeta</p>
+      <div id="signin-container"></div>
+      <p class="auth-note">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+        <span>Em fase de testes — só usuários autorizados conseguem entrar.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============== ONBOARDING ============== -->
+  <section id="screen-onboarding" class="screen-full hidden">
+    <div class="onboarding-container">
       <div class="brand">
         <i class="ti ti-rocket" aria-hidden="true"></i>
         <span>ETconomize</span>
       </div>
-      <button id="theme-toggle" class="icon-btn" aria-label="Alternar entre modo claro e escuro">
-        <i class="ti ti-sun" aria-hidden="true"></i>
-      </button>
+
+      <!-- Passo 1: escolher mascote -->
+      <div class="onboarding-step" id="step-mascote">
+        <div class="step-indicator">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+        </div>
+        <h2>Olá, <span id="onb-name">comandante</span> 🛸</h2>
+        <p class="step-text">Escolha seu ET parceiro. Ele te acompanha pelo app inteiro e define a cor do seu painel.</p>
+        <div class="mascote-grid" id="mascote-grid"></div>
+        <button class="btn btn-primary btn-large" id="btn-step-saldo" disabled>
+          <span>Continuar</span>
+          <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Passo 2: saldo inicial -->
+      <div class="onboarding-step hidden" id="step-saldo">
+        <div class="step-indicator">
+          <span class="dot"></span>
+          <span class="dot active"></span>
+        </div>
+        <h2>Quanto você tem hoje?</h2>
+        <p class="step-text">Informe o saldo atual da sua conta corrente. É o ponto de partida do seu controle.</p>
+        <div class="big-input-wrap">
+          <span class="big-input-prefix">R$</span>
+          <input type="number" id="input-saldo" class="big-input" placeholder="0,00" step="0.01" min="0" inputmode="decimal" />
+        </div>
+        <button class="btn btn-primary btn-large" id="btn-finalize">
+          <i class="ti ti-rocket" aria-hidden="true"></i>
+          <span>Bora começar!</span>
+        </button>
+        <button class="btn-link" id="btn-back-mascote">← voltar e mudar mascote</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== APP (telas pós-login) ============== -->
+  <div id="app-container" class="hidden">
+    <header class="app-header">
+      <div class="brand">
+        <i class="ti ti-rocket" aria-hidden="true"></i>
+        <span>ETconomize</span>
+      </div>
+      <div class="header-controls">
+        <span class="header-user" id="header-user"></span>
+        <button class="icon-btn" id="logout-btn" aria-label="Sair">
+          <i class="ti ti-logout" aria-hidden="true"></i>
+        </button>
+      </div>
     </header>
 
-    <main class="main">
-      <section id="auth-section" class="screen">
-        <div class="hero">
-          <h1 class="hero-title">Bem-vindo, comandante</h1>
-          <p class="hero-subtitle">Sua estação financeira em outro planeta</p>
-          <div id="signin-container" class="signin-container"></div>
-          <p class="hero-note">
-            <i class="ti ti-info-circle" aria-hidden="true"></i>
-            <span>Em fase de testes &mdash; só usuários autorizados conseguem entrar.</span>
-          </p>
+    <main class="app-main">
+
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view active">
+        <div class="view-header">
+          <h1>Dashboard</h1>
+          <div class="filter-row">
+            <select id="filter-mes" class="select"></select>
+            <select id="filter-ano" class="select"></select>
+          </div>
+        </div>
+
+        <div class="card saldo-card">
+          <div class="saldo-label">Saldo atual</div>
+          <div class="saldo-value" id="saldo-atual">R$ —</div>
+          <div class="saldo-sub" id="saldo-inicial-info">—</div>
+        </div>
+
+        <!-- Receitas -->
+        <div class="section">
+          <h2 class="section-title">
+            <i class="ti ti-trending-up" aria-hidden="true"></i>
+            Receitas
+          </h2>
+          <div class="kpi-row">
+            <div class="card kpi">
+              <div class="kpi-label">Total do mês</div>
+              <div class="kpi-value money-pos" id="receitas-total">R$ —</div>
+            </div>
+          </div>
+          <div class="card chart-card">
+            <div class="chart-title">Por categoria</div>
+            <div class="chart-wrap"><canvas id="chart-receitas-categoria"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <div class="chart-title">Recebimento mensal (últimos 12 meses)</div>
+            <div class="chart-wrap"><canvas id="chart-receitas-mensal"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Despesas -->
+        <div class="section">
+          <h2 class="section-title">
+            <i class="ti ti-trending-down" aria-hidden="true"></i>
+            Despesas
+          </h2>
+          <div class="kpi-row">
+            <div class="card kpi">
+              <div class="kpi-label">Total do mês</div>
+              <div class="kpi-value money-neg" id="despesas-total">R$ —</div>
+            </div>
+          </div>
+          <div class="card chart-card">
+            <div class="chart-title">Por categoria</div>
+            <div class="chart-wrap"><canvas id="chart-despesas-categoria"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <div class="chart-title">Mensais (gerais + cartão)</div>
+            <div class="chart-wrap"><canvas id="chart-despesas-mensal"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Cartão -->
+        <div class="section">
+          <h2 class="section-title">
+            <i class="ti ti-credit-card" aria-hidden="true"></i>
+            Cartão de crédito
+          </h2>
+          <div id="cartao-empty" class="card hidden">
+            <p class="muted">Nenhum cartão cadastrado ainda. Vá em <strong>Cartão</strong> no menu inferior para configurar.</p>
+          </div>
+          <div id="cartao-summary" class="hidden">
+            <div class="kpi-row">
+              <div class="card kpi">
+                <div class="kpi-label">Fatura do mês</div>
+                <div class="kpi-value money-neg" id="cartao-total-mes">R$ —</div>
+              </div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-title">Próximos 12 meses</div>
+              <div class="chart-wrap"><canvas id="chart-cartao-proximos"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-title">Por categoria (mês filtrado)</div>
+              <div class="chart-wrap"><canvas id="chart-cartao-categoria"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-title">Por responsável (mês filtrado)</div>
+              <div class="chart-wrap"><canvas id="chart-cartao-responsavel"></canvas></div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="dashboard-section" class="screen hidden">
-        <div class="card user-card">
-          <div class="avatar" id="user-avatar"></div>
-          <div class="user-info">
-            <p class="user-name" id="user-name">—</p>
-            <p class="user-email" id="user-email">—</p>
+      <!-- RECEITAS -->
+      <section id="view-receitas" class="view">
+        <div class="view-header">
+          <h1>Receitas</h1>
+          <button class="btn btn-primary" id="btn-add-receita">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+            <span>Nova</span>
+          </button>
+        </div>
+        <div class="card table-card">
+          <table class="data-table" id="table-receitas">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th class="num">Valor</th>
+                <th class="actions"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state hidden" id="empty-receitas">
+            <i class="ti ti-mood-empty" aria-hidden="true"></i>
+            <p>Nenhuma receita cadastrada ainda neste setor.</p>
           </div>
-          <button id="logout-btn" class="icon-btn" aria-label="Sair">
-            <i class="ti ti-logout" aria-hidden="true"></i>
+        </div>
+      </section>
+
+      <!-- DESPESAS -->
+      <section id="view-despesas" class="view">
+        <div class="view-header">
+          <h1>Despesas</h1>
+          <button class="btn btn-primary" id="btn-add-despesa">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+            <span>Nova</span>
+          </button>
+        </div>
+        <div class="card table-card">
+          <table class="data-table" id="table-despesas">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th class="num">Valor</th>
+                <th class="actions"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state hidden" id="empty-despesas">
+            <i class="ti ti-mood-empty" aria-hidden="true"></i>
+            <p>Nenhuma despesa cadastrada ainda neste setor.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARTAO -->
+      <section id="view-cartao" class="view">
+        <div class="view-header">
+          <h1>Cartão de crédito</h1>
+          <button class="btn btn-primary hidden" id="btn-add-compra">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+            <span>Compra</span>
           </button>
         </div>
 
+        <!-- Sem cartão ainda -->
+        <div id="cartao-setup" class="card hidden">
+          <h3>Configure seu cartão</h3>
+          <p class="muted">Você ainda não tem cartão. Preencha as informações básicas pra começar.</p>
+          <form id="form-cartao" class="form-stack">
+            <label>
+              <span>Apelido do cartão</span>
+              <input type="text" name="apelido" required placeholder="Ex: Nubank principal" />
+            </label>
+            <label>
+              <span>Bandeira</span>
+              <input type="text" name="bandeira" placeholder="Visa, Master, Elo..." />
+            </label>
+            <label>
+              <span>Limite (R$)</span>
+              <input type="number" name="limite" min="0" step="0.01" required />
+            </label>
+            <div class="row-2">
+              <label>
+                <span>Dia de fechamento</span>
+                <input type="number" name="dia_fechamento" min="1" max="31" required />
+              </label>
+              <label>
+                <span>Dia de vencimento</span>
+                <input type="number" name="dia_vencimento" min="1" max="31" required />
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-credit-card" aria-hidden="true"></i>
+              <span>Salvar cartão</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Cartão existente -->
+        <div id="cartao-view" class="hidden">
+          <div class="card cartao-info">
+            <div class="cartao-row">
+              <div>
+                <div class="cartao-apelido" id="cartao-apelido">—</div>
+                <div class="cartao-bandeira" id="cartao-bandeira">—</div>
+              </div>
+              <button class="icon-btn" id="btn-edit-cartao" aria-label="Editar cartão">
+                <i class="ti ti-pencil" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="cartao-grid">
+              <div>
+                <span class="muted">Limite</span>
+                <strong id="cartao-limite">—</strong>
+              </div>
+              <div>
+                <span class="muted">Fechamento</span>
+                <strong id="cartao-fechamento">—</strong>
+              </div>
+              <div>
+                <span class="muted">Vencimento</span>
+                <strong id="cartao-vencimento">—</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-row">
+              <h3>Responsáveis</h3>
+              <button class="btn btn-ghost btn-sm" id="btn-add-responsavel">
+                <i class="ti ti-plus" aria-hidden="true"></i>
+                <span>Adicionar</span>
+              </button>
+            </div>
+            <div id="responsaveis-list" class="chips"></div>
+            <p class="muted small">Limite: 2 responsáveis por cartão. O primeiro é você (gerado automaticamente).</p>
+          </div>
+
+          <div class="card table-card">
+            <h3>Compras do cartão</h3>
+            <table class="data-table" id="table-compras">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Resp.</th>
+                  <th class="num">Valor</th>
+                  <th class="num">Parc.</th>
+                  <th class="actions"></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="empty-state hidden" id="empty-compras">
+              <i class="ti ti-mood-empty" aria-hidden="true"></i>
+              <p>Nenhuma compra registrada ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONFIG -->
+      <section id="view-config" class="view">
+        <div class="view-header">
+          <h1>Configurações</h1>
+        </div>
         <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">Teste de conexão</h2>
-            <span class="badge">v0.1</span>
-          </div>
-          <p class="card-text">
-            Clique no botão pra confirmar que o frontend está conversando com o backend Apps Script.
-          </p>
-          <button id="ping-btn" class="btn btn-primary">
-            <i class="ti ti-satellite" aria-hidden="true"></i>
-            <span>Pingar API</span>
-          </button>
-          <pre id="ping-result" class="result hidden"></pre>
+          <h3>Meu mascote</h3>
+          <p class="muted">A cor de destaque do app muda conforme o mascote.</p>
+          <div class="mascote-grid mascote-grid-compact" id="mascote-grid-config"></div>
         </div>
-
-        <p class="footnote">
-          <i class="ti ti-rocket" aria-hidden="true"></i>
-          Fase 0 completa. Próximo passo: construir o app de verdade.
-        </p>
+        <div class="card">
+          <h3>Saldo inicial</h3>
+          <p class="muted">Caso queira ajustar (ex: começou a usar com saldo errado).</p>
+          <div class="row-form">
+            <div class="big-input-wrap big-input-wrap-small">
+              <span class="big-input-prefix">R$</span>
+              <input type="number" id="config-saldo" class="big-input big-input-small" step="0.01" min="0" />
+            </div>
+            <button class="btn btn-primary" id="btn-save-saldo">Salvar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Sobre o aplicativo</h3>
+          <p class="muted">ETconomize v1 — controle de despesas pessoais com mascotes ETs.</p>
+          <p class="muted small" id="config-user-info">—</p>
+        </div>
       </section>
+
     </main>
 
-    <footer class="footer">
-      <span>ETconomize · Controle de despesas pessoais</span>
-    </footer>
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="dashboard" aria-label="Dashboard">
+        <i class="ti ti-chart-pie-filled" aria-hidden="true"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="receitas" aria-label="Receitas">
+        <i class="ti ti-trending-up" aria-hidden="true"></i>
+        <span>Receitas</span>
+      </button>
+      <button class="nav-item" data-view="despesas" aria-label="Despesas">
+        <i class="ti ti-trending-down" aria-hidden="true"></i>
+        <span>Despesas</span>
+      </button>
+      <button class="nav-item" data-view="cartao" aria-label="Cartão">
+        <i class="ti ti-credit-card" aria-hidden="true"></i>
+        <span>Cartão</span>
+      </button>
+      <button class="nav-item" data-view="config" aria-label="Configurações">
+        <i class="ti ti-settings" aria-hidden="true"></i>
+        <span>Config</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal overlay -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Loader overlay -->
+  <div id="loader" class="loader-overlay hidden">
+    <div class="loader-spinner"></div>
   </div>
 
   <script src="./app.js"></script>
