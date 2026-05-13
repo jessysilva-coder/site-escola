@@ -1300,3 +1300,104 @@ body {
     width: 100%;
   }
 }
+
+
+/* ============================================================
+   ETconomize — ajustes visuais v3
+   ============================================================ */
+
+.app-header {
+  justify-content: space-between;
+}
+
+.logout-btn-top {
+  order: 0;
+}
+
+.header-controls {
+  margin-left: auto;
+}
+
+.dashboard-topbar {
+  top: 84px;
+  margin-bottom: 28px;
+  padding: 14px 0 10px;
+}
+
+.dashboard-intro {
+  margin-top: 4px;
+}
+
+.dashboard-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.dashboard-title-row .ti {
+  font-size: 24px;
+  color: var(--accent-text);
+  line-height: 1;
+}
+
+.dashboard-title-row h2 {
+  margin: 0;
+}
+
+.chart-title {
+  gap: 16px;
+}
+
+.chart-card-mascote .chart-with-mascote {
+  grid-template-columns: minmax(0, 1fr) 220px;
+  align-items: stretch;
+}
+
+.chart-side-mascote {
+  width: 100%;
+  max-width: 220px;
+  height: 300px;
+  justify-self: end;
+  align-self: stretch;
+  object-fit: contain;
+  object-position: right center;
+}
+
+@media (max-width: 900px) {
+  .dashboard-topbar {
+    top: 74px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card-mascote .chart-with-mascote {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-side-mascote {
+    width: 100%;
+    max-width: 160px;
+    height: 220px;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dashboard-topbar {
+    top: 70px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-title-row {
+    gap: 14px;
+  }
+
+  .chart-title {
+    gap: 14px;
+  }
+}
