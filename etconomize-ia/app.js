@@ -81,7 +81,23 @@
   }
 
   function applyMascoteTheme(mascote) {
-    document.documentElement.setAttribute('data-mascote', mascote || 'verde');
+    const id = mascote || 'verde';
+    document.documentElement.setAttribute('data-mascote', id);
+    syncMascoteMedia(id);
+  }
+
+  function syncMascoteMedia(mascote) {
+    const id = mascote || 'verde';
+    document.querySelectorAll('.js-mascote-img').forEach(img => {
+      img.src = `./${id}.png`;
+      img.alt = `Mascote ${id}`;
+    });
+  }
+
+  function selectedMascoteName() {
+    const id = (state.user && state.user.mascote_escolhido) || state.onboarding.mascote || 'verde';
+    const found = MASCOTES_DATA.find(m => m.id === id);
+    return found ? found.nome : 'Mascote';
   }
 
   function cssvar(name) {
@@ -303,6 +319,7 @@
     // header user
     const firstName = (state.user.nome || '').split(' ')[0] || state.profile.email;
     $('header-user').textContent = firstName;
+    applyMascoteTheme(state.user.mascote_escolhido);
 
     // load categorias once
     const cats = await api.listCategorias();
@@ -337,17 +354,37 @@
   function setupFilters() {
     const fMes = $('filter-mes');
     const fAno = $('filter-ano');
-    fMes.innerHTML = MES_NOMES.map((n, i) =>
-      `<option value="${i + 1}" ${(i + 1) === state.filters.mes ? 'selected' : ''}>${n}</option>`
-    ).join('');
+    fMes.innerHTML = [
+      '<option value="all">Todos os meses</option>',
+      ...MES_NOMES.map((n, i) =>
+        `<option value="${i + 1}" ${(i + 1) === state.filters.mes ? 'selected' : ''}>${n}</option>`
+      )
+    ].join('');
+    if (state.filters.mes == null) fMes.value = 'all';
+
     const anoAtual = new Date().getFullYear();
     const anos = [];
-    for (let y = anoAtual - 2; y <= anoAtual + 1; y++) anos.push(y);
-    fAno.innerHTML = anos.map(y =>
-      `<option value="${y}" ${y === state.filters.ano ? 'selected' : ''}>${y}</option>`
-    ).join('');
-    fMes.addEventListener('change', () => { state.filters.mes = parseInt(fMes.value, 10); reloadCurrentView(); });
-    fAno.addEventListener('change', () => { state.filters.ano = parseInt(fAno.value, 10); reloadCurrentView(); });
+    for (let y = anoAtual - 2; y <= anoAtual + 2; y++) anos.push(y);
+    fAno.innerHTML = [
+      '<option value="all">Todos os anos</option>',
+      ...anos.map(y =>
+        `<option value="${y}" ${y === state.filters.ano ? 'selected' : ''}>${y}</option>`
+      )
+    ].join('');
+    if (state.filters.ano == null) fAno.value = 'all';
+
+    fMes.addEventListener('change', () => {
+      state.filters.mes = fMes.value === 'all' ? null : parseInt(fMes.value, 10);
+      reloadCurrentView();
+    });
+    fAno.addEventListener('change', () => {
+      state.filters.ano = fAno.value === 'all' ? null : parseInt(fAno.value, 10);
+      reloadCurrentView();
+    });
+  }
+
+  function currentFilterPayload() {
+    return { mes: state.filters.mes, ano: state.filters.ano };
   }
 
   function reloadCurrentView() {
@@ -377,7 +414,7 @@
      ============================================================ */
   async function loadDashboard() {
     showLoader();
-    const r = await api.dashboard({ mes: state.filters.mes, ano: state.filters.ano });
+    const r = await api.dashboard(currentFilterPayload());
     hideLoader();
     if (!r.ok) {
       toast('Erro ao carregar dashboard', 'neg');
@@ -387,133 +424,260 @@
   }
 
   function renderDashboard(d) {
-    // Saldo
     const saldoEl = $('saldo-atual');
     saldoEl.textContent = brl(d.saldo_atual);
     saldoEl.classList.toggle('neg', d.saldo_atual < 0);
     $('saldo-inicial-info').textContent = 'saldo inicial: ' + brl(d.user.saldo_inicial);
 
-    // Receitas
     $('receitas-total').textContent = brl(d.receitas.total_mes);
-    renderDoughnutChart('chart-receitas-categoria', d.receitas.por_categoria);
-    renderBarChart('chart-receitas-mensal', d.receitas.mensal, cssvar('--money-pos'));
-
-    // Despesas
     $('despesas-total').textContent = brl(d.despesas.total_mes);
-    renderDoughnutChart('chart-despesas-categoria', d.despesas.por_categoria);
-    renderStackedBarChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
 
-    // Cartão
+    renderCategoryBarChart('chart-receitas-categoria', d.receitas.por_categoria, 'categoria');
+    renderLineChart('chart-receitas-mensal', d.receitas.mensal, 'Receitas');
+
+    renderCategoryBarChart('chart-despesas-categoria', d.despesas.por_categoria, 'categoria');
+    renderDualLineChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
+
     if (d.cartao.has_cartao) {
       $('cartao-empty').classList.add('hidden');
       $('cartao-summary').classList.remove('hidden');
+      $('cartao-kpi').classList.remove('hidden');
       $('cartao-total-mes').textContent = brl(d.cartao.total_mes);
-      renderBarChart('chart-cartao-proximos',
+      renderLineChart(
+        'chart-cartao-proximos',
         d.cartao.proximos_12_meses.map(p => ({ mes_label: p.mes_label, total: p.total })),
-        cssvar('--accent-fill'));
-      renderDoughnutChart('chart-cartao-categoria', d.cartao.por_categoria);
-      renderDoughnutChart('chart-cartao-responsavel', d.cartao.por_responsavel);
+        'Cartão'
+      );
+      renderCategoryBarChart('chart-cartao-categoria', d.cartao.por_categoria, 'categoria');
+      renderCategoryBarChart('chart-cartao-responsavel', d.cartao.por_responsavel, 'responsavel');
     } else {
       $('cartao-empty').classList.remove('hidden');
       $('cartao-summary').classList.add('hidden');
+      $('cartao-kpi').classList.add('hidden');
+      destroyChart('chart-cartao-proximos');
+      destroyChart('chart-cartao-categoria');
+      destroyChart('chart-cartao-responsavel');
     }
   }
 
   /* ============================================================
      CHARTS
      ============================================================ */
-  function chartCommonOptions() {
+  const valueLabelsPlugin = {
+    id: 'valueLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      ctx.save();
+      ctx.fillStyle = cssvar('--text-primary');
+      ctx.font = "600 11px 'JetBrains Mono', monospace";
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+
+      chart.data.datasets.forEach((dataset, datasetIndex) => {
+        const meta = chart.getDatasetMeta(datasetIndex);
+        meta.data.forEach((element, index) => {
+          const rawValue = dataset.data[index];
+          const value = typeof rawValue === 'object'
+            ? (rawValue.y ?? rawValue.x ?? 0)
+            : rawValue;
+          const label = brl(value);
+          const pos = element.tooltipPosition();
+
+          if (chart.config.type === 'bar' && chart.options.indexAxis === 'y') {
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, pos.x + 8, pos.y);
+          } else {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(label, pos.x, pos.y - 8);
+          }
+        });
+      });
+      ctx.restore();
+    }
+  };
+
+  if (window.Chart && !Chart.registry.plugins.get('valueLabels')) {
+    Chart.register(valueLabelsPlugin);
+  }
+
+  function parsedChartValue(ctx) {
+    if (ctx.parsed && typeof ctx.parsed === 'object') {
+      if (ctx.parsed.y !== undefined) return ctx.parsed.y;
+      if (ctx.parsed.x !== undefined) return ctx.parsed.x;
+    }
+    return ctx.parsed || 0;
+  }
+
+  function chartCommonOptions(showLegend = false) {
     const textColor = cssvar('--text-secondary');
-    const gridColor = 'rgba(255,255,255,0.04)';
     return {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 22, right: 18, left: 6, bottom: 0 } },
       plugins: {
-        legend: { display: true, position: 'bottom', labels: { color: textColor, font: { size: 11 }, boxWidth: 10, padding: 10 } },
+        legend: {
+          display: showLegend,
+          position: 'bottom',
+          labels: { color: textColor, font: { size: 11 }, boxWidth: 10, padding: 10 }
+        },
         tooltip: {
-          backgroundColor: '#1A0F40', titleColor: '#F0E8FF', bodyColor: '#F0E8FF',
-          borderColor: cssvar('--border-strong'), borderWidth: 1, padding: 10,
-          callbacks: { label: ctx => ' ' + brl(ctx.parsed.y !== undefined ? ctx.parsed.y : ctx.parsed) }
+          backgroundColor: '#1A0F40',
+          titleColor: '#F0E8FF',
+          bodyColor: '#F0E8FF',
+          borderColor: cssvar('--border-strong'),
+          borderWidth: 1,
+          padding: 10,
+          callbacks: { label: ctx => ` ${brl(parsedChartValue(ctx))}` }
         }
       }
     };
   }
 
-  function renderDoughnutChart(canvasId, items) {
+  function clearChart(canvasId) {
     destroyChart(canvasId);
-    if (!items || items.length === 0) {
-      const c = $(canvasId);
-      c.getContext('2d').clearRect(0, 0, c.width, c.height);
-      return;
-    }
-    const ctx = $(canvasId).getContext('2d');
-    state.charts[canvasId] = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: items.map(i => i.categoria),
-        datasets: [{
-          data: items.map(i => i.total),
-          backgroundColor: items.map((_, i) => CHART_PALETTE[i % CHART_PALETTE.length]),
-          borderWidth: 0
-        }]
-      },
-      options: {
-        ...chartCommonOptions(),
-        cutout: '62%'
-      }
-    });
+    const canvas = $(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function renderBarChart(canvasId, items, color) {
+  function renderCategoryBarChart(canvasId, items, labelKey = 'categoria') {
     destroyChart(canvasId);
-    if (!items || items.length === 0) return;
+    if (!items || items.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
     const textColor = cssvar('--text-tertiary');
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
       type: 'bar',
       data: {
-        labels: items.map(i => shortMonthLabel(i.mes_label)),
+        labels: items.map(i => i[labelKey] || i.categoria || i.responsavel || '—'),
         datasets: [{
-          data: items.map(i => i.total),
-          backgroundColor: color,
-          borderRadius: 6,
-          maxBarThickness: 28
+          label: 'Valor',
+          data: items.map(i => i.total || 0),
+          backgroundColor: cssvar('--accent-fill'),
+          borderColor: cssvar('--accent-fill'),
+          borderWidth: 1,
+          borderRadius: 8,
+          maxBarThickness: 30
         }]
       },
       options: {
-        ...chartCommonOptions(),
-        plugins: { ...chartCommonOptions().plugins, legend: { display: false } },
+        ...chartCommonOptions(false),
+        indexAxis: 'y',
         scales: {
-          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
-          y: { ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() }, grid: { color: 'rgba(255,255,255,0.04)' } }
+          x: {
+            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          },
+          y: {
+            ticks: { color: textColor, font: { size: 11 } },
+            grid: { display: false }
+          }
         }
       }
     });
   }
 
-  function renderStackedBarChart(canvasId, items) {
+  function renderLineChart(canvasId, items, datasetLabel) {
     destroyChart(canvasId);
-    if (!items || items.length === 0) return;
+    if (!items || items.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
     const textColor = cssvar('--text-tertiary');
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
-      type: 'bar',
+      type: 'line',
+      data: {
+        labels: items.map(i => shortMonthLabel(i.mes_label)),
+        datasets: [{
+          label: datasetLabel,
+          data: items.map(i => i.total || 0),
+          borderColor: cssvar('--accent-fill'),
+          backgroundColor: cssvar('--accent-soft'),
+          pointBackgroundColor: cssvar('--accent-fill'),
+          pointBorderColor: cssvar('--accent-fill'),
+          pointRadius: 4,
+          pointHoverRadius: 5,
+          borderWidth: 3,
+          tension: 0.28,
+          fill: true
+        }]
+      },
+      options: {
+        ...chartCommonOptions(false),
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          }
+        }
+      }
+    });
+  }
+
+  function renderDualLineChart(canvasId, items) {
+    destroyChart(canvasId);
+    if (!items || items.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
+    const textColor = cssvar('--text-tertiary');
+    state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
+      type: 'line',
       data: {
         labels: items.map(i => shortMonthLabel(i.mes_label)),
         datasets: [
-          { label: 'Gerais', data: items.map(i => i.geral), backgroundColor: cssvar('--money-neg'), borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 }, maxBarThickness: 28 },
-          { label: 'Cartão', data: items.map(i => i.cartao), backgroundColor: cssvar('--accent-fill'), borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 }, maxBarThickness: 28 }
+          {
+            label: 'Gerais',
+            data: items.map(i => i.geral || 0),
+            borderColor: cssvar('--accent-fill'),
+            backgroundColor: cssvar('--accent-soft'),
+            pointBackgroundColor: cssvar('--accent-fill'),
+            pointBorderColor: cssvar('--accent-fill'),
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            borderWidth: 3,
+            tension: 0.28,
+            fill: false
+          },
+          {
+            label: 'Cartão',
+            data: items.map(i => i.cartao || 0),
+            borderColor: cssvar('--accent-fill'),
+            backgroundColor: 'transparent',
+            pointBackgroundColor: cssvar('--accent-fill'),
+            pointBorderColor: cssvar('--accent-fill'),
+            pointStyle: 'rectRot',
+            pointRadius: 5,
+            pointHoverRadius: 6,
+            borderWidth: 2,
+            borderDash: [6, 4],
+            tension: 0.28,
+            fill: false
+          }
         ]
       },
       options: {
-        ...chartCommonOptions(),
+        ...chartCommonOptions(true),
         scales: {
-          x: { stacked: true, ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
-          y: { stacked: true, ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() }, grid: { color: 'rgba(255,255,255,0.04)' } }
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            ticks: { color: textColor, font: { size: 10 }, callback: v => brl(v).replace('R$', '').trim() },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          }
         }
       }
     });
   }
 
   function shortMonthLabel(yyyymm) {
+    if (!yyyymm) return '—';
     const [y, m] = String(yyyymm).split('-');
     return MES_NOMES[parseInt(m, 10) - 1] + '/' + String(y).slice(-2);
   }
@@ -523,7 +687,7 @@
      ============================================================ */
   async function loadReceitas() {
     showLoader();
-    const r = await api.listReceitas({ mes: state.filters.mes, ano: state.filters.ano });
+    const r = await api.listReceitas(currentFilterPayload());
     hideLoader();
     if (!r.ok) { toast('Erro ao carregar receitas', 'neg'); return; }
     renderReceitasTable(r.receitas);
@@ -563,7 +727,7 @@
       <form id="form-receita" class="form-stack">
         <label>
           <span>Descrição</span>
-          <input type="text" name="descricao" required placeholder="Ex: Salário de maio" />
+          <input type="text" name="descricao" placeholder="Ex: Salário de maio" />
         </label>
         <div class="row-2">
           <label>
@@ -606,7 +770,7 @@
       const recorrente = fd.get('recorrente') === 'on';
       showLoader();
       const r = await api.addReceita({
-        descricao: fd.get('descricao'),
+        descricao: fd.get('descricao') || '',
         valor: parseFloat(fd.get('valor')),
         data: fd.get('data'),
         categoria: fd.get('categoria'),
@@ -656,7 +820,7 @@
      ============================================================ */
   async function loadDespesas() {
     showLoader();
-    const r = await api.listDespesas({ mes: state.filters.mes, ano: state.filters.ano });
+    const r = await api.listDespesas(currentFilterPayload());
     hideLoader();
     if (!r.ok) { toast('Erro ao carregar despesas', 'neg'); return; }
     renderDespesasTable(r.despesas);
@@ -696,7 +860,7 @@
       <form id="form-despesa" class="form-stack">
         <label>
           <span>Descrição</span>
-          <input type="text" name="descricao" required placeholder="Ex: Supermercado" />
+          <input type="text" name="descricao" placeholder="Ex: Supermercado" />
         </label>
         <div class="row-2">
           <label>
@@ -759,7 +923,7 @@
       const recorrente = fd.get('recorrente') === 'on';
       showLoader();
       const r = await api.addDespesa({
-        descricao: fd.get('descricao'),
+        descricao: fd.get('descricao') || '',
         valor: parseFloat(fd.get('valor')),
         data: fd.get('data'),
         categoria: fd.get('categoria'),
@@ -1018,7 +1182,7 @@
         <td>${formatDate(c.data_compra)}</td>
         <td>${escapeHtml(c.descricao)}</td>
         <td><span class="badge-cat">${escapeHtml(respMap[c.responsavel_id] || '—')}</span></td>
-        <td class="num money-neg">${brl(c.valor_total)}</td>
+        <td class="num money-neg">${brl(c.valor_parcela != null ? c.valor_parcela : ((parseFloat(c.valor_total) || 0) / Math.max(parseInt(c.parcelas, 10) || 1, 1)))}</td>
         <td class="num">${c.parcelas}x</td>
         <td class="actions">
           <button class="btn-icon-trash" data-action="del-compra" data-id="${c.id}" aria-label="Excluir">
@@ -1040,12 +1204,12 @@
       <form id="form-compra" class="form-stack">
         <label>
           <span>Descrição</span>
-          <input type="text" name="descricao" required placeholder="Ex: Tênis novo" />
+          <input type="text" name="descricao" placeholder="Ex: Tênis novo" />
         </label>
         <div class="row-2">
           <label>
-            <span>Valor total (R$)</span>
-            <input type="number" name="valor_total" min="0.01" step="0.01" required inputmode="decimal" />
+            <span>Valor da parcela (R$)</span>
+            <input type="number" name="valor_parcela" min="0.01" step="0.01" required inputmode="decimal" />
           </label>
           <label>
             <span>Data da compra</span>
@@ -1070,6 +1234,14 @@
             ${state.responsaveis.map(r => `<option value="${r.id}">${escapeHtml(r.nome)}</option>`).join('')}
           </select>
         </label>
+        <label class="checkbox-line">
+          <input type="checkbox" name="recorrente" id="compra-recorrente" />
+          <span>Repete todo mês no cartão</span>
+        </label>
+        <label id="compra-dia-wrap" style="display:none;">
+          <span>Dia do mês</span>
+          <input type="number" name="dia_do_mes" min="1" max="28" placeholder="10" />
+        </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">
@@ -1078,17 +1250,26 @@
         </div>
       </form>
     `);
+    $('compra-recorrente').addEventListener('change', e => {
+      $('compra-dia-wrap').style.display = e.target.checked ? '' : 'none';
+    });
     $('form-compra').addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
+      const parcelas = Math.max(1, parseInt(fd.get('parcelas'), 10) || 1);
+      const valorParcela = parseFloat(fd.get('valor_parcela'));
+      const recorrente = fd.get('recorrente') === 'on';
       showLoader();
       const r = await api.addCompraCartao({
-        descricao: fd.get('descricao'),
-        valor_total: parseFloat(fd.get('valor_total')),
+        descricao: fd.get('descricao') || '',
+        valor_total: valorParcela * parcelas,
+        valor_parcela: valorParcela,
         data_compra: fd.get('data_compra'),
         categoria: fd.get('categoria'),
-        parcelas: parseInt(fd.get('parcelas'), 10),
-        responsavel_id: fd.get('responsavel_id')
+        parcelas,
+        responsavel_id: fd.get('responsavel_id'),
+        recorrente,
+        dia_do_mes: recorrente ? parseInt(fd.get('dia_do_mes'), 10) : null
       });
       hideLoader();
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
