@@ -84,15 +84,6 @@
   <!-- ============== APP (telas pós-login) ============== -->
   <div id="app-container" class="hidden">
     <header class="app-header">
-      <div class="header-page-brand">
-        <img class="js-mascote-img header-mascote" src="./verde.png" alt="Mascote escolhido" />
-        <div class="brand-copy">
-          <div class="brand">
-            <span>ETconomize</span>
-          </div>
-          <span class="brand-caption">Seu painel financeiro intergaláctico</span>
-        </div>
-      </div>
       <div class="header-controls">
         <span class="header-user" id="header-user"></span>
         <button class="icon-btn" id="logout-btn" aria-label="Sair">
@@ -105,11 +96,7 @@
 
       <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
-        <div class="view-header">
-          <div class="view-title-wrap">
-            <h1>Dashboard</h1>
-            <img class="js-mascote-img view-mascote" src="./verde.png" alt="Mascote escolhido" />
-          </div>
+        <div class="dashboard-topbar">
           <div class="filter-row">
             <select id="filter-mes" class="select"></select>
             <select id="filter-ano" class="select"></select>
@@ -118,9 +105,8 @@
 
         <div class="card dashboard-intro">
           <div>
-            <p class="eyebrow">Resumo do período</p>
-            <h2>Seu controle financeiro em um só lugar</h2>
-            <p class="muted">Totalizadores no topo, análises logo abaixo e tudo seguindo a cor do seu mascote.</p>
+            <h2>ETconomize</h2>
+            <p class="muted">Seu painel financeiro intergaláctico</p>
           </div>
           <img class="js-mascote-img dashboard-mascote" src="./verde.png" alt="Mascote escolhido" />
         </div>
@@ -147,19 +133,19 @@
 
         <div class="dashboard-analysis-grid">
           <div class="card chart-card">
-            <div class="chart-title">Receitas por categoria</div>
+            <div class="chart-title"><i class="ti ti-trending-up" aria-hidden="true"></i><span>Receitas por categoria</span></div>
             <div class="chart-wrap"><canvas id="chart-receitas-categoria"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title">Receitas mês a mês</div>
+            <div class="chart-title"><i class="ti ti-chart-line" aria-hidden="true"></i><span>Receitas mês a mês</span></div>
             <div class="chart-wrap"><canvas id="chart-receitas-mensal"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title">Despesas por categoria</div>
+            <div class="chart-title"><i class="ti ti-trending-down" aria-hidden="true"></i><span>Despesas por categoria</span></div>
             <div class="chart-wrap"><canvas id="chart-despesas-categoria"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title">Despesas mês a mês</div>
+            <div class="chart-title"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Despesas mês a mês</span></div>
             <div class="chart-wrap"><canvas id="chart-despesas-mensal"></canvas></div>
           </div>
         </div>
@@ -174,16 +160,19 @@
 
         <div id="cartao-summary" class="dashboard-analysis-grid hidden">
           <div class="card chart-card">
-            <div class="chart-title">Fatura do cartão mês a mês</div>
+            <div class="chart-title"><i class="ti ti-credit-card" aria-hidden="true"></i><span>Fatura do cartão mês a mês</span></div>
             <div class="chart-wrap"><canvas id="chart-cartao-proximos"></canvas></div>
           </div>
           <div class="card chart-card">
-            <div class="chart-title">Cartão por categoria</div>
+            <div class="chart-title"><i class="ti ti-category" aria-hidden="true"></i><span>Cartão por categoria</span></div>
             <div class="chart-wrap"><canvas id="chart-cartao-categoria"></canvas></div>
           </div>
-          <div class="card chart-card">
-            <div class="chart-title">Cartão por responsável</div>
-            <div class="chart-wrap"><canvas id="chart-cartao-responsavel"></canvas></div>
+          <div class="card chart-card chart-card-mascote">
+            <div class="chart-title"><i class="ti ti-users" aria-hidden="true"></i><span>Cartão por responsável</span></div>
+            <div class="chart-with-mascote">
+              <div class="chart-wrap"><canvas id="chart-cartao-responsavel"></canvas></div>
+              <img class="js-mascote-img chart-side-mascote" src="./verde.png" alt="Mascote escolhido" />
+            </div>
           </div>
         </div>
       </section>
@@ -191,10 +180,7 @@
       <!-- RECEITAS -->
       <section id="view-receitas" class="view">
         <div class="view-header">
-          <div class="view-title-wrap">
-            <h1>Receitas</h1>
-            <img class="js-mascote-img view-mascote" src="./verde.png" alt="Mascote escolhido" />
-          </div>
+          <h1>Receitas</h1>
           <button class="btn btn-primary" id="btn-add-receita">
             <i class="ti ti-plus" aria-hidden="true"></i>
             <span>Nova</span>
@@ -223,10 +209,7 @@
       <!-- DESPESAS -->
       <section id="view-despesas" class="view">
         <div class="view-header">
-          <div class="view-title-wrap">
-            <h1>Despesas</h1>
-            <img class="js-mascote-img view-mascote" src="./verde.png" alt="Mascote escolhido" />
-          </div>
+          <h1>Despesas</h1>
           <button class="btn btn-primary" id="btn-add-despesa">
             <i class="ti ti-plus" aria-hidden="true"></i>
             <span>Nova</span>
@@ -255,10 +238,7 @@
       <!-- CARTAO -->
       <section id="view-cartao" class="view">
         <div class="view-header">
-          <div class="view-title-wrap">
-            <h1>Cartão de crédito</h1>
-            <img class="js-mascote-img view-mascote" src="./verde.png" alt="Mascote escolhido" />
-          </div>
+          <h1>Cartão de crédito</h1>
           <button class="btn btn-primary hidden" id="btn-add-compra">
             <i class="ti ti-plus" aria-hidden="true"></i>
             <span>Compra</span>
@@ -347,7 +327,7 @@
                   <th>Data</th>
                   <th>Descrição</th>
                   <th>Resp.</th>
-                  <th class="num">Valor da parcela</th>
+                  <th class="num">Valor</th>
                   <th class="num">Parc.</th>
                   <th class="actions"></th>
                 </tr>
@@ -365,10 +345,7 @@
       <!-- CONFIG -->
       <section id="view-config" class="view">
         <div class="view-header">
-          <div class="view-title-wrap">
-            <h1>Configurações</h1>
-            <img class="js-mascote-img view-mascote" src="./verde.png" alt="Mascote escolhido" />
-          </div>
+          <h1>Configurações</h1>
         </div>
         <div class="card">
           <h3>Meu mascote</h3>
