@@ -37,13 +37,21 @@
     responsaveis: [],
     categorias: [],
     currentView: 'dashboard',
-    filters: {
-      mes: new Date().getMonth() + 1,
-      ano: new Date().getFullYear()
+    // Filtros independentes por view — mudar um não afeta os outros
+    viewFilters: {
+      dashboard: { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
+      receitas:  { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
+      despesas:  { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
+      cartao:    { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() }
     },
     onboarding: { mascote: null },
     charts: {}
   };
+
+  // Compat shim: alguns trechos antigos liam state.filters
+  Object.defineProperty(state, 'filters', {
+    get() { return state.viewFilters[state.currentView] || { mes: null, ano: null }; }
+  });
 
   /* ============================================================
      HELPERS
@@ -95,6 +103,102 @@
       acc[key] = (acc[key] || 0) + (valueGetter(item) || 0);
       return acc;
     }, {});
+  }
+
+  /* ------------------------------------------------------------
+     Projeção de recorrências em meses futuros
+     Dado um array de itens (receitas ou despesas), pega os itens
+     com ref_recorrencia, identifica a última ocorrência de cada
+     recorrência no ano alvo, e replica o valor pros meses
+     subsequentes (até dezembro do ano alvo).
+     ------------------------------------------------------------ */
+  function projectRecurringInYear(items, year) {
+    if (year == null) return items.slice();
+
+    const groups = {};
+    items.forEach(item => {
+      if (!item || !item.ref_recorrencia) return;
+      const d = new Date(item.data);
+      if (Number.isNaN(d.getTime()) || d.getFullYear() !== year) return;
+      const monthKey = monthKeyFromDate(item.data);
+      const prev = groups[item.ref_recorrencia];
+      if (!prev || prev._monthKey < monthKey) {
+        groups[item.ref_recorrencia] = { ...item, _monthKey: monthKey, _monthNum: d.getMonth() + 1, _day: d.getDate() };
+      }
+    });
+
+    const projected = [];
+    Object.values(groups).forEach(g => {
+      const dia = Math.min(g._day || 1, 28);
+      for (let m = g._monthNum + 1; m <= 12; m++) {
+        const mm = String(m).padStart(2, '0');
+        const dd = String(dia).padStart(2, '0');
+        projected.push({
+          ...g,
+          id: `${g.id}-proj-${m}`,
+          data: `${year}-${mm}-${dd}`,
+          origem: 'recorrencia',
+          is_projected: true,
+          _monthKey: undefined,
+          _monthNum: undefined,
+          _day: undefined
+        });
+      }
+    });
+
+    return [...items, ...projected];
+  }
+
+  /* ------------------------------------------------------------
+     Constrói série mensal Jan-Dez do ano alvo (com projeção de
+     recorrências em meses futuros), ou todos os meses se year=null
+     ------------------------------------------------------------ */
+  function buildMonthlySeries(items, year, valueGetter = i => parseFloat(i.valor) || 0) {
+    const projected = projectRecurringInYear(items || [], year);
+    const totals = {};
+    projected.forEach(it => {
+      const d = new Date(it.data);
+      if (Number.isNaN(d.getTime())) return;
+      if (year != null && d.getFullYear() !== year) return;
+      const key = monthKeyFromDate(it.data);
+      totals[key] = (totals[key] || 0) + valueGetter(it);
+    });
+
+    if (year != null) {
+      const out = [];
+      for (let m = 1; m <= 12; m++) {
+        const key = `${year}-${String(m).padStart(2, '0')}`;
+        out.push({ mes_label: key, total: totals[key] || 0 });
+      }
+      return out;
+    }
+    return Object.keys(totals).sort().map(k => ({ mes_label: k, total: totals[k] }));
+  }
+
+  /* ------------------------------------------------------------
+     Constrói matriz mensal por chave (ex: por responsável)
+     ------------------------------------------------------------ */
+  function buildMonthlySeriesByGroup(items, year, groupGetter, valueGetter) {
+    const projected = projectRecurringInYear(items || [], year);
+    const matrix = {}; // { mes_label: { grupo: total } }
+    projected.forEach(it => {
+      const d = new Date(it.data);
+      if (Number.isNaN(d.getTime())) return;
+      if (year != null && d.getFullYear() !== year) return;
+      const monthKey = monthKeyFromDate(it.data);
+      const grp = groupGetter(it) || 'Sem responsável';
+      if (!matrix[monthKey]) matrix[monthKey] = {};
+      matrix[monthKey][grp] = (matrix[monthKey][grp] || 0) + (valueGetter(it) || 0);
+    });
+
+    let mesesOrdenados;
+    if (year != null) {
+      mesesOrdenados = [];
+      for (let m = 1; m <= 12; m++) mesesOrdenados.push(`${year}-${String(m).padStart(2, '0')}`);
+    } else {
+      mesesOrdenados = Object.keys(matrix).sort();
+    }
+    return { meses: mesesOrdenados, matrix };
   }
 
   function formatDate(s) {
@@ -392,18 +496,35 @@
   }
 
   /* ============================================================
-     FILTERS (mes / ano)
+     FILTERS (mes / ano) — independentes por view
      ============================================================ */
+  const FILTER_VIEW_IDS = {
+    dashboard: { mes: 'filter-mes', ano: 'filter-ano' },
+    receitas:  { mes: 'filter-mes-receitas', ano: 'filter-ano-receitas' },
+    despesas:  { mes: 'filter-mes-despesas', ano: 'filter-ano-despesas' },
+    cartao:    { mes: 'filter-mes-cartao',   ano: 'filter-ano-cartao' }
+  };
+
   function setupFilters() {
-    const fMes = $('filter-mes');
-    const fAno = $('filter-ano');
+    Object.keys(FILTER_VIEW_IDS).forEach(setupOneViewFilters);
+  }
+
+  function setupOneViewFilters(viewName) {
+    const ids = FILTER_VIEW_IDS[viewName];
+    if (!ids) return;
+    const fMes = $(ids.mes);
+    const fAno = $(ids.ano);
+    if (!fMes || !fAno) return;
+
+    const filtros = state.viewFilters[viewName];
+
     fMes.innerHTML = [
       '<option value="all">Todos os meses</option>',
       ...MES_NOMES.map((n, i) =>
-        `<option value="${i + 1}" ${(i + 1) === state.filters.mes ? 'selected' : ''}>${n}</option>`
+        `<option value="${i + 1}" ${(i + 1) === filtros.mes ? 'selected' : ''}>${n}</option>`
       )
     ].join('');
-    if (state.filters.mes == null) fMes.value = 'all';
+    if (filtros.mes == null) fMes.value = 'all';
 
     const anoAtual = new Date().getFullYear();
     const anos = [];
@@ -411,29 +532,31 @@
     fAno.innerHTML = [
       '<option value="all">Todos os anos</option>',
       ...anos.map(y =>
-        `<option value="${y}" ${y === state.filters.ano ? 'selected' : ''}>${y}</option>`
+        `<option value="${y}" ${y === filtros.ano ? 'selected' : ''}>${y}</option>`
       )
     ].join('');
-    if (state.filters.ano == null) fAno.value = 'all';
+    if (filtros.ano == null) fAno.value = 'all';
 
     fMes.addEventListener('change', () => {
-      state.filters.mes = fMes.value === 'all' ? null : parseInt(fMes.value, 10);
-      reloadCurrentView();
+      state.viewFilters[viewName].mes = fMes.value === 'all' ? null : parseInt(fMes.value, 10);
+      if (state.currentView === viewName) reloadCurrentView();
     });
     fAno.addEventListener('change', () => {
-      state.filters.ano = fAno.value === 'all' ? null : parseInt(fAno.value, 10);
-      reloadCurrentView();
+      state.viewFilters[viewName].ano = fAno.value === 'all' ? null : parseInt(fAno.value, 10);
+      if (state.currentView === viewName) reloadCurrentView();
     });
   }
 
   function currentFilterPayload() {
-    return { mes: state.filters.mes, ano: state.filters.ano };
+    const f = state.viewFilters[state.currentView] || {};
+    return { mes: f.mes, ano: f.ano };
   }
 
   function reloadCurrentView() {
     if (state.currentView === 'dashboard') loadDashboard();
     if (state.currentView === 'receitas') loadReceitas();
     if (state.currentView === 'despesas') loadDespesas();
+    if (state.currentView === 'cartao') loadCartaoView();
   }
 
   /* ============================================================
@@ -456,94 +579,215 @@
   /* ============================================================
      DASHBOARD
      ============================================================ */
+  /* ============================================================
+     DASHBOARD
+     ============================================================ */
+
+  /* Expande uma compra do cartão em "lançamentos virtuais" mensais.
+     - Compras à vista (1x): 1 lançamento no mês da compra
+     - Compras parceladas: N lançamentos, do mês da compra até mês+N-1
+     - Compras recorrentes: lança em todos os meses do ano filtrado
+       a partir do mês da primeira ocorrência
+  */
+  function expandCompraEmParcelas(compra, year) {
+    const valor = compraValorParcela(compra);
+    if (!compra.data_compra) return [];
+    const baseDate = new Date(compra.data_compra);
+    if (Number.isNaN(baseDate.getTime())) return [];
+
+    const out = [];
+    const baseYear = baseDate.getFullYear();
+    const baseMonth = baseDate.getMonth() + 1;
+
+    if (isRecurringItem(compra)) {
+      // Recorrente: cada mês do ano filtrado a partir do mês base
+      const targetYear = year != null ? year : baseYear;
+      const startMonth = (targetYear === baseYear) ? baseMonth : 1;
+      for (let m = startMonth; m <= 12; m++) {
+        out.push({
+          ...compra,
+          data: `${targetYear}-${String(m).padStart(2, '0')}-01`,
+          valor: valor
+        });
+      }
+    } else {
+      // Parcelada (ou 1x): de baseMonth até baseMonth + parcelas - 1
+      const parcelas = Math.max(1, parseInt(compra.parcelas, 10) || 1);
+      let y = baseYear, m = baseMonth;
+      for (let i = 0; i < parcelas; i++) {
+        out.push({
+          ...compra,
+          data: `${y}-${String(m).padStart(2, '0')}-01`,
+          valor: valor
+        });
+        m++;
+        if (m > 12) { m = 1; y++; }
+      }
+    }
+    return out;
+  }
+
+  /* Filtros aplicados a uma lista expandida (já transformada em lançamentos por mês) */
+  function filterByYearMonth(items, year, month) {
+    return items.filter(it => {
+      const d = new Date(it.data);
+      if (Number.isNaN(d.getTime())) return false;
+      if (year != null && d.getFullYear() !== year) return false;
+      if (month != null && (d.getMonth() + 1) !== month) return false;
+      return true;
+    });
+  }
+
   async function loadDashboard() {
     showLoader();
-    const [r, despesasRes, comprasRes] = await Promise.all([
-      api.dashboard(currentFilterPayload()),
-      api.listDespesas(currentFilterPayload()),
-      api.listComprasCartao()
+    const filtros = state.viewFilters.dashboard;
+    const ano = filtros.ano;
+    const mes = filtros.mes;
+
+    // Pra fazer projeções de meses futuros do ano selecionado, precisamos
+    // de TODOS os lançamentos do ano (sem filtro de mês).
+    const yearOnlyPayload = { ano: ano };
+    const [receitasRes, despesasRes, comprasRes, dashRes] = await Promise.all([
+      api.listReceitas(yearOnlyPayload),
+      api.listDespesas(yearOnlyPayload),
+      api.listComprasCartao(),
+      api.dashboard({ mes, ano })
     ]);
     hideLoader();
-    if (!r.ok) {
+
+    if (!dashRes.ok) {
       toast('Erro ao carregar dashboard', 'neg');
       return;
     }
-    renderDashboard(r, {
-      despesasLista: despesasRes.ok ? (despesasRes.despesas || []) : [],
+
+    renderDashboard(dashRes, {
+      receitasAno: receitasRes.ok ? (receitasRes.receitas || []) : [],
+      despesasAno: despesasRes.ok ? (despesasRes.despesas || []) : [],
       comprasLista: comprasRes.ok ? (comprasRes.compras || []) : []
     });
   }
 
   function renderDashboard(d, extras = {}) {
+    const filtros = state.viewFilters.dashboard;
+    const ano = filtros.ano;
+    const mes = filtros.mes;
+
+    // Saldo
     const saldoEl = $('saldo-atual');
     saldoEl.textContent = brl(d.saldo_atual);
     saldoEl.classList.toggle('neg', d.saldo_atual < 0);
     $('saldo-inicial-info').textContent = 'saldo inicial: ' + brl(d.user.saldo_inicial);
 
-    $('receitas-total').textContent = brl(d.receitas.total_mes);
-    $('despesas-total').textContent = brl(d.despesas.total_mes);
+    // Listas com projeção de recorrências futuras
+    const receitasAno = extras.receitasAno || [];
+    const despesasAno = extras.despesasAno || [];
+    const comprasLista = extras.comprasLista || [];
 
-    renderCategoryColumnChart('chart-receitas-categoria', d.receitas.por_categoria, 'categoria');
-    renderLineChart('chart-receitas-mensal', d.receitas.mensal, 'Receitas');
+    const receitasComProj = projectRecurringInYear(receitasAno, ano);
+    const despesasComProj = projectRecurringInYear(despesasAno, ano);
 
-    renderCategoryColumnChart('chart-despesas-categoria', d.despesas.por_categoria, 'categoria');
-    renderStackedBarChart('chart-despesas-mensal', d.despesas.mensal_empilhada);
+    // Expande compras em lançamentos mensais (parcelas + recorrências)
+    const comprasExpandidas = [];
+    comprasLista.forEach(c => {
+      expandCompraEmParcelas(c, ano).forEach(ce => comprasExpandidas.push(ce));
+    });
 
-    const despesasLista = extras.despesasLista || [];
-    const totalRecorrente = despesasLista.filter(isRecurringItem).reduce((sum, item) => sum + (parseFloat(item.valor) || 0), 0);
-    const totalNaoRecorrente = despesasLista.filter(item => !isRecurringItem(item)).reduce((sum, item) => sum + (parseFloat(item.valor) || 0), 0);
+    // KPIs do mês filtrado (considera projeções E parcelas)
+    const receitasMesFiltrado = filterByYearMonth(receitasComProj, ano, mes);
+    const despesasMesFiltrado = filterByYearMonth(despesasComProj, ano, mes);
+    const comprasMesFiltrado = filterByYearMonth(comprasExpandidas, ano, mes);
+
+    const totalReceitas = receitasMesFiltrado.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+    const totalDespesas = despesasMesFiltrado.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+    const totalCartaoMes = comprasMesFiltrado.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+
+    $('receitas-total').textContent = brl(totalReceitas);
+    $('despesas-total').textContent = brl(totalDespesas);
+
+    // Gráficos "por categoria" — recalcula localmente pra refletir as projeções
+    const receitasPorCat = Object.entries(aggregateByKey(
+      receitasMesFiltrado, i => i.categoria || '—', i => parseFloat(i.valor) || 0
+    )).map(([categoria, total]) => ({ categoria, total }));
+    const despesasPorCat = Object.entries(aggregateByKey(
+      despesasMesFiltrado, i => i.categoria || '—', i => parseFloat(i.valor) || 0
+    )).map(([categoria, total]) => ({ categoria, total }));
+
+    renderCategoryColumnChart('chart-receitas-categoria', receitasPorCat, 'categoria');
+    renderCategoryColumnChart('chart-despesas-categoria', despesasPorCat, 'categoria');
+
+    // Séries mensais Jan-Dez do ano selecionado
+    const receitasMensal = buildMonthlySeries(receitasAno, ano);
+    renderLineChart('chart-receitas-mensal', receitasMensal, 'Receitas');
+
+    const despesasGeraisMensal = buildMonthlySeries(despesasAno, ano);
+    const cartaoMensal = buildMonthlySeries(comprasExpandidas, ano);
+    const despesasEmpilhada = receitasMensal.map((r, i) => ({
+      mes_label: r.mes_label,
+      geral: despesasGeraisMensal[i] ? despesasGeraisMensal[i].total : 0,
+      cartao: cartaoMensal[i] ? cartaoMensal[i].total : 0
+    }));
+    renderStackedBarChart('chart-despesas-mensal', despesasEmpilhada);
+
+    // Doughnut "Recorrente vs Não recorrente" (despesas do mês filtrado)
+    const totalRecorrenteMes = despesasMesFiltrado.filter(isRecurringItem).reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+    const totalNaoRecorrenteMes = despesasMesFiltrado.filter(i => !isRecurringItem(i)).reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
     renderDoughnutChart('chart-despesas-recorrencia', [
-      { label: 'Recorrente', total: totalRecorrente },
-      { label: 'Não recorrente', total: totalNaoRecorrente }
+      { label: 'Recorrente', total: totalRecorrenteMes },
+      { label: 'Não recorrente', total: totalNaoRecorrenteMes }
     ]);
 
-    const receitasMap = aggregateByKey(d.receitas.mensal || [], item => item.mes_label, item => parseFloat(item.total) || 0);
-    const despesasMap = aggregateByKey(d.despesas.mensal_empilhada || [], item => item.mes_label, item => (parseFloat(item.geral) || 0) + (parseFloat(item.cartao) || 0));
-    const monthKeys = [...new Set([...(d.receitas.mensal || []).map(i => i.mes_label), ...(d.despesas.mensal_empilhada || []).map(i => i.mes_label)])].sort();
+    // Fluxo mensal combo bar+line (receitas/despesas barras, saldo linha)
     let runningSaldo = parseFloat(d.user.saldo_inicial) || 0;
-    const fluxoMensal = monthKeys.map(key => {
-      const receitas = receitasMap[key] || 0;
-      const despesas = despesasMap[key] || 0;
+    const fluxoMensal = receitasMensal.map((r, i) => {
+      const receitas = r.total;
+      const despesas = (despesasGeraisMensal[i] ? despesasGeraisMensal[i].total : 0) + (cartaoMensal[i] ? cartaoMensal[i].total : 0);
       runningSaldo += receitas - despesas;
-      return { mes_label: key, receitas, despesas, saldo: runningSaldo };
+      return { mes_label: r.mes_label, receitas, despesas, saldo: runningSaldo };
     });
     renderFluxoChart('chart-fluxo-mensal', fluxoMensal);
 
-    if (d.cartao.has_cartao) {
+    // Seção cartão
+    if (d.cartao && d.cartao.has_cartao) {
       $('cartao-empty').classList.add('hidden');
       $('cartao-summary').classList.remove('hidden');
       $('cartao-kpi').classList.remove('hidden');
-      $('cartao-total-mes').textContent = brl(d.cartao.total_mes);
-      renderLineChart(
-        'chart-cartao-proximos',
-        d.cartao.proximos_12_meses.map(p => ({ mes_label: p.mes_label, total: p.total })),
-        'Cartão'
-      );
+      $('cartao-total-mes').textContent = brl(totalCartaoMes);
 
-      const comprasFiltradas = (extras.comprasLista || []).filter(compra => isWithinCurrentFilters(compra.data_compra));
+      // Próximos 12 meses (Jan-Dez do ano selecionado) com parcelas + recorrências
+      renderLineChart('chart-cartao-proximos', cartaoMensal, 'Cartão');
+
       const responsavelMap = {};
       state.responsaveis.forEach(r => { responsavelMap[r.id] = r.nome; });
 
+      // Por responsável — TOTAL do ano filtrado (ou do mês se filtrado)
+      const baseCompras = mes != null ? comprasMesFiltrado : filterByYearMonth(comprasExpandidas, ano, null);
       const porResponsavel = Object.entries(aggregateByKey(
-        comprasFiltradas,
+        baseCompras,
         compra => responsavelMap[compra.responsavel_id] || 'Sem responsável',
-        compra => compraValorParcela(compra)
+        compra => parseFloat(compra.valor) || 0
       )).map(([label, total]) => ({ label, total }));
       renderCategoryColumnChart('chart-cartao-responsavel', porResponsavel, 'label');
 
-      const comprasMensalMap = {};
-      comprasFiltradas.forEach(compra => {
-        const mes = monthKeyFromDate(compra.data_compra);
-        const resp = responsavelMap[compra.responsavel_id] || 'Sem responsável';
-        if (!mes) return;
-        if (!comprasMensalMap[mes]) comprasMensalMap[mes] = {};
-        comprasMensalMap[mes][resp] = (comprasMensalMap[mes][resp] || 0) + compraValorParcela(compra);
-      });
-      renderResponsavelMensalChart('chart-cartao-responsavel-mensal', comprasMensalMap);
+      // Por responsável MÊS A MÊS — sempre 12 meses do ano selecionado
+      const respMensal = buildMonthlySeriesByGroup(
+        filterByYearMonth(comprasExpandidas, ano, null),
+        ano,
+        compra => responsavelMap[compra.responsavel_id] || 'Sem responsável',
+        compra => parseFloat(compra.valor) || 0
+      );
+      renderResponsavelMensalChart('chart-cartao-responsavel-mensal', respMensal);
 
-      const comprasParceladas = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) > 1).length;
-      const comprasVista = comprasFiltradas.filter(compra => !isRecurringItem(compra) && (parseInt(compra.parcelas, 10) || 1) === 1).length;
-      const comprasRecorrentes = comprasFiltradas.filter(isRecurringItem).length;
+      // Análise de parcelamento — categorias originais (não expandidas)
+      const comprasOriginaisFiltradas = comprasLista.filter(c => {
+        const d = new Date(c.data_compra);
+        if (Number.isNaN(d.getTime())) return false;
+        if (ano != null && d.getFullYear() !== ano) return false;
+        if (mes != null && (d.getMonth() + 1) !== mes) return false;
+        return true;
+      });
+      const comprasParceladas = comprasOriginaisFiltradas.filter(c => !isRecurringItem(c) && (parseInt(c.parcelas, 10) || 1) > 1).length;
+      const comprasVista = comprasOriginaisFiltradas.filter(c => !isRecurringItem(c) && (parseInt(c.parcelas, 10) || 1) === 1).length;
+      const comprasRecorrentes = comprasOriginaisFiltradas.filter(isRecurringItem).length;
       renderDoughnutChart('chart-cartao-parcelamento', [
         { label: 'Parceladas', total: comprasParceladas },
         { label: 'À vista', total: comprasVista },
@@ -814,40 +1058,45 @@
     }
     const textColor = cssvar('--text-tertiary');
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: items.map(i => shortMonthLabel(i.mes_label)),
         datasets: [
           {
+            type: 'bar',
             label: 'Receitas',
             data: items.map(i => i.receitas || 0),
-            borderColor: cssvar('--accent-fill'),
             backgroundColor: cssvar('--accent-fill'),
-            pointRadius: 4,
-            borderWidth: 3,
-            tension: 0.28,
-            fill: false
+            borderColor: cssvar('--accent-fill'),
+            borderWidth: 0,
+            borderRadius: 6,
+            maxBarThickness: 28,
+            order: 2
           },
           {
+            type: 'bar',
             label: 'Despesas',
             data: items.map(i => i.despesas || 0),
-            borderColor: '#FF7A8A',
             backgroundColor: '#FF7A8A',
-            pointRadius: 4,
-            borderWidth: 3,
-            tension: 0.28,
-            fill: false
+            borderColor: '#FF7A8A',
+            borderWidth: 0,
+            borderRadius: 6,
+            maxBarThickness: 28,
+            order: 2
           },
           {
+            type: 'line',
             label: 'Saldo',
             data: items.map(i => i.saldo || 0),
-            borderColor: 'rgba(255,255,255,0.75)',
-            backgroundColor: 'rgba(255,255,255,0.75)',
+            borderColor: 'rgba(255,255,255,0.85)',
+            backgroundColor: 'rgba(255,255,255,0.85)',
+            pointBackgroundColor: 'rgba(255,255,255,0.95)',
             pointRadius: 4,
-            borderWidth: 2,
-            borderDash: [6, 4],
-            tension: 0.22,
-            fill: false
+            pointHoverRadius: 6,
+            borderWidth: 2.5,
+            tension: 0.28,
+            fill: false,
+            order: 1
           }
         ]
       },
@@ -861,14 +1110,27 @@
     });
   }
 
-  function renderResponsavelMensalChart(canvasId, comprasMensalMap) {
+  function renderResponsavelMensalChart(canvasId, data) {
     destroyChart(canvasId);
-    const meses = Object.keys(comprasMensalMap || {}).sort();
+    // Aceita tanto o formato novo { meses: [...], matrix: { mes: { resp: total } } }
+    // quanto o legado { mes: { resp: total } }
+    let meses, matrix;
+    if (data && Array.isArray(data.meses) && data.matrix) {
+      meses = data.meses;
+      matrix = data.matrix;
+    } else {
+      matrix = data || {};
+      meses = Object.keys(matrix).sort();
+    }
     if (meses.length === 0) {
       clearChart(canvasId);
       return;
     }
-    const responsaveis = [...new Set(meses.flatMap(mes => Object.keys(comprasMensalMap[mes] || {})))];
+    const responsaveis = [...new Set(meses.flatMap(mes => Object.keys(matrix[mes] || {})))];
+    if (responsaveis.length === 0) {
+      clearChart(canvasId);
+      return;
+    }
     const textColor = cssvar('--text-tertiary');
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
       type: 'bar',
@@ -876,12 +1138,12 @@
         labels: meses.map(shortMonthLabel),
         datasets: responsaveis.map((resp, idx) => ({
           label: resp,
-          data: meses.map(mes => (comprasMensalMap[mes] && comprasMensalMap[mes][resp]) || 0),
+          data: meses.map(mes => (matrix[mes] && matrix[mes][resp]) || 0),
           backgroundColor: CHART_PALETTE[idx % CHART_PALETTE.length],
           borderColor: CHART_PALETTE[idx % CHART_PALETTE.length],
           borderWidth: 1,
           borderRadius: 6,
-          maxBarThickness: 34
+          maxBarThickness: 28
         }))
       },
       options: {
@@ -1382,7 +1644,25 @@
   async function loadCompras() {
     const r = await api.listComprasCartao();
     if (!r.ok) return;
-    renderComprasTable(r.compras);
+    const filtros = state.viewFilters.cartao || {};
+    let compras = r.compras || [];
+
+    // Filtra compras pelos filtros independentes do cartão.
+    // Pra recorrentes ou parceladas, considera "aparece" se alguma das
+    // parcelas/ocorrências cair no mês/ano filtrado.
+    if (filtros.ano != null || filtros.mes != null) {
+      compras = compras.filter(c => {
+        const expandidas = expandCompraEmParcelas(c, filtros.ano);
+        return expandidas.some(e => {
+          const d = new Date(e.data);
+          if (Number.isNaN(d.getTime())) return false;
+          if (filtros.ano != null && d.getFullYear() !== filtros.ano) return false;
+          if (filtros.mes != null && (d.getMonth() + 1) !== filtros.mes) return false;
+          return true;
+        });
+      });
+    }
+    renderComprasTable(compras);
   }
 
   function renderComprasTable(compras) {
