@@ -44,6 +44,13 @@
       despesas:  { mes: null, ano: new Date().getFullYear() },
       cartao:    { mes: null, ano: new Date().getFullYear() }
     },
+    // Cache de listas brutas: carrega 1x, refiltra local em troca de filtro.
+    // null = não carregado; array = dados em memória; invalidar = setar null.
+    dataCache: {
+      receitas: null,
+      despesas: null,
+      compras: null
+    },
     onboarding: { mascote: null },
     charts: {}
   };
@@ -376,6 +383,62 @@
   };
 
   /* ============================================================
+     DATA CACHE — carrega listas brutas 1x, refiltra local
+     ============================================================ */
+  async function getCachedReceitas() {
+    if (state.dataCache.receitas === null) {
+      const r = await api.listReceitas({});
+      state.dataCache.receitas = r.ok ? (r.receitas || []) : [];
+    }
+    return state.dataCache.receitas;
+  }
+  async function getCachedDespesas() {
+    if (state.dataCache.despesas === null) {
+      const r = await api.listDespesas({});
+      state.dataCache.despesas = r.ok ? (r.despesas || []) : [];
+    }
+    return state.dataCache.despesas;
+  }
+  async function getCachedCompras() {
+    if (state.dataCache.compras === null) {
+      const r = await api.listComprasCartao();
+      state.dataCache.compras = r.ok ? (r.compras || []) : [];
+    }
+    return state.dataCache.compras;
+  }
+  function invalidateReceitasCache() { state.dataCache.receitas = null; }
+  function invalidateDespesasCache() { state.dataCache.despesas = null; }
+  function invalidateComprasCache()  { state.dataCache.compras  = null; }
+  function invalidateAllCaches() {
+    state.dataCache.receitas = null;
+    state.dataCache.despesas = null;
+    state.dataCache.compras  = null;
+  }
+
+  /* Calcula saldo atual no frontend (substitui o endpoint dashboard) */
+  function computeSaldoAtual(saldoInicial, receitas, despesas, compras) {
+    const hoje = new Date();
+    hoje.setHours(23, 59, 59, 999);
+    let saldo = parseFloat(saldoInicial) || 0;
+
+    (receitas || []).forEach(r => {
+      const d = parseLocalDate(r.data);
+      if (d && d <= hoje) saldo += parseFloat(r.valor) || 0;
+    });
+    (despesas || []).forEach(item => {
+      const d = parseLocalDate(item.data);
+      if (d && d <= hoje) saldo -= parseFloat(item.valor) || 0;
+    });
+    (compras || []).forEach(c => {
+      expandCompraEmParcelas(c, null).forEach(parcela => {
+        const d = parseLocalDate(parcela.data);
+        if (d && d <= hoje) saldo -= parseFloat(parcela.valor) || 0;
+      });
+    });
+    return saldo;
+  }
+
+  /* ============================================================
      STARS BACKGROUND
      ============================================================ */
   function generateStars(count) {
@@ -556,15 +619,15 @@
 
     showLoader();
     try {
-      // load categorias once
-      const cats = await api.listCategorias();
-      if (cats.ok) state.categorias = cats.categorias;
-
-      // load responsáveis
-      await refreshResponsaveis();
-
-      // load cartão
-      await refreshCartao();
+      // Paraleliza as 3 chamadas de boot pra economizar tempo
+      const [catsRes, respsRes, cartaoRes] = await Promise.all([
+        api.listCategorias(),
+        api.listResponsaveis(),
+        api.getCartao()
+      ]);
+      if (catsRes.ok) state.categorias = catsRes.categorias;
+      if (respsRes.ok) state.responsaveis = respsRes.responsaveis;
+      if (cartaoRes.ok) state.cartao = cartaoRes.cartao;
 
       // setup filters (mes/ano)
       setupFilters();
@@ -738,48 +801,38 @@
 
   async function loadDashboard() {
     showLoader();
-    const filtros = state.viewFilters.dashboard;
-    const ano = filtros.ano;
-    const mes = filtros.mes;
-
-    // SEM filtro de ano: precisamos do histórico todo pra projetar recorrências
-    // que foram cadastradas em anos anteriores no ano alvo.
-    const [receitasRes, despesasRes, comprasRes, dashRes] = await Promise.all([
-      api.listReceitas({}),
-      api.listDespesas({}),
-      api.listComprasCartao(),
-      api.dashboard({ mes, ano })
+    const [receitas, despesas, compras] = await Promise.all([
+      getCachedReceitas(),
+      getCachedDespesas(),
+      getCachedCompras()
     ]);
     hideLoader();
 
-    if (!dashRes.ok) {
-      toast('Erro ao carregar dashboard', 'neg');
-      return;
-    }
-
-    renderDashboard(dashRes, {
-      receitasAno: receitasRes.ok ? (receitasRes.receitas || []) : [],
-      despesasAno: despesasRes.ok ? (despesasRes.despesas || []) : [],
-      comprasLista: comprasRes.ok ? (comprasRes.compras || []) : []
+    renderDashboard({
+      receitasAno: receitas,
+      despesasAno: despesas,
+      comprasLista: compras
     });
   }
 
-  function renderDashboard(d, extras = {}) {
+  function renderDashboard(extras = {}) {
     const filtros = state.viewFilters.dashboard;
     const ano = filtros.ano;
     const mes = filtros.mes;
 
-    // Saldo
-    const saldoEl = $('saldo-atual');
-    saldoEl.textContent = brl(d.saldo_atual);
-    saldoEl.classList.toggle('neg', d.saldo_atual < 0);
-    $('saldo-inicial-info').textContent = 'saldo inicial: ' + brl(d.user.saldo_inicial);
-
-    // Listas com projeção de recorrências futuras
+    const user = state.user || {};
     const receitasAno = extras.receitasAno || [];
     const despesasAno = extras.despesasAno || [];
     const comprasLista = extras.comprasLista || [];
 
+    // Saldo atual calculado localmente
+    const saldoAtual = computeSaldoAtual(user.saldo_inicial, receitasAno, despesasAno, comprasLista);
+    const saldoEl = $('saldo-atual');
+    saldoEl.textContent = brl(saldoAtual);
+    saldoEl.classList.toggle('neg', saldoAtual < 0);
+    $('saldo-inicial-info').textContent = 'saldo inicial: ' + brl(user.saldo_inicial);
+
+    // Listas com projeção de recorrências futuras
     const receitasComProj = projectRecurringInYear(receitasAno, ano);
     const despesasComProj = projectRecurringInYear(despesasAno, ano);
 
@@ -834,7 +887,7 @@
     ]);
 
     // Fluxo mensal combo bar+line (receitas/despesas barras, saldo linha)
-    let runningSaldo = parseFloat(d.user.saldo_inicial) || 0;
+    let runningSaldo = parseFloat(user.saldo_inicial) || 0;
     const fluxoMensal = receitasMensal.map((r, i) => {
       const receitas = r.total;
       const despesas = (despesasGeraisMensal[i] ? despesasGeraisMensal[i].total : 0) + (cartaoMensal[i] ? cartaoMensal[i].total : 0);
@@ -844,7 +897,7 @@
     renderFluxoChart('chart-fluxo-mensal', fluxoMensal);
 
     // Seção cartão
-    if (d.cartao && d.cartao.has_cartao) {
+    if (state.cartao) {
       $('cartao-empty').classList.add('hidden');
       $('cartao-summary').classList.remove('hidden');
       $('cartao-kpi').classList.remove('hidden');
@@ -1273,12 +1326,20 @@
   /* ============================================================
      RECEITAS
      ============================================================ */
-  async function loadReceitas() {
+  async function loadReceitas(forceRefresh = false) {
+    if (forceRefresh) invalidateReceitasCache();
     showLoader();
-    const r = await api.listReceitas(currentFilterPayload());
+    const all = await getCachedReceitas();
     hideLoader();
-    if (!r.ok) { toast('Erro ao carregar receitas', 'neg'); return; }
-    renderReceitasTable(r.receitas);
+    const filtros = state.viewFilters.receitas;
+    const filtered = all.filter(item => {
+      const d = parseLocalDate(item.data);
+      if (!d) return false;
+      if (filtros.ano != null && d.getFullYear() !== filtros.ano) return false;
+      if (filtros.mes != null && (d.getMonth() + 1) !== filtros.mes) return false;
+      return true;
+    });
+    renderReceitasTable(filtered);
   }
 
   function renderReceitasTable(receitas) {
@@ -1362,7 +1423,7 @@
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
       toast('Receita registrada 🛸', 'pos');
       closeModal();
-      loadReceitas();
+      loadReceitas(true);
     });
   }
 
@@ -1392,19 +1453,27 @@
       if (!r.ok) { toast('Erro ao apagar', 'neg'); return; }
       toast('Receita apagada', 'pos');
       closeModal();
-      loadReceitas();
+      loadReceitas(true);
     });
   }
 
   /* ============================================================
      DESPESAS
      ============================================================ */
-  async function loadDespesas() {
+  async function loadDespesas(forceRefresh = false) {
+    if (forceRefresh) invalidateDespesasCache();
     showLoader();
-    const r = await api.listDespesas(currentFilterPayload());
+    const all = await getCachedDespesas();
     hideLoader();
-    if (!r.ok) { toast('Erro ao carregar despesas', 'neg'); return; }
-    renderDespesasTable(r.despesas);
+    const filtros = state.viewFilters.despesas;
+    const filtered = all.filter(item => {
+      const d = parseLocalDate(item.data);
+      if (!d) return false;
+      if (filtros.ano != null && d.getFullYear() !== filtros.ano) return false;
+      if (filtros.mes != null && (d.getMonth() + 1) !== filtros.mes) return false;
+      return true;
+    });
+    renderDespesasTable(filtered);
   }
 
   function renderDespesasTable(despesas) {
@@ -1511,7 +1580,7 @@
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
       toast('Despesa registrada', 'pos');
       closeModal();
-      loadDespesas();
+      loadDespesas(true);
     });
   }
 
@@ -1541,7 +1610,7 @@
       if (!r.ok) { toast('Erro ao apagar', 'neg'); return; }
       toast('Despesa apagada', 'pos');
       closeModal();
-      loadDespesas();
+      loadDespesas(true);
     });
   }
 
@@ -1735,11 +1804,11 @@
     });
   }
 
-  async function loadCompras() {
-    const r = await api.listComprasCartao();
-    if (!r.ok) return;
+  async function loadCompras(forceRefresh = false) {
+    if (forceRefresh) invalidateComprasCache();
+    const all = await getCachedCompras();
     const filtros = state.viewFilters.cartao || {};
-    let compras = r.compras || [];
+    let compras = all;
 
     // Filtra compras pelos filtros independentes do cartão.
     // Pra recorrentes ou parceladas, considera "aparece" se alguma das
@@ -1860,7 +1929,7 @@
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
       toast('Compra registrada 💳', 'pos');
       closeModal();
-      loadCompras();
+      loadCompras(true);
     });
   }
 
@@ -1882,7 +1951,7 @@
       if (!r.ok) { toast('Erro ao apagar', 'neg'); return; }
       toast('Compra apagada', 'pos');
       closeModal();
-      loadCompras();
+      loadCompras(true);
     });
   }
 
