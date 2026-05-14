@@ -40,9 +40,9 @@
     // Filtros independentes por view — mudar um não afeta os outros
     viewFilters: {
       dashboard: { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
-      receitas:  { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
-      despesas:  { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() },
-      cartao:    { mes: new Date().getMonth() + 1, ano: new Date().getFullYear() }
+      receitas:  { mes: null, ano: new Date().getFullYear() },
+      despesas:  { mes: null, ano: new Date().getFullYear() },
+      cartao:    { mes: null, ano: new Date().getFullYear() }
     },
     onboarding: { mascote: null },
     charts: {}
@@ -68,17 +68,16 @@
 
 
   function monthKeyFromDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (Number.isNaN(d.getTime())) return '';
+    const d = parseLocalDate(dateStr);
+    if (!d) return '';
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
     return `${y}-${m}`;
   }
 
   function isWithinCurrentFilters(dateStr) {
-    const d = new Date(dateStr);
-    if (Number.isNaN(d.getTime())) return false;
+    const d = parseLocalDate(dateStr);
+    if (!d) return false;
     if (state.filters.ano != null && d.getFullYear() !== state.filters.ano) return false;
     if (state.filters.mes != null && (d.getMonth() + 1) !== state.filters.mes) return false;
     return true;
@@ -119,8 +118,8 @@
     const groups = {};
     items.forEach(item => {
       if (!item || !item.ref_recorrencia) return;
-      const d = new Date(item.data);
-      if (Number.isNaN(d.getTime())) return;
+      const d = parseLocalDate(item.data);
+      if (!d) return;
       const monthKey = monthKeyFromDate(item.data);
       const prev = groups[item.ref_recorrencia];
       if (!prev || prev._monthKey < monthKey) {
@@ -173,8 +172,8 @@
     const projected = projectRecurringInYear(items || [], year);
     const totals = {};
     projected.forEach(it => {
-      const d = new Date(it.data);
-      if (Number.isNaN(d.getTime())) return;
+      const d = parseLocalDate(it.data);
+      if (!d) return;
       if (year != null && d.getFullYear() !== year) return;
       const key = monthKeyFromDate(it.data);
       totals[key] = (totals[key] || 0) + valueGetter(it);
@@ -198,8 +197,8 @@
     const projected = projectRecurringInYear(items || [], year);
     const matrix = {}; // { mes_label: { grupo: total } }
     projected.forEach(it => {
-      const d = new Date(it.data);
-      if (Number.isNaN(d.getTime())) return;
+      const d = parseLocalDate(it.data);
+      if (!d) return;
       if (year != null && d.getFullYear() !== year) return;
       const monthKey = monthKeyFromDate(it.data);
       const grp = groupGetter(it) || 'Sem responsável';
@@ -218,9 +217,30 @@
   }
 
   function formatDate(s) {
-    if (!s) return '';
-    const d = new Date(s);
+    const d = parseLocalDate(s);
+    if (!d) return '';
     return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  }
+
+  /* Parseia "YYYY-MM-DD" como data LOCAL, não UTC.
+     Evita o bug clássico onde new Date("2026-05-01") vira "2026-04-30 21:00" em BR. */
+  function parseLocalDate(s) {
+    if (s == null || s === '') return null;
+    if (s instanceof Date) return Number.isNaN(s.getTime()) ? null : s;
+    const str = String(s);
+    const m = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) {
+      return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+    }
+    const d = new Date(str);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  /* Garante que a data enviada pro backend não vá pra "ontem" por causa de timezone.
+     Recebe "YYYY-MM-DD" do input[type=date] e retorna "YYYY-MM-DDT12:00:00". */
+  function safeDateForBackend(formDate) {
+    if (!formDate || typeof formDate !== 'string') return formDate;
+    return /^\d{4}-\d{2}-\d{2}$/.test(formDate) ? (formDate + 'T12:00:00') : formDate;
   }
 
   function todayISO() {
@@ -419,10 +439,20 @@
       state.user = res.user;
       applyMascoteTheme(res.user.mascote_escolhido);
       enterApp();
+    } else if (res.registration_open === false) {
+      // Cadastros encerrados — mostra tela amigável (não passa pelo onboarding)
+      showRegistrationClosedScreen();
     } else {
       state.onboarding.mascote = null;
       showOnboarding();
     }
+  }
+
+  function showRegistrationClosedScreen() {
+    $('screen-auth').classList.add('hidden');
+    $('screen-onboarding').classList.add('hidden');
+    $('app-container').classList.add('hidden');
+    $('screen-registration-closed').classList.remove('hidden');
   }
 
   function logout() {
@@ -498,6 +528,10 @@
       });
       hideLoader();
       if (!res.ok) {
+        if (res.error === 'registration_closed') {
+          showRegistrationClosedScreen();
+          return;
+        }
         toast('Erro ao criar conta: ' + (res.error || 'desconhecido'), 'neg');
         return;
       }
@@ -569,39 +603,43 @@
   function setupOneViewFilters(viewName) {
     const ids = FILTER_VIEW_IDS[viewName];
     if (!ids) return;
-    const fMes = $(ids.mes);
-    const fAno = $(ids.ano);
-    if (!fMes || !fAno) return;
+    const fMes = ids.mes ? $(ids.mes) : null;
+    const fAno = ids.ano ? $(ids.ano) : null;
 
     const filtros = state.viewFilters[viewName];
 
-    fMes.innerHTML = [
-      '<option value="all">Todos os meses</option>',
-      ...MES_NOMES.map((n, i) =>
-        `<option value="${i + 1}" ${(i + 1) === filtros.mes ? 'selected' : ''}>${n}</option>`
-      )
-    ].join('');
-    if (filtros.mes == null) fMes.value = 'all';
+    if (fMes) {
+      fMes.innerHTML = [
+        '<option value="all">Todos os meses</option>',
+        ...MES_NOMES.map((n, i) =>
+          `<option value="${i + 1}" ${(i + 1) === filtros.mes ? 'selected' : ''}>${n}</option>`
+        )
+      ].join('');
+      if (filtros.mes == null) fMes.value = 'all';
 
-    const anoAtual = new Date().getFullYear();
-    const anos = [];
-    for (let y = anoAtual - 2; y <= anoAtual + 2; y++) anos.push(y);
-    fAno.innerHTML = [
-      '<option value="all">Todos os anos</option>',
-      ...anos.map(y =>
-        `<option value="${y}" ${y === filtros.ano ? 'selected' : ''}>${y}</option>`
-      )
-    ].join('');
-    if (filtros.ano == null) fAno.value = 'all';
+      fMes.addEventListener('change', () => {
+        state.viewFilters[viewName].mes = fMes.value === 'all' ? null : parseInt(fMes.value, 10);
+        if (state.currentView === viewName) reloadCurrentView();
+      });
+    }
 
-    fMes.addEventListener('change', () => {
-      state.viewFilters[viewName].mes = fMes.value === 'all' ? null : parseInt(fMes.value, 10);
-      if (state.currentView === viewName) reloadCurrentView();
-    });
-    fAno.addEventListener('change', () => {
-      state.viewFilters[viewName].ano = fAno.value === 'all' ? null : parseInt(fAno.value, 10);
-      if (state.currentView === viewName) reloadCurrentView();
-    });
+    if (fAno) {
+      const anoAtual = new Date().getFullYear();
+      const anos = [];
+      for (let y = anoAtual - 2; y <= anoAtual + 2; y++) anos.push(y);
+      fAno.innerHTML = [
+        '<option value="all">Todos os anos</option>',
+        ...anos.map(y =>
+          `<option value="${y}" ${y === filtros.ano ? 'selected' : ''}>${y}</option>`
+        )
+      ].join('');
+      if (filtros.ano == null) fAno.value = 'all';
+
+      fAno.addEventListener('change', () => {
+        state.viewFilters[viewName].ano = fAno.value === 'all' ? null : parseInt(fAno.value, 10);
+        if (state.currentView === viewName) reloadCurrentView();
+      });
+    }
   }
 
   function currentFilterPayload() {
@@ -649,8 +687,8 @@
   function expandCompraEmParcelas(compra, year) {
     const valor = compraValorParcela(compra);
     if (!compra.data_compra) return [];
-    const baseDate = new Date(compra.data_compra);
-    if (Number.isNaN(baseDate.getTime())) return [];
+    const baseDate = parseLocalDate(compra.data_compra);
+    if (!baseDate) return [];
 
     const out = [];
     const baseYear = baseDate.getFullYear();
@@ -690,8 +728,8 @@
   /* Filtros aplicados a uma lista expandida (já transformada em lançamentos por mês) */
   function filterByYearMonth(items, year, month) {
     return items.filter(it => {
-      const d = new Date(it.data);
-      if (Number.isNaN(d.getTime())) return false;
+      const d = parseLocalDate(it.data);
+      if (!d) return false;
       if (year != null && d.getFullYear() !== year) return false;
       if (month != null && (d.getMonth() + 1) !== month) return false;
       return true;
@@ -842,8 +880,8 @@
 
       // Análise de parcelamento — categorias originais (não expandidas)
       const comprasOriginaisFiltradas = comprasLista.filter(c => {
-        const d = new Date(c.data_compra);
-        if (Number.isNaN(d.getTime())) return false;
+        const d = parseLocalDate(c.data_compra);
+        if (!d) return false;
         if (ano != null && d.getFullYear() !== ano) return false;
         if (mes != null && (d.getMonth() + 1) !== mes) return false;
         return true;
@@ -1315,7 +1353,7 @@
       const r = await api.addReceita({
         descricao: fd.get('descricao') || '',
         valor: parseFloat(fd.get('valor')),
-        data: fd.get('data'),
+        data: safeDateForBackend(fd.get('data')),
         categoria: fd.get('categoria'),
         recorrente,
         dia_do_mes: recorrente ? 1 : null
@@ -1461,7 +1499,7 @@
       const r = await api.addDespesa({
         descricao: fd.get('descricao') || '',
         valor: parseFloat(fd.get('valor')),
-        data: fd.get('data'),
+        data: safeDateForBackend(fd.get('data')),
         categoria: fd.get('categoria'),
         status: fd.get('status'),
         forma_pagamento: fd.get('forma_pagamento') || '',
@@ -1710,8 +1748,8 @@
       compras = compras.filter(c => {
         const expandidas = expandCompraEmParcelas(c, filtros.ano);
         return expandidas.some(e => {
-          const d = new Date(e.data);
-          if (Number.isNaN(d.getTime())) return false;
+          const d = parseLocalDate(e.data);
+          if (!d) return false;
           if (filtros.ano != null && d.getFullYear() !== filtros.ano) return false;
           if (filtros.mes != null && (d.getMonth() + 1) !== filtros.mes) return false;
           return true;
@@ -1811,7 +1849,7 @@
         descricao: fd.get('descricao') || '',
         valor_total: valorParcela * parcelas,
         valor_parcela: valorParcela,
-        data_compra: fd.get('data_compra'),
+        data_compra: safeDateForBackend(fd.get('data_compra')),
         categoria: fd.get('categoria'),
         parcelas,
         responsavel_id: fd.get('responsavel_id'),
@@ -1904,6 +1942,20 @@
 
     // Logout
     $('logout-btn').addEventListener('click', logout);
+
+    // Voltar da tela de "cadastros encerrados" pra auth
+    const backFromClosed = $('btn-back-from-closed');
+    if (backFromClosed) {
+      backFromClosed.addEventListener('click', () => {
+        $('screen-registration-closed').classList.add('hidden');
+        $('screen-auth').classList.remove('hidden');
+        // limpa o estado da sessão pra forçar nova escolha de conta
+        state.idToken = null;
+        state.profile = null;
+        if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+        renderGoogleButton();
+      });
+    }
 
     // Bottom nav
     document.querySelectorAll('.nav-item').forEach(btn => {
