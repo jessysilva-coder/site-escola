@@ -1407,6 +1407,17 @@ body {
    ETconomize — ajustes visuais v4
    ============================================================ */
 
+/* Filtros nas páginas de Receitas/Despesas/Cartão */
+.view-filter-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  padding: 6px 0;
+}
+.view-filter-bar .filter-row {
+  gap: 8px;
+}
+
 .app-header {
   justify-content: flex-end;
 }
