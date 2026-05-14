@@ -132,10 +132,8 @@
     .aula.next .aula-badge::before { content: '● '; animation: pdot 1.5s infinite; }
     @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* ── AULA AO VIVO CTA (simples, no final do cronograma) ── */
-    .live-cta {
-      display: flex; justify-content: center;
-    }
+    /* ── AULA AO VIVO CTA ── */
+    .live-cta { display: flex; justify-content: center; }
 
     /* ── ACCESS GRID ── */
     .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
@@ -191,7 +189,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="header-logo">
     <img src="logo_branco.png" alt="Implementação Claude"
@@ -204,7 +201,6 @@
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero" style="border-top:none">
   <div class="wrap">
     <div class="hero-tag">Treinamento Ao Vivo · Turma Mai–Jun 2026</div>
@@ -213,7 +209,6 @@
   </div>
 </section>
 
-<!-- CRONOGRAMA -->
 <section>
   <div class="wrap">
     <div class="section-label">Cronograma</div>
@@ -231,21 +226,24 @@
           <a href="./aula1.html" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.25);text-decoration:none;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='rgba(76,175,125,.22)'" onmouseout="this.style.background='rgba(76,175,125,.12)'">📄 Material da Aula</a>
         </div>
       </div>
-      <div class="aula next fi">
+      <div class="aula done fi">
         <div class="aula-date"><div class="day">13</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Claude no Excel</h3>
           <p>Limpeza de dados, tratamento e fórmulas avançadas em segundos.</p>
         </div>
-        <div class="aula-badge">Próxima</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+          <div class="aula-badge">Concluída</div>
+          <a href="./aula2.html" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.25);text-decoration:none;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='rgba(76,175,125,.22)'" onmouseout="this.style.background='rgba(76,175,125,.12)'">📄 Material da Aula</a>
+        </div>
       </div>
-      <div class="aula soon fi">
+      <div class="aula next fi">
         <div class="aula-date"><div class="day">20</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Claude no Power BI</h3>
           <p>Criação de medidas DAX e modelagem assistida por I.A.</p>
         </div>
-        <div class="aula-badge">Em breve</div>
+        <div class="aula-badge">Próxima</div>
       </div>
       <div class="aula soon fi">
         <div class="aula-date"><div class="day">27</div><div class="month-lbl">Mai</div></div>
@@ -274,7 +272,6 @@
   </div>
 </section>
 
-<!-- ACESSO -->
 <section>
   <div class="wrap">
     <div class="section-label">Acesso</div>
@@ -314,7 +311,6 @@
   </div>
 </section>
 
-<!-- FAQ -->
 <section>
   <div class="wrap">
     <div class="section-label">Dúvidas Frequentes</div>
@@ -379,7 +375,6 @@
 
     </div>
 
-    <!-- SUPORTE -->
     <div class="support-block">
       <h3>Precisa de ajuda?</h3>
       <p>Nossa equipe está disponível para tirar dúvidas sobre o treinamento, acessos e qualquer outro assunto.</p>
