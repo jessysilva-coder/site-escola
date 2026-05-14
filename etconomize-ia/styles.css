@@ -1446,6 +1446,10 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.dashboard-analysis-grid.two-thirds-grid {
+  grid-template-columns: 2fr 1fr;
+}
+
 .dashboard-analysis-grid.single-col-grid {
   grid-template-columns: 1fr;
 }
@@ -1504,7 +1508,8 @@ body {
   }
 
   .dashboard-analysis-grid.two-col-grid,
-  .dashboard-analysis-grid.three-col-grid {
+  .dashboard-analysis-grid.three-col-grid,
+  .dashboard-analysis-grid.two-thirds-grid {
     grid-template-columns: 1fr;
   }
 }
