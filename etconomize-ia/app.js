@@ -274,8 +274,44 @@
     setTimeout(() => el.classList.add('hidden'), 2800);
   }
 
-  function showLoader() { $('loader').classList.remove('hidden'); }
-  function hideLoader() { $('loader').classList.add('hidden'); }
+  const LOADER_PHRASES = [
+    'Transmitindo dados para a central de controle do seu orçamento.',
+    'Os ETs estão somando, subtraindo e tentando não multiplicar seus boletos.',
+    'Abduzindo despesas suspeitas… nenhuma fatura escapará.',
+    'Carregando… porque até alienígena precisa fechar a conta.',
+    'Processando números… sem deixar o saldo ser levado por outra galáxia.',
+    'Aguarde: estamos abduzindo seus gastos para análise.',
+    'Atenção, terráqueo: seu orçamento está entrando em órbita.',
+    'Aguarde um instante: estamos procurando vida inteligente nos seus gastos.',
+    'O ET viu sua fatura e pediu mais 3 segundos para processar.',
+    'Carregando… porque nem disco voador gira tão rápido quanto a fatura do seu cartão.',
+    'Somando receitas, caçando despesas e fingindo que não vimos aquele delivery.',
+    'O ET tentou dividir a conta… descobriu que era tudo seu mesmo.',
+    'Carregando dados e afastando meteoros chamados "gastos inesperados".',
+    'Conferindo se o saldo está positivo ou apenas vivendo uma fase misteriosa.',
+    'Estamos carregando… respire fundo, seus boletos não vão abduzir você hoje.'
+  ];
+
+  let _loaderCount = 0;
+  function showLoader() {
+    _loaderCount++;
+    if (_loaderCount === 1) {
+      const phrase = LOADER_PHRASES[Math.floor(Math.random() * LOADER_PHRASES.length)];
+      const phraseEl = $('loader-phrase');
+      if (phraseEl) phraseEl.textContent = phrase;
+      // garante que o mascote do loader é o do user logado
+      if (state.user && state.user.mascote_escolhido) {
+        syncMascoteMedia(state.user.mascote_escolhido);
+      }
+      $('loader').classList.remove('hidden');
+    }
+  }
+  function hideLoader() {
+    _loaderCount = Math.max(0, _loaderCount - 1);
+    if (_loaderCount === 0) {
+      $('loader').classList.add('hidden');
+    }
+  }
 
   function destroyChart(id) {
     if (state.charts[id]) { state.charts[id].destroy(); delete state.charts[id]; }
@@ -478,27 +514,32 @@
     $('screen-auth').classList.add('hidden');
     $('screen-onboarding').classList.add('hidden');
     $('app-container').classList.remove('hidden');
+    applyMascoteTheme(state.user.mascote_escolhido);
 
     // header user
     const firstName = (state.user.nome || '').split(' ')[0] || state.profile.email;
     $('header-user').textContent = firstName;
-    applyMascoteTheme(state.user.mascote_escolhido);
 
-    // load categorias once
-    const cats = await api.listCategorias();
-    if (cats.ok) state.categorias = cats.categorias;
+    showLoader();
+    try {
+      // load categorias once
+      const cats = await api.listCategorias();
+      if (cats.ok) state.categorias = cats.categorias;
 
-    // load responsáveis
-    await refreshResponsaveis();
+      // load responsáveis
+      await refreshResponsaveis();
 
-    // load cartão
-    await refreshCartao();
+      // load cartão
+      await refreshCartao();
 
-    // setup filters (mes/ano)
-    setupFilters();
+      // setup filters (mes/ano)
+      setupFilters();
 
-    // initial view
-    switchView(state.currentView);
+      // initial view (loadDashboard tem seu próprio show/hide, o contador segura)
+      switchView(state.currentView);
+    } finally {
+      hideLoader();
+    }
   }
 
   async function refreshResponsaveis() {
@@ -1132,6 +1173,12 @@
     });
   }
 
+  function getResponsavelColors() {
+    // 1ª cor = mascote do user, 2ª cor = branco sutil, depois fallback
+    const accent = cssvar('--accent-fill') || '#C6F404';
+    return [accent, 'rgba(255, 255, 255, 0.65)', '#02B8FB', '#FB58C8', '#FCC802', '#04E170'];
+  }
+
   function renderResponsavelMensalChart(canvasId, data) {
     destroyChart(canvasId);
     // Aceita tanto o formato novo { meses: [...], matrix: { mes: { resp: total } } }
@@ -1154,6 +1201,7 @@
       return;
     }
     const textColor = cssvar('--text-tertiary');
+    const colors = getResponsavelColors();
     state.charts[canvasId] = new Chart($(canvasId).getContext('2d'), {
       type: 'bar',
       data: {
@@ -1161,8 +1209,8 @@
         datasets: responsaveis.map((resp, idx) => ({
           label: resp,
           data: meses.map(mes => (matrix[mes] && matrix[mes][resp]) || 0),
-          backgroundColor: CHART_PALETTE[idx % CHART_PALETTE.length],
-          borderColor: CHART_PALETTE[idx % CHART_PALETTE.length],
+          backgroundColor: colors[idx % colors.length],
+          borderColor: colors[idx % colors.length],
           borderWidth: 1,
           borderRadius: 6,
           maxBarThickness: 28
