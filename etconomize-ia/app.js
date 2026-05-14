@@ -107,10 +107,11 @@
 
   /* ------------------------------------------------------------
      Projeção de recorrências em meses futuros
-     Dado um array de itens (receitas ou despesas), pega os itens
-     com ref_recorrencia, identifica a última ocorrência de cada
-     recorrência no ano alvo, e replica o valor pros meses
-     subsequentes (até dezembro do ano alvo).
+     Pra cada ref_recorrencia, identifica a última ocorrência
+     existente (qualquer ano) e projeta no ano alvo:
+     - Se a última ocorrência foi em ANO ANTERIOR ao alvo → projeta Jan-Dez do alvo
+     - Se foi no MESMO ano do alvo → projeta do mês seguinte até Dez
+     - Se foi em ano POSTERIOR → não projeta
      ------------------------------------------------------------ */
   function projectRecurringInYear(items, year) {
     if (year == null) return items.slice();
@@ -119,28 +120,43 @@
     items.forEach(item => {
       if (!item || !item.ref_recorrencia) return;
       const d = new Date(item.data);
-      if (Number.isNaN(d.getTime()) || d.getFullYear() !== year) return;
+      if (Number.isNaN(d.getTime())) return;
       const monthKey = monthKeyFromDate(item.data);
       const prev = groups[item.ref_recorrencia];
       if (!prev || prev._monthKey < monthKey) {
-        groups[item.ref_recorrencia] = { ...item, _monthKey: monthKey, _monthNum: d.getMonth() + 1, _day: d.getDate() };
+        groups[item.ref_recorrencia] = {
+          ...item,
+          _monthKey: monthKey,
+          _lastYear: d.getFullYear(),
+          _lastMonth: d.getMonth() + 1,
+          _day: d.getDate()
+        };
       }
     });
 
     const projected = [];
     Object.values(groups).forEach(g => {
       const dia = Math.min(g._day || 1, 28);
-      for (let m = g._monthNum + 1; m <= 12; m++) {
+      let startMonth;
+      if (g._lastYear < year) {
+        startMonth = 1; // última no passado → ano todo
+      } else if (g._lastYear === year) {
+        startMonth = g._lastMonth + 1; // próximo mês até Dez
+      } else {
+        return; // última no futuro → ignora
+      }
+      for (let m = startMonth; m <= 12; m++) {
         const mm = String(m).padStart(2, '0');
         const dd = String(dia).padStart(2, '0');
         projected.push({
           ...g,
-          id: `${g.id}-proj-${m}`,
+          id: `${g.id}-proj-${year}-${m}`,
           data: `${year}-${mm}-${dd}`,
           origem: 'recorrencia',
           is_projected: true,
           _monthKey: undefined,
-          _monthNum: undefined,
+          _lastYear: undefined,
+          _lastMonth: undefined,
           _day: undefined
         });
       }
@@ -600,15 +616,18 @@
     const baseMonth = baseDate.getMonth() + 1;
 
     if (isRecurringItem(compra)) {
-      // Recorrente: cada mês do ano filtrado a partir do mês base
-      const targetYear = year != null ? year : baseYear;
-      const startMonth = (targetYear === baseYear) ? baseMonth : 1;
-      for (let m = startMonth; m <= 12; m++) {
+      // Recorrente: cada mês a partir da data base até dezembro do ano alvo
+      // (cobre anos posteriores ao da compra)
+      const targetYear = year != null ? year : baseYear + 2;
+      let y = baseYear, m = baseMonth;
+      while (y < targetYear || (y === targetYear && m <= 12)) {
         out.push({
           ...compra,
-          data: `${targetYear}-${String(m).padStart(2, '0')}-01`,
+          data: `${y}-${String(m).padStart(2, '0')}-01`,
           valor: valor
         });
+        m++;
+        if (m > 12) { m = 1; y++; }
       }
     } else {
       // Parcelada (ou 1x): de baseMonth até baseMonth + parcelas - 1
@@ -644,12 +663,11 @@
     const ano = filtros.ano;
     const mes = filtros.mes;
 
-    // Pra fazer projeções de meses futuros do ano selecionado, precisamos
-    // de TODOS os lançamentos do ano (sem filtro de mês).
-    const yearOnlyPayload = { ano: ano };
+    // SEM filtro de ano: precisamos do histórico todo pra projetar recorrências
+    // que foram cadastradas em anos anteriores no ano alvo.
     const [receitasRes, despesasRes, comprasRes, dashRes] = await Promise.all([
-      api.listReceitas(yearOnlyPayload),
-      api.listDespesas(yearOnlyPayload),
+      api.listReceitas({}),
+      api.listDespesas({}),
       api.listComprasCartao(),
       api.dashboard({ mes, ano })
     ]);
@@ -759,21 +777,25 @@
       const responsavelMap = {};
       state.responsaveis.forEach(r => { responsavelMap[r.id] = r.nome; });
 
-      // Por responsável — TOTAL do ano filtrado (ou do mês se filtrado)
-      const baseCompras = mes != null ? comprasMesFiltrado : filterByYearMonth(comprasExpandidas, ano, null);
-      const porResponsavel = Object.entries(aggregateByKey(
-        baseCompras,
-        compra => responsavelMap[compra.responsavel_id] || 'Sem responsável',
-        compra => parseFloat(compra.valor) || 0
-      )).map(([label, total]) => ({ label, total }));
-      renderCategoryColumnChart('chart-cartao-responsavel', porResponsavel, 'label');
-
-      // Por responsável MÊS A MÊS — sempre 12 meses do ano selecionado
+      // "Pagamento por responsável MÊS A MÊS" — agora soma:
+      //   compras do cartão (expandidas em parcelas/recorrências)
+      // + despesas com responsavel_id (com projeção de recorrências)
+      const lancamentosPorResp = [];
+      filterByYearMonth(comprasExpandidas, ano, null).forEach(c => {
+        const nome = responsavelMap[c.responsavel_id];
+        if (!nome) return;
+        lancamentosPorResp.push({ data: c.data, valor: parseFloat(c.valor) || 0, _resp: nome });
+      });
+      filterByYearMonth(despesasComProj, ano, null).forEach(d2 => {
+        const nome = responsavelMap[d2.responsavel_id];
+        if (!nome) return;
+        lancamentosPorResp.push({ data: d2.data, valor: parseFloat(d2.valor) || 0, _resp: nome });
+      });
       const respMensal = buildMonthlySeriesByGroup(
-        filterByYearMonth(comprasExpandidas, ano, null),
+        lancamentosPorResp,
         ano,
-        compra => responsavelMap[compra.responsavel_id] || 'Sem responsável',
-        compra => parseFloat(compra.valor) || 0
+        item => item._resp,
+        item => parseFloat(item.valor) || 0
       );
       renderResponsavelMensalChart('chart-cartao-responsavel-mensal', respMensal);
 
@@ -797,7 +819,7 @@
       $('cartao-empty').classList.remove('hidden');
       $('cartao-summary').classList.add('hidden');
       $('cartao-kpi').classList.add('hidden');
-      ['chart-cartao-proximos', 'chart-cartao-responsavel', 'chart-cartao-responsavel-mensal', 'chart-cartao-parcelamento'].forEach(clearChart);
+      ['chart-cartao-proximos', 'chart-cartao-responsavel-mensal', 'chart-cartao-parcelamento'].forEach(clearChart);
     }
   }
 
@@ -1229,10 +1251,6 @@
           <input type="checkbox" name="recorrente" id="rec-recorrente" />
           <span>Repete todo mês (ex: salário)</span>
         </label>
-        <label id="rec-dia-wrap" style="display:none;">
-          <span>Dia do mês</span>
-          <input type="number" name="dia_do_mes" min="1" max="28" placeholder="1" />
-        </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">
@@ -1241,9 +1259,6 @@
         </div>
       </form>
     `);
-    $('rec-recorrente').addEventListener('change', e => {
-      $('rec-dia-wrap').style.display = e.target.checked ? '' : 'none';
-    });
     $('form-receita').addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -1255,7 +1270,7 @@
         data: fd.get('data'),
         categoria: fd.get('categoria'),
         recorrente,
-        dia_do_mes: recorrente ? parseInt(fd.get('dia_do_mes'), 10) : null
+        dia_do_mes: recorrente ? 1 : null
       });
       hideLoader();
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
@@ -1382,10 +1397,6 @@
           <input type="checkbox" name="recorrente" id="desp-recorrente" />
           <span>Repete todo mês (ex: aluguel, Netflix)</span>
         </label>
-        <label id="desp-dia-wrap" style="display:none;">
-          <span>Dia do mês</span>
-          <input type="number" name="dia_do_mes" min="1" max="28" placeholder="5" />
-        </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">
@@ -1394,9 +1405,6 @@
         </div>
       </form>
     `);
-    $('desp-recorrente').addEventListener('change', e => {
-      $('desp-dia-wrap').style.display = e.target.checked ? '' : 'none';
-    });
     $('form-despesa').addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -1411,7 +1419,7 @@
         forma_pagamento: fd.get('forma_pagamento') || '',
         responsavel_id: fd.get('responsavel_id') || null,
         recorrente,
-        dia_do_mes: recorrente ? parseInt(fd.get('dia_do_mes'), 10) : null
+        dia_do_mes: recorrente ? 1 : null
       });
       hideLoader();
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
@@ -1736,10 +1744,6 @@
           <input type="checkbox" name="recorrente" id="compra-recorrente" />
           <span>Repete todo mês no cartão</span>
         </label>
-        <label id="compra-dia-wrap" style="display:none;">
-          <span>Dia do mês</span>
-          <input type="number" name="dia_do_mes" min="1" max="28" placeholder="10" />
-        </label>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancelar</button>
           <button type="submit" class="btn btn-primary">
@@ -1748,9 +1752,6 @@
         </div>
       </form>
     `);
-    $('compra-recorrente').addEventListener('change', e => {
-      $('compra-dia-wrap').style.display = e.target.checked ? '' : 'none';
-    });
     $('form-compra').addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
@@ -1767,7 +1768,7 @@
         parcelas,
         responsavel_id: fd.get('responsavel_id'),
         recorrente,
-        dia_do_mes: recorrente ? parseInt(fd.get('dia_do_mes'), 10) : null
+        dia_do_mes: recorrente ? 1 : null
       });
       hideLoader();
       if (!r.ok) { toast('Erro: ' + (r.error || 'desconhecido'), 'neg'); return; }
