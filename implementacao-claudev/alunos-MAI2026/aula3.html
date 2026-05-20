@@ -171,9 +171,8 @@
     .attention-box strong { display: block; font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: .03em; font-size: 1rem; color: #f1c0c0; margin-bottom: 6px; }
     .attention-box p { font-size: .84rem; color: var(--muted); }
 
-    .figure-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
-    .figure-card img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--border2); background: #111; }
-    .figure-card figcaption { margin-top: 10px; font-size: .79rem; color: var(--muted); line-height: 1.6; }
+    .figure-card { margin-top: 16px; }
+    .figure-card img { width: 100%; height: auto; display: block; border-radius: 12px; }
 
     .lesson-block { background: linear-gradient(135deg, rgba(217,119,87,.12), rgba(124,92,191,.10)); border: 1px solid rgba(217,119,87,.28); border-radius: calc(var(--radius) + 4px); padding: 22px; }
     .lesson-block h2 { margin-bottom: 12px; }
@@ -261,7 +260,6 @@
     </div>
     <figure class="figure-card">
       <img src="mcp.png" alt="Representação visual de como o MCP conecta a inteligência artificial a ferramentas e programas"/>
-      <figcaption>O MCP funciona como uma ponte entre o Claude e outras ferramentas, permitindo executar tarefas com mais autonomia.</figcaption>
     </figure>
   </div>
 </div>
@@ -332,7 +330,6 @@
     <h2>Como conectar o Claude com o Power BI</h2>
     <figure class="figure-card">
       <img src="fluxo_simplificado.png" alt="Fluxo simplificado de conexão entre Claude, VS Code, MCP e Power BI"/>
-      <figcaption>Fluxo simplificado da configuração: o Claude se conecta ao Power BI por meio do MCP, com apoio do VS Code.</figcaption>
     </figure>
     <div class="info-box">
       <div class="ico">⚙️</div>
@@ -459,8 +456,7 @@
         </div>
         <div class="step-body">
           <figure class="figure-card">
-            <img src="status_servidor.png" alt="Exemplo de servidor MCP em execução no Claude"/>
-            <figcaption>Imagem de referência: status do servidor MCP em execução.</figcaption>
+            <img src="Status_servidor.png" alt="Exemplo de servidor MCP em execução no Claude"/>
           </figure>
         </div>
       </div>
@@ -516,7 +512,6 @@
         <div class="step-body">
           <figure class="figure-card">
             <img src="configuracao_pbi.png" alt="Configuração de armazenamento do modelo semântico em formato TMDL no Power BI"/>
-            <figcaption>Imagem de referência: configuração do Power BI necessária antes de começar.</figcaption>
           </figure>
           <div class="mini-note">
             <strong>Finalize a preparação</strong>
@@ -765,7 +760,7 @@ Além disso, crie as colunas de Ano, Mês no estilo "mmm" e n_mes, que deve traz
   .hbtn-pdf, .hbtn-back, .copy-btn, .action-btn { display: none !important; }
   .prompt-text, .prompt-text.tall, .prompt-text.mid { min-height: auto !important; height: auto !important; overflow: visible !important; resize: none !important; }
   .step, .soft-card, .compare-card, .info-box, .mini-note, .attention-box, .figure-card, .material-card, .lesson-block, .index-nav, .path-builder { break-inside: avoid; }
-  .step, .soft-card, .compare-card, .figure-card { background: #1a1714 !important; border-color: #2e2822 !important; }
+  .step, .soft-card, .compare-card { background: #1a1714 !important; border-color: #2e2822 !important; }
   .prompt-box { background: #11100f !important; border-color: #3d3630 !important; }
   .prompt-tools { background: rgba(255,255,255,.02) !important; }
   a { color: inherit !important; text-decoration: none !important; }
