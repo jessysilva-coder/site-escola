@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Material de Apoio — Aula 3 | Implementação Claude</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --chat:    #d97757;
+      --chat2:   #e8956a;
+      --cwork:   #7c5cbf;
+      --cwork2:  #9b7dd4;
+      --code:    #c45c8a;
+      --code2:   #d97aaa;
+      --bg:      #0c0b0a;
+      --card:    #1a1714;
+      --card2:   #211e1a;
+      --border:  #2e2822;
+      --border2: #3d3630;
+      --text:    #f0ebe4;
+      --muted:   #8a7f74;
+      --muted2:  #5e5650;
+      --ok:      #4caf7d;
+      --no:      #e07070;
+      --part:    #d4a843;
+      --radius:  12px;
+      --hh:      64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--hh) + 12px); }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .45;
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+
+    .wrap { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(17,15,13,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      height: var(--hh);
+    }
+    .header-inner {
+      height: var(--hh);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; gap: 14px; flex-wrap: nowrap;
+    }
+    .header-inner img { height: 38px; object-fit: contain; flex-shrink: 0; }
+    .logo-text-fb { font-family: 'Anton', sans-serif; font-size: 1rem; color: var(--text); flex-shrink: 0; }
+    .logo-text-fb span { color: var(--chat); }
+    .header-btns { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .hbtn {
+      font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .09em; text-transform: uppercase;
+      padding: 6px 13px; border-radius: 100px; text-decoration: none; transition: all .2s; white-space: nowrap; border: none; cursor: pointer;
+    }
+    .hbtn-back  { color: var(--muted); border: 1px solid var(--border2); background: transparent; }
+    .hbtn-back:hover { color: var(--text); border-color: var(--muted); }
+    .hbtn-pdf { background: var(--card2); color: var(--muted); border: 1px solid var(--border2); display: flex; align-items: center; gap: 5px; }
+    .hbtn-pdf:hover { color: var(--text); border-color: var(--border2); }
+
+    .hero { padding: 48px 0 32px; text-align: center; position: relative; }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 680px; height: 300px;
+      background: radial-gradient(ellipse at center, rgba(124,92,191,.15) 0%, rgba(217,119,87,.08) 35%, transparent 72%);
+      pointer-events: none;
+    }
+    .hero-tag { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; display: block; }
+    h1 { font-family: 'Anton', sans-serif; font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 400; line-height: 1.1; margin-bottom: 12px; letter-spacing: .02em; }
+    .hero-sub { font-size: .92rem; color: var(--muted); line-height: 1.75; max-width: 680px; margin: 0 auto; }
+
+    .section { padding: 44px 0; border-top: 1px solid var(--border); }
+    .section-label { font-family: 'DM Mono', monospace; font-size: .63rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted2); margin-bottom: 6px; }
+    h2 { font-family: 'Anton', sans-serif; font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 400; letter-spacing: .03em; margin-bottom: 22px; }
+    h3 { font-family: 'Anton', sans-serif; font-size: 1rem; font-weight: 400; letter-spacing: .02em; margin-bottom: 10px; }
+    p { line-height: 1.72; }
+
+    .index-nav { background: var(--card2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 40px; }
+    .index-nav .idx-label { font-family: 'DM Mono', monospace; font-size: .63rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted2); margin-bottom: 12px; display: block; }
+    .index-nav ul { list-style: none; columns: 2; gap: 24px; }
+    .index-nav li { break-inside: avoid; margin-bottom: 6px; }
+    .index-nav li a { font-size: .82rem; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+    .index-nav li a:hover { color: var(--text); }
+    .index-nav li a::before { content: '→'; color: var(--muted2); font-size: .72rem; flex-shrink: 0; }
+
+    .info-box { background: rgba(255,255,255,.03); border: 1px solid var(--border2); border-radius: var(--radius); padding: 13px 17px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 20px; }
+    .info-box .ico { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+    .info-box p { font-size: .82rem; color: var(--muted); line-height: 1.65; }
+    .info-box p strong { color: var(--text); }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 18px; }
+    .soft-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 16px; }
+    .soft-card.orange { border-top: 3px solid var(--chat); }
+    .soft-card.purple { border-top: 3px solid var(--cwork); }
+    .soft-card.pink { border-top: 3px solid var(--code); }
+    .soft-card h3 { font-size: 1.03rem; margin-bottom: 6px; color: var(--text); }
+    .soft-card p { font-size: .8rem; color: var(--muted); line-height: 1.62; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 8px; border-radius: 100px; padding: 10px 15px;
+      font-family: 'DM Mono', monospace; font-size: .63rem; letter-spacing: .08em; text-transform: uppercase;
+      text-decoration: none; cursor: pointer; transition: all .2s; border: 1px solid var(--border2); color: var(--text); background: var(--card2);
+    }
+    .action-btn:hover { transform: translateY(-1px); border-color: rgba(217,119,87,.5); }
+    .action-btn.primary { background: var(--chat); color: #fff; border-color: var(--chat2); }
+    .action-btn.primary:hover { background: var(--chat2); }
+    .action-btn.purple { background: rgba(124,92,191,.18); color: var(--cwork2); border-color: rgba(124,92,191,.35); }
+    .action-btn.pink { background: rgba(196,92,138,.18); color: var(--code2); border-color: rgba(196,92,138,.35); }
+
+    .compare-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 16px; }
+    .compare-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .compare-card h3 { color: var(--text); font-size: 1rem; margin-bottom: 6px; }
+    .compare-card p { font-size: .81rem; color: var(--muted); }
+
+    .step-list { display: flex; flex-direction: column; gap: 12px; }
+    .step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .step-head { display: flex; align-items: flex-start; gap: 14px; padding: 18px 18px 14px; border-bottom: 1px solid var(--border); }
+    .step-num { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: rgba(217,119,87,.14); border: 1px solid rgba(217,119,87,.35); color: var(--chat2); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: .72rem; font-weight: 600; }
+    .step-copy h3 { font-size: 1.08rem; margin-bottom: 5px; }
+    .step-copy p { font-size: .84rem; color: var(--muted); }
+    .step-body { padding: 18px; }
+
+    .mini-note { background: rgba(212,168,67,.08); border: 1px solid rgba(212,168,67,.24); border-radius: var(--radius); padding: 14px 16px; margin: 14px 0; }
+    .mini-note strong { display: block; font-family: 'Anton', sans-serif; font-size: .98rem; font-weight: 400; color: #efd28b; letter-spacing: .03em; margin-bottom: 4px; }
+    .mini-note p { font-size: .83rem; color: var(--muted); }
+
+    .copy-line { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .copy-field, .path-input {
+      flex: 1; min-width: 240px; background: #11100f; border: 1px solid var(--border2); color: #e7ddd3;
+      border-radius: 10px; padding: 11px 13px; font-family: 'DM Mono', monospace; font-size: .78rem; outline: none;
+    }
+    .copy-field[readonly] { cursor: text; }
+    .copy-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px; border-radius: 100px; padding: 10px 14px;
+      font-family: 'DM Mono', monospace; font-size: .61rem; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text); border: 1px solid rgba(217,119,87,.35); background: rgba(217,119,87,.12); cursor: pointer; transition: all .2s;
+    }
+    .copy-btn:hover { background: rgba(217,119,87,.22); transform: translateY(-1px); }
+    .copy-btn.copied { background: rgba(76,175,125,.16); border-color: rgba(76,175,125,.35); color: #bde8d1; }
+
+    .prompt-box { background: #11100f; border: 1px solid var(--border2); border-radius: 11px; overflow: hidden; margin-top: 14px; }
+    .prompt-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
+    .prompt-tools span { font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted2); }
+    .prompt-text {
+      width: 100%; min-height: 220px; border: none; resize: vertical; outline: none;
+      display: block; padding: 15px; background: transparent; color: #e7ddd3;
+      font-family: 'DM Mono', monospace; font-size: .77rem; line-height: 1.7;
+    }
+    .prompt-text.mid { min-height: 300px; }
+    .prompt-text.tall { min-height: 410px; }
+
+    .path-builder { background: rgba(124,92,191,.08); border: 1px solid rgba(124,92,191,.24); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+    .path-builder h3 { color: var(--cwork2); margin-bottom: 6px; }
+    .path-builder p { font-size: .84rem; color: var(--muted); }
+
+    .attention-box { background: rgba(224,112,112,.08); border: 1px solid rgba(224,112,112,.24); border-radius: var(--radius); padding: 15px 17px; margin-top: 16px; }
+    .attention-box strong { display: block; font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: .03em; font-size: 1rem; color: #f1c0c0; margin-bottom: 6px; }
+    .attention-box p { font-size: .84rem; color: var(--muted); }
+
+    .figure-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+    .figure-card img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--border2); background: #111; }
+    .figure-card figcaption { margin-top: 10px; font-size: .79rem; color: var(--muted); line-height: 1.6; }
+
+    .lesson-block { background: linear-gradient(135deg, rgba(217,119,87,.12), rgba(124,92,191,.10)); border: 1px solid rgba(217,119,87,.28); border-radius: calc(var(--radius) + 4px); padding: 22px; }
+    .lesson-block h2 { margin-bottom: 12px; }
+    .lesson-block p { font-size: .88rem; color: var(--muted); }
+
+    .material-card {
+      display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--border2); border-radius:var(--radius);
+      padding:18px 22px; text-decoration:none; transition:border-color .2s,transform .2s; margin-top: 14px;
+    }
+    .material-card:hover { border-color: rgba(217,119,87,.4); transform: translateY(-2px); }
+    .material-icon { width:44px; height:44px; flex-shrink:0; border-radius:10px; background:rgba(66,133,244,.12); border:1px solid rgba(66,133,244,.25); display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+    .material-copy { flex:1; }
+    .material-title { font-family:'Anton',sans-serif; font-size:.95rem; font-weight:400; letter-spacing:.02em; color:var(--text); margin-bottom:3px; }
+    .material-sub { font-size:.78rem; color:var(--muted); }
+    .material-arrow { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted2); flex-shrink:0; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px 0 28px; text-align: center; margin-top: 48px; }
+    footer p { font-size: .78rem; color: var(--muted2); }
+
+    @media(max-width:780px) {
+      .card-grid, .compare-grid { grid-template-columns: 1fr; }
+      .step-head { flex-direction: column; }
+      .header-inner { padding: 0 14px; gap: 8px; }
+      .copy-line { flex-direction: column; }
+      .copy-field, .path-input { min-width: 0; width: 100%; }
+    }
+    @media(max-width:640px) {
+      .index-nav ul { columns: 1; }
+      .hbtn { padding: 6px 10px; }
+      .prompt-text, .prompt-text.mid, .prompt-text.tall { min-height: 420px; }
+      .material-card { align-items:flex-start; }
+      .material-arrow { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="logo_branco.png" alt="Implementação Claude"
+      onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/>
+    <div id="ltxt" style="display:none" class="logo-text-fb">IMPL. <span>CLAUDE</span></div>
+    <div class="header-btns">
+      <a class="hbtn hbtn-back" href="./index.html">← Início</a>
+      <button class="hbtn hbtn-pdf" onclick="downloadPDF()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Baixar PDF
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="border-top:none">
+  <div class="wrap">
+    <span class="hero-tag">Material de Apoio</span>
+    <h1>Aula 3 — Claude no Power BI</h1>
+    <p class="hero-sub">Como conectar Claude, MCP, VS Code e Power BI para modelar dados, automatizar estruturas e criar Dashboards com apoio de inteligência artificial.</p>
+  </div>
+</section>
+
+<div id="main-content">
+
+<div class="wrap" style="padding-top:0">
+  <div class="index-nav">
+    <span class="idx-label">Nesta página</span>
+    <ul>
+      <li><a href="#mcp">1. O que é MCP</a></li>
+      <li><a href="#github">2. GitHub</a></li>
+      <li><a href="#vscode">3. VS Code</a></li>
+      <li><a href="#skills">4. Skills</a></li>
+      <li><a href="#conexao">5. Conectar Claude ao Power BI</a></li>
+      <li><a href="#dashboard">6. Criar o Dashboard</a></li>
+      <li><a href="#materiais">7. Materiais da aula</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="section" id="mcp">
+  <div class="wrap">
+    <div class="section-label">Fundamento</div>
+    <h2>O que é MCP?</h2>
+    <div class="info-box">
+      <div class="ico">🔌</div>
+      <p><strong>MCP significa Model Context Protocol.</strong> Ele é uma ponte que permite que a inteligência artificial agêntica converse com ferramentas, arquivos e programas para executar tarefas na prática — e não apenas responder sobre elas.</p>
+    </div>
+    <figure class="figure-card">
+      <img src="mcp.png" alt="Representação visual de como o MCP conecta a inteligência artificial a ferramentas e programas"/>
+      <figcaption>O MCP funciona como uma ponte entre o Claude e outras ferramentas, permitindo executar tarefas com mais autonomia.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="section" id="github">
+  <div class="wrap">
+    <div class="section-label">Ferramenta de apoio</div>
+    <h2>O que é GitHub — e por que vamos usar?</h2>
+    <div class="info-box">
+      <div class="ico">🐙</div>
+      <p><strong>GitHub é um lugar para guardar, organizar e acompanhar as mudanças dos seus projetos</strong> — especialmente quando você trabalha com arquivos, código, Power BI, VS Code e inteligência artificial. Nesta aula, ele aparece como apoio para encontrar arquivos, skills e recursos técnicos que facilitam a configuração do Claude com o Power BI.</p>
+    </div>
+    <div class="btn-row">
+      <a class="action-btn primary" href="https://github.com/" target="_blank">Criar conta gratuitamente no GitHub</a>
+    </div>
+    <div class="mini-note">
+      <strong>Dica para facilitar</strong>
+      <p>Ao criar sua conta, você pode usar a conta Microsoft para agilizar o acesso.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="vscode">
+  <div class="wrap">
+    <div class="section-label">Ferramenta de configuração</div>
+    <h2>VS Code: o que é e para que serve</h2>
+    <div class="info-box">
+      <div class="ico">💻</div>
+      <p><strong>O VS Code é um programa para trabalhar com códigos e aplicativos.</strong> Ele permite editar, organizar e criar arquivos de programas e desenvolver soluções. Também pode ser usado para facilitar a configuração e conexão da I.A. com outras ferramentas, servindo como porta de entrada para os comandos. Nesta aula, vamos usá-lo para instalar extensões, localizar arquivos do MCP e editar o arquivo de configuração do Claude Desktop.</p>
+    </div>
+    <div class="btn-row">
+      <a class="action-btn primary" href="https://code.visualstudio.com/Download" target="_blank">Baixar o VS Code</a>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="skills">
+  <div class="wrap">
+    <div class="section-label">Recursos extras</div>
+    <h2>Skills: o que são, onde baixar e quais cuidados tomar</h2>
+    <div class="info-box">
+      <div class="ico">🧠</div>
+      <p><strong>Skills são pacotes de instruções, arquivos e recursos que ensinam o Claude a executar tarefas especializadas.</strong> Na prática, elas ajudam a tornar o assistente melhor em fluxos recorrentes, como modelagem no Power BI.</p>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h3>Onde baixar</h3>
+        <p>Prefira catálogos conhecidos e materiais publicados por organizações reconhecidas.</p>
+      </div>
+      <div class="compare-card">
+        <h3>Cuidados importantes</h3>
+        <p>Antes de instalar, confira a origem, a finalidade da skill e o conteúdo do pacote.</p>
+      </div>
+    </div>
+    <div class="mini-note">
+      <strong>Fornecedores seguros para priorizar</strong>
+      <p>Ao buscar skills, dê preferência a materiais de fornecedores conhecidos, como Anthropic, Microsoft, GitHub, Manus e organizações reconhecidas pelo ecossistema.</p>
+    </div>
+    <div class="btn-row">
+      <a class="action-btn pink" href="https://skillsmp.com/pt" target="_blank">Encontrar novas Skills</a>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="conexao">
+  <div class="wrap">
+    <div class="section-label">Configuração prática</div>
+    <h2>Como conectar o Claude com o Power BI</h2>
+    <figure class="figure-card">
+      <img src="fluxo_simplificado.png" alt="Fluxo simplificado de conexão entre Claude, VS Code, MCP e Power BI"/>
+      <figcaption>Fluxo simplificado da configuração: o Claude se conecta ao Power BI por meio do MCP, com apoio do VS Code.</figcaption>
+    </figure>
+    <div class="info-box">
+      <div class="ico">⚙️</div>
+      <p><strong>Esta é a parte mais importante da preparação.</strong> Siga o passo a passo com calma, copie os campos quando indicado e avance somente quando concluir cada etapa.</p>
+    </div>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div class="step-copy">
+            <h3>Instale o VS Code</h3>
+            <p>Baixe o programa no botão abaixo e conclua a instalação.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="btn-row">
+            <a class="action-btn primary" href="https://code.visualstudio.com/Download" target="_blank">Baixar VS Code</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div class="step-copy">
+            <h3>Faça login com sua conta GitHub</h3>
+            <p>Abra o VS Code e conecte sua conta GitHub para facilitar o uso das extensões e recursos do ambiente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div class="step-copy">
+            <h3>Instale o pacote de idioma Português Brasil</h3>
+            <p>No VS Code, abra <strong>Extensões</strong>, pesquise por <strong>Portuguese (Brazil) Language Pack for Visual Studio Code</strong>, instale e reinicie o programa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div class="step-copy">
+            <h3>Instale a extensão Power BI Modeling MCP Server</h3>
+            <p>Abra a loja de extensões do VS Code e instale a extensão oficial da Microsoft.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="btn-row">
+            <a class="action-btn purple" href="https://marketplace.visualstudio.com/items?itemName=analysis-services.powerbi-modeling-mcp" target="_blank">Abrir extensão no Marketplace</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">5</div>
+          <div class="step-copy">
+            <h3>Localize o caminho do plug-in no computador</h3>
+            <p>Copie o comando abaixo, cole na barra de endereço do Windows e pressione Enter.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="copy-line">
+            <input id="extensionsPath" class="copy-field" type="text" readonly value="%userprofile%\.vscode\extensions"/>
+            <button class="copy-btn" onclick="copyField('extensionsPath', this)">⧉ Copiar</button>
+          </div>
+          <div class="mini-note">
+            <strong>Depois disso</strong>
+            <p>Procure pela pasta <strong>analysis-services.powerbi-modeling-mcp-0.4.0-win32-x64</strong>, abra <strong>server</strong> e localize o arquivo <strong>powerbi-modeling-mcp.exe</strong>.</p>
+          </div>
+          <div class="path-builder">
+            <h3>Cole aqui o caminho do seu arquivo</h3>
+            <p>Depois de copiar o caminho no seu computador, cole no campo abaixo. A configuração da próxima etapa será montada automaticamente.</p>
+            <div class="copy-line">
+              <input id="userExePath" class="path-input" type="text" placeholder="Cole aqui o caminho completo do powerbi-modeling-mcp.exe" oninput="buildConfig()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">6</div>
+          <div class="step-copy">
+            <h3>Abra o arquivo de configuração do Claude Desktop</h3>
+            <p>No aplicativo do Claude, vá em <strong>Desenvolvedor → Editar Configuração</strong> e abra o arquivo <strong>claude_desktop_config</strong> no VS Code.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Configuração pronta para copiar</span>
+              <button class="copy-btn" onclick="copyPrompt('configOutput', this)">⧉ Copiar configuração</button>
+            </div>
+            <textarea id="configOutput" class="prompt-text mid" readonly>{
+  "mcpServers": {
+    "powerbi-modeling-mcp": {
+      "type": "stdio",
+      "command": "C:\\Users\\Jéssica\\.vscode\\extensions\\analysis-services.powerbi-modeling-mcp-0.4.0-win32-x64\\server\\powerbi-modeling-mcp.exe",
+      "args": ["--start", "--skipconfirmation"],
+      "env": {}
+    }
+  }
+}</textarea>
+          </div>
+          <div class="attention-box">
+            <strong>Atenção</strong>
+            <p>Para funcionar perfeitamente, todos os caminhos colocados no VS Code precisam estar entre aspas duplas e com duas barras em todo o caminho. Depois de colar o conteúdo, pressione <strong>CTRL + S</strong> para salvar a edição.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">7</div>
+          <div class="step-copy">
+            <h3>Reinicie completamente o aplicativo do Claude</h3>
+            <p>Feche o Claude pelo Gerenciador de Tarefas. Ao reabrir, verifique se o servidor MCP aparece com o status <strong>running</strong>.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <figure class="figure-card">
+            <img src="status_servidor.png" alt="Exemplo de servidor MCP em execução no Claude"/>
+            <figcaption>Imagem de referência: status do servidor MCP em execução.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">8</div>
+          <div class="step-copy">
+            <h3>Baixe a Skill powerbi-modeling</h3>
+            <p>Faça o download da skill que será usada como apoio para o trabalho de modelagem.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="btn-row">
+            <a class="action-btn pink" href="https://skillsmp.com/pt/skills/github-awesome-copilot-skills-powerbi-modeling-skill-md" target="_blank">Baixar Skill powerbi-modeling</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">9</div>
+          <div class="step-copy">
+            <h3>Adicione a skill no Claude</h3>
+            <p>No aplicativo do Claude, clique em <strong>Customizar → Habilidades → Adicionar habilidades → Fazer upload de habilidade</strong>. Depois, selecione a pasta <strong>powerbi-modeling</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">10</div>
+          <div class="step-copy">
+            <h3>Instale e acesse o Power BI</h3>
+            <p>Baixe o Power BI Desktop, instale no computador e faça login com sua conta Microsoft.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="btn-row">
+            <a class="action-btn primary" href="https://www.microsoft.com/pt-br/download/" target="_blank">Baixar Power BI</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">11</div>
+          <div class="step-copy">
+            <h3>Ative o formato TMDL no Power BI</h3>
+            <p>Com o Power BI aberto, vá em <strong>Arquivo → Opções e configurações → Opções → Recursos de visualização</strong> e marque a opção <strong>Armazenar modelo semântico usando o formato TMDL</strong>.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <figure class="figure-card">
+            <img src="configuracao_pbi.png" alt="Configuração de armazenamento do modelo semântico em formato TMDL no Power BI"/>
+            <figcaption>Imagem de referência: configuração do Power BI necessária antes de começar.</figcaption>
+          </figure>
+          <div class="mini-note">
+            <strong>Finalize a preparação</strong>
+            <p>Salve, reinicie sua máquina e pronto: você estará preparado para começar a criar Dashboards com o Claude conectado ao Power BI.</p>
+          </div>
+          <div class="attention-box">
+            <strong>Permissões iniciais</strong>
+            <p>Nas primeiras vezes, o Claude pode pedir algumas permissões para executar o diagnóstico e realizar as primeiras ações. Depois disso, o fluxo tende a ficar mais natural.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="dashboard">
+  <div class="wrap">
+    <div class="section-label">Aplicação prática</div>
+    <h2>Criação do Dashboard no Power BI</h2>
+    <div class="lesson-block">
+      <p>Baixe a base de Excel, conecte-a a um arquivo de Power BI zerado e use os prompts abaixo para conduzir a construção do modelo e das análises.</p>
+      <div class="btn-row">
+        <a class="action-btn primary" href="https://docs.google.com/spreadsheets/d/1OFdaRfFEiYfXUTkyWgSmkfLY4Psz3rKV/export?format=xlsx" target="_blank">Baixar arquivo de Excel</a>
+      </div>
+    </div>
+
+    <div class="step-list" style="margin-top:18px">
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">A</div>
+          <div class="step-copy">
+            <h3>Prompt inicial — conectar ao modelo</h3>
+            <p>Use este prompt para apresentar o objetivo do Dashboard e pedir que o Claude se conecte ao modelo aberto no Power BI.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Prompt · Conexão inicial</span>
+              <button class="copy-btn" onclick="copyPrompt('promptInitial', this)">⧉ Copiar prompt</button>
+            </div>
+            <textarea id="promptInitial" class="prompt-text tall" readonly>Vamos construir um Dashboard para analisar os principais detalhes sobre a produção de uma fábrica. Essa base veio de um sistema.
+
+No arquivo de Power BI aberto, tenho 3 tabelas:
+
+Base, imposto e produtos.
+
+De acordo com as próximas etapas da nossa conversa vamos ver juntos a necessidade de criar relacionamentos, DAX e colunas ou tabelas auxiliares.
+
+Você já pode se conectar ao modelo do Power BI para começarmos a trabalhar.
+
+Devemos usar essas tabelas para a construção de um Dashboard. Vou dar as próximas etapas passo a passo. Use sempre que necessário a sua habilidade "powerbi-modeling".
+
+Tem alguma pergunta antes de começarmos?</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">B</div>
+          <div class="step-copy">
+            <h3>Criação de colunas calculadas</h3>
+            <p>Peça ao Claude para montar no Power Query as colunas necessárias para a modelagem.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Prompt · Colunas calculadas</span>
+              <button class="copy-btn" onclick="copyPrompt('promptColumns', this)">⧉ Copiar prompt</button>
+            </div>
+            <textarea id="promptColumns" class="prompt-text tall" readonly>Na base de dados, e com Power Query, crie as seguintes colunas calculadas:
+
+valor_uni = Com base na coluna de produtos, traga da tabela produtos o valor unitário.
+
+custo_lote = coluna de valor unitário * qtd de peças.
+
+%_ICMS = com base na coluna UF e na tabela imposto, traga o valor do ICMS.
+
+Valor_icms = custo_lote * %_ICMS.
+
+Tot_final = custo_lote + Valor_icms.
+
+Além disso, crie as colunas de Ano, Mês no estilo "mmm" e n_mes, que deve trazer os números correspondentes de cada mês.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">C</div>
+          <div class="step-copy">
+            <h3>Criação dos KPIs</h3>
+            <p>Peça a criação dos cartões principais do Dashboard.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Prompt · KPIs</span>
+              <button class="copy-btn" onclick="copyPrompt('promptKpis', this)">⧉ Copiar prompt</button>
+            </div>
+            <textarea id="promptKpis" class="prompt-text" readonly>Crie um visual de cartão para cada um dos seguintes totalizadores:
+
+- Total de Lotes
+- Quantidade produzida
+- Custo Total</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">D</div>
+          <div class="step-copy">
+            <h3>Criação das medidas</h3>
+            <p>Use este prompt para solicitar as medidas e análises principais.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Prompt · Medidas</span>
+              <button class="copy-btn" onclick="copyPrompt('promptMeasures', this)">⧉ Copiar prompt</button>
+            </div>
+            <textarea id="promptMeasures" class="prompt-text mid" readonly>Crie medidas para cada uma dessas situações:
+
+- Status de produção = representação do faturamento de cada setor.
+- Top 5 produtos produzidos.
+- Custo por mês.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">E</div>
+          <div class="step-copy">
+            <h3>Criação dos filtros</h3>
+            <p>Finalize pedindo as segmentações de dados.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="prompt-box">
+            <div class="prompt-tools">
+              <span>Prompt · Segmentações</span>
+              <button class="copy-btn" onclick="copyPrompt('promptFilters', this)">⧉ Copiar prompt</button>
+            </div>
+            <textarea id="promptFilters" class="prompt-text" readonly>Crie segmentações de dados para cada um dos filtros abaixo:
+
+- Mês (mmm)
+- Ano (aaaa)</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="materiais">
+  <div class="wrap">
+    <div class="section-label">Material de apoio</div>
+    <h2>Arquivos da Aula 3</h2>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:20px;line-height:1.7">Acesse a pasta da aula para baixar os materiais, arquivos complementares e imagens utilizadas na explicação.</p>
+    <a href="https://drive.google.com/drive/folders/1B-Y03Xur1pNMfCZuAgHxZo_x0Ljd1z0i?usp=sharing" target="_blank" class="material-card">
+      <div class="material-icon">📁</div>
+      <div class="material-copy">
+        <div class="material-title">Pasta — Aula 3</div>
+        <div class="material-sub">Google Drive · Clique para acessar os materiais</div>
+      </div>
+      <div class="material-arrow">Abrir →</div>
+    </a>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <div class="wrap"><p style="color:var(--muted2)">© 2026 Escola Karen Abecia · Todos os direitos reservados</p></div>
+</footer>
+
+<script>
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (btn) {
+        const original = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = '✓ Copiado';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = original;
+        }, 1800);
+      }
+    });
+  }
+
+  function copyField(id, btn) {
+    const field = document.getElementById(id);
+    if (!field) return;
+    copyText(field.value, btn);
+  }
+
+  function copyPrompt(id, btn) {
+    const textarea = document.getElementById(id);
+    if (!textarea) return;
+    copyText(textarea.value, btn);
+  }
+
+  function buildConfig() {
+    const field = document.getElementById('userExePath');
+    const output = document.getElementById('configOutput');
+    if (!field || !output) return;
+
+    const raw = field.value.trim().replace(/^"|"$/g, '');
+    const command = raw || 'C:\\Users\\Jéssica\\.vscode\\extensions\\analysis-services.powerbi-modeling-mcp-0.4.0-win32-x64\\server\\powerbi-modeling-mcp.exe';
+    const config = {
+      mcpServers: {
+        'powerbi-modeling-mcp': {
+          type: 'stdio',
+          command,
+          args: ['--start', '--skipconfirmation'],
+          env: {}
+        }
+      }
+    };
+    output.value = JSON.stringify(config, null, 2);
+  }
+
+  function downloadPDF() {
+    const original = document.title;
+    document.title = 'implementacao_claude_aula3';
+    window.print();
+    document.title = original;
+  }
+
+  buildConfig();
+</script>
+
+<style media="print">
+  @page { margin: 14mm; size: A4; background: #1a1714; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #1a1714 !important; color: #f0ebe4 !important; }
+  body::before, body::after { display: none; }
+  header { position: static !important; background: #111 !important; }
+  .hbtn-pdf, .hbtn-back, .copy-btn, .action-btn { display: none !important; }
+  .prompt-text, .prompt-text.tall, .prompt-text.mid { min-height: auto !important; height: auto !important; overflow: visible !important; resize: none !important; }
+  .step, .soft-card, .compare-card, .info-box, .mini-note, .attention-box, .figure-card, .material-card, .lesson-block, .index-nav, .path-builder { break-inside: avoid; }
+  .step, .soft-card, .compare-card, .figure-card { background: #1a1714 !important; border-color: #2e2822 !important; }
+  .prompt-box { background: #11100f !important; border-color: #3d3630 !important; }
+  .prompt-tools { background: rgba(255,255,255,.02) !important; }
+  a { color: inherit !important; text-decoration: none !important; }
+  footer { border-top: 1px solid #2e2822 !important; }
+</style>
+
+</body>
+</html>
