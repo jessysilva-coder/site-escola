@@ -34,17 +34,13 @@
     }
     .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
-    /* ── HEADER ── */
     header { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
     .header-logo {
       background: #111;
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px 32px; gap: 16px; flex-wrap: wrap;
     }
-    .header-logo img {
-      height: 60px; display: block;
-      object-fit: contain;
-    }
+    .header-logo img { height: 60px; display: block; object-fit: contain; }
     .logo-text-fb { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: .05em; color: var(--text); }
     .logo-text-fb span { color: var(--accent); }
     .header-badges { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -64,22 +60,14 @@
     }
     .badge-setup:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(217,119,87,.5); }
 
-    /* ── SETUP CARD HIGHLIGHT ── */
-    .access-card.setup-card {
-      background: var(--accent);
-      border-color: var(--accent2);
-    }
+    .access-card.setup-card { background: var(--accent); border-color: var(--accent2); }
     .access-card.setup-card h3 { color: #fff; }
     .access-card.setup-card p { color: rgba(255,255,255,.82); }
-    .access-card.setup-card .ac-icon {
-      background: rgba(255,255,255,.15);
-      border-color: rgba(255,255,255,.3);
-    }
+    .access-card.setup-card .ac-icon { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3); }
     .access-card.setup-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
     .btn-setup { background: #fff !important; color: var(--accent) !important; border: none !important; }
     .btn-setup:hover { background: #f0ebe4 !important; transform: translateY(-2px); }
 
-    /* ── HERO ── */
     .hero { padding: 52px 0 38px; text-align: center; position: relative; border-top: none !important; }
     .hero::before {
       content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -92,12 +80,10 @@
     h1 span { color: var(--accent); }
     .hero-sub { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 540px; margin: 0 auto; }
 
-    /* ── SECTIONS ── */
     section { padding: 46px 0; border-top: 1px solid var(--border); }
     .section-label { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; opacity: .8; }
     h2 { font-family: 'Anton', sans-serif; font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 400; letter-spacing: .03em; margin-bottom: 26px; }
 
-    /* ── BUTTONS ── */
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: var(--radius); font-family: 'Open Sans', sans-serif; font-size: .88rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all .2s; border: none; }
     .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(217,119,87,.35); }
     .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
@@ -106,7 +92,6 @@
     .btn-wa { background: #1a5c33; color: #fff; border: 1px solid #25d366; }
     .btn-wa:hover { background: #1f7040; transform: translateY(-2px); }
 
-    /* ── SCHEDULE ── */
     .schedule { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
     .aula { display: flex; align-items: flex-start; gap: 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; position: relative; overflow: hidden; }
     .aula::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
@@ -132,10 +117,26 @@
     .aula.next .aula-badge::before { content: '● '; animation: pdot 1.5s infinite; }
     @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* ── AULA AO VIVO CTA ── */
+    .material-link {
+      font-family:'DM Mono',monospace; font-size:.6rem; letter-spacing:.08em; text-transform:uppercase;
+      padding:4px 10px; border-radius:100px; background:rgba(76,175,125,.12); color:#4caf7d;
+      border:1px solid rgba(76,175,125,.25); text-decoration:none; white-space:nowrap; transition:background .2s;
+    }
+    .material-link:hover { background: rgba(76,175,125,.22); }
+    .aula-actions { display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex-shrink:0; }
+
+    .next-reminder {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: rgba(217,119,87,.08); border: 1px solid rgba(217,119,87,.24);
+      border-radius: var(--radius); padding: 18px 20px; margin-bottom: 22px;
+    }
+    .next-reminder .reminder-icon { font-size: 1.25rem; line-height: 1; margin-top: 2px; }
+    .next-reminder h3 { font-family: 'Anton', sans-serif; font-size: 1.02rem; font-weight: 400; letter-spacing: .03em; margin-bottom: 4px; }
+    .next-reminder p { font-size: .84rem; color: var(--muted); line-height: 1.6; }
+    .next-reminder .btn { margin-top: 12px; font-size: .78rem; padding: 9px 15px; }
+
     .live-cta { display: flex; justify-content: center; }
 
-    /* ── ACCESS GRID ── */
     .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
     .access-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
     .access-card:hover { border-color: var(--border2); transform: translateY(-2px); }
@@ -144,7 +145,6 @@
     .access-card p { font-size: .82rem; color: var(--muted); line-height: 1.6; flex: 1; }
     .access-card .btn { align-self: flex-start; font-size: .8rem; padding: 9px 16px; }
 
-    /* ── FAQ ── */
     .faq { display: flex; flex-direction: column; gap: 8px; }
     .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color .2s; }
     .faq-item.open { border-color: rgba(217,119,87,.3); }
@@ -165,7 +165,6 @@
     .faq-a p a { color: var(--accent); text-decoration: underline; }
     .faq-a p strong { color: var(--text); font-weight: 600; }
 
-    /* ── SUPPORT ── */
     .support-block { background: var(--card2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 32px 24px; text-align: center; margin-top: 40px; }
     .support-block h3 { font-family: 'Anton', sans-serif; font-size: 1.3rem; font-weight: 400; letter-spacing: .03em; margin-bottom: 10px; }
     .support-block p { font-size: .85rem; color: var(--muted); margin-bottom: 22px; line-height: 1.65; }
@@ -178,7 +177,9 @@
     @media (max-width: 600px) {
       .aula { flex-wrap: wrap; }
       .aula-badge { align-self: flex-start; }
+      .aula-actions { align-items:flex-start; }
       .header-logo { justify-content: center; }
+      .next-reminder { flex-direction: column; }
     }
     .fi { animation: fu .45s ease both; }
     @keyframes fu { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
@@ -221,38 +222,53 @@
           <h3>O que precisa saber sobre o Claude I.A</h3>
           <p>Configuração profissional e fundamentos de engenharia de prompts.</p>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        <div class="aula-actions">
           <div class="aula-badge">Concluída</div>
-          <a href="./aula1.html" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.25);text-decoration:none;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='rgba(76,175,125,.22)'" onmouseout="this.style.background='rgba(76,175,125,.12)'">📄 Material da Aula</a>
+          <a href="./aula1.html" class="material-link">📄 Material da Aula</a>
         </div>
       </div>
+
       <div class="aula done fi">
         <div class="aula-date"><div class="day">13</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Claude no Excel</h3>
           <p>Limpeza de dados, tratamento e fórmulas avançadas em segundos.</p>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        <div class="aula-actions">
           <div class="aula-badge">Concluída</div>
-          <a href="./aula2.html" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:rgba(76,175,125,.12);color:#4caf7d;border:1px solid rgba(76,175,125,.25);text-decoration:none;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='rgba(76,175,125,.22)'" onmouseout="this.style.background='rgba(76,175,125,.12)'">📄 Material da Aula</a>
+          <a href="./aula2.html" class="material-link">📄 Material da Aula</a>
         </div>
       </div>
-      <div class="aula next fi">
+
+      <div class="aula done fi">
         <div class="aula-date"><div class="day">20</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Claude no Power BI</h3>
           <p>Criação de medidas DAX e modelagem assistida por I.A.</p>
         </div>
-        <div class="aula-badge">Próxima</div>
+        <div class="aula-actions">
+          <div class="aula-badge">Concluída</div>
+          <a href="./aula3.html" class="material-link">📄 Material da Aula</a>
+        </div>
       </div>
-      <div class="aula soon fi">
+
+      <div class="aula next fi">
         <div class="aula-date"><div class="day">27</div><div class="month-lbl">Mai</div></div>
         <div class="aula-info">
           <h3>Dashboards com Claude Live Artifacts</h3>
           <p>O recurso mais poderoso para visualização de dados em tempo real.</p>
+          <div class="next-reminder" style="margin:14px 0 0;padding:14px 16px">
+            <div class="reminder-icon">🐙</div>
+            <div>
+              <h3 style="font-size:.94rem;margin-bottom:3px">Lembrete para esta aula</h3>
+              <p>Para acompanhar a próxima aula, é necessário ter uma conta do GitHub criada. Isso vai facilitar o uso dos recursos e a preparação do ambiente.</p>
+              <a class="btn btn-ghost" href="https://github.com/" target="_blank">Criar conta no GitHub</a>
+            </div>
+          </div>
         </div>
-        <div class="aula-badge">Em breve</div>
+        <div class="aula-badge">Próxima</div>
       </div>
+
       <div class="aula soon fi">
         <div class="aula-date"><div class="day">03</div><div class="month-lbl">Jun</div></div>
         <div class="aula-info">
@@ -265,7 +281,6 @@
 
     <div class="live-cta">
       <a class="btn btn-primary" href="https://teams.microsoft.com/meet/238431558191273?p=2EIf0vOyX0JPg4A3i4" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
         Entrar na Aula ao Vivo
       </a>
     </div>
@@ -379,7 +394,6 @@
       <h3>Precisa de ajuda?</h3>
       <p>Nossa equipe está disponível para tirar dúvidas sobre o treinamento, acessos e qualquer outro assunto.</p>
       <a class="btn btn-wa" href="https://api.whatsapp.com/send?phone=5511958152954" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Fale com o Suporte
       </a>
     </div>
