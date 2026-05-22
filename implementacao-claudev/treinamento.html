@@ -9,29 +9,39 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --cyber-orange: #ff6b35; 
-            --cyber-orange-glow: rgba(255, 107, 53, 0.4);
+            --cyber-orange: #DE7356; 
+            --cyber-orange-glow: rgba(222, 115, 86, 0.4);
             --cyber-black: #050505;
+            --offer-green: #22c55e;
+            --offer-green-glow: rgba(34, 197, 94, 0.35);
         }
         body { background-color: var(--cyber-black); color: #e5e7eb; font-family: 'Inter', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .bg-grid { background-image: linear-gradient(to right, rgba(255, 107, 53, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 107, 53, 0.03) 1px, transparent 1px); background-size: 40px 40px; }
-        .module-card { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 107, 53, 0.15); backdrop-filter: blur(10px); transition: all 0.3s ease; }
-        .module-card:hover { border-color: var(--cyber-orange); box-shadow: 0 0 20px rgba(255, 107, 53, 0.05); }
-        .module-header { border-bottom: 1px solid rgba(255, 107, 53, 0.1); }
+        .bg-grid { background-image: linear-gradient(to right, rgba(222, 115, 86, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(222, 115, 86, 0.03) 1px, transparent 1px); background-size: 40px 40px; }
+        .module-card { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(222, 115, 86, 0.15); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .module-card:hover { border-color: var(--cyber-orange); box-shadow: 0 0 20px rgba(222, 115, 86, 0.08); }
+        .module-header { border-bottom: 1px solid rgba(222, 115, 86, 0.1); }
         .btn-back { border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s; }
         .btn-back:hover { border-color: var(--cyber-orange); color: var(--cyber-orange); }
+        .btn-primary { background-color: var(--cyber-orange); color: #050505; box-shadow: 0 0 18px var(--cyber-orange-glow); border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.12); }
+        .btn-primary:hover { background-color: #ffffff; color: #050505; box-shadow: 0 0 25px var(--cyber-orange-glow); }
+        .module-card.module-accent-orange:hover { border-color: var(--cyber-orange); }
+        .module-card.module-accent-green:hover { border-color: #22c55e; }
+        .module-card.module-accent-blue:hover { border-color: #3b82f6; }
+        .module-card.module-accent-purple:hover { border-color: #a855f7; }
+        .module-card.module-accent-yellow:hover { border-color: #eab308; }
+        .module-card.module-accent-slate:hover { border-color: #e5e7eb; }
     </style>
 </head>
 <body class="bg-grid min-h-screen">
 
-    <header class="p-6 border-b border-orange-900/20 sticky top-0 bg-black/80 backdrop-blur-md z-50">
+    <header class="p-6 border-b border-[#DE7356]/20 sticky top-0 bg-black/80 backdrop-blur-md z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="mono text-lg font-bold tracking-tighter">
-                <span class="text-orange-500 uppercase">I.A com Dados</span>
+                <span class="text-[#DE7356] uppercase">I.A com Dados</span>
                 <span class="text-white">/ CURRÍCULO</span>
             </div>
-            <a href="/" class="btn-back px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+            <a href="/implementacao-claudev/INDEX.html" class="btn-back px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar para Home
             </a>
         </div>
@@ -45,9 +55,9 @@
 
         <div class="space-y-10">
             <!-- Fundamentos -->
-            <section class="module-card">
-                <div class="module-header p-6 bg-orange-500/5 flex justify-between items-center">
-                    <h3 class="font-black text-orange-500 mono">Módulo: Fundamentos</h3>
+            <section class="module-card module-accent-orange">
+                <div class="module-header p-6 bg-[#DE7356]/5 flex justify-between items-center">
+                    <h3 class="font-black text-[#DE7356] mono">Módulo: Fundamentos</h3>
                 </div>
                 <div class="p-6 divide-y divide-zinc-900">
                     <div class="py-4">
@@ -66,7 +76,7 @@
             </section>
 
             <!-- ChatGPT -->
-            <section class="module-card">
+            <section class="module-card module-accent-green">
                 <div class="module-header p-6 bg-emerald-500/5">
                     <h3 class="font-black text-emerald-500 mono uppercase">Módulo: ChatGPT</h3>
                 </div>
@@ -84,15 +94,15 @@
 
             <!-- Copilot & Claude -->
             <section class="grid md:grid-cols-2 gap-10">
-                <div class="module-card">
+                <div class="module-card module-accent-blue">
                     <div class="module-header p-6 bg-blue-500/5"><h3 class="font-black text-blue-500 mono uppercase">Copilot</h3></div>
                     <div class="p-6 text-xs space-y-4">
                         <p class="text-white font-bold">Word, Outlook, Teams & PowerPoint</p>
                         <p class="text-gray-500 leading-relaxed">Geração de atas, triagem de e-mails, resumos de reuniões em tempo real e criação de apresentações completas.</p>
                     </div>
                 </div>
-                <div class="module-card">
-                    <div class="module-header p-6 bg-orange-500/5"><h3 class="font-black text-orange-400 mono uppercase">Claude</h3></div>
+                <div class="module-card module-accent-orange">
+                    <div class="module-header p-6 bg-[#DE7356]/5"><h3 class="font-black text-[#DE7356] mono uppercase">Claude</h3></div>
                     <div class="p-6 text-xs space-y-4">
                         <p class="text-white font-bold">Redação, Contratos & Automação</p>
                         <p class="text-gray-500 leading-relaxed">Redação profissional de e-mails, análise de riscos em contratos e criação de scripts para automação.</p>
@@ -101,7 +111,7 @@
             </section>
 
             <!-- Excel + I.A -->
-            <section class="module-card">
+            <section class="module-card module-accent-blue">
                 <div class="module-header p-6 bg-blue-600/10">
                     <h3 class="font-black text-blue-400 mono uppercase">Excel + I.A</h3>
                 </div>
@@ -115,8 +125,8 @@
                             <p class="font-bold text-white text-[10px] uppercase">Workflow Integrado</p>
                             <p class="text-[11px] text-gray-500">Copilot e Claude trabalhando juntos na criação de Dashboards dinâmicos.</p>
                         </div>
-                        <div class="p-4 border border-zinc-800 bg-orange-500/5">
-                            <p class="font-bold text-orange-500 text-[10px] uppercase">Estudo de Caso</p>
+                        <div class="p-4 border border-zinc-800 bg-[#DE7356]/5">
+                            <p class="font-bold text-[#DE7356] text-[10px] uppercase">Estudo de Caso</p>
                             <p class="text-[11px] text-gray-500">Projeto RH e Vendas — transformando dados brutos em inteligência.</p>
                         </div>
                     </div>
@@ -124,7 +134,7 @@
             </section>
 
             <!-- Power BI + I.A -->
-            <section class="module-card">
+            <section class="module-card module-accent-yellow">
                 <div class="module-header p-6 bg-yellow-500/10">
                     <h3 class="font-black text-yellow-500 mono uppercase">Power BI + I.A</h3>
                 </div>
@@ -150,14 +160,14 @@
 
             <!-- Ferramentas & Agentes -->
             <section class="grid md:grid-cols-2 gap-10">
-                <div class="module-card">
+                <div class="module-card module-accent-purple">
                     <div class="module-header p-6 bg-purple-500/5"><h3 class="font-black text-purple-500 mono uppercase">Criação de Ferramentas</h3></div>
                     <div class="p-6 text-xs space-y-4">
                         <p class="text-white font-bold italic underline decoration-purple-500">Desenvolva seus próprios Agentes</p>
                         <p class="text-gray-500">Criação de GPTs personalizados com ferramentas habilitadas e desenvolvimento de mini-apps em HTML com Claude.</p>
                     </div>
                 </div>
-                <div class="module-card">
+                <div class="module-card module-accent-slate">
                     <div class="module-header p-6 bg-white/5"><h3 class="font-black text-zinc-300 mono uppercase">Outros Agentes</h3></div>
                     <div class="p-6 grid grid-cols-2 gap-4 text-[10px]">
                         <div class="p-2 bg-zinc-900 border border-zinc-800">
@@ -182,11 +192,11 @@
         </div>
 
         <div class="mt-20 text-center">
-            <a href="/#oferta" class="btn-primary px-12 py-5 text-lg font-black uppercase tracking-widest transition-all transform hover:scale-105">Quero Garantir minha vaga</a>
+            <a href="/implementacao-claudev/INDEX.html#oferta" class="btn-primary px-12 py-5 text-lg font-black uppercase tracking-widest transition-all transform hover:scale-105"><i data-lucide="sparkles" class="w-5 h-5 mr-2"></i> Quero Garantir minha vaga</a>
         </div>
     </main>
 
-    <footer class="py-12 px-6 text-center border-t border-orange-900/10 text-gray-700 text-[10px] mono uppercase">
+    <footer class="py-12 px-6 text-center border-t border-[#DE7356]/10 text-gray-700 text-[10px] mono uppercase">
         <p>© 2026. TODOS OS DIREITOS RESERVADOS PARA ESCOLA KAREN ABECIA</p>
     </footer>
 
