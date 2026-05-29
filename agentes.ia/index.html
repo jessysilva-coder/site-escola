@@ -58,6 +58,19 @@
             border-color: #ff6600;
         }
 
+        .secondary-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .secondary-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: #ff6600;
+        }
+
         .agent-img {
             width: 100%;
             height: 380px;
@@ -122,8 +135,8 @@
         </p>
     </header>
 
-    <!-- Grade de Agentes -->
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 max-w-[1800px] mx-auto mb-20 relative z-10">
+    <!-- Grade de Agentes Principais -->
+    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 max-w-[1800px] mx-auto mb-16 relative z-10">
         
         <!-- Tabeli.A -->
         <article class="tower-card tabelia-shadow p-5 rounded-2xl">
@@ -181,23 +194,18 @@
             </a>
         </article>
 
-        <!-- Midas.IA -->
+        <!-- Midas.IA (AGORA ATIVO!) -->
         <article class="tower-card midasia-shadow p-5 rounded-2xl">
-            <div class="relative">
-                <img src="midas.png" alt="Midas.IA" class="agent-img opacity-40 grayscale" onerror="this.src='https://placehold.co/400x600/E59F3E/000000?text=Midas.IA'">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="bg-black/80 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20 uppercase">Em Breve</span>
-                </div>
-            </div>
+            <img src="midas.png" alt="Midas.IA" class="agent-img" onerror="this.src='https://placehold.co/400x600/E59F3E/ffffff?text=Midas.IA'">
             <div class="flex-grow">
                 <h2 class="text-2xl font-bold mb-3 text-[#E59F3E]">Midas.IA</h2>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
                     Ajudará na precificação e monetização dos seus conhecimentos e estratégias de lucro.
                 </p>
             </div>
-            <button disabled class="btn-disabled text-slate-500 font-bold py-3 px-4 rounded-xl text-center">
-                Indisponível
-            </button>
+            <a href="https://chatgpt.com/g/g-6a19babbffd0819188c4710e92604f50-midas-i-a" target="_blank" class="btn-access font-bold py-3 px-4 rounded-xl text-center">
+                Acessar Agente
+            </a>
         </article>
 
         <!-- Abeci.A -->
@@ -222,11 +230,11 @@
     </main>
 
     <!-- Passo a Passo -->
-    <section class="max-w-4xl mx-auto mb-20 p-8 rounded-3xl step-card relative z-10">
-        <h3 class="text-2xl font-bold mb-8 text-[#ff6600] flex items-center gap-3">
+    <section class="max-w-4xl mx-auto mb-16 p-8 rounded-3xl step-card relative z-10">
+        <h3 class="text-2xl font-bold mb-6 text-[#ff6600] flex items-center gap-3">
             <span>🚀</span> Como começar a usar agora:
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
             <div class="flex gap-4">
                 <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">1</div>
                 <p class="text-slate-300">Certifique-se de que está <strong>logado na sua conta do ChatGPT</strong> no navegador.</p>
@@ -243,6 +251,55 @@
                 <div class="bg-[#ff6600] text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold shadow-lg shadow-orange-500/20">4</div>
                 <p class="text-slate-300">Interaja com a <strong>I.A.</strong> e deixe que ela automatize e otimize os seus resultados!</p>
             </div>
+        </div>
+        
+        <!-- Nota de Conta Gratuita -->
+        <div class="border-t border-orange-500/20 pt-4 flex items-center gap-3 text-slate-300 bg-orange-500/5 p-4 rounded-xl border border-orange-500/10">
+            <span class="text-2xl">💡</span>
+            <p class="text-sm md:text-base">
+                <strong>Importante:</strong> Você pode usar todos os agentes na sua <strong>conta gratuita do ChatGPT</strong>!
+            </p>
+        </div>
+    </section>
+
+    <!-- Outros Agentes Secundários -->
+    <section class="max-w-4xl mx-auto mb-20 relative z-10">
+        <h3 class="text-3xl font-bold mb-8 text-[#ff6600] text-center flex items-center justify-center gap-3">
+            <span>✨</span> Outros Agentes da Escola Karen Abecia
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Relatóri.A -->
+            <article class="secondary-card p-6 rounded-2xl flex flex-col justify-between h-full">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <!-- Ícone tecnológico discreto -->
+                        <div class="bg-gradient-to-br from-amber-500 to-orange-600 p-2.5 rounded-xl">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-amber-400">Relatóri.A</h4>
+                    </div>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                        Cria relatórios visuais e dashboards interativos com filtros dinâmicos em segundos a partir da sua base de dados, permitindo demonstrar com facilidade todo o potencial estratégico das suas informações.
+                    </p>
+                </div>
+                <a href="https://chatgpt.com/g/g-6a0f388f902881919e5edc8a5bf0786a-relatoria" target="_blank" class="btn-access font-bold py-3 px-5 rounded-xl text-center text-sm">
+                    Acessar Agente
+                </a>
+            </article>
+
+            <!-- Card Placeholder de sugestão futuro -->
+            <article class="secondary-card p-6 rounded-2xl flex flex-col justify-between h-full opacity-60 border-dashed border-2 border-slate-700">
+                <div class="flex flex-col items-center justify-center h-full py-6 text-center">
+                    <span class="text-4xl mb-2 text-slate-500">⚙️</span>
+                    <h4 class="text-lg font-bold text-slate-400">Mais assistentes em breve</h4>
+                    <p class="text-xs text-slate-500 max-w-xs mt-1">
+                        Nossa equipe está desenvolvendo novas ferramentas e automações para impulsionar seus estudos.
+                    </p>
+                </div>
+            </article>
         </div>
     </section>
 
