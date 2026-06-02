@@ -31,6 +31,47 @@
     .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:14px}table{width:100%;border-collapse:collapse;background:var(--card)}th{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:var(--card2);border-bottom:1px solid var(--border);white-space:nowrap}td{font-size:.81rem;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}tr:last-child td{border-bottom:none}td:first-child{color:var(--text);font-weight:600}
     footer{border-top:1px solid var(--border);padding:24px 0 28px;text-align:center;margin-top:48px}footer p{font-size:.78rem;color:var(--muted2)}
     @media(max-width:780px){.grid-2,.grid-3{grid-template-columns:1fr}.header-inner{padding:0 14px;gap:8px}.hbtn{padding:6px 10px}.prompt-text{min-height:520px}}
+
+    /* ── TOOL CHIPS / TABS / TABLES COPIADOS DA AULA 1 ── */
+    .chip { display:inline-flex; align-items:center; gap:5px; font-family:'DM Mono',monospace; font-size:.65rem; letter-spacing:.07em; text-transform:uppercase; padding:3px 10px; border-radius:100px; }
+    .chip-chat { background:rgba(217,119,87,.15); color:var(--chat); border:1px solid rgba(217,119,87,.3); }
+    .chip-cwork { background:rgba(124,92,191,.15); color:var(--cwork2); border:1px solid rgba(124,92,191,.3); }
+    .chip-code { background:rgba(196,92,138,.15); color:var(--code2); border:1px solid rgba(196,92,138,.3); }
+    .chip-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .dot-chat { background:var(--chat); } .dot-cwork { background:var(--cwork2); } .dot-code { background:var(--code2); }
+    .tool-block { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
+    .tool-block-header { padding:16px 18px 0; }
+    .tool-block.b-chat { border-left:4px solid var(--chat); }
+    .tool-block.b-cwork { border-left:4px solid var(--cwork); }
+    .tool-block.b-code { border-left:4px solid var(--code); }
+    .use-tabs { display:flex; gap:6px; padding:12px 18px 0; }
+    .tab-btn { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; padding:5px 13px; border-radius:100px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; transition:all .2s; }
+    .tab-btn.t-use { background:rgba(76,175,125,.1); color:var(--ok); border-color:rgba(76,175,125,.3); }
+    .tab-btn.t-nope { background:rgba(224,112,112,.1); color:var(--no); border-color:rgba(224,112,112,.25); }
+    .tab-panel { display:none; padding:14px 18px 18px; }
+    .tab-panel.active { display:block; }
+    .use-list, .nope-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .use-list li, .nope-list li { display:flex; align-items:flex-start; gap:9px; font-size:.84rem; color:var(--muted); line-height:1.55; }
+    .use-list li::before { content:'✓'; color:var(--ok); font-weight:700; flex-shrink:0; }
+    .nope-list li::before { content:'✗'; color:var(--no); font-weight:700; flex-shrink:0; }
+    .tbl-sub { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted2); margin:22px 0 10px; }
+    .tbl { width:100%; border-collapse:collapse; }
+    .tbl th { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; padding:11px 15px; text-align:left; background:var(--card2); border-bottom:1px solid var(--border); white-space:nowrap; color:var(--muted); }
+    .tbl th.th-chat { color:var(--chat); } .tbl th.th-cwork { color:var(--cwork2); } .tbl th.th-code { color:var(--code2); }
+    .tbl td { padding:10px 15px; font-size:.81rem; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top; }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tr:hover td { background:rgba(255,255,255,.02); }
+    .tbl td:first-child { color:var(--text); font-weight:500; white-space:nowrap; font-size:.79rem; }
+    .v-yes { color:var(--ok)!important; font-weight:600; } .v-no { color:var(--no)!important; } .v-part { color:var(--part)!important; }
+    .model-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .model-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 16px; }
+    .model-card h3 { font-family:'Anton',sans-serif; font-size:1rem; font-weight:400; margin-bottom:2px; }
+    .model-card .mv { font-family:'DM Mono',monospace; font-size:.6rem; letter-spacing:.08em; color:var(--muted2); margin-bottom:10px; }
+    .model-row { display:flex; justify-content:space-between; margin-bottom:5px; }
+    .model-row .mk { font-size:.75rem; color:var(--muted); }
+    .model-row .mv2 { font-size:.75rem; color:var(--text); font-weight:600; }
+    .model-card p { font-size:.76rem; color:var(--muted); line-height:1.55; margin-top:10px; }
+
   </style>
 </head>
 <body>
@@ -41,7 +82,6 @@
     <div class="header-btns">
       <a class="hbtn hbtn-back" href="./alunos-JUN2026.html">← Início</a>
       <button class="hbtn hbtn-pdf" onclick="downloadPDF()">Baixar PDF</button>
-      <a class="hbtn hbtn-main" href="https://claude.ai/upgrade" target="_blank">Assinar Claude</a>
     </div>
   </div>
 </header>
@@ -69,7 +109,7 @@
       <div class="plan-card"><h3>Enterprise</h3><div class="plan-price">Sob consulta</div><div class="plan-for">Para empresas</div><p>Governança, segurança, administração avançada e condições empresariais.</p></div>
     </div>
     <div class="btn-row"><a class="action-btn primary" href="https://claude.ai/upgrade" target="_blank">Fazer assinatura do Claude</a></div>
-    <img class="image-clean" src="planos_preços.png" alt="Imagem explicativa sobre planos e preços do Claude"/>
+    <img class="image-clean" src="planos_precos.png" alt="Imagem explicativa sobre planos e preços do Claude"/>
   </div>
 </section>
 
@@ -113,6 +153,41 @@
   </div>
 </section>
 
+<section class="section" id="suplemento-excel">
+  <div class="wrap">
+    <div class="section-label">Excel</div>
+    <h2>Instalação do suplemento do Claude no Excel</h2>
+    <div class="info-box">
+      <div class="ico">📊</div>
+      <p><strong>O suplemento permite usar o Claude diretamente dentro do Excel.</strong> Ele ajuda em tarefas como limpeza de dados, padronização, criação de fórmulas, análise de tabelas e apoio na organização das informações.</p>
+    </div>
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p>Abra o <strong>Excel</strong>.</p></div>
+      <div class="mini-item"><div class="num">2</div><p>Acesse <strong>Suplementos → Mais suplementos</strong>.</p></div>
+      <div class="mini-item"><div class="num">3</div><p>Pesquise por <strong>Claude</strong>.</p></div>
+      <div class="mini-item"><div class="num">4</div><p>Escolha a opção adequada para o tipo de conta que você usa.</p></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card orange">
+        <h3>Claude by Anthropic for Excel</h3>
+        <p>Indicado para quem está logando com a conta pessoal do Claude.</p>
+      </div>
+      <div class="card purple">
+        <h3>Claude for Microsoft 365</h3>
+        <p>Indicado para quem está usando uma conta corporativa do Claude.</p>
+      </div>
+    </div>
+
+    <div class="attention-box">
+      <strong>Importante</strong>
+      <p>Para usar esse suplemento, é preciso ter um plano ativo do <strong>Microsoft Office 365</strong> e um plano ativo do <strong>Claude</strong>.</p>
+    </div>
+
+    <img class="image-clean" src="suplemento Claude.png" alt="Passo a passo para instalar o suplemento do Claude no Excel"/>
+  </div>
+</section>
+
 <section class="section" id="celular">
   <div class="wrap">
     <div class="section-label">Mobile</div>
@@ -141,7 +216,7 @@
     <h2>Limites de uso do Claude</h2>
     <div class="info-box"><div class="ico">⏱️</div><p><strong>O Claude trabalha com limites de uso.</strong> Esses limites controlam o quanto você pode interagir com a ferramenta em determinados períodos e podem variar de acordo com o plano, modelo escolhido, quantidade de arquivos, tamanho das conversas e demanda do sistema.</p></div>
     <div class="grid-3"><div class="card orange"><h3>Limite por sessão</h3><p>Capacidade disponível dentro de uma janela de uso. Conversas longas e arquivos grandes podem consumir mais rápido.</p></div><div class="card purple"><h3>Limite semanal</h3><p>Alguns planos exibem limites acumulados para o período da semana, especialmente em usos mais intensos.</p></div><div class="card pink"><h3>Limite por modelo</h3><p>Modelos mais avançados podem consumir mais capacidade do que modelos mais rápidos e leves.</p></div></div>
-    <div class="purple-note"><div class="ico">📍</div><div><strong>Onde acompanhar seus limites</strong><p>Para consultar seus limites, acesse <strong>Configurações → Uso</strong> e acompanhe a utilização disponível na sua conta.</p></div></div>
+    <div class="purple-note"><div class="ico">📍</div><div><strong>Onde acompanhar seus limites</strong><p>Para consultar seus limites, acesse <strong>Configurações → Uso</strong>.</p></div></div>
     <img class="image-clean" src="limites.png" alt="Imagem mostrando a tela de limites de uso do Claude"/>
   </div>
 </section>
@@ -200,8 +275,10 @@ If no date is known, use [unknown] instead.
   <div class="wrap">
     <div class="section-label">Ferramentas</div>
     <h2>Modo de acesso a ferramentas</h2>
-    <div class="info-box"><div class="ico">🧰</div><p><strong>Nas configurações de ferramentas, use a lógica de carregar apenas quando necessário.</strong> Quanto menos ferramentas ativadas sem necessidade, menor a chance de confusão, consumo desnecessário ou acesso indevido a informações.</p></div>
-    <div class="grid-3"><div class="card orange"><h3>Antes de ativar</h3><p>Pergunte se a tarefa realmente precisa daquela ferramenta ou conector.</p></div><div class="card purple"><h3>Durante o uso</h3><p>Confirme permissões e revise o plano antes de executar ações importantes.</p></div><div class="card pink"><h3>Depois da tarefa</h3><p>Revise resultados, salve o que for necessário e evite manter acessos abertos sem motivo.</p></div></div>
+    <div class="info-box">
+      <div class="ico">🧰</div>
+      <p><strong>Nas configurações de ferramentas, use a lógica de carregar apenas quando necessário.</strong> Quanto menos ferramentas ativadas sem necessidade, menor a chance de confusão, consumo desnecessário ou acesso indevido a informações.</p>
+    </div>
   </div>
 </section>
 
@@ -213,30 +290,131 @@ If no date is known, use [unknown] instead.
   </div>
 </section>
 
-<section class="section" id="quando-usar">
+
+
+
+<!-- ══ 2 — QUANDO USAR ══ -->
+<div class="section" id="quando">
   <div class="wrap">
-    <div class="section-label">Decisão rápida</div>
+    <div class="section-label">Guia de uso</div>
     <h2>Quando usar cada ferramenta</h2>
-    <div class="tbl-wrap"><table><thead><tr><th>Objetivo</th><th>Ferramenta indicada</th><th>Por quê?</th></tr></thead><tbody><tr><td>Escrever mensagens, roteiros e ideias</td><td>Claude Chat</td><td>É rápido, direto e ótimo para criação e organização de pensamento.</td></tr><tr><td>Analisar arquivos e criar entregas</td><td>Cowork</td><td>Trabalha melhor com arquivos, documentos e tarefas em etapas.</td></tr><tr><td>Criar sites, apps ou automações técnicas</td><td>Claude Code</td><td>Tem foco em desenvolvimento, código, testes e estrutura técnica.</td></tr><tr><td>Resolver dúvida rápida no celular</td><td>Claude Chat</td><td>É o caminho mais simples para consultas pontuais.</td></tr><tr><td>Organizar material de aula ou relatório</td><td>Cowork</td><td>Ajuda a transformar informações soltas em uma entrega estruturada.</td></tr></tbody></table></div>
-  </div>
-</section>
 
-<section class="section" id="analise">
+    <!-- CLAUDE CHAT -->
+    <div class="tool-block b-chat">
+      <div class="tool-block-header">
+        <span class="chip chip-chat"><span class="chip-dot dot-chat"></span>Claude Chat</span>
+      </div>
+      <div class="use-tabs">
+        <button class="tab-btn t-use" onclick="switchTab(this,'cc-use')">✓ Use quando</button>
+        <button class="tab-btn" onclick="switchTab(this,'cc-nope')">✗ Não use quando</button>
+      </div>
+      <div id="cc-use" class="tab-panel active">
+        <ul class="use-list">
+          <li>Criar ideias para uma aula, apresentação ou produto</li>
+          <li>Criar mensagens de WhatsApp, e-mails ou páginas</li>
+          <li>Comparar temas, resumir conteúdos e organizar conceitos</li>
+          <li>Perguntar algo simples durante o dia</li>
+          <li>Pesquisa e análise de informações de forma rápida</li>
+          <li>Continuar uma conversa fora do computador</li>
+        </ul>
+      </div>
+      <div id="cc-nope" class="tab-panel">
+        <ul class="nope-list">
+          <li>Precisa criar arquivos diretamente no computador</li>
+          <li>Quer executar código de verdade</li>
+          <li>Precisa conectar ferramentas externas de forma operacional</li>
+          <li>Precisa automatizar uma rotina com arquivos locais</li>
+        </ul>
+      </div>
+    </div>
+<!-- ══ 3 — COMPARATIVO ══ -->
+<div class="section" id="comparativo">
   <div class="wrap">
-    <div class="section-label">Análise detalhada</div>
-    <h2>Comparativo prático</h2>
-    <div class="grid-3"><div class="card orange"><h3>Claude Chat</h3><ul><li>Melhor para ideias e escrita.</li><li>Ótimo para análise rápida.</li><li>Mais simples para começar.</li><li>Menos indicado para executar tarefas em arquivos locais.</li></ul></div><div class="card purple"><h3>Cowork</h3><ul><li>Melhor para execução com documentos.</li><li>Ajuda a criar entregas mais completas.</li><li>Exige atenção a permissões e ferramentas.</li><li>Boa escolha para produtividade prática.</li></ul></div><div class="card pink"><h3>Claude Code</h3><ul><li>Melhor para projetos técnicos.</li><li>Trabalha com código e estrutura de arquivos.</li><li>Exige mais cuidado de configuração.</li><li>Ideal para automações, sites e apps.</li></ul></div></div>
-  </div>
-</section>
+    <div class="section-label">Comparativo</div>
+    <h2>Análise detalhada</h2>
 
-<section class="section" id="modelos">
-  <div class="wrap">
-    <div class="section-label">Modelos</div>
-    <h2>Qual modelo é melhor?</h2>
-    <div class="info-box"><div class="ico">🧠</div><p><strong>O melhor modelo depende da tarefa.</strong> Modelos mais poderosos costumam raciocinar melhor em tarefas complexas, mas também podem consumir mais limite. Modelos mais rápidos são ótimos para tarefas simples, repetitivas e objetivas.</p></div>
-    <div class="grid-3"><div class="card green"><h3>Haiku</h3><p>Mais rápido e econômico. Bom para respostas simples, classificações, resumos curtos e tarefas repetitivas.</p></div><div class="card purple"><h3>Sonnet</h3><p>Melhor equilíbrio para uso diário. Bom para relatórios, análises, criação de conteúdo, estudos e automações.</p></div><div class="card orange"><h3>Opus</h3><p>Mais indicado para tarefas complexas, raciocínio profundo, decisões estratégicas e análises longas.</p></div></div>
+    <div class="tbl-sub">Geral</div>
+    <div class="tbl-wrap">
+      <table class="tbl"><thead><tr>
+        <th>Critério</th><th class="th-chat">Claude Chat</th><th class="th-cwork">Cowork</th><th class="th-code">Claude Code</th>
+      </tr></thead><tbody>
+        <tr><td>Onde roda</td><td>Navegador web</td><td>App Desktop</td><td>Terminal CLI</td></tr>
+        <tr><td>Visual / UX</td><td>Chat familiar</td><td>Interface moderna</td><td>Linha de comando</td></tr>
+        <tr><td>Precisa instalar?</td><td class="v-yes">Não</td><td>Sim — Desktop App</td><td>Sim — Node + CLI</td></tr>
+        <tr><td>Disponível em</td><td>Web + Mobile</td><td>Mac + Windows</td><td>Mac + Linux + Windows</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="tbl-sub">Arquivos, pastas e internet</div>
+    <div class="tbl-wrap">
+      <table class="tbl"><thead><tr>
+        <th>Critério</th><th class="th-chat">Claude Chat</th><th class="th-cwork">Cowork</th><th class="th-code">Claude Code</th>
+      </tr></thead><tbody>
+        <tr><td>Ler arquivos</td><td>Upload manual</td><td>Pasta selecionada</td><td>Acesso total</td></tr>
+        <tr><td>Criar / editar</td><td>Só na tela</td><td>Direto na pasta</td><td>Qualquer arquivo</td></tr>
+        <tr><td>Navegar pastas</td><td class="v-no">Não</td><td>Pasta escolhida</td><td>Qualquer diretório</td></tr>
+        <tr><td>Acesso à internet</td><td>Busca limitada</td><td>Via MCPs</td><td>Terminal + MCPs</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="tbl-sub">Código e execução</div>
+    <div class="tbl-wrap">
+      <table class="tbl"><thead><tr>
+        <th>Critério</th><th class="th-chat">Claude Chat</th><th class="th-cwork">Cowork</th><th class="th-code">Claude Code</th>
+      </tr></thead><tbody>
+        <tr><td>Gera código</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Roda código</td><td>Artifacts preview</td><td>Shell sandbox</td><td>Shell completo</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="tbl-sub">Nível de autonomia</div>
+    <div class="tbl-wrap">
+      <table class="tbl"><thead><tr>
+        <th>Tarefa</th><th class="th-chat">Claude Chat</th><th class="th-cwork">Cowork</th><th class="th-code">Claude Code</th>
+      </tr></thead><tbody>
+        <tr><td>Responde perguntas</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Executa tarefas definidas</td><td class="v-part">Parcial</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Toma decisões intermediárias</td><td class="v-no">Não</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Itera até resolver</td><td class="v-no">Não</td><td class="v-part">Parcial</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Planeja múltiplos passos</td><td class="v-no">Não</td><td class="v-yes">Sim</td><td class="v-yes">Sim</td></tr>
+        <tr><td>Lida com erros sozinho</td><td class="v-no">Não</td><td class="v-part">Parcial</td><td class="v-yes">Sim</td></tr>
+      </tbody></table>
+    </div>
   </div>
-</section>
+<!-- ══ 7 — MODELOS ══ -->
+<div class="section" id="modelos">
+  <div class="wrap">
+    <div class="section-label">Modelos de pensamento</div>
+    <h2>Qual modelo usar?</h2>
+    <div class="info-box" style="margin-bottom:20px">
+      <div class="ico">💡</div>
+      <p>Pode parecer que um modelo mais poderoso "se esforça menos" — mas é o contrário. <strong>Opus processa mais, raciocina mais fundo e custa mais tokens por tarefa</strong>, por isso tem maior impacto nos seus limites. Haiku é mais leve e econômico justamente por ser mais direto e rápido.</p>
+    </div>
+      <div class="model-card" style="border-color:rgba(217,119,87,.25)">
+        <h3 style="color:var(--chat)">Opus</h3>
+        <div class="mv">4.7</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Moderada</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Muito alta</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--no)">Maior</span></div>
+        <p>Raciocínio complexo, análise profunda e código avançado. Estratégia e decisões difíceis.</p>
+      </div>
+      <div class="model-card" style="border-color:rgba(124,92,191,.25)">
+        <h3 style="color:var(--cwork2)">Sonnet</h3>
+        <div class="mv">4.6</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Rápida</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Alta</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--part)">Médio</span></div>
+        <p>Equilíbrio ideal. Uso diário, relatórios, conteúdo, análise e automações.</p>
+      </div>
+      <div class="model-card" style="border-color:rgba(76,175,125,.2)">
+        <h3 style="color:var(--ok)">Haiku</h3>
+        <div class="mv">4.5</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Muito rápida</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Boa</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--ok)">Menor</span></div>
+        <p>Tarefas rápidas e repetitivas. Resumos simples, classificações e respostas curtas.</p>
+      </div>
+    </div>
 
 </div>
 
