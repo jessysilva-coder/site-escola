@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aula 0 — Integração e Nivelamento | Implementação Claude</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--chat:#d97757;--chat2:#e8956a;--cwork:#7c5cbf;--cwork2:#9b7dd4;--code:#c45c8a;--code2:#d97aaa;--bg:#0c0b0a;--card:#1a1714;--card2:#211e1a;--border:#2e2822;--border2:#3d3630;--text:#f0ebe4;--muted:#8a7f74;--muted2:#5e5650;--ok:#4caf7d;--no:#e07070;--part:#d4a843;--radius:12px;--hh:64px}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hh) + 12px)}
+    body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.45}
+    body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+    .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 24px}
+    header{position:sticky;top:0;z-index:100;background:rgba(17,15,13,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--hh)}
+    .header-inner{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:14px}
+    .header-inner img{height:38px;object-fit:contain}.logo-text-fb{font-family:'Anton',sans-serif;font-size:1rem;color:var(--text)}.logo-text-fb span{color:var(--chat)}.header-btns{display:flex;gap:8px;align-items:center}
+    .hbtn{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:100px;text-decoration:none;transition:all .2s;white-space:nowrap;border:none;cursor:pointer}.hbtn-back{color:var(--muted);border:1px solid var(--border2);background:transparent}.hbtn-main{background:var(--chat);color:#fff;border:1px solid var(--chat2)}.hbtn-pdf{background:var(--card2);color:var(--muted);border:1px solid var(--border2)}
+    .hero{padding:48px 0 34px;text-align:center;position:relative}.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:680px;height:300px;background:radial-gradient(ellipse at center,rgba(124,92,191,.16) 0%,rgba(217,119,87,.08) 36%,transparent 72%);pointer-events:none}.hero-tag{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:block}
+    h1{font-family:'Anton',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:400;line-height:1.1;margin-bottom:12px;letter-spacing:.02em}.hero-sub{font-size:.92rem;color:var(--muted);line-height:1.75;max-width:680px;margin:0 auto}
+    .section{padding:44px 0;border-top:1px solid var(--border)}.section-label{font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}h2{font-family:'Anton',sans-serif;font-size:clamp(1.3rem,3vw,1.85rem);font-weight:400;letter-spacing:.03em;margin-bottom:22px}h3{font-family:'Anton',sans-serif;font-size:1.02rem;font-weight:400;letter-spacing:.02em;margin-bottom:10px}p{line-height:1.72}
+    .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.action-btn{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:10px 15px;font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .2s;border:1px solid var(--border2);color:var(--text);background:var(--card2)}.action-btn.primary{background:var(--chat);color:#fff;border-color:var(--chat2)}.action-btn.purple{background:rgba(124,92,191,.18);color:var(--cwork2);border-color:rgba(124,92,191,.35)}.action-btn.pink{background:rgba(196,92,138,.18);color:var(--code2);border-color:rgba(196,92,138,.35)}
+    .info-box{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 17px;display:flex;gap:11px;align-items:flex-start;margin-bottom:20px}.info-box .ico{font-size:1rem;flex-shrink:0;margin-top:2px}.info-box p{font-size:.84rem;color:var(--muted);line-height:1.66}.info-box strong{color:var(--text)}
+    .attention-box{background:rgba(224,112,112,.08);border:1px solid rgba(224,112,112,.24);border-radius:var(--radius);padding:15px 17px;margin-top:16px}.attention-box strong{display:block;font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.03em;font-size:1rem;color:#f1c0c0;margin-bottom:6px}.attention-box p,.attention-box li{font-size:.84rem;color:var(--muted);line-height:1.65}.attention-box ol{margin-left:18px;display:flex;flex-direction:column;gap:6px}
+    .purple-note{background:linear-gradient(135deg,rgba(124,92,191,.18),rgba(169,141,255,.08));border:1px solid rgba(169,141,255,.34);border-radius:var(--radius);padding:15px 17px;display:flex;gap:11px;align-items:flex-start;margin-top:16px}.purple-note .ico{font-size:1rem;flex-shrink:0;margin-top:2px}.purple-note strong{display:block;font-family:'Anton',sans-serif;font-size:1rem;font-weight:400;letter-spacing:.03em;color:#cbbcff;margin-bottom:5px}.purple-note p{font-size:.84rem;color:var(--muted)}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px}.card.orange{border-top:3px solid var(--chat)}.card.purple{border-top:3px solid var(--cwork)}.card.pink{border-top:3px solid var(--code)}.card.green{border-top:3px solid var(--ok)}.card.gold{border-top:3px solid var(--part)}.card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.62}.card ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:8px}.card li{display:flex;gap:7px}.card li::before{content:'→';color:var(--chat);flex-shrink:0}
+    .plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:18px}.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 15px}.plan-card h3{font-family:'Anton',sans-serif;font-size:1.08rem;font-weight:400;color:var(--text);margin-bottom:4px}.plan-price{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--chat);margin-bottom:6px;font-weight:500}.plan-for{font-size:.73rem;color:var(--muted2);margin-bottom:10px;font-style:italic}.plan-card p{font-size:.77rem;color:var(--muted);line-height:1.6}.plan-card.plan-pro{border-color:rgba(217,119,87,.42);box-shadow:0 0 0 1px rgba(217,119,87,.10) inset}
+    .image-clean{width:100%;display:block;border-radius:14px;margin:18px 0 0}.mini-list{display:flex;flex-direction:column;gap:10px}.mini-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:10px}.mini-item .num{width:26px;height:26px;border-radius:50%;background:rgba(217,119,87,.12);border:1px solid rgba(217,119,87,.32);color:var(--chat2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.68rem;flex-shrink:0}.mini-item p{font-size:.83rem;color:var(--muted)}.mini-item strong{color:var(--text)}
+    .prompt-box{background:#11100f;border:1px solid var(--border2);border-radius:11px;overflow:hidden;margin-top:14px}.prompt-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}.prompt-tools span{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2)}.copy-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:100px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:.61rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);border:1px solid rgba(217,119,87,.35);background:rgba(217,119,87,.12);cursor:pointer;transition:all .2s}.copy-btn.copied{background:rgba(76,175,125,.16);border-color:rgba(76,175,125,.35);color:#bde8d1}.prompt-text{width:100%;min-height:360px;border:none;resize:vertical;outline:none;display:block;padding:15px;background:transparent;color:#e7ddd3;font-family:'DM Mono',monospace;font-size:.75rem;line-height:1.65}
+    .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:14px}table{width:100%;border-collapse:collapse;background:var(--card)}th{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:var(--card2);border-bottom:1px solid var(--border);white-space:nowrap}td{font-size:.81rem;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}tr:last-child td{border-bottom:none}td:first-child{color:var(--text);font-weight:600}
+    footer{border-top:1px solid var(--border);padding:24px 0 28px;text-align:center;margin-top:48px}footer p{font-size:.78rem;color:var(--muted2)}
+    @media(max-width:780px){.grid-2,.grid-3{grid-template-columns:1fr}.header-inner{padding:0 14px;gap:8px}.hbtn{padding:6px 10px}.prompt-text{min-height:520px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <img src="logo_branco.png" alt="Implementação Claude" onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/>
+    <div id="ltxt" style="display:none" class="logo-text-fb">IMPL. <span>CLAUDE</span></div>
+    <div class="header-btns">
+      <a class="hbtn hbtn-back" href="./alunos-JUN2026.html">← Início</a>
+      <button class="hbtn hbtn-pdf" onclick="downloadPDF()">Baixar PDF</button>
+      <a class="hbtn hbtn-main" href="https://claude.ai/upgrade" target="_blank">Assinar Claude</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="border-top:none">
+  <div class="wrap">
+    <span class="hero-tag">Material de Apoio</span>
+    <h1>Aula 0 — Integração e Nivelamento</h1>
+    <p class="hero-sub">Primeiros passos para preparar o Claude: planos, instalação, extensão do navegador, limites de uso, configurações de segurança, memória e escolha da ferramenta certa para cada tarefa.</p>
+  </div>
+</section>
+
+<div id="main-content">
+
+<section class="section" id="planos">
+  <div class="wrap">
+    <div class="section-label">Comece por aqui</div>
+    <h2>Planos e Preços</h2>
+    <div class="info-box"><div class="ico">💳</div><p><strong>Antes de configurar o ambiente, escolha o plano adequado para o seu uso.</strong> Para acompanhar os exercícios práticos com mais conforto, o plano Pro costuma ser o ponto de partida para usuários individuais. Ainda assim, todos os planos têm limites de uso, que podem variar conforme modelo, horário, duração da sessão e volume de arquivos.</p></div>
+    <div class="plan-grid">
+      <div class="plan-card"><h3>Free</h3><div class="plan-price">Gratuito</div><div class="plan-for">Para testar a ferramenta</div><p>Acesso inicial ao Claude, com limites de uso mais restritos.</p></div>
+      <div class="plan-card plan-pro"><h3>Pro</h3><div class="plan-price">Pago mensal</div><div class="plan-for">Para uso individual frequente</div><p>Mais capacidade de uso, acesso a recursos avançados e melhor experiência em tarefas práticas.</p></div>
+      <div class="plan-card"><h3>Max</h3><div class="plan-price">Uso intenso</div><div class="plan-for">Para quem usa muito</div><p>Limites ampliados para tarefas longas, análises maiores e uso recorrente.</p></div>
+      <div class="plan-card"><h3>Team</h3><div class="plan-price">Por usuário</div><div class="plan-for">Para equipes</div><p>Recursos de colaboração, administração e uso compartilhado em times.</p></div>
+      <div class="plan-card"><h3>Enterprise</h3><div class="plan-price">Sob consulta</div><div class="plan-for">Para empresas</div><p>Governança, segurança, administração avançada e condições empresariais.</p></div>
+    </div>
+    <div class="btn-row"><a class="action-btn primary" href="https://claude.ai/upgrade" target="_blank">Fazer assinatura do Claude</a></div>
+    <img class="image-clean" src="planos_preços.png" alt="Imagem explicativa sobre planos e preços do Claude"/>
+  </div>
+</section>
+
+<section class="section" id="desktop">
+  <div class="wrap">
+    <div class="section-label">Instalação</div>
+    <h2>Instalação do Claude no computador</h2>
+    <div class="info-box"><div class="ico">💻</div><p><strong>A versão desktop deixa o Claude mais acessível no dia a dia.</strong> Ela permite abrir o aplicativo diretamente no computador, trabalhar com recursos do ambiente local e preparar o caminho para algumas integrações mais avançadas.</p></div>
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p><strong>Acesse a página oficial de downloads.</strong> Use o botão abaixo para baixar a versão correta para Windows ou Mac.</p></div>
+      <div class="mini-item"><div class="num">2</div><p><strong>Execute o instalador.</strong> Depois do download, abra o arquivo baixado e siga as instruções da tela.</p></div>
+      <div class="mini-item"><div class="num">3</div><p><strong>Faça login na sua conta.</strong> Use o mesmo e-mail da assinatura ou da conta que você vai usar durante as aulas.</p></div>
+    </div>
+    <div class="btn-row"><a class="action-btn primary" href="https://claude.ai/downloads" target="_blank">Baixar Claude Desktop</a></div>
+    <img class="image-clean" src="instalação_desktop.png" alt="Passo a passo de instalação do Claude Desktop"/>
+    <div class="attention-box">
+      <strong>Atenção: instalação de programas no computador</strong>
+      <p>Em computadores corporativos, pode ser necessário ter perfil de administrador ou solicitar a instalação para o setor de TI. Se a instalação pedir senha de administrador ou bloquear a execução, não force o processo: peça apoio ao responsável técnico.</p><br/>
+      <p><strong>Como verificar se seu perfil é administrador no Windows:</strong></p>
+      <ol>
+        <li>Abra o menu Iniciar e pesquise por <strong>Configurações</strong>.</li>
+        <li>Acesse <strong>Contas</strong>.</li>
+        <li>Entre em <strong>Suas informações</strong>.</li>
+        <li>Veja se aparece a indicação <strong>Administrador</strong> abaixo do nome da conta.</li>
+        <li>Se aparecer <strong>Usuário padrão</strong>, solicite a instalação para o TI.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="navegador">
+  <div class="wrap">
+    <div class="section-label">Navegador</div>
+    <h2>Instalação no navegador</h2>
+    <div class="info-box"><div class="ico">🌐</div><p><strong>Extensão do navegador é um complemento instalado no Chrome ou Edge.</strong> Ela adiciona funções ao navegador para facilitar tarefas, automatizar ações em páginas e conectar o Claude ao fluxo de navegação.</p></div>
+    <div class="grid-2">
+      <div class="card orange"><h3>Onde instalar?</h3><p>Pode ser usada no Google Chrome e também no Microsoft Edge, já que os dois aceitam extensões compatíveis com a Chrome Web Store.</p></div>
+      <div class="card purple"><h3>Cuidados importantes</h3><p>Extensões podem ler páginas e interagir com sites. Use apenas links oficiais, revise permissões e evite usar em páginas com dados sensíveis sem necessidade.</p></div>
+    </div>
+    <div class="btn-row"><a class="action-btn purple" href="https://claude.com/claude-for-chrome" target="_blank">Instalar Claude no navegador</a></div>
+  </div>
+</section>
+
+<section class="section" id="celular">
+  <div class="wrap">
+    <div class="section-label">Mobile</div>
+    <h2>Como baixar o Claude no celular</h2>
+    <div class="info-box"><div class="ico">📱</div><p><strong>O aplicativo mobile ajuda em consultas rápidas e continuidade de conversas.</strong> Ele é útil para revisar ideias, continuar uma conversa fora do computador e acessar o Claude em momentos de estudo ou trabalho leve.</p></div>
+    <div class="grid-2">
+      <div class="card green"><h3>iPhone ou iPad</h3><ul><li>Abra a App Store.</li><li>Pesquise por <strong>Claude by Anthropic</strong>.</li><li>Confira se o desenvolvedor é <strong>Anthropic PBC</strong>.</li><li>Instale e faça login na sua conta.</li></ul></div>
+      <div class="card orange"><h3>Android</h3><ul><li>Abra a Google Play Store.</li><li>Pesquise por <strong>Claude by Anthropic</strong>.</li><li>Confira se o desenvolvedor é <strong>Anthropic</strong>.</li><li>Instale e faça login na sua conta.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tokens">
+  <div class="wrap">
+    <div class="section-label">Limites</div>
+    <h2>O que é um token?</h2>
+    <div class="info-box"><div class="ico">💡</div><p><strong>Token é a unidade que a I.A usa para ler, processar e gerar informações.</strong> Ele pode ser uma palavra, parte de uma palavra, número, símbolo, espaço ou trecho de código. Na prática, quanto maior o texto, mais arquivos e mais complexa a resposta, maior tende a ser o consumo de tokens.</p></div>
+    <div class="grid-3"><div class="card orange"><h3>Entrada</h3><p>Textos, arquivos, imagens, instruções e contexto enviado para o Claude.</p></div><div class="card purple"><h3>Processamento</h3><p>O raciocínio usado para entender o pedido, analisar dados e comparar informações.</p></div><div class="card pink"><h3>Saída</h3><p>A resposta gerada: textos, tabelas, códigos, análises, resumos e estruturas.</p></div></div>
+    <img class="image-clean" src="tokenizer.png" alt="Imagem explicativa sobre tokenizer e consumo de tokens"/>
+  </div>
+</section>
+
+<section class="section" id="limites">
+  <div class="wrap">
+    <div class="section-label">Uso da conta</div>
+    <h2>Limites de uso do Claude</h2>
+    <div class="info-box"><div class="ico">⏱️</div><p><strong>O Claude trabalha com limites de uso.</strong> Esses limites controlam o quanto você pode interagir com a ferramenta em determinados períodos e podem variar de acordo com o plano, modelo escolhido, quantidade de arquivos, tamanho das conversas e demanda do sistema.</p></div>
+    <div class="grid-3"><div class="card orange"><h3>Limite por sessão</h3><p>Capacidade disponível dentro de uma janela de uso. Conversas longas e arquivos grandes podem consumir mais rápido.</p></div><div class="card purple"><h3>Limite semanal</h3><p>Alguns planos exibem limites acumulados para o período da semana, especialmente em usos mais intensos.</p></div><div class="card pink"><h3>Limite por modelo</h3><p>Modelos mais avançados podem consumir mais capacidade do que modelos mais rápidos e leves.</p></div></div>
+    <div class="purple-note"><div class="ico">📍</div><div><strong>Onde acompanhar seus limites</strong><p>Para consultar seus limites, acesse <strong>Configurações → Uso</strong> e acompanhe a utilização disponível na sua conta.</p></div></div>
+    <img class="image-clean" src="limites.png" alt="Imagem mostrando a tela de limites de uso do Claude"/>
+  </div>
+</section>
+
+<section class="section" id="seguranca-config">
+  <div class="wrap">
+    <div class="section-label">Configurações</div>
+    <h2>Configurações de segurança</h2>
+    <div class="info-box"><div class="ico">🔐</div><p><strong>Antes de usar o Claude com arquivos, extensões e memória, revise as configurações principais.</strong> Isso ajuda a trabalhar com mais controle, privacidade e previsibilidade.</p></div>
+    <div class="grid-2">
+      <div class="card orange"><h3>Geral</h3><ul><li><strong>Instruções para o Claude:</strong> configure preferências gerais de resposta, estilo e forma de trabalho.</li><li><strong>Notificações:</strong> ajuste os alertas conforme sua rotina.</li></ul></div>
+      <div class="card purple"><h3>Privacidade</h3><ul><li><strong>Ajudar a melhorar o Claude:</strong> deixe desmarcado se não quiser contribuir com dados para melhorias.</li><li><strong>Preferências de memória:</strong> revise o que pode ser pesquisado, referenciado ou importado.</li></ul></div>
+    </div>
+    <div class="attention-box"><strong>Configuração recomendada</strong><p>Em <strong>Privacidade</strong>, revise a opção <strong>Ajudar a melhorar o Claude</strong>. Para uso em treinamentos, empresas ou bases com dados sensíveis, a recomendação é manter essa opção desmarcada.</p></div>
+  </div>
+</section>
+
+<section class="section" id="memoria">
+  <div class="wrap">
+    <div class="section-label">Memória</div>
+    <h2>Preferências de memória</h2>
+    <div class="info-box"><div class="ico">🧠</div><p><strong>A memória ajuda o Claude a manter contexto sobre preferências, instruções e projetos.</strong> Nas configurações, revise opções como <strong>Pesquisar e referenciar conversas</strong> e <strong>Importar memória de outros provedores de I.A</strong>.</p></div>
+    <div class="grid-2"><div class="card green"><h3>Pesquisar e referenciar conversas</h3><p>Permite que o Claude use conversas anteriores como referência para dar respostas mais contextualizadas.</p></div><div class="card gold"><h3>Importar memória</h3><p>Ajuda a migrar preferências e contexto de outros provedores de I.A, quando esse recurso estiver disponível para sua conta.</p></div></div>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt para exportar memórias</span><button class="copy-btn" onclick="copyPrompt('memoryPrompt', this)">⧉ Copiar prompt</button></div>
+      <textarea id="memoryPrompt" class="prompt-text" readonly>Export all of my stored memories and any context you've learned about me from past conversations. Preserve my words verbatim where possible, especially for instructions and preferences.
+
+## Categories (output in this order):
+
+1. **Instructions**: Rules I've explicitly asked you to follow going forward — tone, format, style, "always do X", "never do Y", and corrections to your behavior. Only include rules from stored memories, not from conversations.
+
+2. **Identity**: Name, age, location, education, family, relationships, languages, and personal interests.
+
+3. **Career**: Current and past roles, companies, and general skill areas.
+
+4. **Projects**: Projects I meaningfully built or committed to. Ideally ONE entry per project. Include what it does, current status, and any key decisions. Use the project name or a short descriptor as the first words of the entry.
+
+5. **Preferences**: Opinions, tastes, and working-style preferences that apply broadly.
+
+## Format:
+
+Use section headers for each category. Within each category, list one entry per line, sorted by oldest date first. Format each line as:
+
+[YYYY-MM-DD] - Entry content here.
+
+If no date is known, use [unknown] instead.
+
+## Output:
+- Wrap the entire export in a single code block for easy copying.
+- After the code block, state whether this is the complete set or if more remain.</textarea>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ferramentas">
+  <div class="wrap">
+    <div class="section-label">Ferramentas</div>
+    <h2>Modo de acesso a ferramentas</h2>
+    <div class="info-box"><div class="ico">🧰</div><p><strong>Nas configurações de ferramentas, use a lógica de carregar apenas quando necessário.</strong> Quanto menos ferramentas ativadas sem necessidade, menor a chance de confusão, consumo desnecessário ou acesso indevido a informações.</p></div>
+    <div class="grid-3"><div class="card orange"><h3>Antes de ativar</h3><p>Pergunte se a tarefa realmente precisa daquela ferramenta ou conector.</p></div><div class="card purple"><h3>Durante o uso</h3><p>Confirme permissões e revise o plano antes de executar ações importantes.</p></div><div class="card pink"><h3>Depois da tarefa</h3><p>Revise resultados, salve o que for necessário e evite manter acessos abertos sem motivo.</p></div></div>
+  </div>
+</section>
+
+<section class="section" id="tres-poderes">
+  <div class="wrap">
+    <div class="section-label">Visão geral</div>
+    <h2>1 ferramenta, 3 poderes</h2>
+    <div class="grid-3"><div class="card orange"><h3>Claude Chat</h3><p><strong>Pensar.</strong> Ideal para conversar, organizar ideias, escrever, analisar informações e estruturar raciocínios.</p></div><div class="card purple"><h3>Cowork</h3><p><strong>Fazer.</strong> Ajuda a trabalhar com arquivos, pastas, documentos, relatórios e tarefas mais operacionais.</p></div><div class="card pink"><h3>Claude Code</h3><p><strong>Construir.</strong> Voltado para código, desenvolvimento, automações técnicas, sites, apps e integrações.</p></div></div>
+  </div>
+</section>
+
+<section class="section" id="quando-usar">
+  <div class="wrap">
+    <div class="section-label">Decisão rápida</div>
+    <h2>Quando usar cada ferramenta</h2>
+    <div class="tbl-wrap"><table><thead><tr><th>Objetivo</th><th>Ferramenta indicada</th><th>Por quê?</th></tr></thead><tbody><tr><td>Escrever mensagens, roteiros e ideias</td><td>Claude Chat</td><td>É rápido, direto e ótimo para criação e organização de pensamento.</td></tr><tr><td>Analisar arquivos e criar entregas</td><td>Cowork</td><td>Trabalha melhor com arquivos, documentos e tarefas em etapas.</td></tr><tr><td>Criar sites, apps ou automações técnicas</td><td>Claude Code</td><td>Tem foco em desenvolvimento, código, testes e estrutura técnica.</td></tr><tr><td>Resolver dúvida rápida no celular</td><td>Claude Chat</td><td>É o caminho mais simples para consultas pontuais.</td></tr><tr><td>Organizar material de aula ou relatório</td><td>Cowork</td><td>Ajuda a transformar informações soltas em uma entrega estruturada.</td></tr></tbody></table></div>
+  </div>
+</section>
+
+<section class="section" id="analise">
+  <div class="wrap">
+    <div class="section-label">Análise detalhada</div>
+    <h2>Comparativo prático</h2>
+    <div class="grid-3"><div class="card orange"><h3>Claude Chat</h3><ul><li>Melhor para ideias e escrita.</li><li>Ótimo para análise rápida.</li><li>Mais simples para começar.</li><li>Menos indicado para executar tarefas em arquivos locais.</li></ul></div><div class="card purple"><h3>Cowork</h3><ul><li>Melhor para execução com documentos.</li><li>Ajuda a criar entregas mais completas.</li><li>Exige atenção a permissões e ferramentas.</li><li>Boa escolha para produtividade prática.</li></ul></div><div class="card pink"><h3>Claude Code</h3><ul><li>Melhor para projetos técnicos.</li><li>Trabalha com código e estrutura de arquivos.</li><li>Exige mais cuidado de configuração.</li><li>Ideal para automações, sites e apps.</li></ul></div></div>
+  </div>
+</section>
+
+<section class="section" id="modelos">
+  <div class="wrap">
+    <div class="section-label">Modelos</div>
+    <h2>Qual modelo é melhor?</h2>
+    <div class="info-box"><div class="ico">🧠</div><p><strong>O melhor modelo depende da tarefa.</strong> Modelos mais poderosos costumam raciocinar melhor em tarefas complexas, mas também podem consumir mais limite. Modelos mais rápidos são ótimos para tarefas simples, repetitivas e objetivas.</p></div>
+    <div class="grid-3"><div class="card green"><h3>Haiku</h3><p>Mais rápido e econômico. Bom para respostas simples, classificações, resumos curtos e tarefas repetitivas.</p></div><div class="card purple"><h3>Sonnet</h3><p>Melhor equilíbrio para uso diário. Bom para relatórios, análises, criação de conteúdo, estudos e automações.</p></div><div class="card orange"><h3>Opus</h3><p>Mais indicado para tarefas complexas, raciocínio profundo, decisões estratégicas e análises longas.</p></div></div>
+  </div>
+</section>
+
+</div>
+
+<footer><div class="wrap"><p>© 2026 Escola Karen Abecia · Todos os direitos reservados</p></div></footer>
+
+<script>
+function copyText(text, btn){navigator.clipboard.writeText(text).then(()=>{if(btn){const original=btn.innerHTML;btn.classList.add('copied');btn.innerHTML='✓ Copiado';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=original},1800)}})}
+function copyPrompt(id, btn){const textarea=document.getElementById(id);if(!textarea)return;copyText(textarea.value,btn)}
+function downloadPDF(){const original=document.title;document.title='implementacao_claude_aula0';window.print();document.title=original}
+</script>
+
+<style media="print">
+@page{margin:14mm;size:A4;background:#1a1714}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{background:#1a1714!important;color:#f0ebe4!important}body::before,body::after{display:none}header{position:static!important;background:#111!important}.hbtn-pdf,.hbtn-main,.hbtn-back,.copy-btn{display:none!important}.section,.card,.info-box,.attention-box,.purple-note,.mini-item,.plan-card{break-inside:avoid}a{color:inherit!important;text-decoration:none!important}
+</style>
+</body>
+</html>
