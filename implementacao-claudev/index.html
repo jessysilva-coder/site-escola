@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPLEMENTAÇÃO CLAUDE | Workshop Ao Vivo</title>
+    <title>IMPLEMENTAÇÃO CLAUDE | Lista de Espera</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -115,6 +115,56 @@
         .offer-green-border { border-color: var(--offer-green) !important; box-shadow: 0 0 30px var(--offer-green-glow); }
         .offer-green-button { background-color: var(--offer-green) !important; color: #03120a !important; box-shadow: 0 0 18px var(--offer-green-glow) !important; }
         .offer-green-button:hover { background-color: #ffffff !important; color: #03120a !important; box-shadow: 0 0 28px var(--offer-green-glow) !important; }
+
+        /* Lista de espera */
+        .waitlist-tag {
+            background: rgba(222, 115, 86, 0.12);
+            border: 1px solid rgba(222, 115, 86, 0.35);
+            color: var(--cyber-orange);
+        }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(10px);
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal-box {
+            width: min(100%, 520px);
+            background: rgba(10, 10, 10, 0.96);
+            border: 1px solid rgba(222, 115, 86, 0.45);
+            box-shadow: 0 0 45px rgba(222, 115, 86, 0.18);
+        }
+        .form-input {
+            width: 100%;
+            background: rgba(24, 24, 27, 0.92);
+            border: 1px solid rgba(222, 115, 86, 0.22);
+            color: #ffffff;
+            padding: 14px 16px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+        .form-input:focus {
+            border-color: var(--cyber-orange);
+            box-shadow: 0 0 0 3px rgba(222, 115, 86, 0.12);
+        }
+        .form-input::placeholder { color: #71717a; }
+        .status-success {
+            border: 1px solid rgba(34, 197, 94, 0.45);
+            background: rgba(34, 197, 94, 0.10);
+            color: #86efac;
+        }
+        .status-error {
+            border: 1px solid rgba(248, 113, 113, 0.45);
+            background: rgba(248, 113, 113, 0.10);
+            color: #fecaca;
+        }
+
     </style>
 </head>
 <body class="bg-grid">
@@ -127,67 +177,42 @@
         <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest text-gray-400">
             <a href="#programa" class="hover:text-orange-400 transition">Programa</a>
             <a href="#por-que-claude" class="hover:text-orange-400 transition">O Claude</a>
-            <a href="#oferta" class="hover:text-orange-400 transition">Matrícula</a>
+            <a href="#lista-espera" class="hover:text-orange-400 transition">Lista de espera</a>
         </div>
     </nav>
 
     <!-- Hero -->
     <section class="relative py-20 px-6 overflow-hidden">
         <div class="max-w-5xl mx-auto text-center relative z-10">
-            <h1 class="text-3xl md:text-5xl font-black mb-8 tracking-tight leading-tight text-white uppercase">
-                5 aulas para transformar o <span class="text-orange-500 text-glitch">Claude</span> <br/>
-                em resultado real no seu trabalho
-            </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light">
-                Domine a ferramenta de I.A mais completa para o ambiente profissional através de estudos de caso reais e implementação guiada.
-            </p>
-            <div class="flex flex-col items-center gap-4">
-                <a href="https://pay.hotmart.com/J105543694P?off=uxajd3q0" target="_blank" class="btn-primary px-10 py-5 text-base font-black uppercase tracking-widest transition-all transform hover:scale-105">
-                    Garantir minha vaga na implementação
-                </a>
-                <div class="mono text-xs text-orange-400 tracking-[0.3em] uppercase opacity-80 font-bold">
-                    Vagas Limitadas
-                </div>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full waitlist-tag mono text-[11px] uppercase tracking-[0.18em] font-bold mb-8">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+                Matrículas encerradas
             </div>
-        </div>
-    </section>
-
-    <!-- Specs Section -->
-    <section class="py-16 bg-zinc-950/80" id="programa">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="cyber-card p-8">
-                    <i data-lucide="video" class="text-orange-500 mb-4 h-7 w-7"></i>
-                    <h3 class="text-xl font-bold mb-2">Interação Total</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Sessões via Teams com câmara e microfone abertos para resolução de problemas reais em conjunto.</p>
-                </div>
-                <div class="cyber-card p-8">
-                    <i data-lucide="target" class="text-orange-500 mb-4 h-7 w-7"></i>
-                     <h3 class="text-xl font-bold mb-2">Alinhado com o Mercado</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Estudos de caso e aplicações atualizadas com as necessidades do mercado e os recursos mais recentes.</p>
-                </div>
-                <div class="cyber-card p-8">
-                    <i data-lucide="zap" class="text-orange-500 mb-4 h-7 w-7"></i>
-                    <h3 class="text-xl font-bold mb-2">Suporte Contínuo</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Whatsapp Ativo para tirar dúvidas e compartilhar Dashboards criados durante a jornada.</p>
-                </div>
+            <h1 class="text-3xl md:text-5xl font-black mb-8 tracking-tight leading-tight text-white uppercase">
+                Entre na <span class="text-orange-500 text-glitch">lista de espera</span> <br/>
+                da Implementação Claude — Turma 2
+            </h1>
+            <div class="flex flex-col items-center gap-4">
+                <button type="button" data-open-waitlist class="btn-primary px-10 py-5 text-base font-black uppercase tracking-widest transition-all transform hover:scale-105">
+                    Entrar na lista de espera
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Agenda -->
-    <section class="py-20 px-6">
+    <section id="programa" class="py-20 px-6 bg-zinc-950/80">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-2xl font-bold mb-16 text-center flex items-center justify-center gap-4 tracking-tighter uppercase">
                 <span class="h-px w-8 bg-orange-500/50"></span>
-                Cronograma de Execução
+                Conheça os detalhes da próxima implementação:
                 <span class="h-px w-8 bg-orange-500/50"></span>
             </h2>
             
             <div class="space-y-4">
                 <div class="flex items-center gap-8 p-6 cyber-card extra-class-card">
                     <div class="mono extra-class-date text-xl font-bold text-center leading-none">
-                        02<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">EXTRA</span>
                     </div>
                     <div>
                         <div class="mono text-[10px] extra-class-label uppercase tracking-[0.25em] mb-2 font-bold">Aula extra de integração</div>
@@ -197,7 +222,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        08<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">01</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">O que precisa saber sobre o Claude I.A</h4>
@@ -206,7 +231,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        15<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">02</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Excel</h4>
@@ -215,7 +240,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        22<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">03</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Power BI</h4>
@@ -224,7 +249,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        29<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">04</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Criação de Dashboards com Claude Live Artifacts</h4>
@@ -233,7 +258,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        06<br/><span class="text-[10px] uppercase opacity-70">JUL</span>
+                        AULA<br/><span class="text-[10px] uppercase opacity-70">05</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Visual, aplicativos e páginas</h4>
@@ -242,17 +267,9 @@
                 </div>
             </div>
 
-            <div class="mt-10 cyber-card p-8 border-l-4 border-orange-500">
-                <div class="flex flex-col md:flex-row gap-6 md:items-center">
-                    <div class="flex-shrink-0 w-14 h-14 rounded bg-orange-500/10 flex items-center justify-center">
-                        <i data-lucide="clock" class="text-orange-500 w-7 h-7"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-white uppercase tracking-tight mb-2">Horários e acesso às gravações</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">Todas as aulas acontecerão às <strong class="text-white">19:30</strong> e ficarão gravadas para consulta por <strong class="text-white">12 meses após o evento</strong>.</p>
-                    </div>
-                </div>
-            </div>
+            <p class="mt-10 text-center text-gray-400 text-sm md:text-base leading-relaxed border-t border-orange-500/20 pt-8">
+                Esse conteúdo está em constante construção para ficar alinhado com as necessidades do mercado.
+            </p>
         </div>
     </section>
 
@@ -307,72 +324,41 @@
         </div>
     </section>
 
-    <!-- Special Bonus -->
-    <section class="py-20 px-6">
-        <div class="max-w-4xl mx-auto bg-zinc-950 border border-orange-500/40 p-8 md:p-12 text-center relative">
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-black px-6 py-1 font-bold mono uppercase text-xs">
-                Bônus exclusivo
-            </div>
-            <h2 class="text-3xl md:text-5xl font-black mb-8 text-white uppercase tracking-tighter">I.A COM DADOS</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
-                <div class="p-3 cyber-card badge-chatgpt text-[10px] font-bold mono bg-zinc-900/50 uppercase">ChatGPT</div>
-                <div class="p-3 cyber-card badge-gemini text-[10px] font-bold mono bg-zinc-900/50 uppercase">Gemini</div>
-                <div class="p-3 cyber-card badge-manus text-[10px] font-bold mono bg-zinc-900/50 uppercase">Manus</div>
-                <div class="p-3 cyber-card badge-claude text-[10px] font-bold mono bg-zinc-900/50 uppercase">Claude</div>
-                <div class="p-3 cyber-card badge-copilot text-[10px] font-bold mono bg-zinc-900/50 uppercase">Copilot</div>
-            </div>
-
-            <p class="text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Aulas gravadas direto ao ponto para consultar quantas vezes quiser, exercícios práticos e foco total em produtividade com dados.
-            </p>
-            
-            <a href="treinamento.html" class="px-8 py-3 border border-orange-500 text-orange-500 font-bold uppercase text-xs btn-outline-readable transition-all">
-                Consultar conteúdo completo
-            </a>
-        </div>
-    </section>
-
-    <!-- Pricing Table -->
-    <section id="oferta" class="py-20 px-6 bg-zinc-950">
+    <!-- Waitlist Section -->
+    <section id="lista-espera" class="py-20 px-6 bg-zinc-950">
         <div class="max-w-5xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-8 items-stretch">
-                <!-- Normal -->
-                <div class="cyber-card p-10 flex flex-col opacity-60">
-                    <h3 class="text-xl font-bold mb-8 uppercase text-gray-500">Oferta Essencial</h3>
-                    <ul class="space-y-4 mb-12 flex-grow text-sm text-gray-400">
-                        <li class="flex items-center gap-3"><i data-lucide="check" class="text-orange-500 w-4 h-4"></i> 5 Aulas Ao Vivo + Aula Extra de Integração</li>
-                        <li class="flex items-center gap-3"><i data-lucide="check" class="text-orange-500 w-4 h-4"></i> Gravação dos Encontros</li>
-                    </ul>
-                    <div class="text-3xl font-black mb-8 text-white">R$ 997,00</div>
-                    <button class="w-full py-4 border border-zinc-800 text-zinc-600 font-bold uppercase text-xs cursor-not-allowed">Indisponível</button>
+            <div class="cyber-card p-8 md:p-12 border-2 border-orange-500/40 bg-zinc-900 relative text-center">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-black px-5 py-1 font-bold text-[10px] uppercase whitespace-nowrap">
+                    Matrículas encerradas
                 </div>
 
-                <!-- Special -->
-                <div class="cyber-card p-10 border-2 border-orange-500 bg-zinc-900 relative shadow-2xl offer-green-border">
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 offer-green-bg px-4 py-1 font-bold text-[10px] uppercase whitespace-nowrap">
-                        Melhor Oferta
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2 uppercase offer-green-text tracking-tighter">IMPLEMENTAÇÃO + BÔNUS</h3>
-                    <p class="text-gray-400 text-sm mb-10 italic">O caminho completo para domínio de I.A.</p>
-                    
-                    <ul class="space-y-4 mb-12 text-sm font-semibold">
-                        <li class="flex items-center gap-3"><i data-lucide="check-circle" class="offer-green-text w-5 h-5"></i> 5 Aulas Ao Vivo via Teams + Aula Extra de Integração</li>
-                        <li class="flex items-center gap-3 text-white"><i data-lucide="message-circle" class="offer-green-text w-5 h-5"></i> Grupo de Suporte WhatsApp</li>
-                        <li class="flex items-center gap-3 offer-green-text font-bold"><i data-lucide="plus" class="w-5 h-5"></i> Treinamento COMPLETO I.A com Dados</li>
-                    </ul>
-                    
-                    <div class="mb-10">
-                        <div class="text-xs text-zinc-500 line-through mb-1">De R$ 1.994,00</div>
-                        <div class="offer-green-text text-xs font-bold mb-4 uppercase">R$ 300,00 DE DESCONTO APLICADO</div>
-                        <div class="text-2xl font-black text-white">12x R$ 72,07</div>
-                        <div class="text-lg text-gray-400">ou R$ 697,00 à vista</div>
-                    </div>
-                    
-                    <a href="https://pay.hotmart.com/J105543694P?off=uxajd3q0" target="_blank" class="w-full py-6 offer-green-button text-black font-black uppercase tracking-widest text-base text-center inline-block transition-all transform hover:scale-105">
-                        Garantir minha vaga na implementação
-                    </a>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full waitlist-tag mono text-[11px] uppercase tracking-[0.18em] font-bold mb-8">
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                    Turma 2
                 </div>
+
+                <h2 class="text-3xl md:text-5xl font-black mb-6 text-white uppercase tracking-tighter">
+                    A próxima turma pode abrir em breve
+                </h2>
+
+
+                <div class="max-w-3xl mx-auto mb-10 text-left">
+                    <div class="cyber-card p-6 md:p-7 border-l-4 border-orange-500">
+                        <div class="flex gap-4 items-start">
+                            <div class="flex-shrink-0 w-12 h-12 rounded bg-orange-500/10 flex items-center justify-center">
+                                <i data-lucide="bell-ring" class="text-orange-500 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white mb-2 uppercase tracking-tight">Aviso antecipado</h4>
+                                <p class="text-gray-400 text-sm md:text-base leading-relaxed">Receba a abertura da próxima turma antes da divulgação geral, com uma oferta exclusiva, novo calendário e com o conteúdo atualizado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" data-open-waitlist class="w-full md:w-auto px-10 py-6 offer-green-button text-black font-black uppercase tracking-widest text-base text-center inline-block transition-all transform hover:scale-105">
+                    Quero entrar na lista de espera
+                </button>
             </div>
         </div>
     </section>
@@ -388,6 +374,56 @@
         </div>
     </section>
 
+
+    <!-- Modal Lista de Espera -->
+    <div id="waitlistModal" class="modal-backdrop" aria-hidden="true">
+        <div class="modal-box p-7 md:p-9 rounded-xl relative">
+            <button type="button" id="closeWaitlistModal" class="absolute top-4 right-4 text-gray-500 hover:text-white transition" aria-label="Fechar formulário">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="mb-7">
+                <div class="mono text-orange-500 text-[11px] uppercase tracking-[0.25em] font-bold mb-3">
+                    Lista de espera
+                </div>
+                <h3 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mb-3">
+                    Seja avisado sobre a próxima turma
+                </h3>
+            </div>
+
+            <form id="waitlistForm" method="POST" target="hidden_iframe" class="space-y-4">
+                <input type="hidden" name="origem" value="Página de lista de espera - Implementação Claude - Turma 2">
+                <input type="hidden" name="pagina" id="pageUrlField">
+                <input type="hidden" name="planilha_id" value="1U9TpKQYw8-XwT2KQbvVR3c9XW2JyrGet_ZEM-3n9aqI">
+                <input type="hidden" name="planilha_url" value="https://docs.google.com/spreadsheets/d/1U9TpKQYw8-XwT2KQbvVR3c9XW2JyrGet_ZEM-3n9aqI/edit?gid=0#gid=0">
+                <input type="hidden" name="app_script_url" value="https://script.google.com/macros/s/AKfycbzjK4AATuAYk_52KABXgof-5rKqnuxDB3r9BhYf8BsXs4sbPgsakRB88AEVyuLdY055/exec">
+
+                <div>
+                    <label for="nome" class="block text-xs mono uppercase tracking-[0.18em] text-gray-500 mb-2">Nome</label>
+                    <input id="nome" name="nome" type="text" required class="form-input rounded-lg" placeholder="Seu nome completo">
+                </div>
+
+                <div>
+                    <label for="telefone" class="block text-xs mono uppercase tracking-[0.18em] text-gray-500 mb-2">Telefone / WhatsApp</label>
+                    <input id="telefone" name="telefone" type="tel" required class="form-input rounded-lg" placeholder="(00) 00000-0000">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-xs mono uppercase tracking-[0.18em] text-gray-500 mb-2">E-mail</label>
+                    <input id="email" name="email" type="email" required class="form-input rounded-lg" placeholder="seuemail@exemplo.com">
+                </div>
+
+                <button id="submitWaitlist" type="submit" class="w-full py-4 offer-green-button font-black uppercase tracking-widest rounded-lg transition-all">
+                    Confirmar cadastro
+                </button>
+
+                <div id="formStatus" class="hidden rounded-lg p-4 text-sm leading-relaxed"></div>
+            </form>
+
+            <iframe name="hidden_iframe" id="hidden_iframe" class="hidden"></iframe>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="py-12 px-6 text-center border-t border-orange-900/10 text-gray-700 text-[10px] mono uppercase">
         <div class="mono text-sm font-bold tracking-tighter mb-4">
@@ -397,6 +433,97 @@
     </footer>
 
     <script>
+        /*
+            Planilha de destino:
+            https://docs.google.com/spreadsheets/d/1U9TpKQYw8-XwT2KQbvVR3c9XW2JyrGet_ZEM-3n9aqI/edit?gid=0#gid=0
+
+            Para o formulário funcionar:
+            1) Publique o Apps Script como App da Web.
+            2) Copie a URL de implantação do App da Web.
+            3) URL do App da Web já configurada abaixo.
+        */
+        const WAITLIST_SHEET_ID = "1U9TpKQYw8-XwT2KQbvVR3c9XW2JyrGet_ZEM-3n9aqI";
+        const WAITLIST_SHEET_URL = "https://docs.google.com/spreadsheets/d/1U9TpKQYw8-XwT2KQbvVR3c9XW2JyrGet_ZEM-3n9aqI/edit?gid=0#gid=0";
+        const WAITLIST_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjK4AATuAYk_52KABXgof-5rKqnuxDB3r9BhYf8BsXs4sbPgsakRB88AEVyuLdY055/exec";
+
+        const modal = document.getElementById("waitlistModal");
+        const openButtons = document.querySelectorAll("[data-open-waitlist]");
+        const closeButton = document.getElementById("closeWaitlistModal");
+        const form = document.getElementById("waitlistForm");
+        const submitButton = document.getElementById("submitWaitlist");
+        const statusBox = document.getElementById("formStatus");
+        const pageUrlField = document.getElementById("pageUrlField");
+        const phoneInput = document.getElementById("telefone");
+
+        function openModal() {
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+            setTimeout(() => document.getElementById("nome").focus(), 100);
+        }
+
+        function closeModal() {
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
+
+        function showStatus(type, message) {
+            statusBox.className = type === "success"
+                ? "rounded-lg p-4 text-sm leading-relaxed status-success"
+                : "rounded-lg p-4 text-sm leading-relaxed status-error";
+            statusBox.textContent = message;
+        }
+
+        openButtons.forEach(button => button.addEventListener("click", openModal));
+        closeButton.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", function(event) {
+            if (event.target === modal) closeModal();
+        });
+
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Escape" && modal.classList.contains("active")) closeModal();
+        });
+
+        phoneInput.addEventListener("input", function(event) {
+            let value = event.target.value.replace(/\D/g, "").slice(0, 11);
+
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3");
+            } else if (value.length > 6) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, "($1) $2");
+            } else {
+                value = value.replace(/^(\d*)/, "($1");
+            }
+
+            event.target.value = value;
+        });
+
+        form.addEventListener("submit", function(event) {
+            if (!WAITLIST_SCRIPT_URL || WAITLIST_SCRIPT_URL.includes("COLE_AQUI")) {
+                event.preventDefault();
+                showStatus("error", "Antes de publicar, cole a URL do Apps Script no arquivo HTML.");
+                return;
+            }
+
+            form.action = WAITLIST_SCRIPT_URL;
+            pageUrlField.value = window.location.href;
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Enviando...";
+            showStatus("success", "Recebemos seus dados! Seu cadastro está sendo enviado.");
+
+            setTimeout(function() {
+                form.reset();
+                submitButton.disabled = false;
+                submitButton.textContent = "Confirmar cadastro";
+                showStatus("success", "Cadastro realizado com sucesso! Você será avisado quando a próxima turma abrir.");
+            }, 1400);
+        });
+
         lucide.createIcons();
     </script>
 </body>
