@@ -1,1 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DashEagles | Escola Karen Abecia</title>
+  <style>
+    :root {
+      --orange: #f25404;
+      --orange-dark: #c54100;
+      --orange-soft: #fff0e8;
+      --black: #161616;
+      --text: #2b2b2b;
+      --muted: #696969;
+      --line: #ececec;
+      --bg: #ffffff;
+      --soft-bg: #f7f7f8;
+      --card: #ffffff;
+      --shadow: 0 22px 70px rgba(22, 22, 22, 0.09);
+      --radius: 26px;
+      --max: 1180px;
+    }
 
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.84);
+      border-bottom: 1px solid rgba(236,236,236,0.8);
+    }
+
+    .topbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--orange), #ff8a3d);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(242,84,4,0.25);
+    }
+
+    .brand-logo {
+      display: block;
+      height: 46px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: var(--black);
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      transition: .2s ease;
+    }
+
+    .nav-cta:hover { transform: translateY(-2px); background: var(--orange); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 96px 0 84px;
+      background:
+        radial-gradient(circle at 8% 10%, rgba(242,84,4,.13), transparent 32%),
+        radial-gradient(circle at 92% 18%, rgba(242,84,4,.10), transparent 28%),
+        linear-gradient(180deg, #fff, #fff7f2 100%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center;
+      gap: 54px;
+      text-align: center;
+    }
+
+    .hero-grid > div {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(242,84,4,.22);
+      color: var(--orange-dark);
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 30px rgba(242,84,4,.08);
+    }
+
+    h1, h2, h3 { margin: 0; color: var(--black); line-height: 1.08; letter-spacing: -0.045em; }
+
+    h1 { font-size: clamp(42px, 6vw, 76px); }
+    h2 { font-size: clamp(31px, 4vw, 50px); }
+    h3 { font-size: 23px; }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--muted);
+      margin: 26px auto 32px;
+      max-width: 760px;
+    }
+
+    .highlight { color: var(--orange); }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero .btn-row { justify-content: center; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 900;
+      border-radius: 999px;
+      padding: 17px 24px;
+      transition: .2s ease;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(242,84,4,.28);
+    }
+
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); }
+    .btn-outline { background: #fff; border: 1px solid var(--line); color: var(--black); }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+
+    .hero-card {
+      position: relative;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 34px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .dashboard-card {
+      background: #fff;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .dash-title { font-weight: 900; color: var(--black); }
+    .pill { color: var(--orange); background: var(--orange-soft); padding: 7px 10px; border-radius: 999px; font-weight: 900; font-size: 12px; }
+
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .metric { border: 1px solid var(--line); border-radius: 20px; padding: 18px; background: #fff; }
+    .metric strong { display: block; color: var(--black); font-size: 28px; line-height: 1; margin: 10px 0 6px; }
+    .metric span { color: var(--muted); font-size: 13px; font-weight: 700; }
+
+    .progress-wrap { display: grid; gap: 12px; }
+    .progress-item { display: grid; gap: 7px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; color: var(--black); }
+    .bar { height: 11px; border-radius: 999px; background: #f0f0f0; overflow: hidden; }
+    .bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--orange), #ffad7a); }
+
+    section { padding: 84px 0; }
+    .section-soft { background: var(--soft-bg); }
+
+    .section-head {
+      max-width: 800px;
+      margin-bottom: 38px;
+    }
+
+    .section-head.full-width {
+      max-width: 100%;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 18px;
+      margin: 16px 0 0;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 14px 40px rgba(22, 22, 22, 0.04);
+    }
+
+    .card.orange {
+      background: linear-gradient(135deg, var(--orange), #ff8a3d);
+      color: #fff;
+      border: 0;
+      box-shadow: 0 22px 60px rgba(242,84,4,.22);
+    }
+
+    .card.orange h3, .card.orange p, .card.orange li { color: #fff; }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--orange-soft);
+      color: var(--orange);
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .card.orange .icon { background: rgba(255,255,255,.18); color: #fff; }
+
+    .card p { color: var(--muted); margin: 13px 0 0; }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .compare-box {
+      border-radius: 28px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .compare-box.featured { border: 2px solid var(--orange); box-shadow: 0 18px 50px rgba(242,84,4,.14); }
+
+
+    ul.clean {
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    ul.clean li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text);
+    }
+
+    ul.clean li::before {
+      content: "✓";
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--orange-soft);
+      color: var(--orange);
+      font-weight: 900;
+      font-size: 14px;
+      margin-top: 1px;
+    }
+
+    .dark-band {
+      background: var(--black);
+      color: #fff;
+      border-radius: 36px;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-band::before {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(242,84,4,.35);
+      filter: blur(35px);
+      right: -100px;
+      top: -120px;
+    }
+
+    .dark-band > * { position: relative; }
+    .dark-band h2, .dark-band h3, .dark-band p { color: #fff; }
+    .dark-band p { color: rgba(255,255,255,.78); }
+
+    .price-grid { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: stretch; max-width: 880px; margin: 0 auto; }
+
+    .price-card {
+      padding: 34px;
+      border-radius: 32px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 18px 50px rgba(22, 22, 22, 0.05);
+    }
+
+    .price-card.featured {
+      border: 2px solid var(--orange);
+      position: relative;
+      overflow: hidden;
+    }
+
+
+    .price {
+      display: flex;
+      align-items: end;
+      gap: 7px;
+      margin: 16px 0 6px;
+      color: var(--black);
+    }
+
+    .price strong { font-size: clamp(38px, 5vw, 58px); letter-spacing: -0.06em; line-height: 1; }
+    .price span { font-weight: 800; color: var(--muted); padding-bottom: 8px; }
+    .old-price { color: var(--muted); text-decoration: line-through; font-weight: 800; }
+    .price-bottom {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .mini-note {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--orange-soft);
+      color: var(--orange-dark);
+      padding: 8px 12px;
+      font-weight: 900;
+      font-size: 13px;
+      margin: 12px 0 0;
+    }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .footer {
+      padding: 36px 0;
+      background: #111;
+      color: rgba(255,255,255,.72);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .center { text-align: center; margin-inline: auto; }
+    .center .btn-row { justify-content: center; }
+
+    @media (max-width: 920px) {
+      .hero-grid, .grid-2, .grid-3, .grid-4, .comparison, .price-grid, .deliverables { grid-template-columns: 1fr; }
+      .hero { padding: 72px 0 56px; }
+      section { padding: 62px 0; }
+      .dark-band { padding: 32px; border-radius: 28px; }
+    }
+
+    @media (max-width: 560px) {
+      .container { width: min(var(--max), calc(100% - 28px)); }
+      .topbar .container { align-items: flex-start; }
+      .nav-cta { display: none; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+      .hero-card { padding: 16px; }
+      .card, .price-card, .compare-box { padding: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <a class="brand" href="#top" aria-label="Voltar ao início">
+        <img class="brand-logo" src="dasheagles.png" alt="Logo DashEagles" />
+      </a>
+      <a class="nav-cta" href="https://docs.google.com/forms/d/e/1FAIpQLScblXKCs_stQIXGJ_pxWxO-JQDJmgd8EgQUqFMHcrkcNfeu2g/viewform?usp=dialog" target="_blank" rel="noopener">Preencher aplicação</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <h1>Andar com quem quer andar, correr com quem quer correr e Voar com quem quer voar</h1>
+          <p>
+            Uma mentoria para quem já entendeu que as principais ferramentas do mercado não são apenas recursos técnicos: são alavancas para entregar mais resultado, com mais velocidade e direção.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScblXKCs_stQIXGJ_pxWxO-JQDJmgd8EgQUqFMHcrkcNfeu2g/viewform?usp=dialog" target="_blank" rel="noopener">Preencher aplicação agora →</a>
+            <a class="btn btn-outline" href="#entregaveis">Ver o que está incluso</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head center full-width">
+          <h2>Implementação ao vivo mostra o caminho. Na Mentoria voamos junto.</h2>
+        </div>
+
+        <div class="comparison">
+          <div class="compare-box">
+            <h3>Aprender fazendo junto</h3>
+            <ul class="clean">
+              <li>Conteúdo prático em grupo.</li>
+              <li>Experiência mão na massa com Excel, Power BI e IA.</li>
+              <li>Excelente para ver possibilidades e sair da teoria.</li>
+              <li>Não aprofunda completamente a realidade individual de cada aluno.</li>
+            </ul>
+          </div>
+          <div class="compare-box featured">
+            <h3>Aplicar com direção</h3>
+            <ul class="clean">
+              <li>Diagnóstico e acompanhamento individual.</li>
+              <li>Suporte para dúvidas reais da sua rotina.</li>
+              <li>Encontros em grupo e individuais.</li>
+              <li>Direcionamento para acelerar sua evolução em análise de dados.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section>
+      <div class="container">
+        <div class="dark-band">
+          <h2>A atualização profissional agora passa pela IA.</h2>
+          <p>
+            Toda semana surge uma ferramenta nova, um recurso novo e uma forma diferente de acelerar o trabalho. O papel do DashEagles é testar antes, filtrar antes e trazer para você o que realmente faz sentido aplicar na sua rotina de dados, análise e entrega de resultados.
+          </p>
+          <div class="grid-3" style="margin-top: 28px;">
+            <div class="card" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+              <div class="icon">🔎</div>
+              <h3>Filtro</h3>
+              <p>Separar tendência útil de distração bonita.</p>
+            </div>
+            <div class="card" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+              <div class="icon">🧪</div>
+              <h3>Teste</h3>
+              <p>Experimentar recursos antes de levar para a prática.</p>
+            </div>
+            <div class="card" style="background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14);">
+              <div class="icon">🚀</div>
+              <h3>Aplicação</h3>
+              <p>Transformar IA em ganho real de tempo e qualidade.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft">
+      <div class="container grid-2">
+        <div class="section-head" style="margin-bottom:0;">
+          <h2>Sua carreira também precisa de manutenção, direção e investimento.</h2>
+          <p>
+            Quando algo essencial para a rotina para de funcionar, você resolve. Mas muitas pessoas passam anos com a carreira travada, usando as mesmas ferramentas do mesmo jeito, sem enxergar novas possibilidades.
+          </p>
+          <p>
+            A virada começa quando você para de olhar para Excel, Power BI e IA como “mais ferramentas” e começa a enxergar tudo isso como diferencial profissional.
+          </p>
+        </div>
+        <div class="card">
+          <div class="icon">🧭</div>
+          <h3>A pergunta que guia o seu sucesso deve ser:</h3>
+          <p style="font-size: 22px; color: var(--black); font-weight: 900; line-height:1.25;">
+            “Como usar o que você já tem hoje para gerar resultados que você ainda não consegue entregar?”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head center">
+          <h2>O que pode mudar quando você tem direção?</h2>
+          <p>A mentoria não promete atalhos mágicos. Ela cria ambiente, acompanhamento e clareza para você construir evolução real.</p>
+        </div>
+        <div class="grid-3">
+          <div class="card"><div class="icon">📊</div><h3>Dashboards melhores</h3><p>Construções mais estratégicas, visuais e conectadas com decisão.</p></div>
+          <div class="card"><div class="icon">⏱️</div><h3>Mais velocidade</h3><p>Menos tempo perdido tentando resolver tudo sozinho.</p></div>
+          <div class="card"><div class="icon">💼</div><h3>Evolução profissional</h3><p>Mais clareza para crescer onde está ou se preparar para novos caminhos.</p></div>
+          <div class="card"><div class="icon">⚙️</div><h3>Ferramentas na prática</h3><p>Aplicação das principais ferramentas do mercado em problemas reais de dados.</p></div>
+          <div class="card"><div class="icon">🧩</div><h3>Projetos destravados</h3><p>Análise, orientação e ajustes para melhorar entregas importantes.</p></div>
+          <div class="card"><div class="icon">🦅</div><h3>Efeito UAU</h3><p>Entregas que mostram domínio técnico, estratégia e cuidado visual.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft">
+      <div class="container">
+        <div class="section-head">
+          <h2>O DashEagles é para quem quer sair da aplicação genérica e ir para o próprio contexto.</h2>
+        </div>
+        <div class="grid-4">
+          <div class="card"><div class="icon">📈</div><h3>Quer crescer com dados</h3><p>Profissionais que querem usar análise de dados para ganhar relevância.</p></div>
+          <div class="card"><div class="icon">🛠️</div><h3>Já usa ferramentas</h3><p>Quem trabalha com Excel, Power BI, relatórios, indicadores ou bases de dados.</p></div>
+          <div class="card"><div class="icon">💬</div><h3>Precisa de suporte</h3><p>Quem não quer depender apenas de aulas gravadas e tentativa e erro.</p></div>
+          <div class="card"><div class="icon">🚀</div><h3>Quer acompanhar o mercado</h3><p>Quem entendeu que IA virou parte do jogo profissional.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="entregaveis">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Você evolui em grupo, mas não fica sem acompanhamento individual.</h2>
+          <p>A estrutura combina comunidade, encontros práticos, suporte e acompanhamento próximo.</p>
+        </div>
+
+        <div class="deliverables">
+          <div class="card">
+            <div class="icon">👥</div>
+            <h3>Em grupo</h3>
+            <ul class="clean">
+              <li>Grupo exclusivo de WhatsApp.</li>
+              <li>Encontros semanais com a Karen ou a Jéssica.</li>
+              <li>Intensivos de implementação.</li>
+              <li>Plantão de dúvidas mensal.</li>
+              <li>Acesso a todos os treinamentos da Escola.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="icon">🙋</div>
+            <h3>Individual</h3>
+            <ul class="clean">
+              <li>Diagnóstico individual.</li>
+              <li>Suporte individual no WhatsApp.</li>
+              <li>Encontros individuais a cada 15 dias.</li>
+              <li>1 análise de projeto mensal.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Uma pós-graduação pode custar R$ 25 mil e levar 18 meses.</h2>
+        </div>
+
+        <div class="comparison">
+          <div class="compare-box">
+            <h3>R$ 25.000 em até 18 meses</h3>
+            <ul class="clean">
+              <li>Formação mais longa.</li>
+              <li>Foco acadêmico ou curricular.</li>
+              <li>Nem sempre entra no seu problema real de trabalho.</li>
+              <li>Pode ter muitas aulas e nenhum acompanhamento individual.</li>
+            </ul>
+          </div>
+          <div class="compare-box featured">
+            <h3>6 meses de acompanhamento aplicado</h3>
+            <ul class="clean">
+              <li>Foco nas principais ferramentas do mercado.</li>
+              <li>Encontros em grupo e individuais.</li>
+              <li>Análise de projetos e suporte próximo.</li>
+              <li>Aplicação direta na sua rotina profissional.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head center">
+          <h2>Escolha o próximo passo da sua evolução.</h2>
+        </div>
+
+        <div class="price-grid">
+          <div class="price-card">
+            <h3>DashEagles por 6 meses</h3>
+            <p>Tempo de acesso e acompanhamento por 6 meses.</p>
+            <ul class="clean">
+              <li>Grupo exclusivo de WhatsApp.</li>
+              <li>Encontros semanais.</li>
+              <li>Encontros individuais quinzenais.</li>
+              <li>Plantão de dúvidas mensal.</li>
+              <li>Acesso aos treinamentos da Escola.</li>
+              <li>1 análise de projeto por mês.</li>
+            </ul>
+            <div class="price price-bottom"><strong>R$ 6.000</strong></div>
+          </div>
+
+          <div class="price-card featured">
+            <h3>Condição especial da implementação</h3>
+            <p>Além do desconto, você ganha mais 2 meses de acesso, com o ciclo indo até fevereiro/2027.</p>
+            <p><strong>+2 meses de acompanhamento.</strong></p>
+            <ul class="clean">
+              <li>Grupo exclusivo de WhatsApp.</li>
+              <li>Encontros semanais com Karen ou Jéssica.</li>
+              <li>Intensivos de implementação.</li>
+              <li>Plantão de dúvidas mensal.</li>
+              <li>Acesso a todos os treinamentos da Escola.</li>
+              <li>Diagnóstico individual.</li>
+              <li>Suporte individual no WhatsApp.</li>
+              <li>Encontros individuais a cada 15 dias.</li>
+              <li>1 análise de projeto mensal.</li>
+            </ul>
+            <div class="btn-row" style="margin-top: 24px;">
+              <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScblXKCs_stQIXGJ_pxWxO-JQDJmgd8EgQUqFMHcrkcNfeu2g/viewform?usp=dialog" target="_blank" rel="noopener">Preencher aplicação →</a>
+            </div>
+            <div class="price price-bottom"><span class="old-price">De R$ 6.000</span><strong>R$ 5.000</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-soft">
+      <div class="container">
+        <div class="dark-band center">
+          <h2>Quer descobrir se o DashEagles faz sentido para o seu próximo ciclo?</h2>
+          <p>
+            Preencha a aplicação. A partir dela, vamos entender seu momento, seus desafios e se a mentoria é o melhor próximo passo para você agora.
+          </p>
+          <div class="btn-row" style="margin-top: 24px;">
+            <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScblXKCs_stQIXGJ_pxWxO-JQDJmgd8EgQUqFMHcrkcNfeu2g/viewform?usp=dialog" target="_blank" rel="noopener">Preencher aplicação agora →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      © 2026 Escola Karen Abecia · DashEagles
+    </div>
+  </footer>
+</body>
+</html>
