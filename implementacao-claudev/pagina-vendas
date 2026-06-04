@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPLEMENTAÇÃO CLAUDE | Workshop Ao Vivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --cyber-orange: #DE7356; 
+            --cyber-orange-glow: rgba(222, 115, 86, 0.4);
+            --cyber-black: #050505;
+        }
+        body {
+            background-color: var(--cyber-black);
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .cyber-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(222, 115, 86, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .cyber-card:hover {
+            border-color: var(--cyber-orange);
+            transform: translateY(-3px);
+        }
+
+        .bg-grid {
+            background-image: linear-gradient(to right, rgba(222, 115, 86, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(222, 115, 86, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .text-glitch {
+            text-shadow: 2px 0 rgba(222, 115, 86, 0.4), -2px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--cyber-orange);
+            color: #000;
+            box-shadow: 0 0 15px var(--cyber-orange-glow);
+            text-align: center;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background-color: #E68A70;
+            box-shadow: 0 0 25px var(--cyber-orange-glow);
+        }
+
+        /* Cores das IAs no Bônus */
+        .badge-chatgpt { border-left: 3px solid #10a37f; color: #10a37f; }
+        .badge-gemini { border-left: 3px solid #8e75ff; color: #8e75ff; }
+        .badge-claude { border-left: 3px solid #DE7356; color: #DE7356; }
+        .badge-copilot { border-left: 3px solid #00a1f1; color: #00a1f1; }
+        .badge-manus { border-left: 3px solid #ffffff; color: #ffffff; }
+
+
+        /* Cor de destaque atualizada */
+        .text-orange-500, .text-orange-400, .hover\:text-orange-400:hover { color: var(--cyber-orange) !important; }
+        .bg-orange-500, .hover\:bg-orange-500:hover { background-color: var(--cyber-orange) !important; }
+        .border-orange-500, .border-orange-500\/40, .border-orange-500\/10, .hover\:border-orange-500:hover { border-color: var(--cyber-orange) !important; }
+        .border-orange-900\/20, .border-orange-900\/10 { border-color: rgba(222, 115, 86, 0.2) !important; }
+        .bg-orange-500\/10 { background-color: rgba(222, 115, 86, 0.10) !important; }
+        .bg-orange-500\/50 { background-color: rgba(222, 115, 86, 0.50) !important; }
+        .text-glitch { text-shadow: 2px 0 rgba(222, 115, 86, 0.4), -2px 0 rgba(255, 255, 255, 0.1); }
+
+        /* Destaques em verde para oferta */
+        :root {
+            --offer-green: #22c55e;
+            --offer-green-glow: rgba(34, 197, 94, 0.35);
+            --extra-purple: #8e75ff;
+            --extra-purple-glow: rgba(142, 117, 255, 0.35);
+        }
+        .extra-class-card {
+            background: linear-gradient(135deg, rgba(142, 117, 255, 0.20), rgba(222, 115, 86, 0.08));
+            border: 1px solid rgba(142, 117, 255, 0.60) !important;
+            border-left: 6px solid var(--extra-purple) !important;
+            box-shadow: 0 0 28px rgba(142, 117, 255, 0.16);
+            position: relative;
+            overflow: hidden;
+        }
+        .extra-class-card:hover {
+            border-color: var(--extra-purple) !important;
+            box-shadow: 0 0 35px rgba(142, 117, 255, 0.24);
+        }
+        .extra-class-card::before {
+            content: "EXTRA";
+            position: absolute;
+            right: -34px;
+            top: 18px;
+            transform: rotate(35deg);
+            background: var(--extra-purple);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.18em;
+            padding: 6px 42px;
+        }
+        .extra-class-date, .extra-class-label, .extra-class-icon { color: var(--extra-purple) !important; }
+        .btn-outline-readable:hover {
+            background-color: #ffffff !important;
+            color: #050505 !important;
+            border-color: #ffffff !important;
+        }
+        .offer-green-text, .offer-green-text svg { color: var(--offer-green) !important; }
+        .offer-green-bg { background-color: var(--offer-green) !important; color: #03120a !important; }
+        .offer-green-border { border-color: var(--offer-green) !important; box-shadow: 0 0 30px var(--offer-green-glow); }
+        .offer-green-button { background-color: var(--offer-green) !important; color: #03120a !important; box-shadow: 0 0 18px var(--offer-green-glow) !important; }
+        .offer-green-button:hover { background-color: #ffffff !important; color: #03120a !important; box-shadow: 0 0 28px var(--offer-green-glow) !important; }
+    </style>
+</head>
+<body class="bg-grid">
+
+    <!-- Header -->
+    <nav class="p-6 flex justify-between items-center border-b border-orange-900/20">
+        <a href="#" class="flex items-center" aria-label="Implementação Claude">
+            <img src="logo_branco.png" alt="Implementação Claude" class="h-10 md:h-12 w-auto">
+        </a>
+        <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest text-gray-400">
+            <a href="#programa" class="hover:text-orange-400 transition">Programa</a>
+            <a href="#por-que-claude" class="hover:text-orange-400 transition">O Claude</a>
+            <a href="#oferta" class="hover:text-orange-400 transition">Matrícula</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative py-20 px-6 overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <h1 class="text-3xl md:text-5xl font-black mb-8 tracking-tight leading-tight text-white uppercase">
+                5 aulas para transformar o <span class="text-orange-500 text-glitch">Claude</span> <br/>
+                em resultado real no seu trabalho
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light">
+                Domine a ferramenta de I.A mais completa para o ambiente profissional através de estudos de caso reais e implementação guiada.
+            </p>
+            <div class="flex flex-col items-center gap-4">
+                <a href="https://pay.hotmart.com/J105543694P?off=uxajd3q0" target="_blank" class="btn-primary px-10 py-5 text-base font-black uppercase tracking-widest transition-all transform hover:scale-105">
+                    Garantir minha vaga na implementação
+                </a>
+                <div class="mono text-xs text-orange-400 tracking-[0.3em] uppercase opacity-80 font-bold">
+                    Vagas Limitadas
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specs Section -->
+    <section class="py-16 bg-zinc-950/80" id="programa">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="cyber-card p-8">
+                    <i data-lucide="video" class="text-orange-500 mb-4 h-7 w-7"></i>
+                    <h3 class="text-xl font-bold mb-2">Interação Total</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Sessões via Teams com câmara e microfone abertos para resolução de problemas reais em conjunto.</p>
+                </div>
+                <div class="cyber-card p-8">
+                    <i data-lucide="target" class="text-orange-500 mb-4 h-7 w-7"></i>
+                     <h3 class="text-xl font-bold mb-2">Alinhado com o Mercado</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Estudos de caso e aplicações atualizadas com as necessidades do mercado e os recursos mais recentes.</p>
+                </div>
+                <div class="cyber-card p-8">
+                    <i data-lucide="zap" class="text-orange-500 mb-4 h-7 w-7"></i>
+                    <h3 class="text-xl font-bold mb-2">Suporte Contínuo</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Whatsapp Ativo para tirar dúvidas e compartilhar Dashboards criados durante a jornada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agenda -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold mb-16 text-center flex items-center justify-center gap-4 tracking-tighter uppercase">
+                <span class="h-px w-8 bg-orange-500/50"></span>
+                Cronograma de Execução
+                <span class="h-px w-8 bg-orange-500/50"></span>
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center gap-8 p-6 cyber-card extra-class-card">
+                    <div class="mono extra-class-date text-xl font-bold text-center leading-none">
+                        02<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                    </div>
+                    <div>
+                        <div class="mono text-[10px] extra-class-label uppercase tracking-[0.25em] mb-2 font-bold">Aula extra de integração</div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">Integração e Nivelamento</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Encontro para responder as principais dúvidas sobre o Claude, instalar os suplementos na máquina e entender as licenças da ferramenta.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
+                    <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
+                        08<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">O que precisa saber sobre o Claude I.A</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Configuração profissional e fundamentos de engenharia de prompts.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
+                    <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
+                        15<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Excel</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Limpeza de dados, tratamento e fórmulas avançadas em segundos.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
+                    <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
+                        22<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Power BI</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Criação de medidas DAX e modelagem assistida por I.A.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
+                    <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
+                        29<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">Criação de Dashboards com Claude Live Artifacts</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">O recurso mais poderoso para visualização de dados em tempo real.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
+                    <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
+                        06<br/><span class="text-[10px] uppercase opacity-70">JUL</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-tight">Visual, aplicativos e páginas</h4>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Publicação e design de interfaces para entregas profissionais.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 cyber-card p-8 border-l-4 border-orange-500">
+                <div class="flex flex-col md:flex-row gap-6 md:items-center">
+                    <div class="flex-shrink-0 w-14 h-14 rounded bg-orange-500/10 flex items-center justify-center">
+                        <i data-lucide="clock" class="text-orange-500 w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-white uppercase tracking-tight mb-2">Horários e acesso às gravações</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Todas as aulas acontecerão às <strong class="text-white">19:30</strong> e ficarão gravadas para consulta por <strong class="text-white">12 meses após o evento</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Claude Section -->
+    <section id="por-que-claude" class="py-24 px-6 bg-zinc-950">
+        <div class="max-w-5xl mx-auto p-12 cyber-card border-2 border-orange-500/10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-black mb-8 text-white uppercase">Por que o <span class="text-orange-500">CLAUDE</span></h2>
+                    
+                    <div class="space-y-8">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded bg-orange-500/10 flex items-center justify-center">
+                                <i data-lucide="bar-chart-3" class="text-orange-500 w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Melhor custo benefício para análise de dados</h4>
+                                <p class="text-gray-400 text-sm">Precisão matemática e lógica superior para tratar grandes volumes de informação.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded bg-orange-500/10 flex items-center justify-center">
+                                <i data-lucide="lock" class="text-orange-500 w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Líder em segurança da informação</h4>
+                                <p class="text-gray-400 text-sm">Privacidade de dados garantida no nível corporativo.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded bg-orange-500/10 flex items-center justify-center">
+                                <i data-lucide="cpu" class="text-orange-500 w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">A ferramenta mais completa</h4>
+                                <p class="text-gray-400 text-sm">Perfeita para automação de tarefas e criação de Dashboards dinâmicos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative hidden md:block">
+                    <div class="relative border border-orange-500/10 p-6 bg-zinc-900 rounded-lg mono text-[11px] leading-relaxed">
+                        <p class="text-orange-500">>> Analisando dataset.csv</p>
+                        <p class="text-gray-500 italic">Lógica de segurança verificada...</p>
+                        <div class="my-4 h-1 w-full bg-zinc-800">
+                            <div class="h-full bg-orange-500 w-full animate-pulse"></div>
+                        </div>
+                        <p class="text-white">"Com base no seu arquivo, o Dashboard foi otimizado para mostrar a eficiência operacional em tempo real."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Bonus -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto bg-zinc-950 border border-orange-500/40 p-8 md:p-12 text-center relative">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-orange-500 text-black px-6 py-1 font-bold mono uppercase text-xs">
+                Bônus exclusivo
+            </div>
+            <h2 class="text-3xl md:text-5xl font-black mb-8 text-white uppercase tracking-tighter">I.A COM DADOS</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
+                <div class="p-3 cyber-card badge-chatgpt text-[10px] font-bold mono bg-zinc-900/50 uppercase">ChatGPT</div>
+                <div class="p-3 cyber-card badge-gemini text-[10px] font-bold mono bg-zinc-900/50 uppercase">Gemini</div>
+                <div class="p-3 cyber-card badge-manus text-[10px] font-bold mono bg-zinc-900/50 uppercase">Manus</div>
+                <div class="p-3 cyber-card badge-claude text-[10px] font-bold mono bg-zinc-900/50 uppercase">Claude</div>
+                <div class="p-3 cyber-card badge-copilot text-[10px] font-bold mono bg-zinc-900/50 uppercase">Copilot</div>
+            </div>
+
+            <p class="text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Aulas gravadas direto ao ponto para consultar quantas vezes quiser, exercícios práticos e foco total em produtividade com dados.
+            </p>
+            
+            <a href="treinamento.html" class="px-8 py-3 border border-orange-500 text-orange-500 font-bold uppercase text-xs btn-outline-readable transition-all">
+                Consultar conteúdo completo
+            </a>
+        </div>
+    </section>
+
+    <!-- Pricing Table -->
+    <section id="oferta" class="py-20 px-6 bg-zinc-950">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                <!-- Normal -->
+                <div class="cyber-card p-10 flex flex-col opacity-60">
+                    <h3 class="text-xl font-bold mb-8 uppercase text-gray-500">Oferta Essencial</h3>
+                    <ul class="space-y-4 mb-12 flex-grow text-sm text-gray-400">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="text-orange-500 w-4 h-4"></i> 5 Aulas Ao Vivo + Aula Extra de Integração</li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="text-orange-500 w-4 h-4"></i> Gravação dos Encontros</li>
+                    </ul>
+                    <div class="text-3xl font-black mb-8 text-white">R$ 997,00</div>
+                    <button class="w-full py-4 border border-zinc-800 text-zinc-600 font-bold uppercase text-xs cursor-not-allowed">Indisponível</button>
+                </div>
+
+                <!-- Special -->
+                <div class="cyber-card p-10 border-2 border-orange-500 bg-zinc-900 relative shadow-2xl offer-green-border">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 offer-green-bg px-4 py-1 font-bold text-[10px] uppercase whitespace-nowrap">
+                        Melhor Oferta
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 uppercase offer-green-text tracking-tighter">IMPLEMENTAÇÃO + BÔNUS</h3>
+                    <p class="text-gray-400 text-sm mb-10 italic">O caminho completo para domínio de I.A.</p>
+                    
+                    <ul class="space-y-4 mb-12 text-sm font-semibold">
+                        <li class="flex items-center gap-3"><i data-lucide="check-circle" class="offer-green-text w-5 h-5"></i> 5 Aulas Ao Vivo via Teams + Aula Extra de Integração</li>
+                        <li class="flex items-center gap-3 text-white"><i data-lucide="message-circle" class="offer-green-text w-5 h-5"></i> Grupo de Suporte WhatsApp</li>
+                        <li class="flex items-center gap-3 offer-green-text font-bold"><i data-lucide="plus" class="w-5 h-5"></i> Treinamento COMPLETO I.A com Dados</li>
+                    </ul>
+                    
+                    <div class="mb-10">
+                        <div class="text-xs text-zinc-500 line-through mb-1">De R$ 1.994,00</div>
+                        <div class="offer-green-text text-xs font-bold mb-4 uppercase">R$ 300,00 DE DESCONTO APLICADO</div>
+                        <div class="text-2xl font-black text-white">12x R$ 72,07</div>
+                        <div class="text-lg text-gray-400">ou R$ 697,00 à vista</div>
+                    </div>
+                    
+                    <a href="https://pay.hotmart.com/J105543694P?off=uxajd3q0" target="_blank" class="w-full py-6 offer-green-button text-black font-black uppercase tracking-widest text-base text-center inline-block transition-all transform hover:scale-105">
+                        Garantir minha vaga na implementação
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Block -->
+    <section class="py-20 px-6 border-t border-orange-900/10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h4 class="text-xl font-bold mb-4 uppercase tracking-tight text-white">Tem uma dúvida? fale com nossa equipe de suporte</h4>
+            <a href="https://api.whatsapp.com/send?phone=5511970339480" target="_blank" class="inline-flex items-center gap-3 px-8 py-4 bg-zinc-900 border border-emerald-500/50 text-emerald-500 rounded-lg hover:bg-emerald-500/10 transition-all font-bold">
+                <i data-lucide="message-circle" class="w-6 h-6"></i>
+                Fale com a equipe agora 
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 text-center border-t border-orange-900/10 text-gray-700 text-[10px] mono uppercase">
+        <div class="mono text-sm font-bold tracking-tighter mb-4">
+            <span class="text-orange-500 uppercase font-black tracking-[0.2em]">Implementação Claude</span>
+        </div>
+        <p>© 2026. TODOS OS DIREITOS RESERVADOS PARA ESCOLA KAREN ABECIA</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
