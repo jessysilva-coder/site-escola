@@ -168,10 +168,6 @@
       line-height: 1.5;
       flex: 1;
     }
-    .lesson-card .material-link {
-      align-self: flex-start;
-      margin-top: auto;
-    }
     .dasheagles-banner {
       background: #fff7ef;
       color: #2b211b;
@@ -236,6 +232,22 @@
     }
     @media (max-width: 600px) {
       .schedule-horizontal { grid-template-columns: 1fr; }
+    }
+
+  
+    .lesson-card .material-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.25;
+      padding: 8px 10px;
+      font-size: .58rem;
+      box-sizing: border-box;
+      margin-top: auto;
     }
 
   </style>
