@@ -1,0 +1,221 @@
+<! DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aula 1 — O que precisa saber sobre o Claude I. A. | Implementação Claude T2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>:root{--chat:#d97757;--chat2:#e8956a;--cwork:#7c5cbf;--cwork2:#9b7dd4;--code:#c45c8a;--code2:#d97aaa;--green:#4caf7d;--gold:#d4a843;--red:#e07070;--bg:#0c0b0a;--card:#1a1714;--card2:#211e1a;--border:#2e2822;--border2:#3d3630;--text:#f0ebe4;--muted:#8a7f74;--muted2:#5e5650;--radius:12px;--hh:64px}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hh) + 12px)}body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.45}body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}.wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:0 24px}header{position:sticky;top:0;z-index:100;background:rgba(17,15,13,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--hh)}.header-inner{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:14px;flex-wrap:nowrap}.header-inner img{height:38px;object-fit:contain;flex-shrink:0}.logo-text-fb{font-family:'Anton',sans-serif;font-size:1rem;color:var(--text);flex-shrink:0}.logo-text-fb span{color:var(--chat)}.header-btns{display:flex;align-items:center;gap:8px;flex-shrink:0}.hbtn{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:100px;text-decoration:none;transition:all.2s;white-space:nowrap;border:none;cursor:pointer}.hbtn-back{color:var(--muted);border:1px solid var(--border2);background:transparent}.hbtn-pdf{background:var(--card2);color:var(--muted);border:1px solid var(--border2)}.hero{padding:48px 0 34px;text-align:center;position:relative}.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:310px;background:radial-gradient(ellipse at center,rgba(124,92,191,.16) 0%,rgba(217,119,87,.08) 38%,transparent 72%);pointer-events:none}.hero-tag{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:block}h1{font-family:'Anton',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:400;line-height:1.1;margin-bottom:12px;letter-spacing:.02em}.hero-sub{font-size:.92rem;color:var(--muted);line-height:1.75;max-width:720px;margin:0 auto}.section{padding:44px 0;border-top:1px solid var(--border)}.section-label{font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}h2{font-family:'Anton',sans-serif;font-size:clamp(1.3rem,3vw,1.85rem);font-weight:400;letter-spacing:.03em;margin-bottom:22px}h3{font-family:'Anton',sans-serif;font-size:1.02rem;font-weight:400;letter-spacing:.02em;margin-bottom:10px}p{line-height:1.72}.index-nav{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:40px}.index-nav.idx-label{font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2);margin-bottom:12px;display:block}.index-nav ul{list-style:none;columns:2;gap:24px}.index-nav li{break-inside:avoid;margin-bottom:6px}.index-nav a{font-size:.82rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color.2s}.index-nav a::before{content:'→';color:var(--muted2);font-size:.72rem;flex-shrink:0}.info-box{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 17px;display:flex;gap:11px;align-items:flex-start;margin-bottom:20px}.info-box.ico{font-size:1rem;flex-shrink:0;margin-top:2px}.info-box p{font-size:.84rem;color:var(--muted);line-height:1.66}.info-box strong{color:var(--text)}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px}.card.orange{border-top:3px solid var(--chat)}.card.purple{border-top:3px solid var(--cwork)}.card.pink{border-top:3px solid var(--code)}.card.green{border-top:3px solid var(--green)}.card.gold{border-top:3px solid var(--gold)}.card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.62}.card ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:8px}.card li{display:flex;gap:7px}.card li::before{content:'→';color:var(--chat);flex-shrink:0}.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.action-btn{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:10px 15px;font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all.2s;border:1px solid var(--border2);color:var(--text);background:var(--card2)}.action-btn.primary{background:var(--chat);color:#fff;border-color:var(--chat2)}.action-btn.purple{background:rgba(124,92,191,.18);color:var(--cwork2);border-color:rgba(124,92,191,.35)}.effort-diagram{background:#f7f7f5;color:#222;border-radius:18px;padding:24px 24px 26px;margin:8px 0 24px;border:1px solid rgba(255,255,255,.08)}.effort-diagram h3{font-family:'Open Sans',sans-serif;font-weight:800;text-align:center;color:#252525;margin-bottom:4px}.effort-diagram.effort-sub{text-align:center;color:#333;font-size:.86rem;margin-bottom:14px}.effort-bar{height:10px;border-radius:999px;background:linear-gradient(90deg,#51b99d 0 25%,#8c83eb 25% 50%,#e3a34e 50% 75%,#d95e62 75% 100%);position:relative;margin-bottom:15px}.effort-bar:after{content:'';position:absolute;inset:2px;border-radius:999px;background:rgba(255,255,255,.62)}.effort-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.effort-title{border-radius:10px;padding:14px 12px;text-align:center;font-weight:800}.effort-title.low{background:#dcefe9;border:1px solid #55b49f;color:#116858}.effort-title.med{background:#e9e7f8;border:1px solid #8c83eb;color:#3c3894}.effort-title.high{background:#f5e8d1;border:1px solid #dc9d46;color:#704514}.effort-title.max{background:#f6dddd;border:1px solid #dc7676;color:#8d2727}.effort-cell{background:#fff;border:1px solid #e8e8e5;border-radius:9px;padding:14px 10px;text-align:center;color:#333;font-size:.82rem;line-height:1.45;min-height:58px;display:flex;align-items:center;justify-content:center}.effort-bottom{border-top:1px dashed #ddd;margin-top:16px;padding-top:16px}.effort-bottom h3{margin-bottom:12px}.effort-bottom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.effort-bottom-card{background:#f2f0eb;border:1px solid #c9c4bc;border-radius:9px;padding:14px;text-align:center}.effort-bottom-card strong{display:block}.effort-bottom-card span{font-size:.82rem;color:#666}.compare-table{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:14px}table{width:100%;border-collapse:collapse;background:var(--card)}th{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:var(--card2);border-bottom:1px solid var(--border);white-space:nowrap}td{font-size:.81rem;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}td:first-child{color:var(--text);font-weight:600}tr:last-child td{border-bottom:none}.tool-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}.tool-block.b-chat{border-left:4px solid var(--chat)}.tool-block.b-cwork{border-left:4px solid var(--cwork)}.tool-block.b-code{border-left:4px solid var(--code)}.tool-block-header{padding:16px 18px 0}.chip{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:100px}.chip-chat{background:rgba(217,119,87,.15);color:var(--chat);border:1px solid rgba(217,119,87,.3)}.chip-cwork{background:rgba(124,92,191,.15);color:var(--cwork2);border:1px solid rgba(124,92,191,.3)}.chip-code{background:rgba(196,92,138,.15);color:var(--code2);border:1px solid rgba(196,92,138,.3)}.use-tabs{display:flex;gap:6px;padding:12px 18px 0}.tab-btn{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all.2s}.tab-btn.t-use{background:rgba(76,175,125,.1);color:var(--green);border-color:rgba(76,175,125,.3)}.tab-btn.t-nope{background:rgba(224,112,112,.1);color:var(--red);border-color:rgba(224,112,112,.25)}.tab-panel{display:none;padding:14px 18px 18px}.tab-panel.active{display:block}.use-list,.nope-list{list-style:none;display:flex;flex-direction:column;gap:7px}.use-list li,.nope-list li{display:flex;align-items:flex-start;gap:9px;font-size:.84rem;color:var(--muted);line-height:1.55}.use-list li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}.nope-list li::before{content:'✗';color:var(--red);font-weight:700;flex-shrink:0}.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.quick-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}.quick-item strong{display:block;color:var(--text);margin-bottom:4px}.quick-item span{font-size:.8rem;color:var(--muted)}.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.model-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px}.model-card.mv{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:var(--muted2);margin-bottom:10px}.model-row{display:flex;justify-content:space-between;margin-bottom:5px}.model-row.mk{font-size:.75rem;color:var(--muted)}.model-row.mv2{font-size:.75rem;color:var(--text);font-weight:600}.practice-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px}.practice-card h3{font-size:1.18rem}.prompt-box{background:#11100f;border:1px solid var(--border2);border-radius:11px;overflow:hidden;margin-top:14px}.prompt-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}.prompt-tools span{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2)}.copy-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:100px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:.61rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);border:1px solid rgba(217,119,87,.35);background:rgba(217,119,87,.12);cursor:pointer;transition:all.2s}.copy-btn.copied{background:rgba(76,175,125,.16);border-color:rgba(76,175,125,.35);color:#bde8d1}.prompt-text{width:100%;min-height:260px;border:none;resize:vertical;outline:none;display:block;padding:15px;background:transparent;color:#e7ddd3;font-family:'DM Mono',monospace;font-size:.75rem;line-height:1.65}.image-clean{width:100%;display:block;border-radius:14px;margin:18px 0 0}footer{border-top:1px solid var(--border);padding:24px 0 28px;text-align:center;margin-top:48px}footer p{font-size:.78rem;color:var(--muted2)}@media(max-width:820px){.grid-2,.grid-3,.effort-grid,.effort-bottom-grid,.quick-grid,.model-grid{grid-template-columns:1fr}.index-nav ul{columns:1}.header-inner{padding:0 14px}.hbtn{padding:6px 10px}.prompt-text{min-height:420px}}@media print{header,.copy-btn,.hbtn-pdf,.hbtn-back{display:none!important}body{background:#1a1714!important}.section,.card,.info-box,.tool-block,.practice-card{break-inside:avoid}}:root{--ok:#4caf7d;--no:#e07070;--part:#d4a843}.tbl-sub{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin:22px 0 10px}.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:22px}.tbl{width:100%;border-collapse:collapse;background:var(--card)}.tbl th{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:11px 15px;text-align:left;background:var(--card2);border-bottom:1px solid var(--border);white-space:nowrap;color:var(--muted)}.tbl td{padding:10px 15px;font-size:.81rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}.tbl tr:last-child td{border-bottom:none}.tbl td:first-child{color:var(--text);font-weight:500;white-space:nowrap;font-size:.79rem}.feature-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.feature-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}.feature-block h4{font-family:'Anton',sans-serif;font-size:1rem;font-weight:400;letter-spacing:.03em;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--card2)}.feature-block ul{list-style:none;display:flex;flex-direction:column}.feature-block li{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--muted);line-height:1.5}.feature-block li:last-child{border-bottom:none}.feature-block li strong{color:var(--text)}.fi{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center}.sec-grid{display:flex;flex-direction:column;gap:7px}.sec-row{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:11px 14px}.sec-p{flex:1;color:var(--text);font-size:.83rem;line-height:1.5}.sec-w{flex:1.2;color:var(--muted);font-size:.81rem;line-height:1.5}.ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.ctx-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:13px 14px}.ctx-card h4{font-family:'Open Sans',sans-serif;font-size:.86rem;color:var(--text);margin-bottom:5px}.ctx-card p{font-size:.78rem;color:var(--muted);line-height:1.5}.cowork-map{margin-top:18px;background:linear-gradient(135deg,rgba(124,92,191,.11),rgba(217,119,87,.06));border:1px solid var(--border2);border-radius:calc(var(--radius) + 6px);padding:22px;overflow:hidden}.cowork-map-title{font-family:'Anton',sans-serif;font-size:1.15rem;font-weight:400;letter-spacing:.03em;margin-bottom:6px;text-align:center}.cowork-map-sub{font-size:.83rem;color:var(--muted);line-height:1.6;text-align:center;max-width:680px;margin:0 auto 18px}.cowork-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative}.cowork-flow::before{content:'';position:absolute;left:9%;right:9%;top:34px;height:2px;background:linear-gradient(90deg,var(--chat),var(--cwork2),var(--code2));opacity:.45;z-index:0}.cowork-node{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;min-height:150px;display:flex;flex-direction:column;align-items:center}.cowork-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:1.15rem;border:1px solid rgba(255,255,255,.12)}.cowork-node:nth-child(1).cowork-icon{background:rgba(217,119,87,.16);color:var(--chat)}.cowork-node:nth-child(2).cowork-icon{background:rgba(124,92,191,.16);color:var(--cwork2)}.cowork-node:nth-child(3).cowork-icon{background:rgba(196,92,138,.16);color:var(--code2)}.cowork-node:nth-child(4).cowork-icon{background:rgba(212,168,67,.14);color:var(--part)}.cowork-node:nth-child(5).cowork-icon{background:rgba(76,175,125,.14);color:var(--ok)}.cowork-node h3{font-size:.96rem;margin-bottom:6px}.cowork-node p{font-size:.76rem;color:var(--muted);line-height:1.45}
+@media(max-width:820px){.feature-2col{grid-template-columns:1fr}.sec-row{flex-direction:column;gap:4px}.cowork-flow{grid-template-columns:1fr}.cowork-flow::before{display:none}.cowork-node{min-height:auto;text-align:left;align-items:flex-start}.cowork-icon{margin-bottom:8px}
+}
+
+</style>
+</head>
+<body>
+<header><div class="header-inner"><img src="logo_branco.png" alt="Implementação Claude" onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/><div id="ltxt" style="display:none" class="logo-text-fb">IMPL. <span>CLAUDE</span></div><div class="header-btns"><a class="hbtn hbtn-back" href="https://site.escolakarenabecia.com/implementacao-claudev/alunos-JUN2026/">← Início</a><button class="hbtn hbtn-pdf" onclick="downloadPDF()">Baixar PDF</button></div></div></header>
+<section class="hero" style="border-top:none"><div class="wrap"><span class="hero-tag">Material de Apoio · Turma 2</span><h1>Aula 1 — O que precisa saber sobre o Claude I. A.</h1><p class="hero-sub">Uma visão prática sobre as ferramentas do Claude, os modelos, os níveis de esforço, o Claude Cowork e os primeiros usos com arquivos, rotinas e organização.</p></div></section>
+<div id="main-content">
+<div class="wrap" style="padding-top:0"><div class="index-nav"><span class="idx-label">Nesta página</span><ul>
+      <li><a href="#tres-poderes">1. 1 Ferramenta — 3 Poderes Diferentes</a></li>
+      <li><a href="#quando-usar">2. Quando usar cada ferramenta</a></li>
+      <li><a href="#analise">3. Análise detalhada</a></li>
+      <li><a href="#escolha-rapida">4. Escolha rápida por tarefa</a></li>
+      <li><a href="#modelos">5. Qual modelo usar?</a></li>
+      <li><a href="#esforco">6. Esforço</a></li>
+      <li><a href="#cowork-elementos">7. Principais elementos do Claude Cowork</a></li>
+      <li><a href="#seguranca">8. Boas práticas no uso com arquivos</a></li>
+      <li><a href="#contexto">9. Por que contexto é tão importante?</a></li>
+      <li><a href="#pratica">10. Na prática</a></li>
+    </ul></div></div>
+<section class="section" id="tres-poderes"><div class="wrap"><div class="section-label">Visão geral</div><h2>1 Ferramenta — 3 Poderes Diferentes</h2><div class="grid-3"><div class="card orange"><h3>Claude Chat</h3><p><strong>Pensar.</strong> Ideal para conversar, organizar ideias, escrever, analisar informações e estruturar raciocínios.</p></div><div class="card purple"><h3>Claude Cowork</h3><p><strong>Fazer.</strong> Ajuda a trabalhar com arquivos, projetos, conectores, rotinas e tarefas mais operacionais.</p></div><div class="card pink"><h3>Claude Code</h3><p><strong>Construir.</strong> Voltado para código, desenvolvimento, automações técnicas, sites, apps e integrações.</p></div></div></div></section>
+<section class="section" id="quando-usar"><div class="wrap"><div class="section-label">Aplicação</div><h2>Quando usar cada ferramenta</h2><div class="tool-block b-chat"><div class="tool-block-header"><span class="chip chip-chat">Claude Chat</span></div><div class="use-tabs"><button class="tab-btn t-use" onclick="switchTab(this,'chat-use')">Usar quando</button><button class="tab-btn" onclick="switchTab(this,'chat-nope')">Evitar quando</button></div><div id="chat-use" class="tab-panel active"><ul class="use-list"><li>Você precisa organizar ideias, escrever textos, criar roteiros ou revisar uma comunicação.</li><li>O objetivo é pensar melhor antes de executar.</li><li>A tarefa não depende de muitos arquivos, conectores ou execução técnica.</li></ul></div><div id="chat-nope" class="tab-panel"><ul class="nope-list"><li>Você precisa executar ações em arquivos, pastas, e-mails ou sistemas.</li><li>Você precisa criar um sistema, site, automação ou trabalhar com código.</li></ul></div></div><div class="tool-block b-cwork"><div class="tool-block-header"><span class="chip chip-cwork">Claude Cowork</span></div><div class="use-tabs"><button class="tab-btn t-use" onclick="switchTab(this,'cowork-use')">Usar quando</button><button class="tab-btn" onclick="switchTab(this,'cowork-nope')">Evitar quando</button></div><div id="cowork-use" class="tab-panel active"><ul class="use-list"><li>Você quer trabalhar com arquivos, pastas, documentos, notas fiscais, e-mails ou rotinas.</li><li>Você precisa que o Claude execute tarefas com mais autonomia e contexto.</li><li>Você quer reaproveitar instruções, projetos, conectores e configurações.</li></ul></div><div id="cowork-nope" class="tab-panel"><ul class="nope-list"><li>A tarefa é apenas uma pergunta rápida.</li><li>Você ainda não revisou permissões, arquivos e conectores envolvidos.</li></ul></div></div><div class="tool-block b-code"><div class="tool-block-header"><span class="chip chip-code">Claude Code</span></div><div class="use-tabs"><button class="tab-btn t-use" onclick="switchTab(this,'code-use')">Usar quando</button><button class="tab-btn" onclick="switchTab(this,'code-nope')">Evitar quando</button></div><div id="code-use" class="tab-panel active"><ul class="use-list"><li>Você precisa criar sites, apps, páginas, automações, scripts ou integrações técnicas.</li><li>O projeto exige estrutura de arquivos, testes e manutenção.</li><li>Você quer construir uma solução completa, não apenas receber uma resposta.</li></ul></div><div id="code-nope" class="tab-panel"><ul class="nope-list"><li>Você precisa apenas escrever, resumir ou analisar algo simples.</li><li>Você não quer lidar com arquivos, terminal, permissões ou estrutura técnica.</li></ul></div></div></div></section>
+<section class="section" id="analise"><div class="wrap"><div class="section-label">Comparativo</div><h2>Análise detalhada</h2><div class="compare-table"><table><thead><tr><th>Critério</th><th>Claude Chat</th><th>Claude Cowork</th><th>Claude Code</th></tr></thead><tbody><tr><td>Melhor uso</td><td>Ideias, textos e análise</td><td>Arquivos, rotinas e execução</td><td>Código, sites e automações</td></tr><tr><td>Complexidade</td><td>Baixa</td><td>Média</td><td>Alta</td></tr><tr><td>Precisa de arquivos?</td><td>Opcional</td><td>Frequentemente</td><td>Frequentemente</td></tr><tr><td>Perfil ideal</td><td>Usuário geral</td><td>Produtividade e operação</td><td>Construção técnica</td></tr><tr><td>Cuidados</td><td>Contexto incompleto</td><td>Permissões e dados sensíveis</td><td>Execução de código e arquivos</td></tr></tbody></table></div></div></section>
+<section class="section" id="escolha-rapida"><div class="wrap"><div class="section-label">Decisão rápida</div><h2>Escolha rápida por tarefa</h2><div class="quick-grid"><div class="quick-item"><strong>Escrever uma mensagem</strong><span>Use Claude Chat.</span></div><div class="quick-item"><strong>Analisar uma pasta com arquivos</strong><span>Use Claude Cowork.</span></div><div class="quick-item"><strong>Criar uma página HTML</strong><span>Use Claude Code ou Chat, dependendo da complexidade.</span></div><div class="quick-item"><strong>Organizar uma rotina diária</strong><span>Use Rotina no Claude Cowork.</span></div><div class="quick-item"><strong>Construir um sistema</strong><span>Use Claude Code com apoio do Chat para planejamento.</span></div><div class="quick-item"><strong>Pesquisar e resumir informações</strong><span>Use Chat ou Cowork, conforme os arquivos envolvidos.</span></div></div></div></section>
+<div class="section" id="modelos">
+  <div class="wrap">
+    <div class="section-label">Modelos de pensamento</div>
+    <h2>Qual modelo usar?</h2>
+    <div class="info-box" style="margin-bottom:20px">
+      <div class="ico">💡</div>
+      <p>Pode parecer que um modelo mais poderoso "se esforça menos" — mas é o contrário. <strong>Opus processa mais, raciocina mais fundo e custa mais tokens por tarefa</strong>, por isso tem maior impacto nos seus limites. Haiku é mais leve e econômico justamente por ser mais direto e rápido.</p>
+    </div>
+      <div class="model-card" style="border-color:rgba(217,119,87,.25)">
+        <h3 style="color:var(--chat)">Opus</h3>
+        <div class="mv">4.7</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Moderada</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Muito alta</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--no)">Maior</span></div>
+        <p>Raciocínio complexo, análise profunda e código avançado. Estratégia e decisões difíceis.</p>
+      </div>
+      <div class="model-card" style="border-color:rgba(124,92,191,.25)">
+        <h3 style="color:var(--cwork2)">Sonnet</h3>
+        <div class="mv">4.6</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Rápida</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Alta</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--part)">Médio</span></div>
+        <p>Equilíbrio ideal. Uso diário, relatórios, conteúdo, análise e automações.</p>
+      </div>
+      <div class="model-card" style="border-color:rgba(76,175,125,.2)">
+        <h3 style="color:var(--ok)">Haiku</h3>
+        <div class="mv">4.5</div>
+        <div class="model-row"><span class="mk">Velocidade</span><span class="mv2">Muito rápida</span></div>
+        <div class="model-row"><span class="mk">Capacidade</span><span class="mv2">Boa</span></div>
+        <div class="model-row"><span class="mk">Impacto no limite</span><span class="mv2" style="color:var(--ok)">Menor</span></div>
+        <p>Tarefas rápidas e repetitivas. Resumos simples, classificações e respostas curtas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="section" id="esforco"><div class="wrap"><div class="section-label">Configuração de resposta</div><h2>Esforço</h2><div class="effort-diagram"><h3>Níveis de esforço do Claude</h3><p class="effort-sub">Quanto maior o esforço, mais o Claude raciocina antes de responder</p><div class="effort-bar"></div><div class="effort-grid"><div class="effort-title low">Baixo</div><div class="effort-title med">Médio</div><div class="effort-title high">Alto</div><div class="effort-title max">Máximo</div><div class="effort-cell">Responde direto,<br>sem rascunho interno</div><div class="effort-cell">Considera contexto,<br>raciocínio padrão</div><div class="effort-cell">Rascunho interno,<br>revisa antes de entregar</div><div class="effort-cell">Tudo disponível,<br>raciocínio exaustivo</div><div class="effort-cell">Use quando:<br>pergunta factual,<br>resumo simples,<br>resposta curta</div><div class="effort-cell">Use quando:<br>análise, redação,<br>código comum,<br>explicações</div><div class="effort-cell">Use quando:<br>lógica complexa,<br>debugging,<br>decisões difíceis</div><div class="effort-cell">Use quando:<br>arquitetura crítica,<br>lógica muito densa,<br>alto risco de erro</div></div><div class="effort-bottom"><h3>O que muda na prática</h3><div class="effort-bottom-grid"><div class="effort-bottom-card"><strong>Velocidade</strong><span>Baixo é mais rápido</span></div><div class="effort-bottom-card"><strong>Consumo</strong><span>Máximo usa mais tokens</span></div><div class="effort-bottom-card"><strong>Precisão</strong><span>Alto/máximo erram menos</span></div></div></div></div><div class="info-box"><div class="ico">🔥</div><p><strong>O esforço controla o quanto o Claude “se dedica” para formular a resposta, independente do modelo.</strong> É como regular a potência do fogão: você pode usar chama baixa, média ou alta conforme o prato.</p></div><div class="grid-2"><div class="card purple"><h3>Configuração potente</h3><p>A combinação mais potente é <strong>esforço alto + modelo com pensamento ativado</strong>. Ela é ótima para problemas complexos, mas consome mais do seu limite de uso.</p></div><div class="card orange"><h3>Uso recomendado no dia a dia</h3><p>Para o cotidiano da escola — criar páginas, montar textos e responder alunos — o esforço médio sem pensamento já entrega muito bem. Guarde a configuração máxima para debugging difícil ou análise estratégica mais densa.</p></div></div></div></section>
+
+
+<section class="section" id="cowork-elementos">
+  <div class="wrap">
+    <div class="section-label">Claude Cowork</div>
+    <h2>Principais elementos do Claude Cowork</h2>
+
+    <div class="cowork-map">
+      <div class="cowork-map-title">Lógica dos elementos do Claude Cowork</div>
+      <p class="cowork-map-sub">O Cowork organiza o trabalho em camadas: você conversa, cria contexto, visualiza entregas, delega tarefas e automatiza rotinas.</p>
+      <div class="cowork-flow">
+        <div class="cowork-node">
+          <div class="cowork-icon">💬</div>
+          <h3>Chat</h3>
+          <p>Entrada rápida para conversar, pedir ideias e iniciar tarefas.</p>
+        </div>
+        <div class="cowork-node">
+          <div class="cowork-icon">📁</div>
+          <h3>Projetos</h3>
+          <p>Contexto persistente com arquivos, instruções e padrões.</p>
+        </div>
+        <div class="cowork-node">
+          <div class="cowork-icon">🧩</div>
+          <h3>Artefatos</h3>
+          <p>Entregas visuais renderizadas para revisar e iterar.</p>
+        </div>
+        <div class="cowork-node">
+          <div class="cowork-icon">📨</div>
+          <h3>Despacho</h3>
+          <p>Tarefas enviadas para execução em segundo plano.</p>
+        </div>
+        <div class="cowork-node">
+          <div class="cowork-icon">🔁</div>
+          <h3>Rotina</h3>
+          <p>Execução automática por agendamento ou gatilho.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Elemento</th><th>O que é</th><th>Quando usar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chat</td><td>Ponto de entrada. Cada conversa começa do zero, sem memória do que veio antes.</td><td>Ideias rápidas, perguntas diretas, textos e análises pontuais.</td></tr>
+          <tr><td>Projetos</td><td>Você sobe arquivos, define instruções fixas e mantém contexto entre conversas.</td><td>Materiais recorrentes, tom de voz da escola, cursos e instruções repetidas.</td></tr>
+          <tr><td>Artefatos</td><td>Resultados renderizáveis que aparecem dentro do chat ou dos projetos.</td><td>Páginas HTML, Dashboards, componentes React, protótipos e entregas visuais.</td></tr>
+          <tr><td>Despacho</td><td>Você envia tarefas pelo celular e o desktop executa depois, em segundo plano.</td><td>Demandas assíncronas, tarefas simples e fluxos low-code.</td></tr>
+          <tr><td>Rotina</td><td>Configuração salva com prompt, repositórios e conectores que roda por agendamento ou gatilho externo.</td><td>Consultas diárias, relatórios recorrentes, organização de e-mails e monitoramentos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+
+<div class="section" id="seguranca">
+  <div class="wrap">
+    <div class="section-label">Segurança e LGPD</div>
+    <h2>Boas práticas no uso com arquivos</h2>
+    <div class="sec-grid">
+      <div class="sec-row"><span class="sec-p">✅ Liberar apenas a pasta necessária</span><span class="sec-w">Reduz risco de acesso indevido a outros arquivos</span></div>
+      <div class="sec-row"><span class="sec-p">✅ Revisar o plano antes da execução</span><span class="sec-w">Evita ações erradas ou não intencionais</span></div>
+      <div class="sec-row"><span class="sec-p">✅ Confirmar antes de mover/deletar</span><span class="sec-w">Evita perda permanente de dados</span></div>
+      <div class="sec-row"><span class="sec-p">✅ Usar cópias de teste</span><span class="sec-w">Reduz risco em arquivos importantes</span></div>
+      <div class="sec-row"><span class="sec-p">✅ Conferir resultado final</span><span class="sec-w">A IA pode errar ou interpretar mal o pedido</span></div>
+      </div>
+  </div>
+</div>
+<div class="section" id="contexto">
+  <div class="wrap">
+    <div class="section-label">Memória e contexto</div>
+    <h2>Por que contexto é tão importante?</h2>
+    <div class="info-box">
+      <div class="ico">🧠</div>
+      <p><strong>Contexto é a memória de trabalho da IA durante uma tarefa.</strong> É como a mesa onde o Claude coloca todos os materiais necessários: instruções, arquivos, mensagens anteriores, regras, exemplos e objetivos. O Claude suporta janelas de contexto grandes — útil para documentos longos, comparar arquivos e projetos com várias etapas.</p>
+    </div>
+    <div class="tbl-sub" style="margin-top:0;margin-bottom:12px">Boas práticas</div>
+    <div class="ctx-grid">
+      <div class="ctx-card"><h4>📁 Criar um Project por tema</h4><p>Um projeto para cada aula, cliente ou campanha</p></div>
+      <div class="ctx-card"><h4>📝 Escrever instruções claras</h4><p>Explicar objetivo, público, estilo e limites</p></div>
+      <div class="ctx-card"><h4>🔀 Separar conversas por tarefa</h4><p>Roteiro em uma conversa, revisão em outra</p></div>
+      <div class="ctx-card"><h4>🏷️ Nomear arquivos corretamente</h4><p>Facilita a leitura e organização pelo modelo</p></div>
+      <div class="ctx-card"><h4>📋 Fazer resumos de decisão</h4><p>Ajuda a manter continuidade entre sessões</p></div>
+      <div class="ctx-card"><h4>⏸️ Pedir confirmação antes de executar</h4><p>Principalmente ao usar o Cowork</p></div>
+      <div class="ctx-card"><h4>🔄 Atualizar o contexto</h4><p>Avisar quando algo mudou no projeto</p></div>
+      <div class="ctx-card"><h4>✅ Encerrar assuntos antigos</h4><p>Deixar claro quando uma tarefa terminou</p></div>
+    </div>
+  </div>
+</div>
+<section class="section" id="pratica"><div class="wrap"><div class="section-label">Exercícios</div><h2>Na prática</h2><div class="practice-card"><h3>1. Retirar informações da pasta de notas fiscais</h3><p>Use este exercício para pedir ao Claude que leia uma pasta com notas fiscais, extraia os principais campos e gere uma base em Excel com um painel automático.</p><div class="btn-row"><a class="action-btn primary" href="https://drive.google.com/drive/folders/1Vu9v-3GDtDBg-9fg72hDPtK52SBWLYKN?usp=sharing" target="_blank">Baixar pasta de notas fiscais</a></div><div class="prompt-box"><div class="prompt-tools"><span>Prompt · Notas fiscais</span><button class="copy-btn" onclick="copyPrompt('promptNotas', this)">⧉ Copiar prompt</button></div><textarea id="promptNotas" class="prompt-text" readonly>Acesse a pasta de notas fiscais, Crie um arquivo de excel com a seguinte base de dados: 
+Número da nota
+Razão social
+CNPJ
+Valor
+Competência 
+
+Após isso crie um painel de controle automático com os seguintes totalizadores: Total de notas, total faturado e notas emitidas por mês</textarea></div></div><div class="practice-card"><h3>2. Valor do dólar</h3><p>Use este exercício para criar uma rotina diária de consulta da cotação do dólar comercial.</p><div class="prompt-box"><div class="prompt-tools"><span>Prompt · Cotação diária</span><button class="copy-btn" onclick="copyPrompt('promptDolar', this)">⧉ Copiar prompt</button></div><textarea id="promptDolar" class="prompt-text" readonly>Crie uma rotina diária chamada “Cotação diária do dólar”.
+
+Agendamento:
+Executar todos os dias às 06:00 da manhã.
+
+Objetivo:
+Consultar a cotação atualizada do dólar comercial e retornar uma tabela com:
+
+- Compra
+- Venda
+- Máximo
+- Mínimo
+- Variação
+
+Instruções:
+Use uma fonte confiável de dados financeiros.
+Padronize os valores no formato brasileiro.
+Retorne apenas a tabela e um breve resumo executivo.
+Caso algum dado esteja indisponível, informe claramente.
+
+Saída esperada:
+
+Cotação do dólar - dd/mm/aaaa
+
+| Compra | Venda | Máximo | Mínimo | Variação |
+|--------|-------|--------|--------|----------|
+| R$ 0,00 | R$ 0,00 | R$ 0,00 | R$ 0,00 | 0,00% |
+
+Resumo executivo:
+[Resumo curto do comportamento do dólar]</textarea></div></div><div class="practice-card"><h3>3. Organizar e-mails</h3><p>Use este exercício para planejar uma rotina diária de triagem e organização da caixa de entrada com regras de segurança.</p><div class="prompt-box"><div class="prompt-tools"><span>Prompt · Organização de e-mails</span><button class="copy-btn" onclick="copyPrompt('promptEmails', this)">⧉ Copiar prompt</button></div><textarea id="promptEmails" class="prompt-text" readonly>Você é um assistente responsável por organizar minha caixa de e-mails diariamente.
+
+Todos os dias, às 06:00 da manhã, analise os e-mails recebidos e execute as seguintes ações:
+
+* E-mails de propaganda, promoções, cupons e newsletters devem ser movidos para a lixeira.
+* E-mails de confirmação de compra, pedido aprovado, entrega, rastreio, recibo ou pagamento confirmado devem ser movidos para a pasta “Compras e Confirmações”.
+* PDFs de nota fiscal, recibo, boleto, comprovante ou documentos de faturamento devem ser salvos na pasta “Faturamento”.
+* E-mails importantes de clientes, fornecedores, bancos, plataformas de pagamento ou ferramentas de trabalho devem permanecer na caixa de entrada e ser marcados como importantes.
+* E-mails que gerarem dúvida devem permanecer na caixa de entrada com a etiqueta “Revisar manualmente”.
+
+Regras:
+Nunca excluir e-mails definitivamente.
+Nunca enviar para a lixeira e-mails de bancos, clientes, fornecedores, compras, pagamentos ou documentos fiscais.
+Sempre priorizar segurança: em caso de dúvida, manter o e-mail na caixa de entrada.
+
+Ao final, gere um relatório com:
+
+* Quantidade de e-mails analisados
+* Quantidade de propagandas movidas para lixeira
+* Quantidade de confirmações de compra organizadas
+* Quantidade de PDFs salvos na pasta Faturamento
+* Quantidade de e-mails importantes identificados
+* Quantidade de e-mails para revisão manual</textarea></div></div></div></section>
+</div><footer><div class="wrap"><p>© 2026 Escola Karen Abecia · Todos os direitos reservados</p></div></footer><script>function switchTab(btn,panelId){const block=btn.closest('.tool-block');block.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');block.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));const isNope=panelId.includes('nope');btn.className='tab-btn '+(isNope?'t-nope':'t-use');document.getElementById(panelId).classList.add('active')}function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{if(btn){const original=btn.innerHTML;btn.classList.add('copied');btn.innerHTML='✓ Copiado';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=original},1800)}})}function copyPrompt(id,btn){const textarea=document.getElementById(id);if(!textarea)return;copyText(textarea.value,btn)}function downloadPDF(){const original=document.title;document.title='implementacao_claude_t2_aula1';window.print();document.title=original}</script></body></html>
