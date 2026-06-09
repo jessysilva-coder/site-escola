@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escolha de Kits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0a0a12;
+      --surface:   #13131f;
+      --surface2:  #1c1c2e;
+      --border:    rgba(255,255,255,0.07);
+      --pink:      #f72585;
+      --pink-soft: rgba(247,37,133,0.15);
+      --pink-glow: rgba(247,37,133,0.35);
+      --blue:      #4361ee;
+      --blue-soft: rgba(67,97,238,0.15);
+      --blue-glow: rgba(67,97,238,0.4);
+      --cyan:      #4cc9f0;
+      --text:      #f0f0f8;
+      --muted:     #7b7b9a;
+      --radius:    16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Fundo decorativo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--pink-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift1 12s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--blue-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift2 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(80px, 60px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-60px, -80px); } }
+
+    /* Card principal */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 520px;
+      padding: 48px 40px 40px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+      animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Topo decorativo */
+    .card-accent {
+      position: absolute;
+      top: 0; left: 40px; right: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--blue), var(--cyan));
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* Ícone / badge topo */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 30%, var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    /* Separador de etapas */
+    .steps {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+    .step-dot {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--surface2);
+      transition: background 0.4s;
+    }
+    .step-dot.active { background: var(--pink); }
+    .step-dot.done   { background: var(--blue); }
+
+    /* Campos */
+    .field {
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .field:nth-child(1) { animation-delay: 0.05s; }
+    .field:nth-child(2) { animation-delay: 0.10s; }
+    .field:nth-child(3) { animation-delay: 0.15s; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    input::placeholder { color: #3d3d5c; }
+    input:focus {
+      border-color: var(--pink);
+      background: #16162a;
+      box-shadow: 0 0 0 3px var(--pink-soft);
+    }
+    input.error { border-color: #ff4d6d; box-shadow: 0 0 0 3px rgba(255,77,109,0.15); }
+
+    .error-msg {
+      font-size: 12px;
+      color: #ff4d6d;
+      margin-top: 6px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* Seleção de kits */
+    .kits-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      animation: fadeUp 0.4s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .kit-option {
+      position: relative;
+      cursor: pointer;
+    }
+    .kit-option input[type="radio"] { display: none; }
+
+    .kit-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+      user-select: none;
+    }
+    .kit-card:hover {
+      border-color: rgba(247,37,133,0.3);
+      background: #161626;
+      transform: translateX(3px);
+    }
+
+    .kit-option input:checked + .kit-card {
+      border-color: var(--pink);
+      background: var(--pink-soft);
+      box-shadow: 0 0 0 1px var(--pink), 0 8px 24px var(--pink-soft);
+    }
+
+    .kit-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+    }
+    .kit-option input:checked + .kit-card .kit-icon {
+      background: var(--pink-soft);
+      border-color: var(--pink);
+    }
+
+    .kit-info { flex: 1; }
+    .kit-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .kit-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .kit-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.25s;
+      color: transparent;
+      font-size: 11px;
+    }
+    .kit-option input:checked + .kit-card .kit-check {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: white;
+    }
+
+    /* Botão */
+    .btn {
+      width: 100%;
+      margin-top: 28px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--pink), #b5179e);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      letter-spacing: 0.02em;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px var(--pink-glow); }
+    .btn:hover::before { opacity: 1; }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Tela de sucesso */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+      animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--blue-soft), var(--pink-soft));
+      border: 2px solid var(--blue);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 24px;
+      animation: popIn 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .success-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 320px;
+      margin: 0 auto 28px;
+    }
+
+    .success-detail {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+    .success-detail strong { color: var(--text); }
+
+    /* Toast de erro */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e1e30;
+      border: 1px solid #ff4d6d;
+      color: #ff4d6d;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 13px;
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Rodapé */
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 11px;
+      color: #2e2e4a;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-accent"></div>
+
+    <!-- Formulário -->
+    <div id="form-screen">
+      <div class="badge"><span></span> Escolha seu kit</div>
+
+      <h1>Qual kit é o seu?</h1>
+      <p class="subtitle">Preencha as informações abaixo para receber o material do kit escolhido.</p>
+
+      <div class="steps">
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+        <div class="step-dot" id="dot-3"></div>
+      </div>
+
+      <div class="field">
+        <label for="nome">Seu nome completo</label>
+        <input type="text" id="nome" placeholder="Ex.: Maria Souza" autocomplete="name"/>
+        <div class="error-msg" id="err-nome">Por favor, informe seu nome.</div>
+      </div>
+
+      <div class="field">
+        <label for="email">Seu e-mail</label>
+        <input type="email" id="email" placeholder="Ex.: maria@email.com" autocomplete="email"/>
+        <div class="error-msg" id="err-email">Por favor, informe um e-mail válido.</div>
+      </div>
+
+      <div class="field">
+        <label>Escolha o seu kit</label>
+        <div class="kits-grid">
+
+          <label class="kit-option">
+            <input type="radio" name="kit" value="Kit Fundamental 1"/>
+            <div class="kit-card">
+              <div class="kit-icon">📘</div>
+              <div class="kit-info">
+                <div class="kit-name">Kit Fundamental 1</div>
+                <div class="kit-desc">1º ao 5º ano</div>
+              </div>
+              <div class="kit-check">✓</div>
+            </div>
+          </label>
+
+          <label class="kit-option">
+            <input type="radio" name="kit" value="Kit Fundamental 2"/>
+            <div class="kit-card">
+              <div class="kit-icon">📗</div>
+              <div class="kit-info">
+                <div class="kit-name">Kit Fundamental 2</div>
+                <div class="kit-desc">6º ao 9º ano</div>
+              </div>
+              <div class="kit-check">✓</div>
+            </div>
+          </label>
+
+          <label class="kit-option">
+            <input type="radio" name="kit" value="Kit Ensino Médio"/>
+            <div class="kit-card">
+              <div class="kit-icon">📙</div>
+              <div class="kit-info">
+                <div class="kit-name">Kit Ensino Médio</div>
+                <div class="kit-desc">1º ao 3º ano do EM</div>
+              </div>
+              <div class="kit-check">✓</div>
+            </div>
+          </label>
+
+        </div>
+        <div class="error-msg" id="err-kit">Por favor, escolha um kit.</div>
+      </div>
+
+      <button class="btn" id="btn-enviar" onclick="enviarFormulario()">
+        <div class="btn-inner">
+          <div class="spinner" id="spinner"></div>
+          <span id="btn-text">Confirmar escolha</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Tela de sucesso -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✦</div>
+      <div class="success-title">Tudo certo!</div>
+      <p class="success-text">Suas informações foram registradas com sucesso. Em breve você receberá o material do kit escolhido.</p>
+      <div class="success-detail" id="success-detail"></div>
+    </div>
+
+    <div class="footer">© 2025 — Escolha de Kits</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwKnYg6Za1E_OGneRW2P3yhmJh3XkBik8bAs3gC8QKSAB8PAwC-gykY48Q_LB9biKVkIw/exec";
+
+    // Atualiza dots conforme interação
+    document.getElementById("nome").addEventListener("input", atualizarDots);
+    document.getElementById("email").addEventListener("input", atualizarDots);
+    document.querySelectorAll("input[name='kit']").forEach(r => r.addEventListener("change", atualizarDots));
+
+    function atualizarDots() {
+      const nome  = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const kit   = document.querySelector("input[name='kit']:checked");
+
+      document.getElementById("dot-1").className = "step-dot " + (nome ? "done" : "active");
+      document.getElementById("dot-2").className = "step-dot " + (email ? "done" : nome ? "active" : "");
+      document.getElementById("dot-3").className = "step-dot " + (kit ? "done" : email ? "active" : "");
+    }
+
+    function validarEmail(e) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    }
+
+    function mostrarErro(id, mostrar) {
+      const el = document.getElementById(id);
+      el.classList.toggle("show", mostrar);
+    }
+
+    function mostrarToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 3500);
+    }
+
+    function setLoading(ativo) {
+      const btn = document.getElementById("btn-enviar");
+      const spinner = document.getElementById("spinner");
+      const txt = document.getElementById("btn-text");
+      btn.disabled = ativo;
+      spinner.style.display = ativo ? "block" : "none";
+      txt.textContent = ativo ? "Enviando..." : "Confirmar escolha";
+    }
+
+    async function enviarFormulario() {
+      const nome  = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const kitEl = document.querySelector("input[name='kit']:checked");
+
+      // Limpa erros
+      mostrarErro("err-nome",  false);
+      mostrarErro("err-email", false);
+      mostrarErro("err-kit",   false);
+
+      // Remove highlight de erro nos inputs
+      document.getElementById("nome").classList.remove("error");
+      document.getElementById("email").classList.remove("error");
+
+      let valido = true;
+
+      if (!nome) {
+        mostrarErro("err-nome", true);
+        document.getElementById("nome").classList.add("error");
+        valido = false;
+      }
+      if (!email || !validarEmail(email)) {
+        mostrarErro("err-email", true);
+        document.getElementById("email").classList.add("error");
+        valido = false;
+      }
+      if (!kitEl) {
+        mostrarErro("err-kit", true);
+        valido = false;
+      }
+
+      if (!valido) return;
+
+      setLoading(true);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, email, kit: kitEl.value })
+        });
+
+        // no-cors não retorna body — consideramos sucesso se não lançou erro
+        mostrarSucesso(nome, email, kitEl.value);
+
+      } catch (err) {
+        setLoading(false);
+        mostrarToast("Erro ao enviar. Verifique sua conexão e tente novamente.");
+      }
+    }
+
+    function mostrarSucesso(nome, email, kit) {
+      document.getElementById("form-screen").style.display = "none";
+      const s = document.getElementById("success-screen");
+      s.style.display = "block";
+
+      document.getElementById("success-detail").innerHTML =
+        `<strong>Nome:</strong> ${nome}<br>
+         <strong>E-mail:</strong> ${email}<br>
+         <strong>Kit:</strong> ${kit}`;
+    }
+  </script>
+</body>
+</html>
