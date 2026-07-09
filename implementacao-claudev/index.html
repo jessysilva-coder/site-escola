@@ -2,6 +2,22 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+
+    <script>
+
+  // Data final da campanha
+  const dataFinalCampanha = new Date("2026-07-19T23:59:00-03:00");
+
+  // Link da página 2
+  const paginaDestino = "https://sites.karenabecia.com.br/implementacao-claude/lista-espera";
+
+  const agora = new Date();
+
+  if (agora > dataFinalCampanha) {
+    window.location.href = paginaDestino;
+  }
+</script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMPLEMENTAÇÃO CLAUDE | Turma 3</title>
     <script src="https://cdn.tailwindcss.com"></script>
