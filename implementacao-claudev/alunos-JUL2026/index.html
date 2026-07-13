@@ -515,6 +515,45 @@
       }
     }
 
+
+    .lesson-card.available{
+      border-color:rgba(76,175,125,.28);
+      background:rgba(76,175,125,.04);
+    }
+    .lesson-card.available::before{background:#4caf7d}
+    .lesson-card.available .lesson-date{color:#4caf7d}
+    .lesson-card.available .lesson-status{
+      color:#4caf7d;
+      background:rgba(76,175,125,.12);
+      border:1px solid rgba(76,175,125,.25);
+    }
+    .lesson-card.available h3{color:var(--text)}
+    .lesson-card .material-link{
+      grid-column:3;
+      grid-row:1;
+      align-self:end;
+      justify-self:end;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      margin-top:8px;
+    }
+    @media(max-width:720px){
+      .lesson-card .material-link{
+        grid-column:2;
+        grid-row:3;
+        justify-self:start;
+      }
+    }
+    @media(max-width:460px){
+      .lesson-card .material-link{
+        grid-column:1;
+        grid-row:auto;
+        justify-self:start;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -543,19 +582,20 @@
     <h2>Aulas da Turma 3</h2>
 
     <div class="schedule-horizontal">
-      <div class="lesson-card next">
+      <div class="lesson-card available">
         <div class="lesson-top">
           <div class="lesson-date"><strong>13</strong><span>Jul</span></div>
-          <div class="lesson-status">Próxima</div>
+          <div class="lesson-status">Disponível</div>
         </div>
         <h3>Integração e Nivelamento</h3>
         <p>Instalação, configurações iniciais, licenças e preparação para acompanhar o treinamento.</p>
+        <a href="./aula0.html" class="material-link">📄 Material da Aula</a>
       </div>
 
-      <div class="lesson-card soon">
+      <div class="lesson-card next">
         <div class="lesson-top">
           <div class="lesson-date"><strong>20</strong><span>Jul</span></div>
-          <div class="lesson-status">Em breve</div>
+          <div class="lesson-status">Próxima</div>
         </div>
         <h3>O que precisa saber sobre o Claude I.A.</h3>
         <p>Configuração profissional e fundamentos de engenharia de prompts.</p>
@@ -602,7 +642,7 @@
       <div class="reminder-icon">📚</div>
       <div>
         <h3>Materiais liberados ao longo do treinamento</h3>
-        <p>As aulas acontecem sempre às segundas-feiras, às 19h30. Os materiais de cada encontro serão adicionados nesta central conforme o treinamento avançar.</p>
+        <p>As aulas acontecem sempre às segundas-feiras, às 19h30. O material da Aula 0 já está disponível. Os próximos materiais serão adicionados nesta central conforme o treinamento avançar.</p>
       </div>
     </div>
   </div>
