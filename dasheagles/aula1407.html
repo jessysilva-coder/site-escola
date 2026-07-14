@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método A.G.E.N.T.E. — Material de Apoio | DashEagles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laranja:#FF7000;
+    --verde:#57B95C;
+    --fundo:#F0F0F0;
+    --card:#FFFFFF;
+    --texto:#020617;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Poppins', sans-serif;
+    background:var(--fundo);
+    color:var(--texto);
+    line-height:1.6;
+  }
+  h1,h2,h3,h4{
+    font-family:'Montserrat', sans-serif;
+    color:var(--texto);
+  }
+  img{max-width:100%; display:block;}
+  a{text-decoration:none;}
+
+  /* HEADER */
+  header{
+    background:var(--card);
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.03);
+  }
+  header img{height:38px;}
+
+  /* HERO */
+  .hero{
+    text-align:center;
+    padding:64px 20px 48px;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    background:rgba(255,112,0,0.1);
+    color:var(--laranja);
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:6px 16px;
+    border-radius:20px;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(32px, 5vw, 48px);
+    font-weight:800;
+    margin-bottom:14px;
+  }
+  .hero h1 span{color:var(--laranja);}
+  .hero p{
+    font-size:17px;
+    color:rgba(2,6,23,0.7);
+    max-width:640px;
+    margin:0 auto;
+  }
+
+  /* SECTION WRAPPER */
+  section{
+    max-width:1080px;
+    margin:0 auto;
+    padding:36px 20px;
+  }
+  .section-title{
+    font-size:clamp(24px, 3.5vw, 32px);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .section-sub{
+    font-size:16px;
+    color:rgba(2,6,23,0.65);
+    margin-bottom:32px;
+    max-width:720px;
+  }
+
+  /* CARD GENERAL */
+  .card{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    padding:28px;
+  }
+
+  /* O QUE É UM AGENTE */
+  .intro-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .uso-list{ display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  @media(max-width:700px){ .uso-list{ grid-template-columns:1fr; } }
+  .grupo-label{
+    font-size:12.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:rgba(2,6,23,0.5);
+  }
+  .uso-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    padding:18px 20px;
+  }
+  .uso-icon{
+    flex-shrink:0;
+    width:40px; height:40px;
+    border-radius:12px;
+    background:rgba(87,185,92,0.12);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .uso-icon svg{width:20px; height:20px;}
+  .uso-item strong{ display:block; font-size:15px; margin-bottom:2px; }
+  .uso-item span{ font-size:14px; color:rgba(2,6,23,0.65); }
+
+  /* TABELA COMPARATIVA */
+  .compare-wrap{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    overflow:hidden;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    background:var(--texto);
+    color:#fff;
+    font-family:'Montserrat', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    text-align:left;
+    padding:16px 20px;
+  }
+  thead th:first-child{width:26%;}
+  tbody td{
+    padding:16px 20px;
+    font-size:14.5px;
+    border-bottom:1px solid rgba(2,6,23,0.06);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody td:first-child{
+    font-weight:600;
+    color:var(--laranja);
+  }
+  .tag-verde{ color:var(--verde); font-weight:600; }
+
+  /* MÉTODO A.G.E.N.T.E. CARDS */
+  .agente-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+  }
+  @media(max-width:760px){ .agente-grid{ grid-template-columns:1fr; } }
+
+  .letra-card{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    padding:26px;
+    border-top:4px solid var(--laranja);
+  }
+  .letra-card.verde{ border-top-color:var(--verde); }
+  .letra-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:12px;
+  }
+  .letra-badge{
+    flex-shrink:0;
+    width:44px; height:44px;
+    border-radius:50%;
+    background:var(--laranja);
+    color:#fff;
+    font-family:'Montserrat', sans-serif;
+    font-weight:800;
+    font-size:20px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .letra-card.verde .letra-badge{ background:var(--verde); }
+  .letra-head h3{ font-size:19px; }
+  .letra-card p.desc{ font-size:14.5px; color:rgba(2,6,23,0.75); margin-bottom:14px; }
+
+  .perguntas-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:none;
+    border:none;
+    color:var(--laranja);
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    padding:0;
+  }
+  .letra-card.verde .perguntas-toggle{ color:var(--verde); }
+  .perguntas-toggle svg{ width:14px; height:14px; transition:transform 0.2s ease; }
+  .perguntas-toggle.aberto svg{ transform:rotate(180deg); }
+
+  .perguntas-lista{
+    display:none;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed rgba(2,6,23,0.12);
+  }
+  .perguntas-lista.aberto{ display:block; }
+  .perguntas-lista ul{ list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .perguntas-lista li{
+    font-size:13.5px;
+    color:rgba(2,6,23,0.8);
+    padding-left:18px;
+    position:relative;
+  }
+  .perguntas-lista li::before{
+    content:"•";
+    color:var(--laranja);
+    position:absolute; left:0; font-weight:700;
+  }
+  .letra-card.verde .perguntas-lista li::before{ color:var(--verde); }
+  .perguntas-lista .subgrupo{
+    font-size:12.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:rgba(2,6,23,0.5);
+    margin:12px 0 8px;
+  }
+  .perguntas-lista .subgrupo:first-child{ margin-top:0; }
+
+  /* CONCEITO IDEAL */
+  .conceito-box{
+    margin-top:24px;
+    background:linear-gradient(135deg, rgba(255,112,0,0.08), rgba(87,185,92,0.08));
+    border-radius:20px;
+    padding:26px 28px;
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+  }
+  .conceito-box .icon{
+    flex-shrink:0;
+    width:46px; height:46px;
+    border-radius:12px;
+    background:var(--card);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.06);
+  }
+  .conceito-box h4{ font-size:16px; margin-bottom:4px; }
+  .conceito-box p{ font-size:14.5px; color:rgba(2,6,23,0.8); }
+
+  /* PROMPT BLOCK */
+  .prompt-card{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    padding:8px;
+  }
+  .prompt-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+  }
+  .prompt-header span{
+    font-family:'Montserrat', sans-serif;
+    font-weight:700;
+    font-size:14px;
+  }
+  .copy-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--laranja);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    font-family:'Poppins', sans-serif;
+    font-weight:500;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  .copy-btn:hover{ transform:translateY(-1px); }
+  .copy-btn.copiado{ background:var(--verde); }
+  .copy-btn svg{ width:15px; height:15px; }
+
+  .prompt-body{
+    background:#0B1220;
+    border-radius:16px;
+    padding:22px 24px;
+    color:#E4E9F2;
+    font-family:'Poppins', sans-serif;
+    font-size:13.5px;
+    line-height:1.8;
+    white-space:pre-wrap;
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .prompt-body b{ color:#FFB27A; }
+
+  /* DOWNLOAD BLOCK */
+  .download-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .download-info{ display:flex; align-items:center; gap:16px; }
+  .download-icon{
+    flex-shrink:0;
+    width:52px; height:52px;
+    border-radius:14px;
+    background:rgba(255,112,0,0.1);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .download-icon svg{ width:26px; height:26px; }
+  .download-info h4{ font-size:16.5px; margin-bottom:3px; }
+  .download-info p{ font-size:13.5px; color:rgba(2,6,23,0.6); }
+  .download-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--verde);
+    color:#fff;
+    border-radius:10px;
+    padding:13px 22px;
+    font-weight:500;
+    font-size:14px;
+    white-space:nowrap;
+    transition:transform 0.15s ease;
+  }
+  .download-btn:hover{ transform:translateY(-1px); }
+  .download-btn svg{ width:16px; height:16px; }
+
+  /* FOOTER */
+  footer{
+    text-align:center;
+    padding:30px 20px;
+    font-size:12.5px;
+    color:var(--texto);
+    opacity:0.5;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/logo-para-claro/logo.png" alt="Escola Karen Abecia">
+</header>
+
+<div class="hero">
+  <span class="eyebrow">Material de Apoio · Mentoria DashEagles</span>
+  <h1>Método <span>A.G.E.N.T.E.</span></h1>
+  <p>O passo a passo para criar o seu especialista em I.A. — definindo não só o que o agente faz, mas como ele se comporta e quais limites respeita.</p>
+</div>
+
+<!-- O QUE É UM AGENTE -->
+<section>
+  <h2 class="section-title">O que é um Agente de I.A.?</h2>
+  <p class="section-sub">Antes de construir o seu, entenda o conceito por trás da ferramenta que você vai criar.</p>
+
+  <div class="intro-grid">
+    <span class="grupo-label">Conceito</span>
+    <div class="uso-list">
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#FF7000"/><path d="M12 8V12L14.5 14.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <strong>O que é</strong>
+          <span>Uma versão personalizada de uma I.A., configurada com papel, objetivo e regras próprias.</span>
+        </div>
+      </div>
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#FF7000"/><path d="M12 8V12L14.5 14.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <strong>Como funciona</strong>
+          <span>Já chega sabendo o que fazer e como se comunicar, sem precisar reexplicar o contexto a cada conversa.</span>
+        </div>
+      </div>
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#FF7000"/><path d="M12 8V12L14.5 14.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <strong>Papel do Método A.G.E.N.T.E.</strong>
+          <span>Organiza essa configuração em blocos claros, para qualquer pessoa estruturar um agente completo.</span>
+        </div>
+      </div>
+    </div>
+
+    <span class="grupo-label">Principais usos</span>
+    <div class="uso-list">
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L4 7V12C4 16.5 7.5 20.5 12 22C16.5 20.5 20 16.5 20 12V7L12 3Z" fill="#57B95C"/></svg>
+        </div>
+        <div>
+          <strong>Atendimento e suporte</strong>
+          <span>Responder dúvidas de alunos ou clientes com base em uma FAQ ou material específico.</span>
+        </div>
+      </div>
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="14" rx="2" fill="#57B95C"/><path d="M8 20H16" stroke="#fff" stroke-width="1.5"/></svg>
+        </div>
+        <div>
+          <strong>Análise de dados e Dashboards</strong>
+          <span>Interpretar indicadores e responder perguntas sobre um relatório ou Dashboard.</span>
+        </div>
+      </div>
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20M4 12H20M4 18H14" stroke="#57B95C" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <strong>Criação de conteúdo</strong>
+          <span>Gerar posts, roteiros e legendas seguindo um tom de voz e uma estrutura já definidos.</span>
+        </div>
+      </div>
+      <div class="uso-item">
+        <div class="uso-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#57B95C"/><path d="M9 12L11 14L15.5 9.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <strong>Automação de tarefas repetitivas</strong>
+          <span>Padronizar respostas, organizar processos e reduzir retrabalho no dia a dia.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTODO A.G.E.N.T.E. -->
+<section>
+  <h2 class="section-title">Os 6 Blocos do Método</h2>
+  <p class="section-sub">Cada letra representa um bloco de configuração. Preencha todos com atenção antes de montar o prompt final do seu agente.</p>
+
+  <div class="agente-grid">
+
+    <!-- A -->
+    <div class="letra-card">
+      <div class="letra-head">
+        <div class="letra-badge">A</div>
+        <h3>Alvo do Agente</h3>
+      </div>
+      <p class="desc">Defina o objetivo principal e específico do agente — o problema real que ele resolve (ex: "Criar posts" ou "Analisar Dashboards").</p>
+      <button class="perguntas-toggle" onclick="togglePerguntas(this)">
+        Ver perguntas-guia
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="perguntas-lista">
+        <ul>
+          <li>Qual problema você quer resolver com esse agente?</li>
+          <li>Qual resultado você espera obter?</li>
+          <li>Em quais situações você vai usar esse agente?</li>
+          <li>O que você faz hoje sem esse agente?</li>
+          <li>O que faria você dizer: "esse agente foi muito útil"?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- G -->
+    <div class="letra-card">
+      <div class="letra-head">
+        <div class="letra-badge">G</div>
+        <h3>Guia de Comportamento</h3>
+      </div>
+      <p class="desc">Estabeleça o papel e o tom de voz que o assistente deve assumir ao se comunicar.</p>
+      <button class="perguntas-toggle" onclick="togglePerguntas(this)">
+        Ver perguntas-guia
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="perguntas-lista">
+        <ul>
+          <li>Qual papel esse agente deve assumir? (ex: professor, analista, assistente)</li>
+          <li>Como ele deve se comunicar? (direto, didático, técnico, simples)</li>
+          <li>Ele deve explicar ou ir direto ao ponto?</li>
+          <li>Ele deve sugerir melhorias ou só responder o que foi pedido?</li>
+          <li>Existe algum estilo ou referência que ele deve seguir?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- E (Estrutura) -->
+    <div class="letra-card">
+      <div class="letra-head">
+        <div class="letra-badge">E</div>
+        <h3>Estrutura de Conhecimento</h3>
+      </div>
+      <p class="desc">Organize os objetivos, as perguntas de contexto e os materiais de apoio que o agente precisa conhecer.</p>
+      <button class="perguntas-toggle" onclick="togglePerguntas(this)">
+        Ver perguntas-guia
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="perguntas-lista">
+        <div class="subgrupo">Objetivos e ações</div>
+        <ul>
+          <li>Quais tarefas esse agente deve executar?</li>
+          <li>Que tipo de ajuda ele precisa entregar?</li>
+          <li>Quais problemas ele deve resolver com frequência?</li>
+        </ul>
+        <div class="subgrupo">Perguntas de contexto</div>
+        <ul>
+          <li>O que ele precisa perguntar antes de responder bem?</li>
+          <li>Quais informações são obrigatórias para dar uma boa resposta?</li>
+        </ul>
+        <div class="subgrupo">Materiais de apoio</div>
+        <ul>
+          <li>Liste os documentos, planilhas ou bases que servirão de referência para o agente (Material 1, 2, 3...).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- N -->
+    <div class="letra-card">
+      <div class="letra-head">
+        <div class="letra-badge">N</div>
+        <h3>Nunca Fazer</h3>
+      </div>
+      <p class="desc">Liste restrições claras para evitar respostas genéricas ou invenção de dados.</p>
+      <button class="perguntas-toggle" onclick="togglePerguntas(this)">
+        Ver perguntas-guia
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="perguntas-lista">
+        <ul>
+          <li>O que esse agente nunca deve fazer?</li>
+          <li>Que tipo de resposta deve evitar?</li>
+          <li>O que seria uma resposta ruim nesse contexto?</li>
+          <li>Ele pode responder sem contexto suficiente?</li>
+          <li>Existe algum tema ou abordagem que deve ser evitado?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- T -->
+    <div class="letra-card verde">
+      <div class="letra-head">
+        <div class="letra-badge">T</div>
+        <h3>Tratamento de Conflitos</h3>
+      </div>
+      <p class="desc">Crie uma hierarquia de regras para quando as instruções entrarem em contradição — o agente precisa saber qual regra prevalece.</p>
+    </div>
+
+    <!-- E (Escudo) -->
+    <div class="letra-card verde">
+      <div class="letra-head">
+        <div class="letra-badge">E</div>
+        <h3>Escudo de Segurança</h3>
+      </div>
+      <p class="desc">Proteja o prompt interno do agente e impeça o compartilhamento de dados sensíveis ou da própria configuração.</p>
+    </div>
+  </div>
+
+  <div class="conceito-box">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 8.5L21 9.5L16.5 14L17.7 21L12 17.5L6.3 21L7.5 14L3 9.5L9.5 8.5L12 2Z" fill="#FF7000"/></svg>
+    </div>
+    <div>
+      <h4>Conceito: Agente Ideal</h4>
+      <p>É aquele que sabe exatamente o que fazer, como agir e o que evitar — sem depender de instruções repetidas a cada conversa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD BASE DE PERGUNTAS -->
+<section>
+  <h2 class="section-title">Base de Perguntas para Preencher</h2>
+  <p class="section-sub">Baixe o documento, responda cada bloco do Método A.G.E.N.T.E. e depois use o prompt abaixo para transformar suas respostas em um agente completo.</p>
+
+  <div class="card download-card">
+    <div class="download-info">
+      <div class="download-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="#FF7000" stroke-width="1.7"/><path d="M14 2V8H20" stroke="#FF7000" stroke-width="1.7"/></svg>
+      </div>
+      <div>
+        <h4>Perguntas_base_de_conhecimento.docx</h4>
+        <p>Documento com as perguntas-guia de cada bloco do Método A.G.E.N.T.E.</p>
+      </div>
+    </div>
+    <a class="download-btn" href="https://docs.google.com/document/d/1aSs4gW4dmLKxbDKw2C3YreDdjzoeVJVK/export?format=docx" download>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V17" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      Baixar material
+    </a>
+  </div>
+</section>
+
+<!-- PROMPT INICIAL -->
+<section>
+  <h2 class="section-title">Prompt Inicial para Copiar</h2>
+  <p class="section-sub">Depois de preencher a base de perguntas, cole as respostas junto com este prompt em uma I.A. de sua preferência para gerar o agente completo.</p>
+
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <span>Prompt · Criação de Agente A.G.E.N.T.E.</span>
+      <button class="copy-btn" onclick="copiarPrompt(this)">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="white" stroke-width="1.8"/><path d="M5 15V5C5 3.9 5.9 3 7 3H15" stroke="white" stroke-width="1.8"/></svg>
+        <span class="copy-label">Copiar prompt</span>
+      </button>
+    </div>
+    <div class="prompt-body" id="promptTexto">Você é um especialista em criação de agentes de inteligência artificial.
+
+Vou te enviar um documento com respostas baseadas no método A.G.E.N.T.E. (Alvo, Guia, Estrutura, Nunca fazer, Tratamento de conflitos e Escudo de segurança).
+
+Sua missão é transformar essas respostas em um agente completo, claro, prático e bem estruturado.
+
+Importante:
+- Seja objetivo e direto
+- Evite textos genéricos
+- Não invente informações que não estejam no material
+- Organize tudo de forma profissional
+
+Sua resposta deve conter exatamente:
+
+1. Nome do agente
+Sugira um nome curto, claro e fácil de lembrar.
+
+2. Descrição do agente
+Crie uma descrição breve (2 a 3 linhas) explicando o que o agente faz e para quem ele é útil.
+
+3. Instruções iniciais do agente
+Crie o prompt completo que será usado como base do agente.
+Esse prompt deve:
+- Definir o papel do agente
+- Explicar como ele deve se comportar
+- Incluir o que ele deve fazer
+- Priorizar a base de conhecimento no momento de gerar as respostas
+Limite máximo: 2000 caracteres
+
+4. Frases de quebra-gelo
+Crie 4 frases iniciais que o agente pode usar para iniciar a conversa com o usuário.
+As frases devem:
+- Ser naturais
+- Convidar o usuário a interagir
+- Estar alinhadas com o objetivo do agente</div>
+  </div>
+</section>
+
+<footer>
+  © Todos os direitos reservados para Escola Karen Abecia — 2026
+</footer>
+
+<script>
+  function togglePerguntas(btn){
+    const lista = btn.nextElementSibling;
+    lista.classList.toggle('aberto');
+    btn.classList.toggle('aberto');
+    btn.firstChild.textContent = lista.classList.contains('aberto') ? 'Ocultar perguntas-guia ' : 'Ver perguntas-guia ';
+  }
+
+  function copiarPrompt(btn){
+    const texto = document.getElementById('promptTexto').innerText;
+    navigator.clipboard.writeText(texto).then(function(){
+      const label = btn.querySelector('.copy-label');
+      const original = label.textContent;
+      label.textContent = 'Prompt copiado!';
+      btn.classList.add('copiado');
+      setTimeout(function(){
+        label.textContent = original;
+        btn.classList.remove('copiado');
+      }, 2200);
+    });
+  }
+</script>
+
+</body>
+</html>
