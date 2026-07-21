@@ -175,17 +175,17 @@
     .copy-btn:hover { background: rgba(217,119,87,.22); transform: translateY(-1px); }
     .copy-btn.copied { background: rgba(76,175,125,.16); border-color: rgba(76,175,125,.35); color: #bde8d1; }
 
-    .prompt-box { background: #11100f; border: 1px solid var(--border2); border-radius: 11px; overflow: hidden; margin-top: 14px; }
-    .prompt-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
-    .prompt-tools span { font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted2); }
-    .prompt-text {
+    .-box { background: #11100f; border: 1px solid var(--border2); border-radius: 11px; overflow: hidden; margin-top: 14px; }
+    .-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
+    .-tools span { font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted2); }
+    .-text {
       width: 100%; min-height: 220px; border: none; resize: vertical; outline: none;
       display: block; padding: 15px; background: transparent; color: #e7ddd3;
       font-family: 'DM Mono', monospace; font-size: .77rem; line-height: 1.7;
     }
-    .prompt-text.mid { min-height: 300px; }
-    .prompt-text.tall { min-height: 410px; }
-    .prompt-text.short { min-height: 140px; }
+    .-text.mid { min-height: 300px; }
+    .-text.tall { min-height: 410px; }
+    .-text.short { min-height: 140px; }
 
     .attention-box { background: rgba(224,112,112,.08); border: 1px solid rgba(224,112,112,.24); border-radius: var(--radius); padding: 15px 17px; margin-top: 16px; }
     .attention-box strong { display: block; font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: .03em; font-size: 1rem; color: #f1c0c0; margin-bottom: 6px; }
@@ -249,7 +249,7 @@
     @media(max-width:640px) {
       .index-nav ul { columns: 1; }
       .hbtn { padding: 6px 10px; }
-      .prompt-text, .prompt-text.mid, .prompt-text.tall { min-height: 420px; }
+      .-text, .prompt-text.mid, .prompt-text.tall { min-height: 420px; }
       .material-card { align-items:flex-start; }
       .material-arrow { display:none; }
       .big-table { font-size: .76rem; }
@@ -823,14 +823,16 @@ Implemente uma função de parsing defensiva que tente cada formato em sequênci
               <span>Prompt · Dashboard — API do IBGE</span>
               <button class="copy-btn" onclick="copyPrompt('promptIBGE', this)">⧉ Copiar prompt</button>
             </div>
-            <textarea id="promptIBGE" class="prompt-text mid" readonly>Crie um artefato ao vivo que busca dados diretamente da API pública do IBGE sem nenhum conector ou autenticação.
-
+            <textarea id="promptIBGE" class="prompt-text mid" readonly> 
+Crie um artefato que busca dados diretamente da API pública do IBGE sem nenhum conector ou autenticação.
 O dashboard deve exibir:
-1. IPCA dos últimos 12 meses em um gráfico de linha com variação mensal
-2. KPI no topo com o valor do mês mais recente e comparativo com o mês anterior
-3. Tabela com os 12 valores, destacando em vermelho os meses acima de 0,5%
 
-Use a API de séries temporais: https://servicodados.ibge.gov.br/api/v3/agregados/1737/periodos/-12/variaveis/2266
+IPCA dos últimos 12 meses em um gráfico de linha com variação mensal
+KPI no topo com o valor do mês mais recente e comparativo com o mês anterior
+Tabela com os 12 valores, destacando em vermelho os meses acima de 0,5%
+
+Use a API de séries temporais: https://servicodados.ibge.gov.br/api/v3/agregados/1737/periodos/-12/variaveis/2265
+(variável 2265 = "IPCA - Variação mensal"; não usar a 2266, que é a variação acumulada em 12 meses, nem a 63, que é o número-índice acumulado desde dez/1993)
 
 Os dados devem ser buscados automaticamente toda vez que o artefato for aberto. Visual profissional com fundo escuro.</textarea>
           </div>
