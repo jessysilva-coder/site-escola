@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Acompanhamento — DashEagles</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laranja:#FF7000;
+    --verde:#57B95C;
+    --vermelho:#E5484D;
+    --amarelo:#E8A400;
+    --escuro-bg:#12141c;
+    --escuro-card:#1b1e2b;
+    --escuro-borda:#2a2e3f;
+    --sidebar-w:230px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--escuro-bg);
+    color:#fff;
+  }
+  h1,h2,h3{font-family:'Montserrat',sans-serif;}
+  a{color:var(--laranja);}
+  button{font-family:'Poppins',sans-serif; cursor:pointer;}
+  *:focus-visible{outline:3px solid var(--laranja); outline-offset:2px;}
+  input,select,textarea{color-scheme:dark;}
+  .oculto{display:none !important;}
+
+  /* ===== Telas de acesso (senha / atendente) ===== */
+  .tela-acesso{
+    position:fixed; inset:0; background:var(--escuro-bg); z-index:500;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .caixa-acesso{
+    background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:18px;
+    padding:36px; width:100%; max-width:400px; text-align:center;
+  }
+  .caixa-acesso h1{font-size:20px; margin-bottom:6px;}
+  .caixa-acesso p{font-size:13px; color:#a3a8bd; margin-bottom:20px;}
+  .caixa-acesso input[type="password"]{
+    width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--escuro-borda);
+    background:#0f1119; color:#fff; font-size:15px; margin-bottom:14px; text-align:center;
+  }
+  .lista-atendentes{display:flex; flex-direction:column; gap:8px; margin-top:6px;}
+  .lista-atendentes button{
+    background:#0f1119; border:1px solid var(--escuro-borda); color:#fff; padding:12px;
+    border-radius:10px; font-size:14px; font-weight:500;
+  }
+  .lista-atendentes button:hover{border-color:var(--laranja); color:var(--laranja);}
+  .erro-acesso{color:var(--vermelho); font-size:13px; margin-top:8px; min-height:16px;}
+
+  /* ===== Layout geral: sidebar fixa + conteúdo ===== */
+  #app{display:flex; min-height:100vh;}
+  .sidebar{
+    width:var(--sidebar-w); flex-shrink:0; background:var(--escuro-card); border-right:1px solid var(--escuro-borda);
+    padding:20px 14px; position:fixed; top:0; bottom:0; left:0; overflow-y:auto; z-index:40;
+  }
+  .sidebar .marca{margin-bottom:22px; padding:0 6px;}
+  .sidebar .marca h1{font-size:16px; font-weight:800;}
+  .sidebar .marca span{display:block; font-size:11px; color:var(--laranja); font-weight:600;}
+  .sb-btn{
+    display:block; width:100%; text-align:left; background:transparent; border:none; color:#c7cbe0;
+    padding:11px 12px; border-radius:10px; font-weight:500; font-size:13px; margin-bottom:4px;
+  }
+  .sb-btn:hover{background:var(--escuro-borda); color:#fff;}
+  .sb-btn.ativo{background:var(--laranja); color:#fff;}
+  .sb-btn.destaque{background:var(--verde); color:#fff; margin-bottom:16px;}
+  .sb-btn.destaque:hover{filter:brightness(0.95);}
+  .sb-secao{font-size:11px; text-transform:uppercase; color:#7c8199; margin:16px 0 6px 12px;}
+
+  .conteudo{margin-left:var(--sidebar-w); flex:1; min-width:0; display:flex; flex-direction:column;}
+  .topbar{
+    background:var(--escuro-card); padding:14px 24px; display:flex; justify-content:flex-end; align-items:center;
+    gap:14px; border-bottom:1px solid var(--escuro-borda);
+  }
+  .atendente-atual{font-size:12px; color:#a3a8bd;}
+  .atendente-atual button{background:none; border:none; color:var(--laranja); font-size:12px; text-decoration:underline; padding:0;}
+  .nav-btn{background:transparent; border:1px solid var(--escuro-borda); color:#fff; padding:9px 16px; border-radius:10px; font-weight:500; font-size:13px;}
+  .nav-btn:hover{border-color:var(--laranja); color:var(--laranja);}
+
+  main{max-width:1320px; margin:0 auto; padding:24px 20px; width:100%; flex:1;}
+
+  @media (max-width:820px){
+    .sidebar{position:static; width:100%; height:auto; display:flex; overflow-x:auto; padding:10px; gap:4px; align-items:center;}
+    .sidebar .marca{display:none;}
+    .sb-btn, .sb-btn.destaque{white-space:nowrap; margin-bottom:0;}
+    .sb-secao{display:none;}
+    #app{flex-direction:column;}
+    .conteudo{margin-left:0;}
+  }
+
+  /* ===== Dashboard / tabela ===== */
+  .dashboard{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:24px;}
+  .metric{background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:18px; padding:20px;}
+  .metric .num{font-family:'Montserrat',sans-serif; font-size:30px; font-weight:800; color:var(--laranja);}
+  .metric .lbl{font-size:13px; color:#a3a8bd; margin-top:4px;}
+
+  .toolbar{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:center;}
+  .autocomplete-wrap{position:relative; flex:1; min-width:260px;}
+  .autocomplete-wrap input[type="search"]{
+    width:100%; padding:12px 16px; border-radius:10px; border:1px solid var(--escuro-borda);
+    background:var(--escuro-card); color:#fff; font-size:14px;
+  }
+  .autocomplete-lista{
+    position:absolute; top:100%; left:0; right:0; background:var(--escuro-card);
+    border:1px solid var(--escuro-borda); border-radius:10px; margin-top:4px; max-height:260px;
+    overflow-y:auto; z-index:20; display:none;
+  }
+  .autocomplete-lista.aberta{display:block;}
+  .autocomplete-item{
+    padding:10px 14px; font-size:13px; border-bottom:1px solid var(--escuro-borda); background:none;
+    border-left:none; border-right:none; border-top:none; color:#fff; width:100%; text-align:left;
+  }
+  .autocomplete-item:hover{background:var(--escuro-borda);}
+
+  table{width:100%; border-collapse:collapse; background:var(--escuro-card); border-radius:14px; overflow:hidden;}
+  thead th{text-align:left; font-size:12px; text-transform:uppercase; color:#a3a8bd; padding:14px 16px; border-bottom:1px solid var(--escuro-borda);}
+  tbody td{padding:14px 16px; font-size:13px; border-bottom:1px solid var(--escuro-borda);}
+  tbody tr{cursor:pointer;}
+  tbody tr:hover{background:rgba(255,255,255,0.03);}
+  .tag-alerta{display:inline-block; font-size:11px; font-weight:600; color:var(--vermelho); background:rgba(229,72,77,0.15); padding:3px 8px; border-radius:6px; margin-left:6px;}
+
+  /* ===== Tela de detalhe (duas colunas) ===== */
+  .detalhe-topo{display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+  .btn-voltar{background:var(--escuro-card); border:1px solid var(--escuro-borda); color:#fff; padding:8px 14px; border-radius:8px; font-size:13px;}
+  .badge{font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;}
+  .badge.Ativo{background:rgba(87,185,92,0.2); color:var(--verde);}
+  .badge.Inativo{background:rgba(163,168,189,0.2); color:#a3a8bd;}
+  .badge.Bloqueado{background:rgba(229,72,77,0.2); color:var(--vermelho);}
+
+  .banner-alerta{background:rgba(229,72,77,0.15); border:1px solid var(--vermelho); color:#ffb3b3; padding:12px 16px; border-radius:10px; margin-bottom:16px; font-size:13px;}
+  .banner-alerta div{margin-bottom:4px;}
+
+  .grid-detalhe{display:grid; grid-template-columns:2fr 1fr; gap:22px; align-items:start;}
+  @media (max-width:900px){ .grid-detalhe{grid-template-columns:1fr;} }
+
+  .bloco{background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:16px; padding:22px; margin-bottom:18px;}
+  .bloco h3.secao{font-size:13px; color:#a3a8bd; text-transform:uppercase; margin-bottom:14px;}
+
+  .campo{margin-bottom:14px;}
+  .campo label{display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:#a3a8bd; text-transform:uppercase;}
+  .campo input, .campo select, .campo textarea{
+    width:100%; padding:11px 14px; border-radius:8px; border:1px solid var(--escuro-borda);
+    background:#0f1119; color:#fff; font-family:'Poppins',sans-serif; font-size:14px;
+  }
+  .campo textarea{min-height:64px; resize:vertical;}
+  .linha-campos{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .linha-campos-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+  @media (max-width:600px){ .linha-campos, .linha-campos-3{grid-template-columns:1fr;} }
+
+  .btn-salvar{background:var(--laranja); color:#fff; border:none; padding:12px 22px; border-radius:10px; font-weight:500; font-size:14px;}
+  .btn-secundario{background:transparent; color:var(--laranja); border:1px solid var(--laranja); padding:9px 16px; border-radius:8px; font-weight:500; font-size:13px;}
+  .btn-cancelar{background:var(--escuro-borda); color:#fff; border:none; padding:12px 20px; border-radius:10px; font-weight:500; font-size:14px;}
+
+  .sidebar-card{background:#0f1119; border:1px solid var(--escuro-borda); border-radius:12px; padding:14px; margin-bottom:10px;}
+  .sidebar-card .num{font-size:22px; font-weight:800; color:var(--laranja); font-family:'Montserrat',sans-serif;}
+  .sidebar-card .lbl{font-size:12px; color:#a3a8bd;}
+  .sidebar-card .datas{font-size:11px; color:#7c8199; margin-top:6px;}
+
+  .lista-registros{list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .lista-registros li{background:#0f1119; border-radius:8px; padding:10px 12px; font-size:13px; border-left:3px solid var(--laranja);}
+  .lista-registros li.encontro-individual{border-left-color:var(--verde);}
+  .reg-linha{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .reg-info .tipo{font-weight:600;}
+  .reg-info .meta{font-size:11px; color:#7c8199; margin-top:2px;}
+  .reg-info .obs{font-size:12px; color:#c7cbe0; margin-top:4px;}
+  .reg-acoes{display:flex; gap:6px; flex-shrink:0;}
+  .reg-acoes button{background:none; border:none; color:#a3a8bd; font-size:14px;}
+  .reg-acoes button:hover{color:var(--laranja);}
+
+  .lista-indicacoes{list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .lista-indicacoes li{background:#0f1119; border-radius:8px; padding:10px 12px; font-size:13px; cursor:pointer; border-left:3px solid var(--amarelo);}
+  .lista-indicacoes li.Fechado{border-left-color:var(--verde);}
+
+  .footer-txt{text-align:center; font-size:12px; color:#7c8199; padding:30px 0 10px;}
+
+  /* ===== Modais (Novo mentorado, Indicação, Histórico) ===== */
+  .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-start; justify-content:center; padding:30px 20px; z-index:100; overflow-y:auto;}
+  .modal-overlay.aberto{display:flex;}
+  .modal{background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:18px; max-width:640px; width:100%; padding:28px; position:relative; margin-bottom:40px;}
+  .modal.largo{max-width:900px;}
+  .modal h2{font-size:19px; margin-bottom:18px; color:#fff;}
+  .fechar-modal{position:absolute; top:18px; right:18px; background:none; border:none; font-size:22px; color:#a3a8bd;}
+  .modal-acoes{display:flex; gap:10px; margin-top:18px; justify-content:flex-end;}
+
+  /* ===== Lançamento em massa ===== */
+  .lista-checagem{max-height:360px; overflow-y:auto; border:1px solid var(--escuro-borda); border-radius:10px; padding:10px;}
+  .item-check{display:flex; align-items:center; justify-content:center; gap:22px; padding:10px 6px; border-bottom:1px solid var(--escuro-borda); font-size:13px;}
+  .item-check:last-child{border-bottom:none;}
+  .item-check input{width:16px; height:16px; flex-shrink:0;}
+  .item-check span{white-space:nowrap; margin-left:6px;}
+
+  /* ===== Impressão / PDF ===== */
+  #areaImpressao{display:none;}
+  @media print{
+    html, body{height:auto !important; min-height:0 !important; margin:0 !important; padding:0 !important;}
+    body > *:not(#areaImpressao){display:none !important;}
+    #areaImpressao{
+      display:block !important; width:100%;
+      background:#12141c !important; color:#fff !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;
+    }
+    @page{ margin:12mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== TELA: SENHA ===================== -->
+<div class="tela-acesso" id="telaSenha">
+  <div class="caixa-acesso">
+    <h1>Painel de Acompanhamento</h1>
+    <p>DashEagles · Digite a senha de acesso</p>
+    <form id="formSenha">
+      <input type="password" id="campoSenha" placeholder="Senha" autofocus>
+      <button type="submit" class="btn-salvar" style="width:100%;" id="btnEntrarSenha">Entrar</button>
+      <div class="erro-acesso" id="erroSenha"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== TELA: SELECIONAR ATENDENTE ===================== -->
+<div class="tela-acesso oculto" id="telaAtendenteGate">
+  <div class="caixa-acesso">
+    <h1>Quem é você?</h1>
+    <p>Selecione seu nome pra continuar</p>
+    <div class="lista-atendentes" id="listaAtendentesGate"></div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div id="app" class="oculto">
+
+  <aside class="sidebar">
+    <div class="marca">
+      <h1>DashEagles</h1>
+      <span>Acompanhamento</span>
+    </div>
+    <button class="sb-btn destaque" id="btnNovoMentorado" type="button">+ Novo mentorado</button>
+    <button class="sb-btn ativo" id="btnTelaResumo" type="button">Resumo do programa</button>
+    <button class="sb-btn" id="btnAbrirMassa" type="button">Lançamento em massa</button>
+    <button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button>
+    <div class="sb-secao">Baixar relatórios</div>
+    <button class="sb-btn" id="btnRelatorioResumo" type="button">📄 Resumo do programa</button>
+    <button class="sb-btn" id="btnRelatorioTodos" type="button">📄 Todos os mentorados</button>
+  </aside>
+
+  <div class="conteudo">
+    <div class="topbar">
+      <span class="atendente-atual">Atendente: <strong id="nomeAtendenteHeader">—</strong> · <button type="button" id="btnTrocarAtendente">trocar</button></span>
+      <button class="nav-btn" id="btnTelaConfig" type="button">⚙️ Configurações</button>
+    </div>
+
+    <main>
+
+      <!-- ===================== TELA: RESUMO DO PROGRAMA ===================== -->
+      <section id="telaResumo">
+        <div class="dashboard" id="dashboard" aria-label="Indicadores gerais">
+          <div class="metric"><div class="num" id="mAtivos">–</div><div class="lbl">Mentorados ativos</div></div>
+          <div class="metric"><div class="num" id="mEncontrosIndividuais">–</div><div class="lbl">Encontros individuais</div></div>
+          <div class="metric"><div class="num" id="mIndicacoes">–</div><div class="lbl">Indicações realizadas</div></div>
+          <div class="metric"><div class="num" id="mProjetosFechados">–</div><div class="lbl">Projetos fechados</div></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="autocomplete-wrap">
+            <input type="search" id="buscaUnica" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar mentorado" autocomplete="off">
+            <div class="autocomplete-lista" id="listaAutocomplete"></div>
+          </div>
+        </div>
+
+        <table aria-label="Lista de mentorados ativos">
+          <thead><tr><th>Nome</th><th>Fim do ciclo</th><th>Última mensagem</th><th>Último encontro individual</th></tr></thead>
+          <tbody id="corpoTabela"><tr><td colspan="4">Carregando...</td></tr></tbody>
+        </table>
+      </section>
+
+      <!-- ===================== TELA: DETALHE DO MENTORADO ===================== -->
+      <section id="telaDetalhe" class="oculto">
+        <div class="detalhe-topo">
+          <button class="btn-voltar" id="btnVoltarDetalhe" type="button">← Voltar</button>
+          <h2 id="detNome" style="margin-bottom:0;">—</h2>
+          <span class="badge" id="detStatusBadge">—</span>
+          <button class="btn-secundario" id="btnExportarPDF" type="button" style="margin-left:auto;">Exportar PDF do mentorado</button>
+        </div>
+
+        <div id="detBannerAlertas"></div>
+
+        <div class="grid-detalhe">
+          <div>
+            <div class="bloco">
+              <h3 class="secao">Dados do mentorado</h3>
+              <form id="formDetalheCadastro">
+                <div class="linha-campos">
+                  <div class="campo"><label for="dNome">Nome</label><input type="text" id="dNome"></div>
+                  <div class="campo"><label for="dEmail">E-mail</label><input type="email" id="dEmail"></div>
+                </div>
+                <div class="linha-campos-3">
+                  <div class="campo"><label for="dTelefone">Telefone</label><input type="text" id="dTelefone"></div>
+                  <div class="campo"><label for="dStatus">Status</label>
+                    <select id="dStatus"><option>Ativo</option><option>Inativo</option><option>Bloqueado</option></select>
+                  </div>
+                  <div class="campo"><label for="dDataFimCiclo">Fim do ciclo</label><input type="date" id="dDataFimCiclo"></div>
+                </div>
+                <div class="linha-campos-3">
+                  <div class="campo"><label for="dDuracaoCiclo">Duração do ciclo (meses)</label><input type="number" id="dDuracaoCiclo" min="0"></div>
+                  <div class="campo"><label for="dTotalCiclos">Total de ciclos contínuos</label><input type="number" id="dTotalCiclos" min="0"></div>
+                  <div class="campo"><label for="dStatusPagamento">Pagamento</label>
+                    <select id="dStatusPagamento"><option>Não quitado</option><option>Quitado</option></select>
+                  </div>
+                </div>
+                <div class="linha-campos-3">
+                  <div class="campo"><label for="dDisponivelProjetos">Disponível p/ projetos</label>
+                    <select id="dDisponivelProjetos"><option>Não</option><option>Sim</option></select>
+                  </div>
+                  <div class="campo"><label for="dAreaMembros">Área de membros</label>
+                    <select id="dAreaMembros"><option>Não</option><option>Sim</option></select>
+                  </div>
+                  <div class="campo"><label for="dLinkGrupo">Link do grupo</label><input type="text" id="dLinkGrupo"></div>
+                </div>
+                <div class="campo"><label for="dDetalhesPagamento">Observação do pagamento</label><input type="text" id="dDetalhesPagamento"></div>
+                <div class="campo"><label for="dObservacaoInicial">Observação inicial</label><textarea id="dObservacaoInicial"></textarea></div>
+                <button type="submit" class="btn-salvar">Salvar alterações</button>
+              </form>
+            </div>
+
+            <div class="bloco">
+              <h3 class="secao">Registrar atendimento</h3>
+              <form id="formRegistro">
+                <div class="linha-campos">
+                  <div class="campo"><label for="rTipo">Tipo de atendimento</label><select id="rTipo"></select></div>
+                  <div class="campo"><label for="rData">Data do atendimento</label><input type="date" id="rData"></div>
+                </div>
+                <div class="campo"><label for="rObservacao">Observação</label><textarea id="rObservacao"></textarea></div>
+                <button type="submit" class="btn-salvar">Registrar</button>
+              </form>
+            </div>
+
+            <div class="bloco">
+              <h3 class="secao">Últimos registros</h3>
+              <ul class="lista-registros" id="detUltimosRegistros"></ul>
+              <div style="margin-top:14px;">
+                <button class="btn-secundario" id="btnHistoricoCompleto" type="button">Ver histórico completo</button>
+              </div>
+            </div>
+
+            <div class="bloco">
+              <h3 class="secao" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Indicações</span>
+                <button class="btn-secundario" id="btnNovaIndicacao" type="button" style="text-transform:none; font-size:12px;">+ Nova indicação</button>
+              </h3>
+              <ul class="lista-indicacoes" id="detIndicacoes"></ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="bloco">
+              <h3 class="secao">Indicadores</h3>
+              <div id="detIndicadores"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== TELA: OUTROS MENTORADOS ===================== -->
+      <section id="telaOutros" class="oculto">
+        <div class="detalhe-topo"><h2>Outros mentorados (inativos e bloqueados)</h2></div>
+        <div class="toolbar">
+          <div class="autocomplete-wrap" style="max-width:400px;">
+            <input type="search" id="buscaOutros" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar">
+          </div>
+        </div>
+        <table aria-label="Lista de outros mentorados">
+          <thead><tr><th>Nome</th><th>Status</th><th>Fim do ciclo</th><th>Último atendimento</th></tr></thead>
+          <tbody id="corpoTabelaOutros"><tr><td colspan="4">Carregando...</td></tr></tbody>
+        </table>
+      </section>
+
+      <!-- ===================== TELA: LANÇAMENTO EM MASSA ===================== -->
+      <section id="telaMassa" class="oculto">
+        <div class="detalhe-topo"><h2>Lançamento em massa</h2></div>
+        <div class="bloco">
+          <form id="formMassa">
+            <div class="linha-campos">
+              <div class="campo"><label for="massaTipo">Tipo de atendimento</label><select id="massaTipo"></select></div>
+              <div class="campo"><label for="massaData">Data</label><input type="date" id="massaData"></div>
+            </div>
+            <div class="campo"><label for="massaObservacao">Observação</label><textarea id="massaObservacao"></textarea></div>
+            <div class="campo">
+              <label>Selecionar mentorados ativos</label>
+              <div style="margin-bottom:8px;">
+                <button type="button" class="btn-secundario" id="btnMarcarTodos" style="font-size:12px;">Marcar todos</button>
+                <button type="button" class="btn-secundario" id="btnDesmarcarTodos" style="font-size:12px;">Desmarcar todos</button>
+              </div>
+              <div class="lista-checagem" id="listaCheagemMassa"></div>
+            </div>
+            <button type="submit" class="btn-salvar">Registrar para todos os selecionados</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================== TELA: CONFIGURAÇÕES ===================== -->
+      <section id="telaConfig" class="oculto">
+        <div class="detalhe-topo"><h2>Configurações</h2></div>
+        <div class="bloco">
+          <h3 class="secao">Alertas</h3>
+          <form id="formConfigAlertas">
+            <div class="linha-campos">
+              <div class="campo"><label for="cDiasMensagem">Dias sem mensagem p/ alerta</label><input type="number" id="cDiasMensagem" min="1"></div>
+              <div class="campo"><label for="cDiasEncontro">Dias sem encontro individual p/ alerta</label><input type="number" id="cDiasEncontro" min="1"></div>
+            </div>
+            <button type="submit" class="btn-salvar">Salvar alertas</button>
+          </form>
+        </div>
+        <div class="bloco">
+          <h3 class="secao">Tipos de atendimento</h3>
+          <div id="listaTiposConfig" style="margin-bottom:12px; font-size:13px; color:#c7cbe0;"></div>
+          <div class="linha-campos">
+            <input type="text" id="novoTipoInput" placeholder="Nome do novo tipo de atendimento">
+            <button type="button" class="btn-secundario" id="btnAdicionarTipo">Adicionar tipo</button>
+          </div>
+        </div>
+        <div class="bloco">
+          <h3 class="secao">Atendentes</h3>
+          <div id="listaAtendentesConfig" style="margin-bottom:12px; font-size:13px; color:#c7cbe0;"></div>
+          <div class="linha-campos">
+            <input type="text" id="novoAtendenteInput" placeholder="Nome do novo atendente">
+            <button type="button" class="btn-secundario" id="btnAdicionarAtendente">Adicionar atendente</button>
+          </div>
+        </div>
+        <div class="bloco">
+          <h3 class="secao">Senha de acesso</h3>
+          <div class="linha-campos">
+            <input type="password" id="novaSenhaInput" placeholder="Nova senha">
+            <button type="button" class="btn-secundario" id="btnAlterarSenha">Salvar nova senha</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="footer-txt">© Todos os direitos reservados para Escola Karen Abecia — 2026</div>
+  </div>
+
+</div><!-- fim #app -->
+
+<!-- ===================== MODAL: Novo mentorado ===================== -->
+<div class="modal-overlay" id="modalMentorado">
+  <div class="modal">
+    <button class="fechar-modal" id="fecharModalMentorado" aria-label="Fechar">×</button>
+    <h2>Novo mentorado</h2>
+    <form id="formMentorado">
+      <div class="linha-campos">
+        <div class="campo"><label for="fNome">Nome *</label><input type="text" id="fNome" required></div>
+        <div class="campo"><label for="fEmail">E-mail *</label><input type="email" id="fEmail" required></div>
+      </div>
+      <div class="linha-campos-3">
+        <div class="campo"><label for="fTelefone">Telefone</label><input type="text" id="fTelefone"></div>
+        <div class="campo"><label for="fStatus">Status *</label>
+          <select id="fStatus" required><option value="Ativo">Ativo</option><option value="Inativo">Inativo</option><option value="Bloqueado">Bloqueado</option></select>
+        </div>
+        <div class="campo"><label for="fDataFimCiclo">Fim do ciclo</label><input type="date" id="fDataFimCiclo"></div>
+      </div>
+      <div class="linha-campos-3">
+        <div class="campo"><label for="fDuracaoCiclo">Duração do ciclo (meses)</label><input type="number" id="fDuracaoCiclo" min="0"></div>
+        <div class="campo"><label for="fTotalCiclos">Total de ciclos contínuos</label><input type="number" id="fTotalCiclos" min="0" value="1"></div>
+        <div class="campo"><label for="fStatusPagamento">Status do pagamento</label>
+          <select id="fStatusPagamento"><option>Não quitado</option><option>Quitado</option></select>
+        </div>
+      </div>
+      <div class="linha-campos">
+        <div class="campo"><label for="fDetalhesPagamento">Observação do pagamento</label><input type="text" id="fDetalhesPagamento"></div>
+        <div class="campo"><label for="fLinkGrupo">Link do grupo</label><input type="text" id="fLinkGrupo"></div>
+      </div>
+      <div class="campo"><label for="fObservacaoInicial">Observação inicial</label><textarea id="fObservacaoInicial"></textarea></div>
+      <div class="modal-acoes">
+        <button type="button" class="btn-cancelar" id="cancelarMentorado">Cancelar</button>
+        <button type="submit" class="btn-salvar">Salvar mentorado</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: Histórico completo ===================== -->
+<div class="modal-overlay" id="modalHistorico">
+  <div class="modal largo">
+    <button class="fechar-modal" id="fecharModalHistorico" aria-label="Fechar">×</button>
+    <h2>Histórico completo — <span id="histNome"></span></h2>
+    <ul class="lista-registros" id="histLista"></ul>
+  </div>
+</div>
+
+<!-- ===================== MODAL: Nova/Editar Indicação ===================== -->
+<div class="modal-overlay" id="modalIndicacao">
+  <div class="modal">
+    <button class="fechar-modal" id="fecharModalIndicacao" aria-label="Fechar">×</button>
+    <h2 id="tituloModalIndicacao">Nova indicação</h2>
+    <form id="formIndicacao">
+      <input type="hidden" id="iId">
+      <div class="linha-campos">
+        <div class="campo"><label for="iData">Data</label><input type="date" id="iData"></div>
+        <div class="campo"><label for="iTipo">Tipo da indicação</label>
+          <select id="iTipo"><option>Indicação da equipe</option><option>Cliente captado pelo mentorado</option></select>
+        </div>
+      </div>
+      <div class="linha-campos">
+        <div class="campo"><label for="iValor">Valor do projeto (R$)</label><input type="number" id="iValor" step="0.01"></div>
+        <div class="campo"><label for="iStatus">Status</label>
+          <select id="iStatus"><option>Em negociação</option><option>Fechado</option><option>Não fechado</option></select>
+        </div>
+      </div>
+      <div class="campo"><label for="iObservacao">Observação</label><textarea id="iObservacao"></textarea></div>
+      <div class="modal-acoes">
+        <button type="button" class="btn-cancelar" id="cancelarIndicacao">Cancelar</button>
+        <button type="submit" class="btn-salvar">Salvar indicação</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="areaImpressao"></div>
+
+<script>
+/* =======================================================
+   CONFIGURAÇÃO
+   ======================================================= */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec"
+};
+
+const DEFAULT_ATENDENTES = ['Fabiola', 'Karen', 'Stefano', 'Jessica'];
+const DEFAULT_TIPOS = [
+  'Encontro individual', 'Encontro em grupo', 'Encontro com a Karen', 'Encontro com a Jéssica',
+  'Análise individual', 'Indicação de projeto', 'Mensagem de acompanhamento', 'Mensagem de dúvida',
+  'Agendamento de solicitações', 'Lançamento de pagamento', 'Outros'
+];
+const TIPOS_MENSAGEM = ['Mensagem de acompanhamento', 'Mensagem de dúvida'];
+const TIPO_ENCONTRO_INDIVIDUAL = 'Encontro individual';
+const TIPO_ENCONTRO_GRUPO = 'Encontro em grupo';
+const TIPO_ANALISE_INDIVIDUAL = 'Análise individual';
+
+let mentorados = [], registros = [], indicacoes = [];
+let configuracoes = { dias_alerta_mensagem: 15, dias_alerta_encontro: 30, tipos_atendimento_extra: '', atendentes_extra: '' };
+let mentoradoSelecionado = null;
+let origemDetalhe = 'resumo';
+
+function listaAtendentes() {
+  const extra = (configuracoes.atendentes_extra || '').split(',').map(s => s.trim()).filter(Boolean);
+  return [...DEFAULT_ATENDENTES, ...extra];
+}
+function listaTipos() {
+  const extra = (configuracoes.tipos_atendimento_extra || '').split(',').map(s => s.trim()).filter(Boolean);
+  return [...DEFAULT_TIPOS, ...extra];
+}
+
+/* ===================== Utilidades ===================== */
+async function chamarApi(action, params = {}) {
+  const url = new URL(CONFIG.API_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v ?? ''));
+  const resp = await fetch(url.toString());
+  return resp.json();
+}
+function diasDesde(dataStr) {
+  if (!dataStr) return null;
+  return Math.floor((new Date() - new Date(dataStr)) / (1000 * 60 * 60 * 24));
+}
+function formatarData(dataStr) {
+  if (!dataStr) return '—';
+  const [ano, mes, dia] = dataStr.split('T')[0].split('-');
+  return `${dia}/${mes}/${ano}`;
+}
+function hojeISO() { return new Date().toISOString().split('T')[0]; }
+function agoraLegivel() {
+  const d = new Date();
+  return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+function formatarMoeda(v) { return (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function registrosDoMentorado(id) { return registros.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
+function indicacoesDoMentorado(id) { return indicacoes.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
+function ultimaDataPorTipo(regs, tipos) { const f = regs.filter(r => tipos.includes(r.tipo_atendimento)); return f.length ? f[0].data : null; }
+function atendenteAtual() { return localStorage.getItem('dh_atendente') || ''; }
+
+function baixarCSV(nomeArquivo, cabecalho, linhas) {
+  const escapar = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const conteudo = [cabecalho, ...linhas].map(l => l.map(escapar).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + conteudo], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = nomeArquivo;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/* ===================== Login (senha via planilha) e seleção de atendente ===================== */
+document.getElementById('formSenha').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const valor = document.getElementById('campoSenha').value;
+  const botao = document.getElementById('btnEntrarSenha');
+  botao.disabled = true; botao.textContent = 'Verificando...';
+  try {
+    const resp = await chamarApi('verificarSenha', { senha: valor });
+    if (resp.valido) {
+      localStorage.setItem('dh_auth', 'ok');
+      document.getElementById('telaSenha').classList.add('oculto');
+      iniciarApp();
+    } else {
+      document.getElementById('erroSenha').textContent = 'Senha incorreta.';
+    }
+  } catch (err) {
+    document.getElementById('erroSenha').textContent = 'Não foi possível verificar a senha agora.';
+  } finally {
+    botao.disabled = false; botao.textContent = 'Entrar';
+  }
+});
+
+function montarTelaAtendenteGate() {
+  const container = document.getElementById('listaAtendentesGate');
+  container.innerHTML = listaAtendentes().map(nome => `<button type="button" data-nome="${nome}">${nome}</button>`).join('');
+  container.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    localStorage.setItem('dh_atendente', b.dataset.nome);
+    document.getElementById('telaAtendenteGate').classList.add('oculto');
+    mostrarApp();
+  }));
+}
+
+function mostrarApp() {
+  document.getElementById('nomeAtendenteHeader').textContent = atendenteAtual();
+  document.getElementById('app').classList.remove('oculto');
+  renderizarDashboard();
+  renderizarTabela();
+}
+
+async function iniciarApp() {
+  await carregarDados();
+  if (!atendenteAtual()) {
+    montarTelaAtendenteGate();
+    document.getElementById('telaAtendenteGate').classList.remove('oculto');
+  } else {
+    mostrarApp();
+  }
+}
+
+document.getElementById('btnTrocarAtendente').addEventListener('click', () => {
+  localStorage.removeItem('dh_atendente');
+  document.getElementById('app').classList.add('oculto');
+  montarTelaAtendenteGate();
+  document.getElementById('telaAtendenteGate').classList.remove('oculto');
+});
+
+/* ===================== Navegação entre telas ===================== */
+function esconderTodasTelas() {
+  ['telaResumo', 'telaDetalhe', 'telaOutros', 'telaMassa', 'telaConfig'].forEach(id => document.getElementById(id).classList.add('oculto'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('ativo'));
+}
+document.getElementById('btnTelaResumo').addEventListener('click', () => {
+  esconderTodasTelas();
+  document.getElementById('telaResumo').classList.remove('oculto');
+  document.getElementById('btnTelaResumo').classList.add('ativo');
+});
+document.getElementById('btnTelaConfig').addEventListener('click', () => {
+  esconderTodasTelas();
+  preencherTelaConfig();
+  document.getElementById('telaConfig').classList.remove('oculto');
+});
+document.getElementById('btnAbrirMassa').addEventListener('click', () => {
+  esconderTodasTelas();
+  prepararTelaMassa();
+  document.getElementById('telaMassa').classList.remove('oculto');
+  document.getElementById('btnAbrirMassa').classList.add('ativo');
+});
+document.getElementById('btnAbrirOutros').addEventListener('click', () => {
+  esconderTodasTelas();
+  renderizarTabelaOutros();
+  document.getElementById('telaOutros').classList.remove('oculto');
+  document.getElementById('btnAbrirOutros').classList.add('ativo');
+});
+document.getElementById('btnVoltarDetalhe').addEventListener('click', () => {
+  esconderTodasTelas();
+  if (origemDetalhe === 'outros') {
+    renderizarTabelaOutros();
+    document.getElementById('telaOutros').classList.remove('oculto');
+    document.getElementById('btnAbrirOutros').classList.add('ativo');
+  } else {
+    document.getElementById('telaResumo').classList.remove('oculto');
+    document.getElementById('btnTelaResumo').classList.add('ativo');
+  }
+});
+
+/* ===================== Carregar dados ===================== */
+async function carregarDados() {
+  try {
+    const dados = await chamarApi('listar');
+    if (dados.erro) throw new Error(dados.erro);
+    mentorados = dados.mentorados || [];
+    registros = dados.registros || [];
+    indicacoes = dados.indicacoes || [];
+    if (dados.configuracoes) configuracoes = dados.configuracoes;
+  } catch (err) {
+    document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="4">Não consegui carregar os dados. (${err.message})</td></tr>`;
+  }
+}
+
+/* ===================== Dashboard ===================== */
+function renderizarDashboard() {
+  const ativos = mentorados.filter(m => m.status === 'Ativo');
+  const idsAtivos = new Set(ativos.map(m => m.id_mentorado));
+  const regsAtivos = registros.filter(r => idsAtivos.has(r.id_mentorado));
+  const indAtivos = indicacoes.filter(r => idsAtivos.has(r.id_mentorado));
+  document.getElementById('mAtivos').textContent = ativos.length;
+  document.getElementById('mEncontrosIndividuais').textContent = regsAtivos.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL).length;
+  document.getElementById('mIndicacoes').textContent = indAtivos.length;
+  document.getElementById('mProjetosFechados').textContent = indAtivos.filter(i => i.status === 'Fechado').length;
+}
+
+/* ===================== Tela Resumo: tabela + busca única ===================== */
+function mentoradosAtivosOrdenados(termo) {
+  let ativos = mentorados.filter(m => m.status === 'Ativo');
+  if (termo) ativos = ativos.filter(m => m.nome.toLowerCase().includes(termo) || (m.email || '').toLowerCase().includes(termo));
+  return ativos.sort((a, b) => a.nome.localeCompare(b.nome));
+}
+
+function renderizarTabela() {
+  const termo = document.getElementById('buscaUnica').value.trim().toLowerCase();
+  const corpo = document.getElementById('corpoTabela');
+  const ativos = mentoradosAtivosOrdenados(termo);
+  if (!ativos.length) { corpo.innerHTML = '<tr><td colspan="4">Nenhum mentorado ativo encontrado.</td></tr>'; return; }
+  corpo.innerHTML = '';
+  ativos.forEach(m => {
+    const regs = registrosDoMentorado(m.id_mentorado);
+    const ultimaMsg = ultimaDataPorTipo(regs, TIPOS_MENSAGEM);
+    const ultimoEnc = ultimaDataPorTipo(regs, [TIPO_ENCONTRO_INDIVIDUAL]);
+    const alertaMsg = ultimaMsg === null || diasDesde(ultimaMsg) > configuracoes.dias_alerta_mensagem;
+    const alertaEnc = ultimoEnc === null || diasDesde(ultimoEnc) > configuracoes.dias_alerta_encontro;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="Nome">${m.nome}</td>
+      <td data-label="Fim do ciclo">${formatarData(m.data_fim_ciclo)}</td>
+      <td data-label="Última mensagem">${ultimaMsg ? formatarData(ultimaMsg) : 'Sem registro'}${alertaMsg ? '<span class="tag-alerta">⚠️ atrasado</span>' : ''}</td>
+      <td data-label="Último encontro individual">${ultimoEnc ? formatarData(ultimoEnc) : 'Sem registro'}${alertaEnc ? '<span class="tag-alerta">⚠️ atrasado</span>' : ''}</td>
+    `;
+    tr.addEventListener('dblclick', () => { origemDetalhe = 'resumo'; abrirDetalhe(m.id_mentorado); });
+    corpo.appendChild(tr);
+  });
+}
+
+const inputBusca = document.getElementById('buscaUnica');
+const listaAuto = document.getElementById('listaAutocomplete');
+inputBusca.addEventListener('input', () => {
+  const termo = inputBusca.value.trim().toLowerCase();
+  renderizarTabela();
+  if (!termo) { listaAuto.classList.remove('aberta'); return; }
+  const sugestoes = mentoradosAtivosOrdenados(termo).slice(0, 8);
+  if (!sugestoes.length) { listaAuto.classList.remove('aberta'); return; }
+  listaAuto.innerHTML = sugestoes.map(m => `<button type="button" class="autocomplete-item" data-id="${m.id_mentorado}">${m.nome} <span style="color:#7c8199;">· ${m.email || ''}</span></button>`).join('');
+  listaAuto.classList.add('aberta');
+});
+listaAuto.addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.autocomplete-item');
+  if (!btn) return;
+  listaAuto.classList.remove('aberta');
+  origemDetalhe = 'resumo';
+  abrirDetalhe(btn.dataset.id);
+});
+document.addEventListener('click', (ev) => { if (!ev.target.closest('.autocomplete-wrap')) listaAuto.classList.remove('aberta'); });
+
+/* ===================== Tela: Outros mentorados ===================== */
+function renderizarTabelaOutros() {
+  const termo = (document.getElementById('buscaOutros').value || '').trim().toLowerCase();
+  const corpo = document.getElementById('corpoTabelaOutros');
+  let lista = mentorados.filter(m => m.status !== 'Ativo');
+  if (termo) lista = lista.filter(m => m.nome.toLowerCase().includes(termo) || (m.email || '').toLowerCase().includes(termo));
+  lista.sort((a, b) => a.nome.localeCompare(b.nome));
+  if (!lista.length) { corpo.innerHTML = '<tr><td colspan="4">Nenhum mentorado encontrado.</td></tr>'; return; }
+  corpo.innerHTML = '';
+  lista.forEach(m => {
+    const regs = registrosDoMentorado(m.id_mentorado);
+    const ultimo = regs.length ? regs[0].data : null;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="Nome">${m.nome}</td>
+      <td data-label="Status"><span class="badge ${m.status}">${m.status}</span></td>
+      <td data-label="Fim do ciclo">${formatarData(m.data_fim_ciclo)}</td>
+      <td data-label="Último atendimento">${ultimo ? formatarData(ultimo) : 'Sem registro'}</td>
+    `;
+    tr.addEventListener('dblclick', () => { origemDetalhe = 'outros'; abrirDetalhe(m.id_mentorado); });
+    corpo.appendChild(tr);
+  });
+}
+document.getElementById('buscaOutros').addEventListener('input', renderizarTabelaOutros);
+
+/* ===================== Tela: Detalhe do mentorado ===================== */
+function preencherSelectTipos(selectEl) {
+  selectEl.innerHTML = listaTipos().map(t => `<option>${t}</option>`).join('');
+}
+
+function abrirDetalhe(idMentorado) {
+  const m = mentorados.find(x => x.id_mentorado === idMentorado);
+  if (!m) return;
+  mentoradoSelecionado = m;
+
+  esconderTodasTelas();
+  document.getElementById('telaDetalhe').classList.remove('oculto');
+
+  document.getElementById('detNome').textContent = m.nome;
+  const badge = document.getElementById('detStatusBadge');
+  badge.textContent = m.status; badge.className = 'badge ' + m.status;
+
+  const regs = registrosDoMentorado(idMentorado);
+  const ultimaMsg = ultimaDataPorTipo(regs, TIPOS_MENSAGEM);
+  const ultimoEnc = ultimaDataPorTipo(regs, [TIPO_ENCONTRO_INDIVIDUAL]);
+  let alertasHtml = '';
+  if (m.status === 'Ativo') {
+    const alertaMsg = ultimaMsg === null || diasDesde(ultimaMsg) > configuracoes.dias_alerta_mensagem;
+    const alertaEnc = ultimoEnc === null || diasDesde(ultimoEnc) > configuracoes.dias_alerta_encontro;
+    if (alertaMsg) alertasHtml += '<div>⚠️ Você precisa enviar uma mensagem de acompanhamento.</div>';
+    if (alertaEnc) alertasHtml += '<div>⚠️ Você precisa agendar uma reunião individual.</div>';
+  }
+  document.getElementById('detBannerAlertas').innerHTML = alertasHtml ? `<div class="banner-alerta">${alertasHtml}</div>` : '';
+
+  document.getElementById('dNome').value = m.nome || '';
+  document.getElementById('dEmail').value = m.email || '';
+  document.getElementById('dTelefone').value = m.telefone || '';
+  document.getElementById('dStatus').value = m.status || 'Ativo';
+  document.getElementById('dDataFimCiclo').value = m.data_fim_ciclo ? m.data_fim_ciclo.split('T')[0] : '';
+  document.getElementById('dDuracaoCiclo').value = m.duracao_ciclo_meses || '';
+  document.getElementById('dTotalCiclos').value = m.total_ciclos || '';
+  document.getElementById('dDisponivelProjetos').value = m.disponivel_projetos || 'Não';
+  document.getElementById('dAreaMembros').value = m.area_membros || 'Não';
+  document.getElementById('dStatusPagamento').value = m.status_pagamento || 'Não quitado';
+  document.getElementById('dLinkGrupo').value = m.link_grupo || '';
+  document.getElementById('dDetalhesPagamento').value = m.detalhes_pagamento || '';
+  document.getElementById('dObservacaoInicial').value = m.observacao_inicial || '';
+
+  preencherSelectTipos(document.getElementById('rTipo'));
+  document.getElementById('rData').value = hojeISO();
+
+  renderizarUltimosRegistros(regs.slice(0, 5));
+  renderizarIndicadores(idMentorado, regs);
+  renderizarIndicacoesDoMentorado(idMentorado);
+}
+
+document.getElementById('formDetalheCadastro').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  if (!mentoradoSelecionado) return;
+  const botao = ev.target.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Salvando...';
+  try {
+    await chamarApi('atualizarMentorado', {
+      id: mentoradoSelecionado.id_mentorado,
+      nome: document.getElementById('dNome').value,
+      email: document.getElementById('dEmail').value,
+      telefone: document.getElementById('dTelefone').value,
+      status: document.getElementById('dStatus').value,
+      data_fim_ciclo: document.getElementById('dDataFimCiclo').value,
+      duracao_ciclo_meses: document.getElementById('dDuracaoCiclo').value,
+      total_ciclos: document.getElementById('dTotalCiclos').value,
+      link_grupo: document.getElementById('dLinkGrupo').value,
+      disponivel_projetos: document.getElementById('dDisponivelProjetos').value,
+      area_membros: document.getElementById('dAreaMembros').value,
+      status_pagamento: document.getElementById('dStatusPagamento').value,
+      detalhes_pagamento: document.getElementById('dDetalhesPagamento').value,
+      observacao_inicial: document.getElementById('dObservacaoInicial').value,
+    });
+    await carregarDados();
+    renderizarDashboard();
+    abrirDetalhe(mentoradoSelecionado.id_mentorado);
+  } catch (err) {
+    alert('Não foi possível salvar. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Salvar alterações';
+  }
+});
+
+function renderizarUltimosRegistros(regs) {
+  const ul = document.getElementById('detUltimosRegistros');
+  if (!regs.length) { ul.innerHTML = '<li>Nenhum atendimento registrado ainda.</li>'; return; }
+  const hoje = hojeISO();
+  ul.innerHTML = regs.map(r => linhaRegistro(r, hoje)).join('');
+  ligarAcoesRegistro(ul, false);
+}
+
+function linhaRegistro(r, hoje) {
+  const podeEditar = (r.criado_em || '').split('T')[0] === hoje;
+  const classe = r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL ? 'encontro-individual' : '';
+  return `
+    <li class="${classe}">
+      <div class="reg-linha">
+        <div class="reg-info">
+          <div class="tipo">${r.tipo_atendimento}</div>
+          <div class="meta">${formatarData(r.data)} · ${r.usuario || 'Sem usuário'}</div>
+          <div class="obs">Observação: ${r.observacao ? r.observacao : '—'}</div>
+        </div>
+        <div class="reg-acoes">
+          ${podeEditar ? `<button type="button" data-editar="${r.id_registro}" title="Editar">✏️</button>` : ''}
+          <button type="button" data-excluir="${r.id_registro}" title="Excluir">🗑️</button>
+        </div>
+      </div>
+    </li>`;
+}
+
+function ligarAcoesRegistro(container, ehHistorico) {
+  container.querySelectorAll('[data-excluir]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Excluir este registro? Essa ação não pode ser desfeita.')) return;
+    await chamarApi('deletarRegistro', { id: b.dataset.excluir });
+    await carregarDados();
+    abrirDetalhe(mentoradoSelecionado.id_mentorado);
+    if (ehHistorico) renderizarHistorico();
+  }));
+  container.querySelectorAll('[data-editar]').forEach(b => b.addEventListener('click', async () => {
+    await editarRegistroInline(b.dataset.editar);
+    if (ehHistorico) renderizarHistorico();
+  }));
+}
+
+async function editarRegistroInline(idRegistro) {
+  const r = registros.find(x => x.id_registro === idRegistro);
+  if (!r) return;
+  const novaObs = prompt('Editar observação:', r.observacao || '');
+  if (novaObs === null) return;
+  await chamarApi('atualizarRegistro', { id: idRegistro, observacao: novaObs });
+  await carregarDados();
+  abrirDetalhe(mentoradoSelecionado.id_mentorado);
+}
+
+function renderizarIndicadores(idMentorado, regs) {
+  const grupo = regs.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_GRUPO);
+  const individuais = regs.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL);
+  const analises = regs.filter(r => r.tipo_atendimento === TIPO_ANALISE_INDIVIDUAL);
+  const ultimaMsg = ultimaDataPorTipo(regs, TIPOS_MENSAGEM);
+  const inds = indicacoesDoMentorado(idMentorado);
+  const fechados = inds.filter(i => i.status === 'Fechado');
+  const totalFaturado = fechados.reduce((s, i) => s + (Number(i.valor_projeto) || 0), 0);
+  const ultimasDatas = (lista) => lista.slice(0, 3).map(r => formatarData(r.data)).join(', ') || '—';
+
+  document.getElementById('detIndicadores').innerHTML = `
+    <div class="sidebar-card"><div class="num">${grupo.length}</div><div class="lbl">Encontros em grupo</div><div class="datas">${ultimasDatas(grupo)}</div></div>
+    <div class="sidebar-card"><div class="num">${individuais.length}</div><div class="lbl">Encontros individuais</div><div class="datas">${ultimasDatas(individuais)}</div></div>
+    <div class="sidebar-card"><div class="num">${analises.length}</div><div class="lbl">Análises individuais</div><div class="datas">${ultimasDatas(analises)}</div></div>
+    <div class="sidebar-card"><div class="num" style="font-size:15px;">${ultimaMsg ? formatarData(ultimaMsg) : '—'}</div><div class="lbl">Última mensagem</div></div>
+    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturado)}</div><div class="lbl">Total faturado em projetos</div></div>
+    <div class="sidebar-card"><div class="num">${fechados.length}</div><div class="lbl">Projetos fechados</div></div>
+    <div class="sidebar-card"><div class="num">${inds.length}</div><div class="lbl">Indicações realizadas</div></div>
+  `;
+}
+
+document.getElementById('formRegistro').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  if (!mentoradoSelecionado) return;
+  const botao = ev.target.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Registrando...';
+  try {
+    await chamarApi('criarRegistro', {
+      id_mentorado: mentoradoSelecionado.id_mentorado,
+      nome_mentorado: mentoradoSelecionado.nome,
+      usuario: atendenteAtual(),
+      tipo_atendimento: document.getElementById('rTipo').value,
+      data: document.getElementById('rData').value || hojeISO(),
+      observacao: document.getElementById('rObservacao').value,
+    });
+    document.getElementById('rObservacao').value = '';
+    await carregarDados();
+    abrirDetalhe(mentoradoSelecionado.id_mentorado);
+  } catch (err) {
+    alert('Não foi possível registrar. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Registrar';
+  }
+});
+
+/* ===================== Histórico completo ===================== */
+const modalHistorico = document.getElementById('modalHistorico');
+document.getElementById('btnHistoricoCompleto').addEventListener('click', () => {
+  if (!mentoradoSelecionado) return;
+  document.getElementById('histNome').textContent = mentoradoSelecionado.nome;
+  renderizarHistorico();
+  modalHistorico.classList.add('aberto');
+});
+document.getElementById('fecharModalHistorico').addEventListener('click', () => modalHistorico.classList.remove('aberto'));
+
+function renderizarHistorico() {
+  const regs = registrosDoMentorado(mentoradoSelecionado.id_mentorado);
+  const hoje = hojeISO();
+  const lista = document.getElementById('histLista');
+  if (!regs.length) { lista.innerHTML = '<li>Nenhum atendimento registrado.</li>'; return; }
+  lista.innerHTML = regs.map(r => linhaRegistro(r, hoje)).join('');
+  ligarAcoesRegistro(lista, true);
+}
+
+/* ===================== Exportar PDF do mentorado ===================== */
+document.getElementById('btnExportarPDF').addEventListener('click', () => {
+  if (!mentoradoSelecionado) return;
+  const m = mentoradoSelecionado;
+  const regs = registrosDoMentorado(m.id_mentorado);
+  const linhas = regs.map(r => `
+    <tr>
+      <td style="padding:6px; border-bottom:1px solid #444;">${formatarData(r.data)}</td>
+      <td style="padding:6px; border-bottom:1px solid #444;">${r.usuario || '—'}</td>
+      <td style="padding:6px; border-bottom:1px solid #444;">${r.tipo_atendimento}</td>
+      <td style="padding:6px; border-bottom:1px solid #444;">${r.observacao || '—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('areaImpressao').innerHTML = `
+    <div style="font-family:Arial, sans-serif; padding:24px; background:#12141c; color:#fff;">
+      <h1 style="color:#FF7000; font-size:20px; margin-bottom:4px;">Ficha do Mentorado — ${m.nome}</h1>
+      <p style="color:#a3a8bd; font-size:12px; margin-bottom:18px;">DashEagles · Escola Karen Abecia</p>
+
+      <h2 style="font-size:14px; border-bottom:1px solid #444; padding-bottom:6px; margin-bottom:10px;">Dados cadastrais</h2>
+      <table style="width:100%; font-size:12px; margin-bottom:20px;">
+        <tr><td style="padding:4px; color:#a3a8bd; width:200px;">E-mail</td><td style="padding:4px;">${m.email || '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Telefone</td><td style="padding:4px;">${m.telefone || '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Status</td><td style="padding:4px;">${m.status}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Fim do ciclo</td><td style="padding:4px;">${formatarData(m.data_fim_ciclo)}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Duração do ciclo</td><td style="padding:4px;">${m.duracao_ciclo_meses ? m.duracao_ciclo_meses + ' meses' : '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Total de ciclos contínuos</td><td style="padding:4px;">${m.total_ciclos || '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Disponível para projetos</td><td style="padding:4px;">${m.disponivel_projetos || 'Não'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Área de membros</td><td style="padding:4px;">${m.area_membros || 'Não'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Status do pagamento</td><td style="padding:4px;">${m.status_pagamento || 'Não quitado'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Observação do pagamento</td><td style="padding:4px;">${m.detalhes_pagamento || '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd;">Link do grupo</td><td style="padding:4px;">${m.link_grupo || '—'}</td></tr>
+        <tr><td style="padding:4px; color:#a3a8bd; vertical-align:top;">Observação inicial</td><td style="padding:4px;">${m.observacao_inicial || '—'}</td></tr>
+      </table>
+
+      <h2 style="font-size:14px; border-bottom:1px solid #444; padding-bottom:6px; margin-bottom:10px;">Histórico completo de atendimentos</h2>
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead><tr>
+          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Data</th>
+          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Usuário</th>
+          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Tipo</th>
+          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Observação</th>
+        </tr></thead>
+        <tbody>${linhas || '<tr><td colspan="4" style="padding:6px;">Nenhum atendimento registrado.</td></tr>'}</tbody>
+      </table>
+
+      <p style="margin-top:30px; font-size:10px; color:#7c8199; border-top:1px solid #444; padding-top:10px;">
+        PDF gerado por ${atendenteAtual() || 'usuário não identificado'} em ${agoraLegivel()}
+      </p>
+    </div>
+  `;
+  window.print();
+});
+
+/* ===================== Relatórios em CSV ===================== */
+document.getElementById('btnRelatorioResumo').addEventListener('click', () => {
+  const ativos = mentoradosAtivosOrdenados('');
+  const linhas = ativos.map(m => {
+    const regs = registrosDoMentorado(m.id_mentorado);
+    const ultimaMsg = ultimaDataPorTipo(regs, TIPOS_MENSAGEM);
+    const ultimoEnc = ultimaDataPorTipo(regs, [TIPO_ENCONTRO_INDIVIDUAL]);
+    return [m.nome, formatarData(m.data_fim_ciclo), m.email || '', ultimaMsg ? formatarData(ultimaMsg) : '', ultimoEnc ? formatarData(ultimoEnc) : '', m.telefone || ''];
+  });
+  baixarCSV('resumo-do-programa.csv', ['Nome', 'Fim do ciclo', 'Email', 'Última mensagem', 'Último encontro', 'Telefone'], linhas);
+});
+
+document.getElementById('btnRelatorioTodos').addEventListener('click', () => {
+  const todos = [...mentorados].sort((a, b) => a.nome.localeCompare(b.nome));
+  const linhas = todos.map(m => [m.nome, m.email || '', m.telefone || '', m.status, formatarData(m.data_fim_ciclo)]);
+  baixarCSV('todos-os-mentorados.csv', ['Nome', 'Email', 'Telefone', 'Status', 'Fim do ciclo'], linhas);
+});
+
+/* ===================== Indicações ===================== */
+const modalIndicacao = document.getElementById('modalIndicacao');
+const formIndicacao = document.getElementById('formIndicacao');
+
+function renderizarIndicacoesDoMentorado(idMentorado) {
+  const inds = indicacoesDoMentorado(idMentorado);
+  const ul = document.getElementById('detIndicacoes');
+  if (!inds.length) { ul.innerHTML = '<li>Nenhuma indicação registrada.</li>'; return; }
+  ul.innerHTML = inds.map(i => `
+    <li data-id="${i.id_indicacao}" class="${i.status === 'Fechado' ? 'Fechado' : ''}">
+      <strong>${i.tipo_indicacao}</strong> · ${formatarData(i.data)} · ${i.status} · ${formatarMoeda(i.valor_projeto)}
+      ${i.observacao ? '<br><span style="color:#a3a8bd; font-size:12px;">' + i.observacao + '</span>' : ''}
+    </li>`).join('');
+  ul.querySelectorAll('li').forEach(li => li.addEventListener('click', () => abrirModalIndicacao(inds.find(i => i.id_indicacao === li.dataset.id))));
+}
+
+function abrirModalIndicacao(i = null) {
+  document.getElementById('tituloModalIndicacao').textContent = i ? 'Editar indicação' : 'Nova indicação';
+  document.getElementById('iId').value = i ? i.id_indicacao : '';
+  document.getElementById('iData').value = i ? i.data.split('T')[0] : hojeISO();
+  document.getElementById('iTipo').value = i ? i.tipo_indicacao : 'Indicação da equipe';
+  document.getElementById('iValor').value = i ? i.valor_projeto : '';
+  document.getElementById('iStatus').value = i ? i.status : 'Em negociação';
+  document.getElementById('iObservacao').value = i ? (i.observacao || '') : '';
+  modalIndicacao.classList.add('aberto');
+}
+document.getElementById('btnNovaIndicacao').addEventListener('click', () => abrirModalIndicacao());
+document.getElementById('fecharModalIndicacao').addEventListener('click', () => modalIndicacao.classList.remove('aberto'));
+document.getElementById('cancelarIndicacao').addEventListener('click', () => modalIndicacao.classList.remove('aberto'));
+
+formIndicacao.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  if (!mentoradoSelecionado) return;
+  const id = document.getElementById('iId').value;
+  const payload = {
+    data: document.getElementById('iData').value,
+    tipo_indicacao: document.getElementById('iTipo').value,
+    valor_projeto: document.getElementById('iValor').value,
+    status: document.getElementById('iStatus').value,
+    observacao: document.getElementById('iObservacao').value,
+  };
+  const botao = formIndicacao.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Salvando...';
+  try {
+    if (id) await chamarApi('atualizarIndicacao', { id, ...payload });
+    else await chamarApi('criarIndicacao', { id_mentorado: mentoradoSelecionado.id_mentorado, nome_mentorado: mentoradoSelecionado.nome, ...payload });
+    modalIndicacao.classList.remove('aberto');
+    await carregarDados();
+    abrirDetalhe(mentoradoSelecionado.id_mentorado);
+  } catch (err) {
+    alert('Não foi possível salvar a indicação. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Salvar indicação';
+  }
+});
+
+/* ===================== Novo mentorado ===================== */
+const modalMentorado = document.getElementById('modalMentorado');
+document.getElementById('btnNovoMentorado').addEventListener('click', () => modalMentorado.classList.add('aberto'));
+document.getElementById('fecharModalMentorado').addEventListener('click', () => modalMentorado.classList.remove('aberto'));
+document.getElementById('cancelarMentorado').addEventListener('click', () => modalMentorado.classList.remove('aberto'));
+
+document.getElementById('formMentorado').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const payload = {
+    nome: document.getElementById('fNome').value,
+    email: document.getElementById('fEmail').value,
+    telefone: document.getElementById('fTelefone').value,
+    status: document.getElementById('fStatus').value,
+    data_fim_ciclo: document.getElementById('fDataFimCiclo').value,
+    duracao_ciclo_meses: document.getElementById('fDuracaoCiclo').value,
+    total_ciclos: document.getElementById('fTotalCiclos').value,
+    status_pagamento: document.getElementById('fStatusPagamento').value,
+    detalhes_pagamento: document.getElementById('fDetalhesPagamento').value,
+    link_grupo: document.getElementById('fLinkGrupo').value,
+    observacao_inicial: document.getElementById('fObservacaoInicial').value,
+  };
+  const botao = ev.target.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Salvando...';
+  try {
+    const resp = await chamarApi('criarMentorado', payload);
+    if (resp.duplicado) { alert('Mentorado já cadastrado'); return; }
+    modalMentorado.classList.remove('aberto');
+    ev.target.reset();
+    await carregarDados();
+    renderizarDashboard();
+    renderizarTabela();
+  } catch (err) {
+    alert('Não foi possível salvar. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Salvar mentorado';
+  }
+});
+
+/* ===================== Lançamento em massa ===================== */
+function prepararTelaMassa() {
+  preencherSelectTipos(document.getElementById('massaTipo'));
+  document.getElementById('massaData').value = hojeISO();
+  const ativos = mentoradosAtivosOrdenados('');
+  document.getElementById('listaCheagemMassa').innerHTML = ativos.map(m => `
+    <label class="item-check"><input type="checkbox" value="${m.id_mentorado}" class="chk-massa"><span>${m.nome}</span></label>
+  `).join('');
+}
+document.getElementById('btnMarcarTodos').addEventListener('click', () => document.querySelectorAll('.chk-massa').forEach(c => c.checked = true));
+document.getElementById('btnDesmarcarTodos').addEventListener('click', () => document.querySelectorAll('.chk-massa').forEach(c => c.checked = false));
+
+document.getElementById('formMassa').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const idsSelecionados = Array.from(document.querySelectorAll('.chk-massa:checked')).map(c => c.value);
+  if (!idsSelecionados.length) { alert('Selecione pelo menos um mentorado.'); return; }
+  const botao = ev.target.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Registrando...';
+  try {
+    const resp = await chamarApi('criarRegistrosEmMassa', {
+      ids: idsSelecionados.join(','),
+      usuario: atendenteAtual(),
+      tipo_atendimento: document.getElementById('massaTipo').value,
+      data: document.getElementById('massaData').value,
+      observacao: document.getElementById('massaObservacao').value,
+    });
+    if (resp.erro) { alert(resp.erro); return; }
+    alert(`Registro criado para ${resp.total} mentorado(s).`);
+    ev.target.reset();
+    await carregarDados();
+    prepararTelaMassa();
+  } catch (err) {
+    alert('Não foi possível concluir o lançamento em massa. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Registrar para todos os selecionados';
+  }
+});
+
+/* ===================== Configurações ===================== */
+function preencherTelaConfig() {
+  document.getElementById('cDiasMensagem').value = configuracoes.dias_alerta_mensagem;
+  document.getElementById('cDiasEncontro').value = configuracoes.dias_alerta_encontro;
+  document.getElementById('listaTiposConfig').innerHTML = listaTipos().map(t => `<div>• ${t}</div>`).join('');
+  document.getElementById('listaAtendentesConfig').innerHTML = listaAtendentes().map(a => `<div>• ${a}</div>`).join('');
+}
+
+document.getElementById('formConfigAlertas').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const botao = ev.target.querySelector('.btn-salvar');
+  botao.disabled = true; botao.textContent = 'Salvando...';
+  try {
+    await chamarApi('atualizarConfiguracoes', {
+      dias_alerta_mensagem: document.getElementById('cDiasMensagem').value,
+      dias_alerta_encontro: document.getElementById('cDiasEncontro').value,
+    });
+    await carregarDados();
+    alert('Configurações salvas.');
+  } catch (err) {
+    alert('Não foi possível salvar. ' + err.message);
+  } finally {
+    botao.disabled = false; botao.textContent = 'Salvar alertas';
+  }
+});
+
+document.getElementById('btnAdicionarTipo').addEventListener('click', async () => {
+  const novo = document.getElementById('novoTipoInput').value.trim();
+  if (!novo) return;
+  if (listaTipos().includes(novo)) { alert('Esse tipo já existe.'); return; }
+  const extraAtual = (configuracoes.tipos_atendimento_extra || '').split(',').map(s => s.trim()).filter(Boolean);
+  extraAtual.push(novo);
+  await chamarApi('atualizarConfiguracoes', { tipos_atendimento_extra: extraAtual.join(',') });
+  document.getElementById('novoTipoInput').value = '';
+  await carregarDados();
+  preencherTelaConfig();
+});
+
+document.getElementById('btnAdicionarAtendente').addEventListener('click', async () => {
+  const novo = document.getElementById('novoAtendenteInput').value.trim();
+  if (!novo) return;
+  if (listaAtendentes().includes(novo)) { alert('Esse atendente já existe.'); return; }
+  const extraAtual = (configuracoes.atendentes_extra || '').split(',').map(s => s.trim()).filter(Boolean);
+  extraAtual.push(novo);
+  await chamarApi('atualizarConfiguracoes', { atendentes_extra: extraAtual.join(',') });
+  document.getElementById('novoAtendenteInput').value = '';
+  await carregarDados();
+  preencherTelaConfig();
+});
+
+document.getElementById('btnAlterarSenha').addEventListener('click', async () => {
+  const nova = document.getElementById('novaSenhaInput').value.trim();
+  if (!nova) return;
+  if (!confirm('Trocar a senha de acesso do painel para "' + nova + '"?')) return;
+  await chamarApi('atualizarConfiguracoes', { senha: nova });
+  document.getElementById('novaSenhaInput').value = '';
+  alert('Senha atualizada.');
+});
+
+/* ===================== Fechar modais clicando fora ===================== */
+[modalMentorado, modalHistorico, modalIndicacao].forEach(modal => {
+  modal.addEventListener('click', (ev) => { if (ev.target === modal) modal.classList.remove('aberto'); });
+});
+
+/* ===================== Início ===================== */
+if (localStorage.getItem('dh_auth') === 'ok') {
+  document.getElementById('telaSenha').classList.add('oculto');
+  iniciarApp();
+}
+</script>
+
+</body>
+</html>
