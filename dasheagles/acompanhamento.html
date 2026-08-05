@@ -126,7 +126,11 @@
   .tag-alerta{display:inline-block; font-size:11px; font-weight:600; color:var(--vermelho); background:rgba(229,72,77,0.15); padding:3px 8px; border-radius:6px; margin-left:6px;}
 
   /* ===== Tela de detalhe (duas colunas) ===== */
-  .detalhe-topo{display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+  .detalhe-topo{
+    display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;
+    position:sticky; top:0; z-index:30; background:var(--escuro-bg);
+    padding:14px 0; border-bottom:1px solid var(--escuro-borda);
+  }
   .btn-voltar{background:var(--escuro-card); border:1px solid var(--escuro-borda); color:#fff; padding:8px 14px; border-radius:8px; font-size:13px;}
   .badge{font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;}
   .badge.Ativo{background:rgba(87,185,92,0.2); color:var(--verde);}
@@ -194,6 +198,30 @@
   .lista-tipos{list-style:none; display:flex; flex-direction:column; gap:6px;}
   .lista-tipos li{display:flex; justify-content:space-between; font-size:13px; padding:8px 10px; background:#0f1119; border-radius:8px;}
   .lista-tipos li strong{color:var(--laranja);}
+
+  /* ===== Tela de carregamento ===== */
+  .overlay-carregando{
+    display:none; position:fixed; inset:0; background:rgba(18,20,28,0.85); z-index:600;
+    align-items:center; justify-content:center; flex-direction:column; gap:16px;
+  }
+  .overlay-carregando.aberto{display:flex;}
+  .overlay-carregando .caixa-carregando{
+    background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:16px;
+    padding:28px 34px; text-align:center; min-width:260px;
+  }
+  .overlay-carregando p{font-size:13px; color:#c7cbe0; margin-bottom:14px;}
+  .barra-progresso-fundo{width:100%; height:10px; background:#0f1119; border-radius:20px; overflow:hidden; border:1px solid var(--escuro-borda);}
+  .barra-progresso-preenchimento{
+    height:100%; width:0%; border-radius:20px;
+    background:linear-gradient(90deg, var(--laranja), var(--amarelo));
+    animation:encherBarra 1.1s ease-in-out infinite;
+  }
+  @keyframes encherBarra{
+    0%{width:5%;}
+    50%{width:75%;}
+    85%{width:92%;}
+    100%{width:97%;}
+  }
 
   /* ===== Modais (Novo mentorado, Indicação, Histórico) ===== */
   .modal-overlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-start; justify-content:center; padding:30px 20px; z-index:100; overflow-y:auto;}
@@ -592,6 +620,14 @@
   </div>
 </div>
 
+<!-- ===================== TELA: CARREGANDO ===================== -->
+<div class="overlay-carregando" id="overlayCarregando">
+  <div class="caixa-carregando">
+    <p id="textoCarregando">Salvando...</p>
+    <div class="barra-progresso-fundo"><div class="barra-progresso-preenchimento" id="barraCarregando"></div></div>
+  </div>
+</div>
+
 <div id="areaImpressao"></div>
 
 <script>
@@ -628,12 +664,31 @@ function listaTipos() {
 }
 
 /* ===================== Utilidades ===================== */
-async function chamarApi(action, params = {}) {
+async function chamarApi(action, params = {}, tentativasRestantes = 2) {
   const url = new URL(CONFIG.API_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v ?? ''));
-  const resp = await fetch(url.toString());
-  return resp.json();
+  try {
+    const resp = await fetch(url.toString());
+    const texto = await resp.text();
+    try {
+      return JSON.parse(texto);
+    } catch (erroParse) {
+      // Às vezes a primeira chamada de uma sessão recebe uma resposta intermediária do Google
+      // (não é JSON ainda). Tenta de novo automaticamente antes de desistir.
+      if (tentativasRestantes > 0) {
+        await new Promise(r => setTimeout(r, 500));
+        return chamarApi(action, params, tentativasRestantes - 1);
+      }
+      throw new Error('O servidor demorou para responder. Tente novamente em alguns segundos.');
+    }
+  } catch (erroRede) {
+    if (tentativasRestantes > 0) {
+      await new Promise(r => setTimeout(r, 500));
+      return chamarApi(action, params, tentativasRestantes - 1);
+    }
+    throw erroRede;
+  }
 }
 function diasDesde(dataStr) {
   if (!dataStr) return null;
@@ -654,6 +709,14 @@ function registrosDoMentorado(id) { return registros.filter(r => r.id_mentorado 
 function indicacoesDoMentorado(id) { return indicacoes.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
 function ultimaDataPorTipo(regs, tipos) { const f = regs.filter(r => tipos.includes(r.tipo_atendimento)); return f.length ? f[0].data : null; }
 function atendenteAtual() { return localStorage.getItem('dh_atendente') || ''; }
+
+function mostrarCarregando(texto) {
+  document.getElementById('textoCarregando').textContent = texto || 'Salvando...';
+  document.getElementById('overlayCarregando').classList.add('aberto');
+}
+function esconderCarregando() {
+  document.getElementById('overlayCarregando').classList.remove('aberto');
+}
 
 function confirmarAcao(mensagem) {
   return new Promise((resolve) => {
@@ -726,12 +789,31 @@ function mostrarApp() {
 }
 
 async function iniciarApp() {
-  await carregarDados();
-  if (!atendenteAtual()) {
-    montarTelaAtendenteGate();
-    document.getElementById('telaAtendenteGate').classList.remove('oculto');
+  const cache = lerCache();
+  if (cache) {
+    // mostra os dados salvos localmente na hora, sem esperar a rede
+    aplicarDados(cache);
+    if (!atendenteAtual()) {
+      montarTelaAtendenteGate();
+      document.getElementById('telaAtendenteGate').classList.remove('oculto');
+    } else {
+      mostrarApp();
+    }
+    // atualiza em segundo plano
+    carregarDados().then(() => {
+      if (!document.getElementById('app').classList.contains('oculto')) {
+        renderizarDashboard();
+        renderizarTabela();
+      }
+    });
   } else {
-    mostrarApp();
+    await carregarDados();
+    if (!atendenteAtual()) {
+      montarTelaAtendenteGate();
+      document.getElementById('telaAtendenteGate').classList.remove('oculto');
+    } else {
+      mostrarApp();
+    }
   }
 }
 
@@ -788,16 +870,43 @@ document.getElementById('btnVoltarDetalhe').addEventListener('click', () => {
 });
 
 /* ===================== Carregar dados ===================== */
-async function carregarDados() {
+const CHAVE_CACHE = 'dh_cache_dados';
+
+function salvarCache(dados) {
+  try {
+    localStorage.setItem(CHAVE_CACHE, JSON.stringify({ dados, quando: Date.now() }));
+  } catch (e) { /* localStorage cheio ou indisponível — ignora */ }
+}
+
+function lerCache() {
+  try {
+    const bruto = localStorage.getItem(CHAVE_CACHE);
+    if (!bruto) return null;
+    return JSON.parse(bruto).dados;
+  } catch (e) { return null; }
+}
+
+function aplicarDados(dados) {
+  mentorados = dados.mentorados || [];
+  registros = dados.registros || [];
+  indicacoes = dados.indicacoes || [];
+  if (dados.configuracoes) configuracoes = dados.configuracoes;
+}
+
+async function carregarDados({ usarCache = false } = {}) {
+  if (usarCache) {
+    const cache = lerCache();
+    if (cache) aplicarDados(cache);
+  }
   try {
     const dados = await chamarApi('listar');
     if (dados.erro) throw new Error(dados.erro);
-    mentorados = dados.mentorados || [];
-    registros = dados.registros || [];
-    indicacoes = dados.indicacoes || [];
-    if (dados.configuracoes) configuracoes = dados.configuracoes;
+    aplicarDados(dados);
+    salvarCache(dados);
   } catch (err) {
-    document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="5">Não consegui carregar os dados. (${err.message})</td></tr>`;
+    if (!usarCache || !lerCache()) {
+      document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="5">Não consegui carregar os dados. (${err.message})</td></tr>`;
+    }
   }
 }
 
@@ -1045,7 +1154,8 @@ document.getElementById('formDetalheCadastro').addEventListener('submit', async 
   ev.preventDefault();
   if (!mentoradoSelecionado) return;
   const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Salvando...';
+  botao.disabled = true;
+  mostrarCarregando('Salvando dados do mentorado...');
   const payload = {
     nome: document.getElementById('dNome').value,
     email: document.getElementById('dEmail').value,
@@ -1067,11 +1177,13 @@ document.getElementById('formDetalheCadastro').addEventListener('submit', async 
     const idx = mentorados.findIndex(m => m.id_mentorado === mentoradoSelecionado.id_mentorado);
     if (idx > -1) Object.assign(mentorados[idx], payload);
     renderizarDashboard();
+    renderizarTabela();
     abrirDetalhe(mentoradoSelecionado.id_mentorado);
   } catch (err) {
     alert('Não foi possível salvar. ' + err.message);
   } finally {
-    botao.disabled = false; botao.textContent = 'Salvar alterações';
+    botao.disabled = false;
+    esconderCarregando();
   }
 });
 
@@ -1106,11 +1218,17 @@ function ligarAcoesRegistro(container, ehHistorico) {
   container.querySelectorAll('[data-excluir]').forEach(b => b.addEventListener('click', async () => {
     const ok = await confirmarAcao('Excluir este registro? Essa ação não pode ser desfeita.');
     if (!ok) return;
-    await chamarApi('deletarRegistro', { id: b.dataset.excluir });
-    registros = registros.filter(r => r.id_registro !== b.dataset.excluir);
-    renderizarDashboard();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-    if (ehHistorico) renderizarHistorico();
+    mostrarCarregando('Excluindo registro...');
+    try {
+      await chamarApi('deletarRegistro', { id: b.dataset.excluir });
+      registros = registros.filter(r => r.id_registro !== b.dataset.excluir);
+      renderizarDashboard();
+      renderizarTabela();
+      abrirDetalhe(mentoradoSelecionado.id_mentorado);
+      if (ehHistorico) renderizarHistorico();
+    } finally {
+      esconderCarregando();
+    }
   }));
   container.querySelectorAll('[data-editar]').forEach(b => b.addEventListener('click', async () => {
     await editarRegistroInline(b.dataset.editar);
@@ -1123,9 +1241,15 @@ async function editarRegistroInline(idRegistro) {
   if (!r) return;
   const novaObs = prompt('Editar observação:', r.observacao || '');
   if (novaObs === null) return;
-  await chamarApi('atualizarRegistro', { id: idRegistro, observacao: novaObs });
-  r.observacao = novaObs;
-  abrirDetalhe(mentoradoSelecionado.id_mentorado);
+  mostrarCarregando('Salvando alterações...');
+  try {
+    await chamarApi('atualizarRegistro', { id: idRegistro, observacao: novaObs });
+    r.observacao = novaObs;
+    renderizarTabela();
+    abrirDetalhe(mentoradoSelecionado.id_mentorado);
+  } finally {
+    esconderCarregando();
+  }
 }
 
 function renderizarIndicadores(idMentorado, regs) {
@@ -1153,7 +1277,8 @@ document.getElementById('formRegistro').addEventListener('submit', async (ev) =>
   ev.preventDefault();
   if (!mentoradoSelecionado) return;
   const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Registrando...';
+  botao.disabled = true;
+  mostrarCarregando('Registrando atendimento...');
   const payload = {
     id_mentorado: mentoradoSelecionado.id_mentorado,
     nome_mentorado: mentoradoSelecionado.nome,
@@ -1168,11 +1293,13 @@ document.getElementById('formRegistro').addEventListener('submit', async (ev) =>
     registros.push({ id_registro: resp.id_registro, ...payload, criado_em: agora, atualizado_em: agora });
     document.getElementById('rObservacao').value = '';
     renderizarDashboard();
+    renderizarTabela();
     abrirDetalhe(mentoradoSelecionado.id_mentorado);
   } catch (err) {
     alert('Não foi possível registrar. ' + err.message);
   } finally {
-    botao.disabled = false; botao.textContent = 'Registrar';
+    botao.disabled = false;
+    esconderCarregando();
   }
 });
 
@@ -1309,7 +1436,8 @@ formIndicacao.addEventListener('submit', async (ev) => {
     observacao: document.getElementById('iObservacao').value,
   };
   const botao = formIndicacao.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Salvando...';
+  botao.disabled = true;
+  mostrarCarregando('Salvando indicação...');
   try {
     if (id) {
       await chamarApi('atualizarIndicacao', { id, ...payload });
@@ -1321,11 +1449,13 @@ formIndicacao.addEventListener('submit', async (ev) => {
     }
     modalIndicacao.classList.remove('aberto');
     renderizarDashboard();
+    renderizarTabela();
     abrirDetalhe(mentoradoSelecionado.id_mentorado);
   } catch (err) {
     alert('Não foi possível salvar a indicação. ' + err.message);
   } finally {
-    botao.disabled = false; botao.textContent = 'Salvar indicação';
+    botao.disabled = false;
+    esconderCarregando();
   }
 });
 
@@ -1351,7 +1481,8 @@ document.getElementById('formMentorado').addEventListener('submit', async (ev) =
     observacao_inicial: document.getElementById('fObservacaoInicial').value,
   };
   const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Salvando...';
+  botao.disabled = true;
+  mostrarCarregando('Cadastrando novo mentorado...');
   try {
     const resp = await chamarApi('criarMentorado', payload);
     if (resp.duplicado) { alert('Mentorado já cadastrado'); return; }
@@ -1364,7 +1495,8 @@ document.getElementById('formMentorado').addEventListener('submit', async (ev) =
   } catch (err) {
     alert('Não foi possível salvar. ' + err.message);
   } finally {
-    botao.disabled = false; botao.textContent = 'Salvar mentorado';
+    botao.disabled = false;
+    esconderCarregando();
   }
 });
 
@@ -1385,7 +1517,8 @@ document.getElementById('formMassa').addEventListener('submit', async (ev) => {
   const idsSelecionados = Array.from(document.querySelectorAll('.chk-massa:checked')).map(c => c.value);
   if (!idsSelecionados.length) { alert('Selecione pelo menos um mentorado.'); return; }
   const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Registrando...';
+  botao.disabled = true;
+  mostrarCarregando('Registrando para todos os selecionados...');
   const tipo = document.getElementById('massaTipo').value;
   const data = document.getElementById('massaData').value;
   const observacao = document.getElementById('massaObservacao').value;
@@ -1404,11 +1537,13 @@ document.getElementById('formMassa').addEventListener('submit', async (ev) => {
     alert(`Registro criado para ${resp.total} mentorado(s).`);
     ev.target.reset();
     renderizarDashboard();
+    renderizarTabela();
     prepararTelaMassa();
   } catch (err) {
     alert('Não foi possível concluir o lançamento em massa. ' + err.message);
   } finally {
-    botao.disabled = false; botao.textContent = 'Registrar para todos os selecionados';
+    botao.disabled = false;
+    esconderCarregando();
   }
 });
 
