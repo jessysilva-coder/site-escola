@@ -327,7 +327,7 @@
             <div class="grafico-barras" id="dashGraficoGrupo"></div>
           </div>
           <div class="bloco">
-            <h3 class="secao">Próximos vencimentos de fim de ciclo</h3>
+            <h3 class="secao">Próximos 5 vencimentos de fim de ciclo</h3>
             <ul class="lista-vencimentos" id="dashVencimentos"></ul>
           </div>
         </div>
@@ -608,7 +608,7 @@ const DEFAULT_TIPOS = [
   'Análise individual', 'Indicação de projeto', 'Mensagem de acompanhamento', 'Mensagem de dúvida',
   'Agendamento de solicitações', 'Lançamento de pagamento', 'Outros'
 ];
-const TIPOS_MENSAGEM = ['Encontro individual', 'Encontro com a Jéssica', 'Encontro em grupo', 'Análise individual', 'Mensagem de acompanhamento', 'Mensagem de dúvida'];
+const TIPOS_MENSAGEM = ['Encontro individual', 'Mensagem de acompanhamento', 'Mensagem de dúvida'];
 const TIPO_ENCONTRO_INDIVIDUAL = 'Encontro individual';
 const TIPO_ENCONTRO_GRUPO = 'Encontro em grupo';
 const TIPO_ANALISE_INDIVIDUAL = 'Análise individual';
@@ -888,13 +888,10 @@ function atualizarDashboard() {
     }).join('');
   }
 
-  // Próximos vencimentos de fim de ciclo
+  // Próximos vencimentos de fim de ciclo — sempre os 5 mais próximos, independente do filtro de mês/ano
   const listaVenc = document.getElementById('dashVencimentos');
   let vencimentos = mentorados.filter(m => m.status === 'Ativo' && m.data_fim_ciclo);
-  if (mes !== 'todos' || ano !== 'todos') {
-    vencimentos = vencimentos.filter(m => dataNoPeriodo(m.data_fim_ciclo, mes, ano));
-  }
-  vencimentos = vencimentos.sort((a, b) => new Date(a.data_fim_ciclo) - new Date(b.data_fim_ciclo)).slice(0, 15);
+  vencimentos = vencimentos.sort((a, b) => new Date(a.data_fim_ciclo) - new Date(b.data_fim_ciclo)).slice(0, 5);
   if (!vencimentos.length) {
     listaVenc.innerHTML = '<li>Nenhum vencimento encontrado para esse período.</li>';
   } else {
