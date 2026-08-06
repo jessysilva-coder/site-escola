@@ -1273,12 +1273,9 @@ function renderizarIndicadores(idMentorado, regs) {
   `;
 }
 
-document.getElementById('formRegistro').addEventListener('submit', async (ev) => {
+document.getElementById('formRegistro').addEventListener('submit', (ev) => {
   ev.preventDefault();
   if (!mentoradoSelecionado) return;
-  const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Registrando atendimento...');
   const payload = {
     id_mentorado: mentoradoSelecionado.id_mentorado,
     nome_mentorado: mentoradoSelecionado.nome,
@@ -1287,20 +1284,24 @@ document.getElementById('formRegistro').addEventListener('submit', async (ev) =>
     data: document.getElementById('rData').value || hojeISO(),
     observacao: document.getElementById('rObservacao').value,
   };
-  try {
-    const resp = await chamarApi('criarRegistro', payload);
-    const agora = new Date().toISOString().split('.')[0];
-    registros.push({ id_registro: resp.id_registro, ...payload, criado_em: agora, atualizado_em: agora });
-    document.getElementById('rObservacao').value = '';
+  // Atualização otimista: mostra na tela na hora, sem esperar o servidor responder.
+  const agora = new Date().toISOString().split('.')[0];
+  const registroTemp = { id_registro: 'reg_temp_' + Date.now(), ...payload, criado_em: agora, atualizado_em: agora };
+  registros.push(registroTemp);
+  document.getElementById('rObservacao').value = '';
+  renderizarDashboard();
+  renderizarTabela();
+  abrirDetalhe(mentoradoSelecionado.id_mentorado);
+
+  chamarApi('criarRegistro', payload).then(resp => {
+    registroTemp.id_registro = resp.id_registro; // troca o id temporário pelo definitivo
+  }).catch(err => {
+    registros = registros.filter(r => r !== registroTemp);
     renderizarDashboard();
     renderizarTabela();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-  } catch (err) {
-    alert('Não foi possível registrar. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+    if (mentoradoSelecionado) abrirDetalhe(mentoradoSelecionado.id_mentorado);
+    alert('Esse atendimento não foi salvo no servidor — tente registrar de novo. (' + err.message + ')');
+  });
 });
 
 /* ===================== Histórico completo ===================== */
@@ -1512,39 +1513,36 @@ function prepararTelaMassa() {
 document.getElementById('btnMarcarTodos').addEventListener('click', () => document.querySelectorAll('.chk-massa').forEach(c => c.checked = true));
 document.getElementById('btnDesmarcarTodos').addEventListener('click', () => document.querySelectorAll('.chk-massa').forEach(c => c.checked = false));
 
-document.getElementById('formMassa').addEventListener('submit', async (ev) => {
+document.getElementById('formMassa').addEventListener('submit', (ev) => {
   ev.preventDefault();
   const idsSelecionados = Array.from(document.querySelectorAll('.chk-massa:checked')).map(c => c.value);
   if (!idsSelecionados.length) { alert('Selecione pelo menos um mentorado.'); return; }
-  const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Registrando para todos os selecionados...');
   const tipo = document.getElementById('massaTipo').value;
   const data = document.getElementById('massaData').value;
   const observacao = document.getElementById('massaObservacao').value;
   const usuario = atendenteAtual();
-  try {
-    const resp = await chamarApi('criarRegistrosEmMassa', { ids: idsSelecionados.join(','), usuario, tipo_atendimento: tipo, data, observacao });
-    if (resp.erro) { alert(resp.erro); return; }
-    const agora = new Date().toISOString().split('.')[0];
-    idsSelecionados.forEach(id => {
-      const m = mentorados.find(x => x.id_mentorado === id);
-      registros.push({
-        id_registro: 'reg_temp_' + id + '_' + Date.now(), id_mentorado: id, nome_mentorado: m ? m.nome : '',
-        usuario, tipo_atendimento: tipo, data, observacao, criado_em: agora, atualizado_em: agora
-      });
-    });
-    alert(`Registro criado para ${resp.total} mentorado(s).`);
-    ev.target.reset();
+
+  // Atualização otimista: registra na tela na hora, sem esperar o servidor.
+  const agora = new Date().toISOString().split('.')[0];
+  const registrosTemp = idsSelecionados.map(id => {
+    const m = mentorados.find(x => x.id_mentorado === id);
+    return { id_registro: 'reg_temp_' + id + '_' + Date.now(), id_mentorado: id, nome_mentorado: m ? m.nome : '', usuario, tipo_atendimento: tipo, data, observacao, criado_em: agora, atualizado_em: agora };
+  });
+  registros.push(...registrosTemp);
+  const totalSelecionados = idsSelecionados.length;
+  ev.target.reset();
+  renderizarDashboard();
+  renderizarTabela();
+  prepararTelaMassa();
+
+  chamarApi('criarRegistrosEmMassa', { ids: idsSelecionados.join(','), usuario, tipo_atendimento: tipo, data, observacao }).then(resp => {
+    if (resp.erro) throw new Error(resp.erro);
+  }).catch(err => {
+    registros = registros.filter(r => !registrosTemp.includes(r));
     renderizarDashboard();
     renderizarTabela();
-    prepararTelaMassa();
-  } catch (err) {
-    alert('Não foi possível concluir o lançamento em massa. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+    alert(`O lançamento em massa para ${totalSelecionados} mentorado(s) não foi salvo no servidor — tente novamente. (${err.message})`);
+  });
 });
 
 /* ===================== Configurações ===================== */
