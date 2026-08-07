@@ -272,16 +272,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyhuZ8vU1bLb_j5tPeQ4K8t
 let ATENDENTE = null;
 let CACHE = { canais: [], categorias: [], treinamentos: [] };
 
-// ---------- COMUNICAÇÃO COM O BACKEND ----------
-async function chamarAPI(action, payload = {}) {
-  const resp = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, // evita preflight CORS
-    body: JSON.stringify({ action, payload })
+// ---------- COMUNICAÇÃO COM O BACKEND (JSONP — evita bloqueio de CORS do Apps Script) ----------
+function chamarAPI(action, payload = {}) {
+  return new Promise((resolve, reject) => {
+    const nomeCallback = 'oc_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+    window[nomeCallback] = function (dados) {
+      delete window[nomeCallback];
+      script.remove();
+      if (!dados.ok) reject(new Error(dados.erro || "Erro desconhecido."));
+      else resolve(dados);
+    };
+
+    const url = API_URL
+      + '?action=' + encodeURIComponent(action)
+      + '&payload=' + encodeURIComponent(JSON.stringify(payload))
+      + '&callback=' + nomeCallback;
+
+    const script = document.createElement('script');
+    script.src = url;
+    script.onerror = function () {
+      delete window[nomeCallback];
+      script.remove();
+      reject(new Error("Não foi possível conectar com a API. Confira a URL do Apps Script."));
+    };
+    document.body.appendChild(script);
   });
-  const dados = await resp.json();
-  if (!dados.ok) throw new Error(dados.erro || "Erro desconhecido.");
-  return dados;
 }
 
 function toast(msg) {
