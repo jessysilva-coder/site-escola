@@ -331,6 +331,12 @@ function blocoErro(mensagem, funcaoTentarNovamente) {
   return `<div class="vazio">⚠️ ${mensagem}<br><button class="btn btn-secundario btn-pequeno" style="margin-top:10px;" onclick="${funcaoTentarNovamente}">Tentar novamente</button></div>`;
 }
 
+// Alguns telefones vêm da planilha como número (não texto), então precisamos
+// converter com String() antes de usar .replace — daí essa função utilitária.
+function apenasDigitos(valor) {
+  return String(valor || '').replace(/\D/g, '');
+}
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.display = 'block';
@@ -403,7 +409,7 @@ async function iniciarApp() {
   if (configCache) { CACHE = configCache; aplicarListasFormulario(); }
 
   const atendimentosCache = cacheGet('oc_cache_atendimentos');
-  renderizarAtendimentos(atendimentosCache || []);
+  try { renderizarAtendimentos(atendimentosCache || []); } catch (e) { /* dado antigo de cache incompatível — ignora, a busca em segundo plano corrige */ }
   if (!atendimentosCache) document.getElementById('lista-atendimentos').innerHTML = '<div class="vazio">Carregando...</div>';
 
   aplicarBadgesCache();
@@ -503,7 +509,7 @@ function linhaOcorrencia(o) {
       </div>
       <div style="text-align:right;">
         <div class="info-secundaria">${o.Telefone || ''}</div>
-        ${o.Telefone ? `<a class="link-whats" href="https://wa.me/55${o.Telefone.replace(/\D/g,'')}" target="_blank">Abrir WhatsApp →</a>` : ''}
+        ${o.Telefone ? `<a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank">Abrir WhatsApp →</a>` : ''}
       </div>
     </div>`;
 }
@@ -605,7 +611,7 @@ async function buscarAluno() {
             <div class="info-secundaria">Aluno: ${a.EAluno} ${a.Treinamentos ? '· ' + a.Treinamentos : ''}</div>
             ${a.Observacoes ? `<div class="info-secundaria" style="margin-top:4px;">Obs: ${a.Observacoes}</div>` : ''}
           </div>
-          ${a.Telefone ? `<a class="link-whats" href="https://wa.me/55${a.Telefone.replace(/\D/g,'')}" target="_blank">Abrir WhatsApp →</a>` : ''}
+          ${a.Telefone ? `<a class="link-whats" href="https://wa.me/55${apenasDigitos(a.Telefone)}" target="_blank">Abrir WhatsApp →</a>` : ''}
         </div>
         <h3 style="margin-top:18px; font-size:15px; opacity:.8;">Histórico de ocorrências (${item.historico.length})</h3>
         ${item.historico.length ? item.historico.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhuma ocorrência registrada para este aluno.</div>'}
@@ -617,7 +623,7 @@ async function buscarAluno() {
 async function carregarFollowups() {
   const box = document.getElementById('lista-followup');
   const cache = cacheGet('oc_cache_followups');
-  if (cache) renderizarFollowups(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  if (cache) { try { renderizarFollowups(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
     const { followups } = await chamarAPI('followups');
     cacheSet('oc_cache_followups', followups);
@@ -636,7 +642,7 @@ function renderizarFollowups(followups) {
       </div>
       <div style="text-align:right;">
         <div class="info-secundaria">${o.Telefone}</div>
-        <a class="link-whats" href="https://wa.me/55${o.Telefone.replace(/\D/g,'')}" target="_blank">Abrir WhatsApp →</a>
+        <a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank">Abrir WhatsApp →</a>
       </div>
     </div>`).join('');
 }
@@ -645,7 +651,7 @@ function renderizarFollowups(followups) {
 async function carregarAjuda() {
   const box = document.getElementById('lista-ajuda');
   const cache = cacheGet('oc_cache_ajuda');
-  if (cache) renderizarAjuda(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  if (cache) { try { renderizarAjuda(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
     const { casos } = await chamarAPI('ajuda');
     cacheSet('oc_cache_ajuda', casos);
@@ -684,7 +690,7 @@ function mostrarFormLink() {
 async function carregarLinks() {
   const box = document.getElementById('lista-links');
   const cache = cacheGet('oc_cache_links');
-  if (cache) renderizarLinks(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  if (cache) { try { renderizarLinks(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
     const { links } = await chamarAPI('getLinks');
     cacheSet('oc_cache_links', links);
