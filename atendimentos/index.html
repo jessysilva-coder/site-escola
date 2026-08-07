@@ -293,10 +293,19 @@ let CACHE = { canais: [], categorias: [], treinamentos: [] };
 function chamarAPI(action, payload = {}) {
   return new Promise((resolve, reject) => {
     const nomeCallback = 'oc_cb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    let finalizado = false;
+
+    const limpar = () => { delete window[nomeCallback]; if (script.parentNode) script.remove(); clearTimeout(timeoutId); };
+
+    const timeoutId = setTimeout(() => {
+      if (finalizado) return;
+      finalizado = true; limpar();
+      reject(new Error("A API demorou demais para responder (timeout). Confira se a implantação do Apps Script está atualizada."));
+    }, 15000);
 
     window[nomeCallback] = function (dados) {
-      delete window[nomeCallback];
-      script.remove();
+      if (finalizado) return;
+      finalizado = true; limpar();
       if (!dados.ok) reject(new Error(dados.erro || "Erro desconhecido."));
       else resolve(dados);
     };
@@ -309,12 +318,17 @@ function chamarAPI(action, payload = {}) {
     const script = document.createElement('script');
     script.src = url;
     script.onerror = function () {
-      delete window[nomeCallback];
-      script.remove();
-      reject(new Error("Não foi possível conectar com a API. Confira a URL do Apps Script."));
+      if (finalizado) return;
+      finalizado = true; limpar();
+      reject(new Error("Não foi possível conectar com a API. Confira a URL do Apps Script e se a implantação está publicada."));
     };
     document.body.appendChild(script);
   });
+}
+
+// Bloco de erro reutilizável, com botão de tentar de novo — nunca deixa a tela travada em "Carregando..."
+function blocoErro(mensagem, funcaoTentarNovamente) {
+  return `<div class="vazio">⚠️ ${mensagem}<br><button class="btn btn-secundario btn-pequeno" style="margin-top:10px;" onclick="${funcaoTentarNovamente}">Tentar novamente</button></div>`;
 }
 
 function toast(msg) {
@@ -464,7 +478,10 @@ async function carregarAtendimentos() {
     const { ocorrencias } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
     cacheSet('oc_cache_atendimentos', ocorrencias);
     renderizarAtendimentos(ocorrencias);
-  } catch (e) { if (!cache) toast('Não foi possível atualizar a lista agora.'); }
+  } catch (e) {
+    if (!cache) document.getElementById('lista-atendimentos').innerHTML = blocoErro(e.message, 'carregarAtendimentos()');
+    else toast('Não foi possível atualizar a lista agora.');
+  }
 }
 
 function renderizarAtendimentos(ocorrencias) {
@@ -568,7 +585,13 @@ async function buscarAluno() {
   const box = document.getElementById('resultado-busca');
   if (!termo) return;
   box.innerHTML = '<div class="vazio">Buscando...</div>';
-  const { alunos } = await chamarAPI('buscarAluno', { termo });
+  let alunos;
+  try {
+    ({ alunos } = await chamarAPI('buscarAluno', { termo }));
+  } catch (e) {
+    box.innerHTML = blocoErro(e.message, 'buscarAluno()');
+    return;
+  }
   if (!alunos.length) { box.innerHTML = '<div class="card"><div class="vazio">Nenhum aluno encontrado.</div></div>'; return; }
 
   box.innerHTML = alunos.map(item => {
@@ -599,7 +622,7 @@ async function carregarFollowups() {
     const { followups } = await chamarAPI('followups');
     cacheSet('oc_cache_followups', followups);
     renderizarFollowups(followups);
-  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+  } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarFollowups()'); else toast('Não foi possível atualizar agora.'); }
 }
 function renderizarFollowups(followups) {
   const box = document.getElementById('lista-followup');
@@ -627,7 +650,7 @@ async function carregarAjuda() {
     const { casos } = await chamarAPI('ajuda');
     cacheSet('oc_cache_ajuda', casos);
     renderizarAjuda(casos);
-  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+  } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarAjuda()'); else toast('Não foi possível atualizar agora.'); }
 }
 function renderizarAjuda(casos) {
   const box = document.getElementById('lista-ajuda');
@@ -666,7 +689,7 @@ async function carregarLinks() {
     const { links } = await chamarAPI('getLinks');
     cacheSet('oc_cache_links', links);
     renderizarLinks(links);
-  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+  } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarLinks()'); else toast('Não foi possível atualizar agora.'); }
 }
 function renderizarLinks(links) {
   const box = document.getElementById('lista-links');
