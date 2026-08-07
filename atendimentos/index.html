@@ -557,7 +557,7 @@ async function carregarAtendimentos() {
   const cache = cacheGet('oc_cache_atendimentos');
   if (!cache) document.getElementById('lista-atendimentos').innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { atendimentos } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
+    const r = await chamarAPI('ultimosAtendimentos', { limite: 20 }); const atendimentos = r.atendimentos || [];
     cacheSet('oc_cache_atendimentos', atendimentos);
     renderizarAtendimentos(atendimentos);
   } catch (e) {
@@ -640,7 +640,7 @@ async function carregarPainelHistorico(idAluno) {
   const box = document.getElementById('painel-historico-lista');
   box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { atendimentos } = await chamarAPI('buscarHistoricoAluno', { idAluno, limite: 10 });
+    const r = await chamarAPI('buscarHistoricoAluno', { idAluno, limite: 10 }); const atendimentos = r.atendimentos || [];
     if (!atendimentos.length) { box.innerHTML = '<div class="vazio">Nenhum atendimento anterior para este aluno.</div>'; return; }
     box.innerHTML = atendimentos.map(a => `
       <div class="item-historico" ondblclick="abrirEdicao('${a.ID}')" title="Duplo clique para editar">
@@ -670,7 +670,12 @@ async function salvarAtendimento() {
     resumoRetorno: document.getElementById('oc-resumo-retorno').value.trim()
   };
   if (!payload.telefone || !payload.nome) { toast('Informe ao menos telefone e nome.'); return; }
-  await chamarAPI('criarAtendimento', payload);
+  try {
+    await chamarAPI('criarAtendimento', payload);
+  } catch (e) {
+    toast('Não foi possível registrar o atendimento: ' + e.message);
+    return;
+  }
   toast('Atendimento registrado com sucesso!');
   document.querySelectorAll('#tela-nova input, #tela-nova textarea').forEach(el => el.value = '');
   document.getElementById('oc-ealuno').value = 'Não';
@@ -690,7 +695,8 @@ async function buscarAluno() {
   box.innerHTML = '<div class="vazio">Buscando...</div>';
   let alunos;
   try {
-    ({ alunos } = await chamarAPI('buscarAluno', { termo }));
+    const r = await chamarAPI('buscarAluno', { termo });
+    alunos = r.alunos || [];
   } catch (e) {
     box.innerHTML = blocoErro(e.message, 'buscarAluno()');
     return;
@@ -722,7 +728,7 @@ async function carregarFollowups() {
   const cache = cacheGet('oc_cache_followups');
   if (cache) { try { renderizarFollowups(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { followups } = await chamarAPI('followups');
+    const r = await chamarAPI('followups'); const followups = r.followups || [];
     cacheSet('oc_cache_followups', followups);
     renderizarFollowups(followups);
   } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarFollowups()'); else toast('Não foi possível atualizar agora.'); }
@@ -750,7 +756,7 @@ async function carregarAjuda() {
   const cache = cacheGet('oc_cache_ajuda');
   if (cache) { try { renderizarAjuda(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { casos } = await chamarAPI('ajuda');
+    const r = await chamarAPI('ajuda'); const casos = r.casos || [];
     cacheSet('oc_cache_ajuda', casos);
     renderizarAjuda(casos);
   } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarAjuda()'); else toast('Não foi possível atualizar agora.'); }
@@ -773,7 +779,9 @@ async function salvarAlunoManual() {
     observacoes: document.getElementById('cad-observacoes').value.trim()
   };
   if (!payload.nome || !payload.telefone) { toast('Informe ao menos nome e telefone.'); return; }
-  await chamarAPI('criarAluno', payload);
+  try {
+    await chamarAPI('criarAluno', payload);
+  } catch (e) { toast('Não foi possível cadastrar: ' + e.message); return; }
   toast('Aluno cadastrado com sucesso!');
   document.querySelectorAll('#tela-cadastro input, #tela-cadastro textarea').forEach(el => el.value = '');
   document.querySelectorAll('#cad-treinamentos input').forEach(el => el.checked = false);
@@ -789,7 +797,7 @@ async function carregarLinks() {
   const cache = cacheGet('oc_cache_links');
   if (cache) { try { renderizarLinks(cache); } catch(e){} } else box.innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { links } = await chamarAPI('getLinks');
+    const r = await chamarAPI('getLinks'); const links = r.links || [];
     cacheSet('oc_cache_links', links);
     renderizarLinks(links);
   } catch (e) { if (!cache) box.innerHTML = blocoErro(e.message, 'carregarLinks()'); else toast('Não foi possível atualizar agora.'); }
@@ -820,7 +828,9 @@ async function salvarLink() {
     conteudo: document.getElementById('link-conteudo').value.trim()
   };
   if (!payload.titulo || !payload.conteudo) { toast('Preencha título e conteúdo.'); return; }
-  await chamarAPI('addLink', payload);
+  try {
+    await chamarAPI('addLink', payload);
+  } catch (e) { toast('Não foi possível salvar: ' + e.message); return; }
   toast('Link adicionado!');
   document.getElementById('link-titulo').value = '';
   document.getElementById('link-categoria').value = '';
@@ -834,7 +844,9 @@ async function addConfig(tipo, idInput, idLista) {
   const input = document.getElementById(idInput);
   const valor = input.value.trim();
   if (!valor) return;
-  await chamarAPI('addConfig', { tipo, valor });
+  try {
+    await chamarAPI('addConfig', { tipo, valor });
+  } catch (e) { toast('Não foi possível adicionar: ' + e.message); return; }
   input.value = '';
   toast('Item adicionado!');
   carregarListasFormulario();
