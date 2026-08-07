@@ -63,6 +63,13 @@
   .check-linha{display:flex; align-items:center; gap:8px; font-size:14px;}
   .check-linha input{width:auto;}
 
+  .toggle-switch{display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:500; user-select:none;}
+  .toggle-switch input{display:none;}
+  .toggle-trilho{width:42px; height:24px; background:var(--borda); border-radius:20px; position:relative; transition:.2s; flex-shrink:0;}
+  .toggle-bola{position:absolute; top:3px; left:3px; width:18px; height:18px; background:#fff; border-radius:50%; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .toggle-switch input:checked + .toggle-trilho{background:#e74c3c;}
+  .toggle-switch input:checked + .toggle-trilho .toggle-bola{transform:translateX(18px);}
+
   .btn{border:none; border-radius:10px; padding:12px 22px; font-family:'Poppins',sans-serif; font-weight:500; font-size:14px; cursor:pointer; color:#fff; transition:.15s;}
   .btn:hover{filter:brightness(1.08);}
   .btn-primario{background:var(--laranja);}
@@ -151,29 +158,38 @@
 
     <!-- TELA: NOVA OCORRÊNCIA -->
     <div class="tela" id="tela-nova">
-      <div class="topo-tela"><div><h2>Nova Ocorrência</h2><p class="sub">Informe o telefone: se o aluno já estiver na base, os dados são preenchidos automaticamente.</p></div></div>
+      <div class="topo-tela"><div><h2>Nova Ocorrência</h2><p class="sub">Informe o telefone: se o aluno já estiver na base, os dados são carregados automaticamente.</p></div></div>
       <div class="card">
-        <div class="grid-form">
-          <div class="campo"><label>Telefone</label><input id="oc-telefone" placeholder="(11) 91234-5678" onblur="autopreencherPorTelefone()"></div>
-          <div class="campo"><label>Nome do aluno</label><input id="oc-nome" placeholder="Nome completo"></div>
+        <div class="campo" style="max-width:320px;">
+          <label>Telefone</label>
+          <input id="oc-telefone" placeholder="(11) 91234-5678" oninput="agendarConsultaTelefone()">
+          <span id="status-consulta" class="info-secundaria" style="display:none;">🔎 Consultando cadastro...</span>
+        </div>
+
+        <div class="grid-form" id="bloco-campos-ocorrencia">
+          <div class="campo"><label>Nome do aluno</label><input id="oc-nome"></div>
           <div class="campo"><label>E-mail</label><input id="oc-email" placeholder="email@exemplo.com"></div>
+          <div class="campo"><label>É aluno?</label><select id="oc-ealuno"><option>Não</option><option>Sim</option></select></div>
+          <div class="campo full"><label>Treinamentos (se for aluno)</label><div id="oc-treinamentos" class="lista-config"></div></div>
+
           <div class="campo"><label>Canal</label><select id="oc-canal"></select></div>
           <div class="campo"><label>Categoria</label><select id="oc-categoria"></select></div>
           <div class="campo"><label>Status</label>
             <select id="oc-status"><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
           </div>
-          <div class="campo full"><label>Descrição da ocorrência</label><textarea id="oc-descricao" placeholder="O que aconteceu?"></textarea></div>
+
           <div class="campo full"><label>Tratativa realizada</label><textarea id="oc-tratativa" placeholder="O que foi feito / combinado com o aluno"></textarea></div>
 
-          <div class="campo"><div class="check-linha"><input type="checkbox" id="oc-diferente"><label for="oc-diferente">Marcar como caso diferente</label></div></div>
-          <div class="campo"><div class="check-linha"><input type="checkbox" id="oc-ajuda"><label for="oc-ajuda">Etiqueta: preciso de ajuda</label></div></div>
+          <div class="campo">
+            <label class="toggle-switch">
+              <input type="checkbox" id="oc-ajuda">
+              <span class="toggle-trilho"><span class="toggle-bola"></span></span>
+              <span>Preciso de ajuda</span>
+            </label>
+          </div>
 
-          <div class="campo"><div class="check-linha"><input type="checkbox" id="oc-followup" onchange="document.getElementById('bloco-followup').style.display=this.checked?'grid':'none'"><label for="oc-followup">Precisa de follow-up</label></div></div>
-        </div>
-
-        <div class="grid-form" id="bloco-followup" style="display:none; background:var(--fundo); padding:16px; border-radius:12px;">
-          <div class="campo"><label>Data de retorno</label><input type="date" id="oc-data-retorno"></div>
-          <div class="campo"><label>Resumo do que vamos falar</label><input id="oc-resumo-retorno" placeholder="Ex: confirmar se recebeu o material"></div>
+          <div class="campo"><label>Data de retorno (follow-up)</label><input type="date" id="oc-data-retorno" onchange="document.getElementById('campo-resumo-retorno').style.display=this.value?'flex':'none'"></div>
+          <div class="campo full" id="campo-resumo-retorno" style="display:none;"><label>Resumo do que vamos falar</label><input id="oc-resumo-retorno" placeholder="Ex: confirmar se recebeu o material"></div>
         </div>
 
         <button class="btn btn-sucesso" style="margin-top:8px;" onclick="salvarOcorrencia()">Salvar ocorrência</button>
@@ -210,6 +226,7 @@
           <div class="campo"><label>Nome</label><input id="cad-nome"></div>
           <div class="campo"><label>E-mail</label><input id="cad-email"></div>
           <div class="campo"><label>Telefone</label><input id="cad-telefone"></div>
+          <div class="campo"><label>Matrícula</label><input id="cad-matricula" placeholder="Se aplicável"></div>
           <div class="campo"><label>É aluno?</label><select id="cad-ealuno"><option>Sim</option><option>Não</option></select></div>
           <div class="campo full"><label>Treinamentos</label><div id="cad-treinamentos" class="lista-config"></div></div>
           <div class="campo full"><label>Observações gerais</label><textarea id="cad-observacoes"></textarea></div>
@@ -350,7 +367,15 @@ function irPara(tela) {
   if (tela === 'followup') carregarFollowups();
   if (tela === 'ajuda') carregarAjuda();
   if (tela === 'links') carregarLinks();
-  if (tela === 'nova') carregarListasFormulario();
+  if (tela === 'config') carregarListasFormulario(); // atualiza em segundo plano caso outra atendente tenha adicionado algo
+}
+
+// ---------- CACHE LOCAL (carrega na hora com o que já tem salvo, atualiza em segundo plano) ----------
+function cacheGet(chave) {
+  try { const v = localStorage.getItem(chave); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+}
+function cacheSet(chave, valor) {
+  try { localStorage.setItem(chave, JSON.stringify(valor)); } catch (e) { /* silencioso */ }
 }
 
 // ---------- INICIALIZAÇÃO ----------
@@ -359,7 +384,18 @@ async function iniciarApp() {
   document.documentElement.setAttribute('data-tema', temaSalvo);
   document.getElementById('label-tema').textContent = temaSalvo === 'escuro' ? 'Modo claro' : 'Modo escuro';
 
-  await carregarListasFormulario();
+  // 1) Renderiza tudo com o que já está em cache — instantâneo, sem esperar a rede
+  const configCache = cacheGet('oc_cache_config');
+  if (configCache) { CACHE = configCache; aplicarListasFormulario(); }
+
+  const atendimentosCache = cacheGet('oc_cache_atendimentos');
+  renderizarAtendimentos(atendimentosCache || []);
+  if (!atendimentosCache) document.getElementById('lista-atendimentos').innerHTML = '<div class="vazio">Carregando...</div>';
+
+  aplicarBadgesCache();
+
+  // 2) Busca dados atualizados em segundo plano, sem travar a navegação
+  carregarListasFormulario();
   carregarAtendimentos();
   atualizarBadges();
 }
@@ -370,14 +406,19 @@ async function carregarListasFormulario() {
     chamarAPI('getConfig', { tipo: 'Categorias' }),
     chamarAPI('getConfig', { tipo: 'Treinamentos' })
   ]);
-  CACHE.canais = c.itens; CACHE.categorias = cat.itens; CACHE.treinamentos = tr.itens;
+  CACHE = { canais: c.itens, categorias: cat.itens, treinamentos: tr.itens };
+  cacheSet('oc_cache_config', CACHE);
+  aplicarListasFormulario();
+}
 
+function aplicarListasFormulario() {
   preencherSelect('oc-canal', CACHE.canais);
   preencherSelect('oc-categoria', CACHE.categorias);
   preencherChipsConfig('config-canais', CACHE.canais);
   preencherChipsConfig('config-categorias', CACHE.categorias);
   preencherChipsConfig('config-treinamentos', CACHE.treinamentos);
   preencherTreinamentosCadastro();
+  preencherTreinamentosOcorrencia();
 }
 
 function preencherSelect(id, itens) {
@@ -392,9 +433,24 @@ function preencherTreinamentosCadastro() {
     `<label class="chip" style="cursor:pointer;"><input type="checkbox" value="${t}" style="margin-right:6px;">${t}</label>`
   ).join('');
 }
+function preencherTreinamentosOcorrencia() {
+  document.getElementById('oc-treinamentos').innerHTML = CACHE.treinamentos.map(t =>
+    `<label class="chip" style="cursor:pointer;"><input type="checkbox" value="${t}" style="margin-right:6px;">${t}</label>`
+  ).join('');
+}
+
+function aplicarBadgesCache() {
+  const f = cacheGet('oc_cache_followups') || [];
+  const a = cacheGet('oc_cache_ajuda') || [];
+  const bf = document.getElementById('badge-followup'), ba = document.getElementById('badge-ajuda');
+  bf.textContent = f.length; bf.classList.toggle('mostrar', f.length > 0);
+  ba.textContent = a.length; ba.classList.toggle('mostrar', a.length > 0);
+}
 
 async function atualizarBadges() {
   const [f, a] = await Promise.all([chamarAPI('followups'), chamarAPI('ajuda')]);
+  cacheSet('oc_cache_followups', f.followups);
+  cacheSet('oc_cache_ajuda', a.casos);
   const bf = document.getElementById('badge-followup'), ba = document.getElementById('badge-ajuda');
   bf.textContent = f.followups.length; bf.classList.toggle('mostrar', f.followups.length > 0);
   ba.textContent = a.casos.length; ba.classList.toggle('mostrar', a.casos.length > 0);
@@ -402,11 +458,18 @@ async function atualizarBadges() {
 
 // ---------- ÚLTIMOS ATENDIMENTOS ----------
 async function carregarAtendimentos() {
+  const cache = cacheGet('oc_cache_atendimentos');
+  if (!cache) document.getElementById('lista-atendimentos').innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { ocorrencias } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
+    cacheSet('oc_cache_atendimentos', ocorrencias);
+    renderizarAtendimentos(ocorrencias);
+  } catch (e) { if (!cache) toast('Não foi possível atualizar a lista agora.'); }
+}
+
+function renderizarAtendimentos(ocorrencias) {
   const box = document.getElementById('lista-atendimentos');
-  box.innerHTML = '<div class="vazio">Carregando...</div>';
-  const { ocorrencias } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
-  if (!ocorrencias.length) { box.innerHTML = '<div class="vazio">Nenhuma ocorrência registrada ainda.</div>'; return; }
-  box.innerHTML = ocorrencias.map(linhaOcorrencia).join('');
+  box.innerHTML = ocorrencias.length ? ocorrencias.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhuma ocorrência registrada ainda.</div>';
 }
 
 function linhaOcorrencia(o) {
@@ -418,7 +481,6 @@ function linhaOcorrencia(o) {
         <div class="info-secundaria">${o.DataHora} · ${o.Canal || ''} · atendido por ${o.Atendente || '—'}</div>
         <div style="margin-top:6px;">
           <span class="tag tag-status-${statusClasse}">${o.Status}</span>
-          ${o.CasoDiferente === 'Sim' ? '<span class="tag tag-diferente">Caso diferente</span>' : ''}
           ${o.PrecisaAjuda === 'Sim' ? '<span class="tag tag-ajuda">Precisa de ajuda</span>' : ''}
         </div>
       </div>
@@ -430,31 +492,61 @@ function linhaOcorrencia(o) {
 }
 
 // ---------- NOVA OCORRÊNCIA ----------
-async function autopreencherPorTelefone() {
+let _timerConsultaTelefone = null;
+
+function agendarConsultaTelefone() {
+  clearTimeout(_timerConsultaTelefone);
+  const tel = document.getElementById('oc-telefone').value.trim();
+  if (!tel) { definirCamposOcorrenciaHabilitados(true); return; }
+  _timerConsultaTelefone = setTimeout(consultarTelefone, 600);
+}
+
+function definirCamposOcorrenciaHabilitados(habilitado) {
+  document.querySelectorAll('#bloco-campos-ocorrencia input, #bloco-campos-ocorrencia select, #bloco-campos-ocorrencia textarea')
+    .forEach(el => el.disabled = !habilitado);
+}
+
+async function consultarTelefone() {
   const tel = document.getElementById('oc-telefone').value.trim();
   if (!tel) return;
-  const r = await chamarAPI('buscarPorTelefone', { telefone: tel });
-  if (r.aluno) {
-    document.getElementById('oc-nome').value = r.aluno.Nome || '';
-    document.getElementById('oc-email').value = r.aluno.Email || '';
-    toast('Aluno encontrado na base — dados preenchidos automaticamente.');
+  definirCamposOcorrenciaHabilitados(false);
+  document.getElementById('status-consulta').style.display = 'inline';
+  try {
+    const r = await chamarAPI('buscarPorTelefone', { telefone: tel });
+    if (r.aluno) {
+      document.getElementById('oc-nome').value = r.aluno.Nome || '';
+      document.getElementById('oc-email').value = r.aluno.Email || '';
+      document.getElementById('oc-ealuno').value = r.aluno.EAluno || 'Não';
+      const treinamentosAluno = (r.aluno.Treinamentos || '').split(',').map(t => t.trim()).filter(Boolean);
+      document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = treinamentosAluno.includes(cb.value));
+      toast('Aluno encontrado na base — dados carregados automaticamente.');
+    } else {
+      document.getElementById('oc-nome').value = '';
+      document.getElementById('oc-email').value = '';
+      document.getElementById('oc-ealuno').value = 'Não';
+      document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = false);
+      toast('Telefone novo — um cadastro de aluno será criado ao salvar.');
+    }
+  } finally {
+    definirCamposOcorrenciaHabilitados(true);
+    document.getElementById('status-consulta').style.display = 'none';
   }
 }
 
 async function salvarOcorrencia() {
+  const treinamentos = Array.from(document.querySelectorAll('#oc-treinamentos input:checked')).map(i => i.value);
   const payload = {
     telefone: document.getElementById('oc-telefone').value.trim(),
     nome: document.getElementById('oc-nome').value.trim(),
     email: document.getElementById('oc-email').value.trim(),
+    eAluno: document.getElementById('oc-ealuno').value,
+    treinamentos,
     canal: document.getElementById('oc-canal').value,
     categoria: document.getElementById('oc-categoria').value,
     status: document.getElementById('oc-status').value,
-    descricao: document.getElementById('oc-descricao').value.trim(),
     tratativa: document.getElementById('oc-tratativa').value.trim(),
     atendente: ATENDENTE,
-    casoDiferente: document.getElementById('oc-diferente').checked,
     precisaAjuda: document.getElementById('oc-ajuda').checked,
-    precisaFollowup: document.getElementById('oc-followup').checked,
     dataRetorno: document.getElementById('oc-data-retorno').value,
     resumoRetorno: document.getElementById('oc-resumo-retorno').value.trim()
   };
@@ -462,10 +554,11 @@ async function salvarOcorrencia() {
   await chamarAPI('criarOcorrencia', payload);
   toast('Ocorrência registrada com sucesso!');
   document.querySelectorAll('#tela-nova input, #tela-nova textarea').forEach(el => el.value = '');
-  document.getElementById('oc-diferente').checked = false;
+  document.getElementById('oc-ealuno').value = 'Não';
+  document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = false);
   document.getElementById('oc-ajuda').checked = false;
-  document.getElementById('oc-followup').checked = false;
-  document.getElementById('bloco-followup').style.display = 'none';
+  document.getElementById('campo-resumo-retorno').style.display = 'none';
+  carregarAtendimentos();
   atualizarBadges();
 }
 
@@ -500,8 +593,16 @@ async function buscarAluno() {
 // ---------- FOLLOW-UP ----------
 async function carregarFollowups() {
   const box = document.getElementById('lista-followup');
-  box.innerHTML = '<div class="vazio">Carregando...</div>';
-  const { followups } = await chamarAPI('followups');
+  const cache = cacheGet('oc_cache_followups');
+  if (cache) renderizarFollowups(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { followups } = await chamarAPI('followups');
+    cacheSet('oc_cache_followups', followups);
+    renderizarFollowups(followups);
+  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+}
+function renderizarFollowups(followups) {
+  const box = document.getElementById('lista-followup');
   if (!followups.length) { box.innerHTML = '<div class="vazio">Nenhum follow-up pendente. 🎉</div>'; return; }
   box.innerHTML = followups.map(o => `
     <div class="linha-item">
@@ -520,10 +621,17 @@ async function carregarFollowups() {
 // ---------- PRECISA DE AJUDA ----------
 async function carregarAjuda() {
   const box = document.getElementById('lista-ajuda');
-  box.innerHTML = '<div class="vazio">Carregando...</div>';
-  const { casos } = await chamarAPI('ajuda');
-  if (!casos.length) { box.innerHTML = '<div class="vazio">Nenhum caso pendente de ajuda no momento.</div>'; return; }
-  box.innerHTML = casos.map(linhaOcorrencia).join('');
+  const cache = cacheGet('oc_cache_ajuda');
+  if (cache) renderizarAjuda(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { casos } = await chamarAPI('ajuda');
+    cacheSet('oc_cache_ajuda', casos);
+    renderizarAjuda(casos);
+  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+}
+function renderizarAjuda(casos) {
+  const box = document.getElementById('lista-ajuda');
+  box.innerHTML = casos.length ? casos.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhum caso pendente de ajuda no momento.</div>';
 }
 
 // ---------- CADASTRO DE ALUNO ----------
@@ -533,6 +641,7 @@ async function salvarAlunoManual() {
     nome: document.getElementById('cad-nome').value.trim(),
     email: document.getElementById('cad-email').value.trim(),
     telefone: document.getElementById('cad-telefone').value.trim(),
+    matricula: document.getElementById('cad-matricula').value.trim(),
     eAluno: document.getElementById('cad-ealuno').value,
     treinamentos,
     observacoes: document.getElementById('cad-observacoes').value.trim()
@@ -551,8 +660,16 @@ function mostrarFormLink() {
 }
 async function carregarLinks() {
   const box = document.getElementById('lista-links');
-  box.innerHTML = '<div class="vazio">Carregando...</div>';
-  const { links } = await chamarAPI('getLinks');
+  const cache = cacheGet('oc_cache_links');
+  if (cache) renderizarLinks(cache); else box.innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { links } = await chamarAPI('getLinks');
+    cacheSet('oc_cache_links', links);
+    renderizarLinks(links);
+  } catch (e) { if (!cache) toast('Não foi possível atualizar agora.'); }
+}
+function renderizarLinks(links) {
+  const box = document.getElementById('lista-links');
   if (!links.length) { box.innerHTML = '<div class="vazio">Nenhum link cadastrado ainda.</div>'; return; }
   box.innerHTML = links.map((l, i) => `
     <div class="linha-item">
