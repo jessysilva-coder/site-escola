@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controle de Ocorrências — Escola Karen Abecia</title>
+<title>Controle de Atendimentos — Escola Karen Abecia</title>
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -102,6 +102,32 @@
 
   .toast{position:fixed; bottom:24px; right:24px; background:var(--texto); color:var(--fundo); padding:14px 20px; border-radius:10px; font-size:14px; box-shadow:var(--sombra); z-index:300; display:none;}
 
+  /* ===== NOVO ATENDIMENTO: layout com painel lateral ===== */
+  .grid-atendimento{display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start;}
+  .painel-historico{position:sticky; top:20px;}
+  .painel-historico h3{font-size:15px; margin-bottom:4px;}
+  .painel-historico .sub{font-size:12px; opacity:.6; margin-bottom:14px;}
+  .item-historico{padding:10px 0; border-bottom:1px solid var(--borda); font-size:13px; cursor:pointer;}
+  .item-historico:last-child{border-bottom:none;}
+  .item-historico:hover{opacity:.75;}
+  .item-historico .info-principal{font-size:13px;}
+
+  /* ===== MODAL DE EDIÇÃO ===== */
+  .modal-fundo{position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:400; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal-fundo.aberto{display:flex;}
+  .modal-caixa{background:var(--superficie); border-radius:18px; padding:26px 28px; max-width:560px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:var(--sombra);}
+  .modal-topo{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;}
+  .modal-fechar{cursor:pointer; font-size:20px; opacity:.6; background:none; border:none; color:var(--texto); line-height:1;}
+  .modal-fechar:hover{opacity:1;}
+  .campos-travados{background:var(--fundo); border-radius:12px; padding:14px 16px; margin:14px 0 18px; font-size:13px;}
+  .campos-travados div{margin-bottom:4px;}
+  .campos-travados b{opacity:.55; font-weight:500; margin-right:6px;}
+  .modal-secao-titulo{font-size:13px; font-weight:600; opacity:.7; margin:18px 0 8px; text-transform:uppercase; letter-spacing:.03em;}
+  .lista-tratativas{max-height:220px; overflow-y:auto; border:1px solid var(--borda); border-radius:12px; padding:4px 14px;}
+  .item-tratativa{padding:10px 0; border-bottom:1px solid var(--borda); font-size:13px;}
+  .item-tratativa:last-child{border-bottom:none;}
+  .item-tratativa .info-secundaria{margin-bottom:3px;}
+
   ::-webkit-scrollbar{width:8px;} ::-webkit-scrollbar-thumb{background:var(--borda); border-radius:10px;}
 
   @media(max-width:800px){
@@ -118,7 +144,7 @@
 <!-- ===== LOGIN ===== -->
 <div id="tela-login">
   <div class="card-login">
-    <h1>Controle de Ocorrências</h1>
+    <h1>Controle de Atendimentos</h1>
     <p>Escola Karen Abecia — acesso da equipe</p>
     <div class="campo"><label>Login</label><input id="login-usuario" placeholder="seu.login"></div>
     <div class="campo"><label>Senha</label><input id="login-senha" type="password" placeholder="••••••••"></div>
@@ -130,10 +156,10 @@
 <!-- ===== APP ===== -->
 <div id="app">
   <div class="sidebar">
-    <div class="logo">ESCOLA KAREN ABECIA<br><span style="font-weight:400; opacity:.7; font-size:12px;">Ocorrências</span></div>
+    <div class="logo">ESCOLA KAREN ABECIA<br><span style="font-weight:400; opacity:.7; font-size:12px;">Atendimentos</span></div>
 
     <div class="item-menu ativo" data-tela="atendimentos" onclick="irPara('atendimentos')">📋 Últimos Atendimentos</div>
-    <div class="item-menu" data-tela="nova" onclick="irPara('nova')">➕ Nova Ocorrência</div>
+    <div class="item-menu" data-tela="nova" onclick="irPara('nova')">➕ Novo Atendimento</div>
     <div class="item-menu" data-tela="buscar" onclick="irPara('buscar')">🔍 Buscar Aluno</div>
     <div class="item-menu" data-tela="followup" onclick="irPara('followup')">📅 Follow-up <span class="badge" id="badge-followup">0</span></div>
     <div class="item-menu" data-tela="ajuda" onclick="irPara('ajuda')">🆘 Preciso de Ajuda <span class="badge" id="badge-ajuda">0</span></div>
@@ -152,47 +178,56 @@
 
     <!-- TELA: ÚLTIMOS ATENDIMENTOS -->
     <div class="tela ativa" id="tela-atendimentos">
-      <div class="topo-tela"><div><h2>Últimos Atendimentos</h2><p class="sub">As 20 ocorrências mais recentes registradas pela equipe.</p></div></div>
+      <div class="topo-tela"><div><h2>Últimos Atendimentos</h2><p class="sub">Os 20 atendimentos mais recentes registrados pela equipe.</p></div></div>
       <div class="card" id="lista-atendimentos"><div class="vazio">Carregando...</div></div>
     </div>
 
-    <!-- TELA: NOVA OCORRÊNCIA -->
+    <!-- TELA: NOVO ATENDIMENTO -->
     <div class="tela" id="tela-nova">
-      <div class="topo-tela"><div><h2>Nova Ocorrência</h2><p class="sub">Informe o telefone: se o aluno já estiver na base, os dados são carregados automaticamente.</p></div></div>
-      <div class="card">
-        <div class="campo" style="max-width:320px;">
-          <label>Telefone</label>
-          <input id="oc-telefone" placeholder="(11) 91234-5678" oninput="agendarConsultaTelefone()">
-          <span id="status-consulta" class="info-secundaria" style="display:none;">🔎 Consultando cadastro...</span>
-        </div>
+      <div class="topo-tela"><div><h2>Novo Atendimento</h2><p class="sub">Informe o telefone: se o aluno já estiver na base, os dados são carregados automaticamente.</p></div></div>
 
-        <div class="grid-form" id="bloco-campos-ocorrencia">
-          <div class="campo"><label>Nome do aluno</label><input id="oc-nome"></div>
-          <div class="campo"><label>E-mail</label><input id="oc-email" placeholder="email@exemplo.com"></div>
-          <div class="campo"><label>É aluno?</label><select id="oc-ealuno"><option>Não</option><option>Sim</option></select></div>
-          <div class="campo full"><label>Treinamentos (se for aluno)</label><div id="oc-treinamentos" class="lista-config"></div></div>
-
-          <div class="campo"><label>Canal</label><select id="oc-canal"></select></div>
-          <div class="campo"><label>Categoria</label><select id="oc-categoria"></select></div>
-          <div class="campo"><label>Status</label>
-            <select id="oc-status"><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
+      <div class="grid-atendimento">
+        <div class="card">
+          <div class="campo" style="max-width:320px;">
+            <label>Telefone</label>
+            <input id="oc-telefone" placeholder="(11) 91234-5678" oninput="agendarConsultaTelefone()">
+            <span id="status-consulta" class="info-secundaria" style="display:none;">🔎 Consultando cadastro...</span>
           </div>
 
-          <div class="campo full"><label>Tratativa realizada</label><textarea id="oc-tratativa" placeholder="O que foi feito / combinado com o aluno"></textarea></div>
+          <div class="grid-form" id="bloco-campos-ocorrencia">
+            <div class="campo"><label>Nome do aluno</label><input id="oc-nome"></div>
+            <div class="campo"><label>E-mail</label><input id="oc-email" placeholder="email@exemplo.com"></div>
+            <div class="campo"><label>É aluno?</label><select id="oc-ealuno"><option>Não</option><option>Sim</option></select></div>
+            <div class="campo full"><label>Treinamentos (se for aluno)</label><div id="oc-treinamentos" class="lista-config"></div></div>
 
-          <div class="campo">
-            <label class="toggle-switch">
-              <input type="checkbox" id="oc-ajuda">
-              <span class="toggle-trilho"><span class="toggle-bola"></span></span>
-              <span>Preciso de ajuda</span>
-            </label>
+            <div class="campo"><label>Canal</label><select id="oc-canal"></select></div>
+            <div class="campo"><label>Categoria</label><select id="oc-categoria"></select></div>
+            <div class="campo"><label>Status</label>
+              <select id="oc-status"><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select>
+            </div>
+
+            <div class="campo full"><label>Tratativa realizada</label><textarea id="oc-tratativa" placeholder="O que foi feito / combinado com o aluno"></textarea></div>
+
+            <div class="campo">
+              <label class="toggle-switch">
+                <input type="checkbox" id="oc-ajuda">
+                <span class="toggle-trilho"><span class="toggle-bola"></span></span>
+                <span>Preciso de ajuda</span>
+              </label>
+            </div>
+
+            <div class="campo"><label>Data de retorno (follow-up)</label><input type="date" id="oc-data-retorno" onchange="document.getElementById('campo-resumo-retorno').style.display=this.value?'flex':'none'"></div>
+            <div class="campo full" id="campo-resumo-retorno" style="display:none;"><label>Resumo do que vamos falar</label><input id="oc-resumo-retorno" placeholder="Ex: confirmar se recebeu o material"></div>
           </div>
 
-          <div class="campo"><label>Data de retorno (follow-up)</label><input type="date" id="oc-data-retorno" onchange="document.getElementById('campo-resumo-retorno').style.display=this.value?'flex':'none'"></div>
-          <div class="campo full" id="campo-resumo-retorno" style="display:none;"><label>Resumo do que vamos falar</label><input id="oc-resumo-retorno" placeholder="Ex: confirmar se recebeu o material"></div>
+          <button class="btn btn-sucesso" style="margin-top:8px;" onclick="salvarAtendimento()">Salvar atendimento</button>
         </div>
 
-        <button class="btn btn-sucesso" style="margin-top:8px;" onclick="salvarOcorrencia()">Salvar ocorrência</button>
+        <div class="card painel-historico">
+          <h3>Histórico do aluno</h3>
+          <p class="sub">Aparece assim que o telefone for reconhecido.</p>
+          <div id="painel-historico-lista"><div class="vazio">Informe um telefone para ver o histórico.</div></div>
+        </div>
       </div>
     </div>
 
@@ -220,7 +255,7 @@
 
     <!-- TELA: CADASTRO DE ALUNO -->
     <div class="tela" id="tela-cadastro">
-      <div class="topo-tela"><div><h2>Cadastro de Aluno</h2><p class="sub">Cadastre manualmente, fora do fluxo de uma ocorrência.</p></div></div>
+      <div class="topo-tela"><div><h2>Cadastro de Aluno</h2><p class="sub">Cadastre manualmente, fora do fluxo de um atendimento.</p></div></div>
       <div class="card">
         <div class="grid-form">
           <div class="campo"><label>Nome</label><input id="cad-nome"></div>
@@ -278,6 +313,47 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ===== MODAL DE EDIÇÃO DE ATENDIMENTO ===== -->
+<div class="modal-fundo" id="modal-fundo" onclick="if(event.target===this) fecharModal()">
+  <div class="modal-caixa">
+    <div class="modal-topo">
+      <h2 style="font-size:19px;">Editar atendimento</h2>
+      <button class="modal-fechar" onclick="fecharModal()">✕</button>
+    </div>
+
+    <div class="campos-travados">
+      <div><b>Nome:</b> <span id="modal-nome"></span></div>
+      <div><b>Telefone:</b> <span id="modal-telefone"></span></div>
+      <div><b>E-mail:</b> <span id="modal-email"></span></div>
+      <div><b>Canal:</b> <span id="modal-canal"></span></div>
+    </div>
+
+    <div class="grid-form">
+      <div class="campo"><label>Categoria</label><select id="modal-categoria"></select></div>
+      <div class="campo"><label>Status</label><select id="modal-status"><option>Aberto</option><option>Em andamento</option><option>Resolvido</option></select></div>
+      <div class="campo">
+        <label class="toggle-switch">
+          <input type="checkbox" id="modal-ajuda">
+          <span class="toggle-trilho"><span class="toggle-bola"></span></span>
+          <span>Preciso de ajuda</span>
+        </label>
+      </div>
+      <div class="campo"><label>Data de retorno (follow-up)</label><input type="date" id="modal-data-retorno"></div>
+      <div class="campo full"><label>Resumo do que vamos falar</label><input id="modal-resumo-retorno"></div>
+    </div>
+    <button class="btn btn-primario btn-pequeno" onclick="salvarEdicaoAtendimento()">Salvar alterações</button>
+
+    <div class="modal-secao-titulo">Histórico de tratativas</div>
+    <div class="lista-tratativas" id="modal-lista-tratativas"></div>
+
+    <div class="campo full" style="margin-top:14px;">
+      <label>Adicionar nova tratativa</label>
+      <textarea id="modal-nova-tratativa" placeholder="O que foi feito agora / combinado com o aluno"></textarea>
+    </div>
+    <button class="btn btn-sucesso btn-pequeno" onclick="adicionarTratativaModal()">Adicionar tratativa</button>
+  </div>
+</div>
 
 <script>
 /* ======================================================
@@ -481,24 +557,25 @@ async function carregarAtendimentos() {
   const cache = cacheGet('oc_cache_atendimentos');
   if (!cache) document.getElementById('lista-atendimentos').innerHTML = '<div class="vazio">Carregando...</div>';
   try {
-    const { ocorrencias } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
-    cacheSet('oc_cache_atendimentos', ocorrencias);
-    renderizarAtendimentos(ocorrencias);
+    const { atendimentos } = await chamarAPI('ultimosAtendimentos', { limite: 20 });
+    cacheSet('oc_cache_atendimentos', atendimentos);
+    renderizarAtendimentos(atendimentos);
   } catch (e) {
     if (!cache) document.getElementById('lista-atendimentos').innerHTML = blocoErro(e.message, 'carregarAtendimentos()');
     else toast('Não foi possível atualizar a lista agora.');
   }
 }
 
-function renderizarAtendimentos(ocorrencias) {
+function renderizarAtendimentos(atendimentos) {
   const box = document.getElementById('lista-atendimentos');
-  box.innerHTML = ocorrencias.length ? ocorrencias.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhuma ocorrência registrada ainda.</div>';
+  box.innerHTML = atendimentos.length ? atendimentos.map(linhaAtendimento).join('') : '<div class="vazio">Nenhum atendimento registrado ainda.</div>';
 }
 
-function linhaOcorrencia(o) {
+// Linha usada em todas as listas de atendimento — duplo clique abre a edição.
+function linhaAtendimento(o) {
   const statusClasse = o.Status === 'Resolvido' ? 'resolvido' : (o.Status === 'Em andamento' ? 'andamento' : 'aberto');
   return `
-    <div class="linha-item">
+    <div class="linha-item" ondblclick="abrirEdicao('${o.ID}')" title="Duplo clique para editar">
       <div>
         <div class="info-principal">${o.Nome || '(sem nome)'} — ${o.Categoria || ''}</div>
         <div class="info-secundaria">${o.DataHora} · ${o.Canal || ''} · atendido por ${o.Atendente || '—'}</div>
@@ -509,7 +586,7 @@ function linhaOcorrencia(o) {
       </div>
       <div style="text-align:right;">
         <div class="info-secundaria">${o.Telefone || ''}</div>
-        ${o.Telefone ? `<a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank">Abrir WhatsApp →</a>` : ''}
+        ${o.Telefone ? `<a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank" onclick="event.stopPropagation()">Abrir WhatsApp →</a>` : ''}
       </div>
     </div>`;
 }
@@ -520,11 +597,11 @@ let _timerConsultaTelefone = null;
 function agendarConsultaTelefone() {
   clearTimeout(_timerConsultaTelefone);
   const tel = document.getElementById('oc-telefone').value.trim();
-  if (!tel) { definirCamposOcorrenciaHabilitados(true); return; }
+  if (!tel) { definirCamposAtendimentoHabilitados(true); return; }
   _timerConsultaTelefone = setTimeout(consultarTelefone, 600);
 }
 
-function definirCamposOcorrenciaHabilitados(habilitado) {
+function definirCamposAtendimentoHabilitados(habilitado) {
   document.querySelectorAll('#bloco-campos-ocorrencia input, #bloco-campos-ocorrencia select, #bloco-campos-ocorrencia textarea')
     .forEach(el => el.disabled = !habilitado);
 }
@@ -532,7 +609,7 @@ function definirCamposOcorrenciaHabilitados(habilitado) {
 async function consultarTelefone() {
   const tel = document.getElementById('oc-telefone').value.trim();
   if (!tel) return;
-  definirCamposOcorrenciaHabilitados(false);
+  definirCamposAtendimentoHabilitados(false);
   document.getElementById('status-consulta').style.display = 'inline';
   try {
     const r = await chamarAPI('buscarPorTelefone', { telefone: tel });
@@ -543,20 +620,39 @@ async function consultarTelefone() {
       const treinamentosAluno = (r.aluno.Treinamentos || '').split(',').map(t => t.trim()).filter(Boolean);
       document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = treinamentosAluno.includes(cb.value));
       toast('Aluno encontrado na base — dados carregados automaticamente.');
+      carregarPainelHistorico(r.aluno.ID);
     } else {
       document.getElementById('oc-nome').value = '';
       document.getElementById('oc-email').value = '';
       document.getElementById('oc-ealuno').value = 'Não';
       document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = false);
       toast('Telefone novo — um cadastro de aluno será criado ao salvar.');
+      document.getElementById('painel-historico-lista').innerHTML = '<div class="vazio">Aluno novo — nenhum atendimento anterior.</div>';
     }
   } finally {
-    definirCamposOcorrenciaHabilitados(true);
+    definirCamposAtendimentoHabilitados(true);
     document.getElementById('status-consulta').style.display = 'none';
   }
 }
 
-async function salvarOcorrencia() {
+// Painel lateral da tela Novo Atendimento: mostra os atendimentos recentes do aluno encontrado.
+async function carregarPainelHistorico(idAluno) {
+  const box = document.getElementById('painel-historico-lista');
+  box.innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { atendimentos } = await chamarAPI('buscarHistoricoAluno', { idAluno, limite: 10 });
+    if (!atendimentos.length) { box.innerHTML = '<div class="vazio">Nenhum atendimento anterior para este aluno.</div>'; return; }
+    box.innerHTML = atendimentos.map(a => `
+      <div class="item-historico" ondblclick="abrirEdicao('${a.ID}')" title="Duplo clique para editar">
+        <div class="info-principal">${a.Categoria || '(sem categoria)'} — ${a.Status}</div>
+        <div class="info-secundaria">${a.DataHora} · ${a.Canal || ''}</div>
+      </div>`).join('');
+  } catch (e) {
+    box.innerHTML = blocoErro('Não foi possível carregar o histórico.', `carregarPainelHistorico('${idAluno}')`);
+  }
+}
+
+async function salvarAtendimento() {
   const treinamentos = Array.from(document.querySelectorAll('#oc-treinamentos input:checked')).map(i => i.value);
   const payload = {
     telefone: document.getElementById('oc-telefone').value.trim(),
@@ -574,13 +670,14 @@ async function salvarOcorrencia() {
     resumoRetorno: document.getElementById('oc-resumo-retorno').value.trim()
   };
   if (!payload.telefone || !payload.nome) { toast('Informe ao menos telefone e nome.'); return; }
-  await chamarAPI('criarOcorrencia', payload);
-  toast('Ocorrência registrada com sucesso!');
+  await chamarAPI('criarAtendimento', payload);
+  toast('Atendimento registrado com sucesso!');
   document.querySelectorAll('#tela-nova input, #tela-nova textarea').forEach(el => el.value = '');
   document.getElementById('oc-ealuno').value = 'Não';
   document.querySelectorAll('#oc-treinamentos input').forEach(cb => cb.checked = false);
   document.getElementById('oc-ajuda').checked = false;
   document.getElementById('campo-resumo-retorno').style.display = 'none';
+  document.getElementById('painel-historico-lista').innerHTML = '<div class="vazio">Informe um telefone para ver o histórico.</div>';
   carregarAtendimentos();
   atualizarBadges();
 }
@@ -613,8 +710,8 @@ async function buscarAluno() {
           </div>
           ${a.Telefone ? `<a class="link-whats" href="https://wa.me/55${apenasDigitos(a.Telefone)}" target="_blank">Abrir WhatsApp →</a>` : ''}
         </div>
-        <h3 style="margin-top:18px; font-size:15px; opacity:.8;">Histórico de ocorrências (${item.historico.length})</h3>
-        ${item.historico.length ? item.historico.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhuma ocorrência registrada para este aluno.</div>'}
+        <h3 style="margin-top:18px; font-size:15px; opacity:.8;">Histórico de atendimentos (${item.historico.length})</h3>
+        ${item.historico.length ? item.historico.map(linhaAtendimento).join('') : '<div class="vazio">Nenhum atendimento registrado para este aluno.</div>'}
       </div>`;
   }).join('');
 }
@@ -634,7 +731,7 @@ function renderizarFollowups(followups) {
   const box = document.getElementById('lista-followup');
   if (!followups.length) { box.innerHTML = '<div class="vazio">Nenhum follow-up pendente. 🎉</div>'; return; }
   box.innerHTML = followups.map(o => `
-    <div class="linha-item">
+    <div class="linha-item" ondblclick="abrirEdicao('${o.ID}')" title="Duplo clique para editar">
       <div>
         <div class="info-principal">${o.Nome}</div>
         <div class="info-secundaria">Retorno em: <b>${o.DataRetorno}</b></div>
@@ -642,7 +739,7 @@ function renderizarFollowups(followups) {
       </div>
       <div style="text-align:right;">
         <div class="info-secundaria">${o.Telefone}</div>
-        <a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank">Abrir WhatsApp →</a>
+        <a class="link-whats" href="https://wa.me/55${apenasDigitos(o.Telefone)}" target="_blank" onclick="event.stopPropagation()">Abrir WhatsApp →</a>
       </div>
     </div>`).join('');
 }
@@ -660,7 +757,7 @@ async function carregarAjuda() {
 }
 function renderizarAjuda(casos) {
   const box = document.getElementById('lista-ajuda');
-  box.innerHTML = casos.length ? casos.map(linhaOcorrencia).join('') : '<div class="vazio">Nenhum caso pendente de ajuda no momento.</div>';
+  box.innerHTML = casos.length ? casos.map(linhaAtendimento).join('') : '<div class="vazio">Nenhum caso pendente de ajuda no momento.</div>';
 }
 
 // ---------- CADASTRO DE ALUNO ----------
@@ -741,6 +838,89 @@ async function addConfig(tipo, idInput, idLista) {
   input.value = '';
   toast('Item adicionado!');
   carregarListasFormulario();
+}
+
+// ---------- MODAL DE EDIÇÃO DE ATENDIMENTO ----------
+let _idAtendimentoEmEdicao = null;
+
+async function abrirEdicao(id) {
+  _idAtendimentoEmEdicao = id;
+  const modal = document.getElementById('modal-fundo');
+  modal.classList.add('aberto');
+  document.getElementById('modal-lista-tratativas').innerHTML = '<div class="vazio">Carregando...</div>';
+  try {
+    const { atendimento, tratativas } = await chamarAPI('buscarAtendimento', { id });
+    preencherModal(atendimento, tratativas);
+  } catch (e) {
+    document.getElementById('modal-lista-tratativas').innerHTML = blocoErro(e.message, `abrirEdicao('${id}')`);
+  }
+}
+
+function preencherModal(a, tratativas) {
+  document.getElementById('modal-nome').textContent = a.Nome || '—';
+  document.getElementById('modal-telefone').textContent = a.Telefone || '—';
+  document.getElementById('modal-email').textContent = a.Email || '—';
+  document.getElementById('modal-canal').textContent = a.Canal || '—';
+
+  preencherSelect('modal-categoria', CACHE.categorias);
+  document.getElementById('modal-categoria').value = a.Categoria || '';
+  document.getElementById('modal-status').value = a.Status || 'Aberto';
+  document.getElementById('modal-ajuda').checked = String(a.PrecisaAjuda).toLowerCase() === 'sim';
+  document.getElementById('modal-data-retorno').value = a.DataRetorno || '';
+  document.getElementById('modal-resumo-retorno').value = a.ResumoRetorno || '';
+  document.getElementById('modal-nova-tratativa').value = '';
+
+  renderizarTratativasModal(tratativas);
+}
+
+function renderizarTratativasModal(tratativas) {
+  const box = document.getElementById('modal-lista-tratativas');
+  box.innerHTML = tratativas.length
+    ? tratativas.map(t => `
+        <div class="item-tratativa">
+          <div class="info-secundaria">${t.DataHora} · ${t.Atendente || '—'}</div>
+          <div>${t.Texto}</div>
+        </div>`).join('')
+    : '<div class="vazio">Nenhuma tratativa registrada ainda.</div>';
+}
+
+function fecharModal() {
+  document.getElementById('modal-fundo').classList.remove('aberto');
+  _idAtendimentoEmEdicao = null;
+  // Atualiza as listas em segundo plano, caso algo tenha mudado
+  carregarAtendimentos();
+  atualizarBadges();
+}
+
+async function salvarEdicaoAtendimento() {
+  const payload = {
+    id: _idAtendimentoEmEdicao,
+    categoria: document.getElementById('modal-categoria').value,
+    status: document.getElementById('modal-status').value,
+    precisaAjuda: document.getElementById('modal-ajuda').checked,
+    dataRetorno: document.getElementById('modal-data-retorno').value,
+    resumoRetorno: document.getElementById('modal-resumo-retorno').value.trim()
+  };
+  try {
+    await chamarAPI('atualizarAtendimento', payload);
+    toast('Alterações salvas!');
+  } catch (e) {
+    toast('Não foi possível salvar: ' + e.message);
+  }
+}
+
+async function adicionarTratativaModal() {
+  const texto = document.getElementById('modal-nova-tratativa').value.trim();
+  if (!texto) { toast('Escreva a tratativa antes de adicionar.'); return; }
+  try {
+    await chamarAPI('adicionarTratativa', { idAtendimento: _idAtendimentoEmEdicao, atendente: ATENDENTE, texto });
+    document.getElementById('modal-nova-tratativa').value = '';
+    toast('Tratativa adicionada!');
+    const { atendimento, tratativas } = await chamarAPI('buscarAtendimento', { id: _idAtendimentoEmEdicao });
+    renderizarTratativasModal(tratativas);
+  } catch (e) {
+    toast('Não foi possível adicionar: ' + e.message);
+  }
 }
 </script>
 </body>
