@@ -481,7 +481,7 @@ function jsonp(params) {
     script.onerror = () => { reject(new Error('Falha de rede ao chamar a API')); delete window[cbName]; script.remove(); };
     script.src = CONFIG.API_URL + '?' + qs.toString();
     document.body.appendChild(script);
-    setTimeout(() => { if (window[cbName]) { reject(new Error('Tempo esgotado')); delete window[cbName]; script.remove(); } }, 15000);
+    setTimeout(() => { if (window[cbName]) { reject(new Error('Tempo esgotado')); delete window[cbName]; script.remove(); } }, 30000);
   });
 }
 const api = {
@@ -559,7 +559,8 @@ async function init() {
   renderSetupBanner();
   await refreshAll();
 }
-async function refreshAll() {
+async function refreshAll(retryCount) {
+  retryCount = retryCount || 0;
   setStatus('loading');
   try {
     const [t, e, r, l, ev] = await Promise.all([
@@ -572,6 +573,12 @@ async function refreshAll() {
     renderAll();
     setStatus('on');
   } catch (err) {
+    // O Apps Script pode demorar mais na primeira chamada depois de um tempo parado (cold start).
+    // Tenta de novo automaticamente uma vez antes de mostrar erro pro usuário.
+    if (retryCount < 1) {
+      await new Promise(res => setTimeout(res, 2000));
+      return refreshAll(retryCount + 1);
+    }
     setStatus('off');
     toast('Erro ao carregar dados: ' + err.message, true);
   }
