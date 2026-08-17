@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel 10 Anos — Escola Karen Abecia</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#FF7000;
+    --orange-light:#FFE8D6;
+    --green:#57B95C;
+    --green-light:#E4F5E5;
+    --bg:#F0F0F0;
+    --surface:#FFFFFF;
+    --text:#020617;
+    --muted:#6b7280;
+    --border:#E5E5E5;
+    --radius:16px;
+    --shadow:0 8px 25px rgba(0,0,0,.06);
+    --danger:#D33;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Poppins',sans-serif;}
+  h1,h2,h3,h4{font-family:'Montserrat',sans-serif;margin:0;}
+  ::-webkit-scrollbar{height:8px;width:8px;}
+  ::-webkit-scrollbar-thumb{background:#d4d4d4;border-radius:8px;}
+
+  /* Gate */
+  .gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px;}
+  .gate-card{background:#fff;border-radius:24px;box-shadow:var(--shadow);padding:40px 36px;max-width:420px;width:100%;text-align:center;}
+  .gate-card h1{font-size:20px;margin-bottom:6px;}
+  .gate-card p{color:var(--muted);font-size:13.5px;margin-bottom:22px;}
+  .gate-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .gate-btn{padding:16px 10px;border-radius:14px;border:1.5px solid var(--border);background:#fff;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;cursor:pointer;}
+  .gate-btn:hover{border-color:var(--orange);background:var(--orange-light);}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--orange);}
+  .brand h1{font-size:18px;font-weight:800;}
+  .brand span{font-size:12px;color:var(--muted);font-weight:500;}
+  .topbar-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  select, input, textarea{font-family:'Poppins',sans-serif;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13.5px;background:#fff;color:var(--text);}
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--orange);outline-offset:1px;}
+  .status-pill{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--muted);padding:6px 10px;border-radius:20px;background:var(--bg);}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:#c4c4c4;}
+  .status-dot.on{background:var(--green);}
+  .status-dot.off{background:#e0575c;}
+  .user-pill{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:var(--bg);padding:6px 12px;border-radius:20px;}
+  .user-pill button{background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-size:12px;font-family:'Poppins',sans-serif;}
+  .countdown-pill{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#fff;background:var(--orange);padding:7px 13px;border-radius:20px;white-space:nowrap;}
+
+  /* Nav tabs */
+  .tabs{display:flex;gap:6px;padding:14px 24px 0;overflow-x:auto;background:var(--bg);}
+  .tab{padding:10px 16px;border-radius:12px 12px 0 0;font-size:13.5px;font-weight:600;color:var(--muted);
+    cursor:pointer;white-space:nowrap;border:1px solid transparent;border-bottom:none;}
+  .tab.active{background:var(--surface);color:var(--orange);border-color:var(--border);}
+
+  .view{display:none;padding:20px 24px 60px;max-width:1400px;margin:0 auto;}
+  .view.active{display:block;}
+
+  .view-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .view-header h2{font-size:20px;}
+  .view-header p{color:var(--muted);font-size:13px;margin-top:2px;}
+
+  .btn{border:none;border-radius:10px;padding:10px 16px;font-family:'Poppins',sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .btn-orange{background:var(--orange);color:#fff;}
+  .btn-orange:hover{background:#e56400;}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-green:hover{background:#489a4d;}
+  .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+  .btn-ghost:hover{background:var(--bg);}
+  .btn-ghost.active{background:var(--orange);color:#fff;border-color:var(--orange);}
+  .btn-danger{background:#fff;color:#d33;border:1px solid #f2b8b8;}
+  .btn-sm{padding:6px 10px;font-size:12px;border-radius:8px;}
+
+  /* Tags / etiquetas */
+  .tag-chip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:#fff;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:5px;}
+  .etiqueta-manager-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--border);}
+  .etiqueta-manager-row:first-child{border-top:none;}
+  .color-dot{width:16px;height:16px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.1);}
+  .checkbox-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .checkbox-pill{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:20px;padding:5px 10px 5px 6px;font-size:12.5px;cursor:pointer;}
+  .checkbox-pill input{margin:0;}
+
+  /* Tarefas table */
+  .filters-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .filters-bar label{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px;font-weight:500;}
+  table.tarefas-table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  table.tarefas-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);background:var(--bg);}
+  table.tarefas-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+  table.tarefas-table tr:last-child td{border-bottom:none;}
+  table.tarefas-table tr:hover{background:#FAFAFA;}
+  .task-title-cell{cursor:pointer;font-weight:600;}
+  .task-title-cell:hover{color:var(--orange);}
+  .task-urgent{color:var(--danger);font-size:11px;font-weight:800;margin-left:6px;}
+  .chk{width:18px;height:18px;cursor:pointer;}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13.5px;}
+
+  /* Roteiros / grid */
+  .grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+  .item-card h4{font-size:14.5px;margin-bottom:6px;}
+  .item-card p{font-size:12.5px;color:var(--muted);margin:6px 0;line-height:1.5;}
+  .item-card .actions{display:flex;gap:6px;margin-top:10px;}
+  .slide-list{list-style:none;padding:0;margin:8px 0;font-size:12px;color:var(--text);}
+  .slide-list li{padding:6px 0;border-top:1px dashed var(--border);}
+  .slide-list li:first-child{border-top:none;}
+  .slide-list b{color:var(--orange);}
+
+  /* Links */
+  .list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+  .link-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid var(--border);flex-wrap:wrap;}
+  .link-row:first-child{border-top:none;}
+  .link-row .cat{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--bg);color:var(--muted);min-width:80px;text-align:center;}
+  .link-row a{color:var(--orange);font-weight:600;text-decoration:none;font-size:13px;}
+  .link-row a:hover{text-decoration:underline;}
+  .link-row .row-actions{display:flex;gap:6px;margin-left:auto;}
+
+  /* Calendário */
+  .cal-month{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:22px;overflow:hidden;}
+  .cal-month-head{padding:16px 20px;font-weight:700;font-size:15px;border-bottom:1px solid var(--border);background:var(--bg);}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+  .cal-dow{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:10px 0;text-transform:uppercase;background:#FAFAFA;border-bottom:1px solid var(--border);}
+  .cal-day{height:118px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;position:relative;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;}
+  .cal-day:nth-child(7n){border-right:none;}
+  .cal-day.outside{background:#FAFAFA;color:#C4C4C4;}
+  .cal-day .num{font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:3px;flex:none;}
+  .cal-day.outside .num{color:#D8D8D8;}
+  .cal-day.important{background:#FFF7EE;}
+  .cal-badges{display:flex;flex-direction:column;gap:2px;margin-bottom:3px;flex:none;}
+  .cal-badge{font-size:9.5px;font-weight:800;color:#fff;background:var(--orange);padding:2px 6px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cal-day-tasks{display:flex;flex-direction:column;gap:3px;overflow:hidden;flex:1;min-height:0;}
+  .cal-task-chip{font-size:10px;font-weight:600;color:#fff;padding:2px 6px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0;flex:none;}
+  .cal-more{font-size:9.5px;color:var(--muted);font-weight:700;padding:1px 2px;}
+  .cal-day:hover{background:#FFF7EE;}
+  .cal-day.outside:hover{background:#FAFAFA;cursor:default;}
+
+  /* Evento form */
+  .evento-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:720px){.evento-grid{grid-template-columns:1fr;} .gate-options{grid-template-columns:1fr;}}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;}
+  .field .hint{font-size:11px;color:#9CA3AF;margin-top:3px;}
+  .field input,.field textarea,.field select{width:100%;}
+  .field textarea{resize:vertical;min-height:70px;}
+  .section-title{font-size:14.5px;font-weight:700;margin:26px 0 12px;padding-top:16px;border-top:1px solid var(--border);}
+  .section-title:first-child{margin-top:0;padding-top:0;border-top:none;}
+  table.prod-table{width:100%;border-collapse:collapse;margin-top:6px;}
+  table.prod-table th{font-size:11px;color:var(--muted);text-align:left;padding:6px 6px;text-transform:uppercase;}
+  table.prod-table td{padding:3px 4px;}
+  table.prod-table input{width:100%;padding:6px 8px;font-size:12.5px;}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(2,6,23,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.active{display:flex;}
+  .modal{background:#fff;border-radius:20px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .modal-head h3{font-size:17px;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+  .modal-foot{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
+  .urgent-toggle{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;}
+  .urgent-toggle input{width:18px;height:18px;}
+  .roteiro-box{border:1px dashed var(--border);border-radius:12px;padding:12px;margin-top:6px;}
+
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;
+    box-shadow:0 8px 25px rgba(0,0,0,.25);z-index:200;opacity:0;transform:translateY(10px);transition:.25s;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast.error{background:#B91C1C;}
+
+  .setup-banner{background:#FFF7ED;border:1px solid #FDE7CE;border-radius:14px;padding:16px 18px;margin-bottom:18px;font-size:13px;line-height:1.6;color:#7C4A03;}
+  .setup-banner code{background:#fff;padding:2px 6px;border-radius:6px;font-size:12px;}
+  footer{text-align:center;font-size:11.5px;color:var(--muted);opacity:.6;padding:24px;}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gateOverlay">
+  <div class="gate-card">
+    <h1>Painel 10 Anos</h1>
+    <p>Escola Karen Abecia — selecione quem é você para continuar</p>
+    <div class="gate-options" id="gateOptions"></div>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none;">
+
+<div class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>Painel 10 Anos</h1>
+      <span>Escola Karen Abecia · gestão da campanha</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="countdown-pill" id="countdownPill" style="display:none;"></div>
+    <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Conectando…</span></div>
+    <div class="user-pill">👤 <span id="currentUserLabel"></span> <button onclick="openGate()">trocar</button></div>
+    <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Atualizar</button>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-view="tarefas">📋 Tarefas</div>
+  <div class="tab" data-view="concluidas">✅ Concluídas</div>
+  <div class="tab" data-view="calendario">📅 Calendário</div>
+  <div class="tab" data-view="roteiros">🎠 Roteiros</div>
+  <div class="tab" data-view="evento">🎉 Evento</div>
+  <div class="tab" data-view="links">🔗 Links</div>
+</div>
+
+<div id="setupWrap" style="padding:20px 24px 0;max-width:1400px;margin:0 auto;"></div>
+
+<!-- TAREFAS -->
+<div class="view active" id="view-tarefas">
+  <div class="view-header">
+    <div>
+      <h2>Tarefas da campanha</h2>
+      <p>Clique no título de uma tarefa para editar.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="openEtiquetaManager()">🏷️ Etiquetas</button>
+      <button class="btn btn-ghost" id="seedBtn" onclick="seedInitialData()">Importar planejamento inicial</button>
+      <button class="btn btn-orange" onclick="openTaskModal()">+ Nova tarefa</button>
+    </div>
+  </div>
+  <div class="filters-bar">
+    <label>Ordenar por
+      <select id="sortSelect" onchange="renderTasks()">
+        <option value="prazo">Data de entrega</option>
+        <option value="responsavel">Responsável</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="onlyMineChk" onchange="renderTasks()"> Somente minhas tarefas</label>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="tarefas-table" id="tarefasTable">
+      <thead><tr><th></th><th>Tarefa</th><th>Etiquetas</th><th>Entrega</th><th>Responsável</th></tr></thead>
+      <tbody id="tarefasTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CONCLUÍDAS -->
+<div class="view" id="view-concluidas">
+  <div class="view-header">
+    <div><h2>Tarefas concluídas</h2><p>Histórico do que já foi entregue.</p></div>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="tarefas-table" id="concluidasTable">
+      <thead><tr><th>Tarefa</th><th>Etiquetas</th><th>Entrega</th><th>Responsável</th><th></th></tr></thead>
+      <tbody id="concluidasTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CALENDÁRIO -->
+<div class="view" id="view-calendario">
+  <div class="view-header">
+    <div><h2>Calendário — Ago/Set 2026</h2><p>Clique numa tarefa para editar, ou num dia vazio para criar uma nova.</p></div>
+  </div>
+  <div id="calWrap"></div>
+</div>
+
+<!-- ROTEIROS -->
+<div class="view" id="view-roteiros">
+  <div class="view-header">
+    <div><h2>Roteiros</h2><p>Scripts prontos, vinculáveis a tarefas.</p></div>
+    <button class="btn btn-orange" onclick="openRoteiroModal()">+ Novo roteiro</button>
+  </div>
+  <div class="filters-bar" id="roteiroFilterBar"></div>
+  <div class="grid-cards" id="roteiroGrid"></div>
+</div>
+
+<!-- EVENTO -->
+<div class="view" id="view-evento">
+  <div class="view-header">
+    <div><h2>Detalhes do evento e oferta</h2><p>Tudo sobre os 10 anos em um só lugar.</p></div>
+    <button class="btn btn-orange" onclick="saveEvento()">Salvar detalhes</button>
+  </div>
+  <div class="list-card" style="padding:22px;">
+
+    <div class="section-title">Informações gerais</div>
+    <div class="evento-grid">
+      <div class="field"><label>Nome do evento</label><input id="ev-nomeEvento"></div>
+      <div class="field"><label>Data do evento</label><input type="date" id="ev-dataEvento"></div>
+      <div class="field"><label>Início do aquecimento</label><input type="date" id="ev-inicioAquecimento"></div>
+      <div class="field"><label>Início da captação</label><input type="date" id="ev-inicioCaptacao"><span class="hint">É também o fim do aquecimento.</span></div>
+      <div class="field"><label>Abertura de carrinho</label><input type="date" id="ev-aberturaCarrinho"></div>
+      <div class="field"><label>Live / aula</label><input type="date" id="ev-liveAula"></div>
+    </div>
+    <div class="field"><label>Promessa principal</label><input id="ev-promessaPrincipal"></div>
+    <div class="field"><label>Observações</label><textarea id="ev-observacoes"></textarea></div>
+
+    <div class="section-title">Produtos</div>
+    <div style="overflow-x:auto;">
+      <table class="prod-table">
+        <thead><tr><th style="width:34%;">Nome do produto</th><th style="width:16%;">ID</th><th style="width:25%;">Oferta</th><th style="width:25%;">Valor original</th></tr></thead>
+        <tbody id="prodTbody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Oferta final</div>
+    <div class="evento-grid">
+      <div class="field"><label>Valor final da oferta</label><input id="ev-valorFinalOferta" placeholder="R$ 0,00"></div>
+    </div>
+    <div class="field"><label>Bônus (um por linha)</label><textarea id="ev-bonus"></textarea></div>
+    <div class="field"><label>Ações complementares</label><textarea id="ev-acoesComplementares"></textarea></div>
+
+    <div class="section-title">Identidade visual</div>
+    <div class="evento-grid">
+      <div class="field"><label>Cores</label><input id="ev-identidadeCores" placeholder="Ex: #FF7000, #57B95C, #020617"></div>
+      <div class="field"><label>Fonte</label><input id="ev-identidadeFonte" placeholder="Ex: Montserrat + Poppins"></div>
+      <div class="field" style="grid-column:1/-1;"><label>Link do Canva (com ID)</label><input id="ev-identidadeCanva" placeholder="https://www.canva.com/design/..."></div>
+    </div>
+  </div>
+</div>
+
+<!-- LINKS -->
+<div class="view" id="view-links">
+  <div class="view-header">
+    <div><h2>Links importantes</h2><p>Tudo o que a equipe precisa acessar rápido.</p></div>
+    <button class="btn btn-orange" onclick="openLinkModal()">+ Novo link</button>
+  </div>
+  <div class="filters-bar" id="linkFilterBar"></div>
+  <div class="list-card" id="linkList"></div>
+</div>
+
+<footer>© Todos os direitos reservados para Escola Karen Abecia — 2026</footer>
+</div><!-- /appRoot -->
+
+<!-- MODAL TAREFA -->
+<div class="overlay" id="modal-tarefa">
+  <div class="modal">
+    <div class="modal-head"><h3 id="tarefaModalTitle">Nova tarefa</h3><button class="modal-close" onclick="closeModal('modal-tarefa')">✕</button></div>
+    <input type="hidden" id="t-id">
+    <div class="field"><label>Título</label><input id="t-titulo" placeholder="Ex: Criar cabeçalho comemorativo da live"></div>
+    <div class="field"><label>Descrição</label><textarea id="t-descricao"></textarea></div>
+    <div class="field"><label>Responsáveis</label><div class="checkbox-list" id="t-responsavel-list"></div></div>
+    <div class="evento-grid">
+      <div class="field"><label>Categoria</label>
+        <select id="t-categoria"><option>Post</option><option>Oferta</option><option>Evento</option><option>Link</option><option>Geral</option></select>
+      </div>
+      <div class="field"><label>Prazo (entrega)</label><input type="date" id="t-prazo"></div>
+      <div class="field"><label>&nbsp;</label>
+        <label class="urgent-toggle"><input type="checkbox" id="t-urgente"> Marcar como urgente</label>
+      </div>
+    </div>
+    <div class="field"><label>Etiquetas</label><div class="checkbox-list" id="t-etiquetas-list"></div></div>
+    <div class="field">
+      <label>Roteiro vinculado</label>
+      <select id="t-roteiro" onchange="onTaskRoteiroChange()"></select>
+      <div class="roteiro-box" id="t-novo-roteiro-box" style="display:none;">
+        <div class="field"><label>Nome do novo roteiro</label><input id="nr-nome"></div>
+        <div class="field"><label>Etiquetas do roteiro</label><div class="checkbox-list" id="nr-etiquetas-list"></div></div>
+        <div class="field"><label>Slides (um por linha)</label><textarea id="nr-slides"></textarea></div>
+        <div class="field"><label>Legenda</label><textarea id="nr-legenda"></textarea></div>
+        <button type="button" class="btn btn-green btn-sm" onclick="createAndLinkRoteiro()">Criar e vincular</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="t-delete" onclick="deleteTask()" style="display:none;">Excluir</button>
+      <button class="btn btn-orange" onclick="saveTask()" style="margin-left:auto;">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ETIQUETAS -->
+<div class="overlay" id="modal-etiquetas">
+  <div class="modal">
+    <div class="modal-head"><h3>Gerenciar etiquetas</h3><button class="modal-close" onclick="closeModal('modal-etiquetas')">✕</button></div>
+    <div id="etiquetaManagerList"></div>
+    <div class="section-title">Nova etiqueta</div>
+    <div class="evento-grid">
+      <div class="field"><label>Nome</label><input id="et-nome" placeholder="Ex: Pinterest"></div>
+      <div class="field"><label>Cor</label><input type="color" id="et-cor" value="#FF7000" style="height:42px;padding:4px;"></div>
+    </div>
+    <button class="btn btn-orange" onclick="createEtiqueta()">Adicionar etiqueta</button>
+  </div>
+</div>
+
+<!-- MODAL ROTEIRO -->
+<div class="overlay" id="modal-roteiro">
+  <div class="modal">
+    <div class="modal-head"><h3 id="roteiroModalTitle">Novo roteiro</h3><button class="modal-close" onclick="closeModal('modal-roteiro')">✕</button></div>
+    <input type="hidden" id="r-id">
+    <div class="field"><label>Nome</label><input id="r-nome" placeholder="Ex: Antes & Depois: 10 anos de dashboard"></div>
+    <div class="field"><label>Categoria / pilar</label><input id="r-pilar" placeholder="Ex: Antes & Depois"></div>
+    <div class="field"><label>Etiquetas</label><div class="checkbox-list" id="r-etiquetas-list"></div></div>
+    <div class="field"><label>Slides (um por linha)</label><textarea id="r-slides" style="min-height:160px;"></textarea></div>
+    <div class="field"><label>Legenda</label><textarea id="r-legenda"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="r-delete" onclick="deleteRoteiro()" style="display:none;">Excluir</button>
+      <button class="btn btn-orange" onclick="saveRoteiro()" style="margin-left:auto;">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LINK -->
+<div class="overlay" id="modal-link">
+  <div class="modal">
+    <div class="modal-head"><h3 id="linkModalTitle">Novo link</h3><button class="modal-close" onclick="closeModal('modal-link')">✕</button></div>
+    <input type="hidden" id="l-id">
+    <div class="field"><label>Nome</label><input id="l-nome" placeholder="Ex: Planilha da campanha"></div>
+    <div class="field"><label>URL</label><input id="l-url" placeholder="https://..."></div>
+    <div class="field"><label>Categoria</label>
+      <select id="l-categoria"><option>Captação</option><option>Vendas</option><option>Materiais</option><option>Páginas</option></select>
+    </div>
+    <div class="field"><label>Observação</label><textarea id="l-observacao"></textarea></div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="l-delete" onclick="deleteLink()" style="display:none;">Excluir</button>
+      <button class="btn btn-orange" onclick="saveLink()" style="margin-left:auto;">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ CONFIGURAÇÃO ============ */
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbyUpIKGwBWXzj2B6xKW6UcIwt7ZPs_ubbYJVu5Cruyd5Ix7cb_8JPcCABgSnGNcAiY3ag/exec'
+};
+const DEMO_MODE = CONFIG.API_URL.indexOf('http') !== 0;
+const TEAM = ['Karen', 'Fabiola', 'Jéssica', 'Stefano'];
+
+/* ============ ESTADO ============ */
+const state = { tarefas: [], etiquetas: [], roteiros: [], links: [], evento: {}, eventoIds: {}, currentUser: '' };
+let jsonpCounter = 0;
+let linkingTaskModalOpen = false;
+
+/* ============ SAFE STORAGE (fallback em memória) ============ */
+let memStore = {};
+function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } }
+function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } }
+
+/* ============ UI OTIMISTA: id local + chamada de API em segundo plano ============ */
+function genId(prefix) { return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function bgCall(promiseFn, errMsg) {
+  // Dispara a chamada à API sem travar a interface. A tela já foi atualizada antes disso.
+  Promise.resolve().then(promiseFn).catch(err => toast((errMsg || 'Erro ao sincronizar') + ': ' + err.message, true));
+}
+
+/* ============ GATE ============ */
+function renderGate() {
+  const wrap = document.getElementById('gateOptions');
+  wrap.innerHTML = TEAM.map(n => `<button class="gate-btn" onclick="selectUser('${n}')">${n}</button>`).join('');
+}
+function selectUser(name) {
+  state.currentUser = name;
+  storeSet('painel10anos_user', name);
+  document.getElementById('gateOverlay').style.display = 'none';
+  document.getElementById('appRoot').style.display = 'block';
+  document.getElementById('currentUserLabel').textContent = name;
+  init();
+}
+function openGate() {
+  document.getElementById('appRoot').style.display = 'none';
+  document.getElementById('gateOverlay').style.display = 'flex';
+}
+(function checkGate() {
+  renderGate();
+  const saved = storeGet('painel10anos_user');
+  if (saved && TEAM.indexOf(saved) > -1) selectUser(saved);
+})();
+
+/* ============ JSONP CLIENT ============ */
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'jsonp_cb_' + (jsonpCounter++);
+    const script = document.createElement('script');
+    const qs = new URLSearchParams(params);
+    qs.set('callback', cbName);
+    window[cbName] = (data) => { resolve(data); delete window[cbName]; script.remove(); };
+    script.onerror = () => { reject(new Error('Falha de rede ao chamar a API')); delete window[cbName]; script.remove(); };
+    script.src = CONFIG.API_URL + '?' + qs.toString();
+    document.body.appendChild(script);
+    setTimeout(() => { if (window[cbName]) { reject(new Error('Tempo esgotado')); delete window[cbName]; script.remove(); } }, 15000);
+  });
+}
+const api = {
+  list: (sheet) => jsonp({ action: 'list', sheet }),
+  create: (sheet, data) => jsonp({ action: 'create', sheet, payload: encodeURIComponent(JSON.stringify(data)) }),
+  update: (sheet, id, data) => jsonp({ action: 'update', sheet, id, payload: encodeURIComponent(JSON.stringify(data)) }),
+  delete: (sheet, id) => jsonp({ action: 'delete', sheet, id }),
+  bulkCreate: (sheet, items) => jsonp({ action: 'bulkCreate', sheet, payload: encodeURIComponent(JSON.stringify(items)) })
+};
+
+/* ============ DEMO MODE ============ */
+let demoStore = null;
+function ensureDemoStore() {
+  if (!demoStore) demoStore = { Tarefas: [], Etiquetas: [], Roteiros: [], Links: [], Evento: [] };
+  return demoStore;
+}
+function demoApi(action, sheet, arg1, arg2) {
+  const store = ensureDemoStore();
+  store[sheet] = store[sheet] || [];
+  if (action === 'list') return Promise.resolve({ success: true, data: store[sheet] });
+  if (action === 'create') { const item = Object.assign({ id: 'demo-' + Math.random().toString(36).slice(2) }, arg1); store[sheet].push(item); return Promise.resolve({ success: true, data: item }); }
+  if (action === 'update') { const idx = store[sheet].findIndex(x => x.id === arg1); if (idx > -1) store[sheet][idx] = Object.assign({}, store[sheet][idx], arg2); return Promise.resolve({ success: true, data: store[sheet][idx] }); }
+  if (action === 'delete') { store[sheet] = store[sheet].filter(x => x.id !== arg1); return Promise.resolve({ success: true }); }
+  if (action === 'bulkCreate') { arg1.forEach(it => store[sheet].push(Object.assign({ id: 'demo-' + Math.random().toString(36).slice(2) }, it))); return Promise.resolve({ success: true }); }
+}
+async function call(action, sheet, arg1, arg2) {
+  if (DEMO_MODE) return demoApi(action, sheet, arg1, arg2);
+  if (action === 'list') return api.list(sheet);
+  if (action === 'create') return api.create(sheet, arg1);
+  if (action === 'update') return api.update(sheet, arg1, arg2);
+  if (action === 'delete') return api.delete(sheet, arg1);
+  if (action === 'bulkCreate') return api.bulkCreate(sheet, arg1);
+}
+
+/* ============ UI HELPERS ============ */
+function toast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 2600);
+}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function esc(s) { return (s || '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(d) { if (!d) return ''; const dt = new Date(d + 'T00:00:00'); if (isNaN(dt)) return d; return dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); }
+function etiquetaById(id) { return state.etiquetas.find(e => e.id === id); }
+function etiquetaIdsOf(item) { return (item.etiquetas || '').split(',').map(s => s.trim()).filter(Boolean); }
+function renderTagChips(item) {
+  const ids = etiquetaIdsOf(item);
+  if (!ids.length) return '';
+  return '<div class="tag-row">' + ids.map(id => { const e = etiquetaById(id); if (!e) return ''; return `<span class="tag-chip" style="background:${esc(e.cor)};">${esc(e.nome)}</span>`; }).join('') + '</div>';
+}
+
+document.getElementById('tabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('.tab'); if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById('view-' + tab.dataset.view).classList.add('active');
+});
+
+/* ============ SETUP BANNER ============ */
+function renderSetupBanner() {
+  const wrap = document.getElementById('setupWrap');
+  if (!DEMO_MODE) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<div class="setup-banner">
+    <b>⚙️ Modo de demonstração.</b> Este painel ainda não está conectado à planilha do Google.
+    Publique o <code>Code.gs</code> como App da Web, copie a URL (termina em <code>/exec</code>)
+    e cole em <code>CONFIG.API_URL</code> no topo do <code>index.html</code>.
+  </div>`;
+}
+
+/* ============ CARREGAMENTO ============ */
+async function init() {
+  renderSetupBanner();
+  await refreshAll();
+}
+async function refreshAll() {
+  setStatus('loading');
+  try {
+    const [t, e, r, l, ev] = await Promise.all([
+      call('list', 'Tarefas'), call('list', 'Etiquetas'), call('list', 'Roteiros'),
+      call('list', 'Links'), call('list', 'Evento')
+    ]);
+    state.tarefas = t.data || []; state.etiquetas = e.data || []; state.roteiros = r.data || []; state.links = l.data || [];
+    state.evento = {}; state.eventoIds = {};
+    (ev.data || []).forEach(row => { if (row.chave) { state.evento[row.chave] = row.valor; state.eventoIds[row.chave] = row.id; } });
+    renderAll();
+    setStatus('on');
+  } catch (err) {
+    setStatus('off');
+    toast('Erro ao carregar dados: ' + err.message, true);
+  }
+}
+function setStatus(mode) {
+  const dot = document.getElementById('statusDot'), txt = document.getElementById('statusText');
+  dot.className = 'status-dot ' + (mode === 'on' ? 'on' : mode === 'off' ? 'off' : '');
+  txt.textContent = DEMO_MODE ? 'Modo demonstração' : (mode === 'on' ? 'Conectado' : mode === 'off' ? 'Sem conexão' : 'Conectando…');
+}
+function renderAll() { renderTasks(); renderConcluidas(); renderCalendar(); renderRoteiros(); renderLinks(); renderEvento(); }
+
+/* ============ ETIQUETAS ============ */
+function renderEtiquetaCheckboxes(containerId, selectedCsv) {
+  const selected = (selectedCsv || '').split(',').map(s => s.trim()).filter(Boolean);
+  const wrap = document.getElementById(containerId);
+  wrap.innerHTML = state.etiquetas.map(et => `
+    <label class="checkbox-pill" style="border-color:${esc(et.cor)};">
+      <input type="checkbox" value="${et.id}" ${selected.indexOf(et.id) > -1 ? 'checked' : ''}>
+      <span class="color-dot" style="background:${esc(et.cor)};"></span>${esc(et.nome)}
+    </label>`).join('') || '<span style="font-size:12px;color:var(--muted);">Nenhuma etiqueta cadastrada ainda.</span>';
+}
+function getCheckedEtiquetas(containerId) {
+  return Array.from(document.querySelectorAll('#' + containerId + ' input:checked')).map(i => i.value).join(',');
+}
+const getCheckedValues = getCheckedEtiquetas;
+function renderResponsavelCheckboxes(containerId, selectedCsv) {
+  const selected = (selectedCsv || '').split(',').map(s => s.trim()).filter(Boolean);
+  const wrap = document.getElementById(containerId);
+  wrap.innerHTML = TEAM.map(nome => `
+    <label class="checkbox-pill">
+      <input type="checkbox" value="${nome}" ${selected.indexOf(nome) > -1 ? 'checked' : ''}>${nome}
+    </label>`).join('');
+}
+function openEtiquetaManager() {
+  renderEtiquetaManagerList();
+  openModal('modal-etiquetas');
+}
+function renderEtiquetaManagerList() {
+  const wrap = document.getElementById('etiquetaManagerList');
+  if (!state.etiquetas.length) { wrap.innerHTML = '<p style="font-size:12.5px;color:var(--muted);">Nenhuma etiqueta ainda.</p>'; return; }
+  wrap.innerHTML = state.etiquetas.map(et => `
+    <div class="etiqueta-manager-row">
+      <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;"><span class="color-dot" style="background:${esc(et.cor)};"></span>${esc(et.nome)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteEtiqueta('${et.id}')">Excluir</button>
+    </div>`).join('');
+}
+function createEtiqueta() {
+  const nome = document.getElementById('et-nome').value.trim();
+  const cor = document.getElementById('et-cor').value;
+  if (!nome) return toast('Dê um nome à etiqueta', true);
+  const novaEtiqueta = { id: genId('et'), nome, cor };
+  state.etiquetas.push(novaEtiqueta);
+  document.getElementById('et-nome').value = '';
+  renderEtiquetaManagerList();
+  toast('Etiqueta criada!');
+  bgCall(() => call('create', 'Etiquetas', novaEtiqueta), 'Erro ao salvar etiqueta');
+}
+function deleteEtiqueta(id) {
+  if (!confirm('Excluir esta etiqueta? Tarefas e roteiros que a usam ficarão sem essa etiqueta.')) return;
+  state.etiquetas = state.etiquetas.filter(e => e.id !== id);
+  renderEtiquetaManagerList(); renderAll();
+  toast('Etiqueta excluída');
+  bgCall(() => call('delete', 'Etiquetas', id), 'Erro ao excluir etiqueta');
+}
+/* ============ TAREFAS ============ */
+function renderTasks() {
+  const tbody = document.getElementById('tarefasTbody');
+  let list = state.tarefas.filter(t => t.concluida !== true && t.concluida !== 'true');
+  if (document.getElementById('onlyMineChk').checked) list = list.filter(t => responsavelIdsOf(t).indexOf(state.currentUser) > -1);
+  const sortBy = document.getElementById('sortSelect').value;
+  list = list.slice().sort((a, b) => {
+    if (sortBy === 'responsavel') return (a.responsavel || '').localeCompare(b.responsavel || '');
+    return (a.prazo || '9999').localeCompare(b.prazo || '9999');
+  });
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma tarefa por aqui. Clique em "+ Nova tarefa" pra começar.</td></tr>'; return; }
+  tbody.innerHTML = list.map(t => `
+    <tr>
+      <td><input type="checkbox" class="chk" onclick="toggleConcluida('${t.id}', true)"></td>
+      <td class="task-title-cell" onclick='openTaskModal(${JSON.stringify(t).replace(/'/g, "&#39;")})'>${esc(t.titulo)}${(t.urgente === true || t.urgente === 'true') ? '<span class="task-urgent">URGENTE</span>' : ''}</td>
+      <td>${renderTagChips(t)}</td>
+      <td>${fmtDate(t.prazo)}</td>
+      <td>${esc(responsavelIdsOf(t).join(', ') || '—')}</td>
+    </tr>`).join('');
+}
+function responsavelIdsOf(item) { return (item.responsavel || '').split(',').map(s => s.trim()).filter(Boolean); }
+function renderConcluidas() {
+  const tbody = document.getElementById('concluidasTbody');
+  const list = state.tarefas.filter(t => t.concluida === true || t.concluida === 'true');
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma tarefa concluída ainda.</td></tr>'; return; }
+  tbody.innerHTML = list.map(t => `
+    <tr>
+      <td>${esc(t.titulo)}</td>
+      <td>${renderTagChips(t)}</td>
+      <td>${fmtDate(t.prazo)}</td>
+      <td>${esc(responsavelIdsOf(t).join(', ') || '—')}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="toggleConcluida('${t.id}', false)">Reabrir</button></td>
+    </tr>`).join('');
+}
+function toggleConcluida(id, value) {
+  const idx = state.tarefas.findIndex(x => x.id === id);
+  if (idx > -1) state.tarefas[idx].concluida = value;
+  renderTasks(); renderConcluidas(); renderCalendar();
+  toast(value ? 'Tarefa concluída!' : 'Tarefa reaberta');
+  bgCall(() => call('update', 'Tarefas', id, { concluida: value }), 'Erro ao atualizar tarefa');
+}
+function populateRoteiroSelect(selectedId) {
+  const sel = document.getElementById('t-roteiro');
+  sel.innerHTML = '<option value="">Nenhum</option>' +
+    state.roteiros.map(r => `<option value="${r.id}" ${r.id === selectedId ? 'selected' : ''}>${esc(r.nome)}</option>`).join('') +
+    '<option value="__new__">➕ Criar novo roteiro</option>';
+}
+function onTaskRoteiroChange() {
+  const box = document.getElementById('t-novo-roteiro-box');
+  if (document.getElementById('t-roteiro').value === '__new__') { box.style.display = 'block'; renderEtiquetaCheckboxes('nr-etiquetas-list', document.getElementById('t-etiquetas-list') ? getCheckedEtiquetas('t-etiquetas-list') : ''); }
+  else box.style.display = 'none';
+}
+function createAndLinkRoteiro() {
+  const nome = document.getElementById('nr-nome').value.trim();
+  if (!nome) return toast('Dê um nome ao novo roteiro', true);
+  const novoRoteiro = {
+    id: genId('ro'), nome, etiquetas: getCheckedEtiquetas('nr-etiquetas-list'),
+    slides: document.getElementById('nr-slides').value, legenda: document.getElementById('nr-legenda').value.trim(), pilar: ''
+  };
+  state.roteiros.push(novoRoteiro);
+  populateRoteiroSelect(novoRoteiro.id);
+  document.getElementById('t-novo-roteiro-box').style.display = 'none';
+  document.getElementById('nr-nome').value = ''; document.getElementById('nr-slides').value = ''; document.getElementById('nr-legenda').value = '';
+  toast('Roteiro criado e vinculado!');
+  bgCall(() => call('create', 'Roteiros', novoRoteiro), 'Erro ao salvar roteiro');
+}
+function openTaskModal(t) {
+  document.getElementById('tarefaModalTitle').textContent = t ? 'Editar tarefa' : 'Nova tarefa';
+  document.getElementById('t-id').value = t ? t.id : '';
+  document.getElementById('t-titulo').value = t ? t.titulo || '' : '';
+  document.getElementById('t-descricao').value = t ? t.descricao || '' : '';
+  renderResponsavelCheckboxes('t-responsavel-list', t ? t.responsavel : '');
+  document.getElementById('t-categoria').value = t ? t.categoria || 'Geral' : 'Geral';
+  document.getElementById('t-prazo').value = t ? t.prazo || '' : '';
+  document.getElementById('t-urgente').checked = t ? (t.urgente === true || t.urgente === 'true') : false;
+  renderEtiquetaCheckboxes('t-etiquetas-list', t ? t.etiquetas : '');
+  populateRoteiroSelect(t ? t.roteiroId : '');
+  document.getElementById('t-novo-roteiro-box').style.display = 'none';
+  document.getElementById('t-delete').style.display = t ? 'inline-flex' : 'none';
+  openModal('modal-tarefa');
+}
+function openTaskModalForDate(dateStr) {
+  openTaskModal(null);
+  document.getElementById('t-prazo').value = dateStr;
+}
+function saveTask() {
+  const id = document.getElementById('t-id').value;
+  const roteiroSel = document.getElementById('t-roteiro').value;
+  const data = {
+    titulo: document.getElementById('t-titulo').value.trim(),
+    descricao: document.getElementById('t-descricao').value.trim(),
+    responsavel: getCheckedValues('t-responsavel-list'),
+    categoria: document.getElementById('t-categoria').value,
+    prazo: document.getElementById('t-prazo').value,
+    urgente: document.getElementById('t-urgente').checked,
+    etiquetas: getCheckedEtiquetas('t-etiquetas-list'),
+    roteiroId: roteiroSel === '__new__' ? '' : roteiroSel
+  };
+  if (!data.titulo) return toast('Dê um título para a tarefa', true);
+  closeModal('modal-tarefa');
+  if (id) {
+    const idx = state.tarefas.findIndex(x => x.id === id);
+    if (idx > -1) state.tarefas[idx] = Object.assign(state.tarefas[idx], data);
+    renderTasks(); renderCalendar();
+    bgCall(() => call('update', 'Tarefas', id, data), 'Erro ao salvar tarefa');
+  } else {
+    const novaTarefa = Object.assign({ id: genId('t'), concluida: false }, data);
+    state.tarefas.push(novaTarefa);
+    renderTasks(); renderCalendar();
+    bgCall(() => call('create', 'Tarefas', novaTarefa), 'Erro ao criar tarefa');
+  }
+  toast('Tarefa salva!');
+}
+function deleteTask() {
+  const id = document.getElementById('t-id').value; if (!id || !confirm('Excluir esta tarefa?')) return;
+  state.tarefas = state.tarefas.filter(x => x.id !== id);
+  closeModal('modal-tarefa'); renderTasks(); renderCalendar();
+  toast('Tarefa excluída');
+  bgCall(() => call('delete', 'Tarefas', id), 'Erro ao excluir tarefa');
+}
+
+/* ============ CALENDÁRIO ============ */
+function tasksByDate() {
+  const map = {};
+  state.tarefas.filter(t => t.concluida !== true && t.concluida !== 'true').forEach(t => { if (t.prazo) (map[t.prazo] = map[t.prazo] || []).push(t); });
+  return map;
+}
+const IMPORTANT_DATE_LABELS = {
+  dataEvento: '🎉 Evento',
+  inicioAquecimento: '🔥 Aquecimento',
+  inicioCaptacao: '📣 Captação',
+  aberturaCarrinho: '🛒 Carrinho',
+  liveAula: '🎥 Live/aula'
+};
+function getImportantDates() {
+  const map = {};
+  Object.keys(IMPORTANT_DATE_LABELS).forEach(chave => {
+    const data = state.evento[chave];
+    if (data) (map[data] = map[data] || []).push(IMPORTANT_DATE_LABELS[chave]);
+  });
+  return map;
+}
+const CAL_MAX_VISIBLE_TASKS = 3;
+function renderMonth(year, monthIdx, byDate, importantDates) {
+  const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const first = new Date(year, monthIdx, 1);
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+  let startOffset = first.getDay() - 1; if (startOffset < 0) startOffset = 6; // Monday=0
+  const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+  const dow = ['SEG','TER','QUA','QUI','SEX','SÁB','DOM'];
+  let cells = '';
+  for (let i = 0; i < totalCells; i++) {
+    const dayNum = i - startOffset + 1;
+    const isOutside = dayNum < 1 || dayNum > daysInMonth;
+    let dateStr = '';
+    if (!isOutside) {
+      dateStr = year + '-' + String(monthIdx + 1).padStart(2, '0') + '-' + String(dayNum).padStart(2, '0');
+    }
+    const tasks = dateStr ? (byDate[dateStr] || []) : [];
+    const badges = dateStr ? (importantDates[dateStr] || []) : [];
+    const visibleTasks = tasks.slice(0, CAL_MAX_VISIBLE_TASKS);
+    const extraCount = tasks.length - visibleTasks.length;
+    const badgeHtml = badges.map(b => `<span class="cal-badge">${esc(b)}</span>`).join('');
+    const chips = visibleTasks.map(t => {
+      const ids = etiquetaIdsOf(t); const e = ids.length ? etiquetaById(ids[0]) : null;
+      const color = e ? e.cor : '#9CA3AF';
+      return `<span class="cal-task-chip" style="background:${esc(color)};" onclick='event.stopPropagation();openTaskModal(${JSON.stringify(t).replace(/'/g, "&#39;")})'>${esc(t.titulo)}</span>`;
+    }).join('') + (extraCount > 0 ? `<span class="cal-more">+${extraCount} mais</span>` : '');
+    cells += `<div class="cal-day ${isOutside ? 'outside' : ''} ${badges.length ? 'important' : ''}" ${!isOutside ? `onclick="openTaskModalForDate('${dateStr}')"` : ''}>
+      <div class="num">${isOutside ? '' : dayNum}</div>
+      <div class="cal-badges">${badgeHtml}</div>
+      <div class="cal-day-tasks">${chips}</div>
+    </div>`;
+  }
+  return `<div class="cal-month">
+    <div class="cal-month-head">${monthNames[monthIdx]} ${year}</div>
+    <div class="cal-grid">${dow.map(d => `<div class="cal-dow">${d}</div>`).join('')}${cells}</div>
+  </div>`;
+}
+function renderCalendar() {
+  const byDate = tasksByDate();
+  const importantDates = getImportantDates();
+  document.getElementById('calWrap').innerHTML = renderMonth(2026, 7, byDate, importantDates) + renderMonth(2026, 8, byDate, importantDates);
+}
+
+/* ============ ROTEIROS ============ */
+let roteiroFilterActive = [];
+function renderRoteiroFilterBar() {
+  const bar = document.getElementById('roteiroFilterBar');
+  bar.innerHTML = '<button class="btn btn-ghost btn-sm ' + (roteiroFilterActive.length === 0 ? 'active' : '') + '" onclick="setRoteiroFilter(null)">Todas</button>' +
+    state.etiquetas.map(et => `<button class="btn btn-ghost btn-sm ${roteiroFilterActive.indexOf(et.id) > -1 ? 'active' : ''}" style="${roteiroFilterActive.indexOf(et.id) > -1 ? 'background:' + et.cor + ';color:#fff;border-color:' + et.cor + ';' : ''}" onclick="setRoteiroFilter('${et.id}')">${esc(et.nome)}</button>`).join('');
+}
+function setRoteiroFilter(id) {
+  if (id === null) roteiroFilterActive = [];
+  else if (roteiroFilterActive.indexOf(id) > -1) roteiroFilterActive = roteiroFilterActive.filter(x => x !== id);
+  else roteiroFilterActive.push(id);
+  renderRoteiroFilterBar(); renderRoteiros();
+}
+function renderRoteiros() {
+  renderRoteiroFilterBar();
+  const wrap = document.getElementById('roteiroGrid');
+  let list = state.roteiros;
+  if (roteiroFilterActive.length) list = list.filter(r => etiquetaIdsOf(r).some(id => roteiroFilterActive.indexOf(id) > -1));
+  if (!list.length) { wrap.innerHTML = '<div class="empty">Nenhum roteiro encontrado.</div>'; return; }
+  wrap.innerHTML = list.map(r => {
+    const slides = (r.slides || '').split('\n').filter(Boolean);
+    return `<div class="item-card">
+      ${renderTagChips(r)}
+      <h4 style="margin-top:8px;">${esc(r.nome)}</h4>
+      <ul class="slide-list">${slides.slice(0, 4).map((s, i) => `<li><b>${i + 1}.</b> ${esc(s.replace(/^\d+\.\s*/, ''))}</li>`).join('')}${slides.length > 4 ? `<li style="color:#9CA3AF;">+ ${slides.length - 4} slide(s)</li>` : ''}</ul>
+      <div class="actions"><button class="btn btn-ghost btn-sm" onclick='openRoteiroModal(${JSON.stringify(r).replace(/'/g, "&#39;")})'>Ver / editar</button></div>
+    </div>`;
+  }).join('');
+}
+function openRoteiroModal(r) {
+  document.getElementById('roteiroModalTitle').textContent = r ? 'Editar roteiro' : 'Novo roteiro';
+  document.getElementById('r-id').value = r ? r.id : '';
+  document.getElementById('r-nome').value = r ? r.nome || '' : '';
+  document.getElementById('r-pilar').value = r ? r.pilar || '' : '';
+  document.getElementById('r-slides').value = r ? r.slides || '' : '';
+  document.getElementById('r-legenda').value = r ? r.legenda || '' : '';
+  renderEtiquetaCheckboxes('r-etiquetas-list', r ? r.etiquetas : '');
+  document.getElementById('r-delete').style.display = r ? 'inline-flex' : 'none';
+  openModal('modal-roteiro');
+}
+function saveRoteiro() {
+  const id = document.getElementById('r-id').value;
+  const data = {
+    nome: document.getElementById('r-nome').value.trim(),
+    pilar: document.getElementById('r-pilar').value.trim(),
+    etiquetas: getCheckedEtiquetas('r-etiquetas-list'),
+    slides: document.getElementById('r-slides').value,
+    legenda: document.getElementById('r-legenda').value.trim()
+  };
+  if (!data.nome) return toast('Dê um nome ao roteiro', true);
+  closeModal('modal-roteiro');
+  if (id) {
+    const idx = state.roteiros.findIndex(x => x.id === id);
+    if (idx > -1) state.roteiros[idx] = Object.assign(state.roteiros[idx], data);
+    renderRoteiros();
+    bgCall(() => call('update', 'Roteiros', id, data), 'Erro ao salvar roteiro');
+  } else {
+    const novo = Object.assign({ id: genId('ro') }, data);
+    state.roteiros.push(novo);
+    renderRoteiros();
+    bgCall(() => call('create', 'Roteiros', novo), 'Erro ao criar roteiro');
+  }
+  toast('Roteiro salvo!');
+}
+function deleteRoteiro() {
+  const id = document.getElementById('r-id').value; if (!id || !confirm('Excluir este roteiro?')) return;
+  state.roteiros = state.roteiros.filter(x => x.id !== id);
+  closeModal('modal-roteiro'); renderRoteiros();
+  toast('Roteiro excluído');
+  bgCall(() => call('delete', 'Roteiros', id), 'Erro ao excluir roteiro');
+}
+
+/* ============ LINKS ============ */
+const LINK_CATEGORIES = ['Captação', 'Vendas', 'Materiais', 'Páginas'];
+let linkFilterActive = null;
+function renderLinkFilterBar() {
+  const bar = document.getElementById('linkFilterBar');
+  bar.innerHTML = `<button class="btn btn-ghost btn-sm ${linkFilterActive === null ? 'active' : ''}" onclick="setLinkFilter(null)">Todos</button>` +
+    LINK_CATEGORIES.map(c => `<button class="btn btn-ghost btn-sm ${linkFilterActive === c ? 'active' : ''}" onclick="setLinkFilter('${c}')">${c}</button>`).join('');
+}
+function setLinkFilter(c) { linkFilterActive = c; renderLinkFilterBar(); renderLinks(); }
+function renderLinks() {
+  renderLinkFilterBar();
+  const wrap = document.getElementById('linkList');
+  let list = state.links;
+  if (linkFilterActive) list = list.filter(l => l.categoria === linkFilterActive);
+  if (!list.length) { wrap.innerHTML = '<div class="empty">Nenhum link cadastrado ainda.</div>'; return; }
+  wrap.innerHTML = list.map(l => `
+    <div class="link-row">
+      <span class="cat">${esc(l.categoria || 'Outro')}</span>
+      <a href="${esc(l.url)}" target="_blank">${esc(l.nome)}</a>
+      <span style="font-size:12px;color:var(--muted);">${esc(l.observacao || '')}</span>
+      <div class="row-actions">
+        <button class="btn btn-ghost btn-sm" onclick="copyLink('${esc(l.url)}')">📋 Copiar</button>
+        <button class="btn btn-ghost btn-sm" onclick='openLinkModal(${JSON.stringify(l).replace(/'/g, "&#39;")})'>Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="quickDeleteLink('${l.id}')">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => toast('Link copiado!')).catch(() => toast('Não foi possível copiar', true));
+}
+function quickDeleteLink(id) {
+  if (!confirm('Excluir este link?')) return;
+  state.links = state.links.filter(x => x.id !== id);
+  renderLinks();
+  toast('Link excluído');
+  bgCall(() => call('delete', 'Links', id), 'Erro ao excluir link');
+}
+function openLinkModal(l) {
+  document.getElementById('linkModalTitle').textContent = l ? 'Editar link' : 'Novo link';
+  document.getElementById('l-id').value = l ? l.id : '';
+  document.getElementById('l-nome').value = l ? l.nome || '' : '';
+  document.getElementById('l-url').value = l ? l.url || '' : '';
+  document.getElementById('l-categoria').value = l ? l.categoria || 'Materiais' : 'Materiais';
+  document.getElementById('l-observacao').value = l ? l.observacao || '' : '';
+  document.getElementById('l-delete').style.display = l ? 'inline-flex' : 'none';
+  openModal('modal-link');
+}
+function saveLink() {
+  const id = document.getElementById('l-id').value;
+  const data = {
+    nome: document.getElementById('l-nome').value.trim(),
+    url: document.getElementById('l-url').value.trim(),
+    categoria: document.getElementById('l-categoria').value,
+    observacao: document.getElementById('l-observacao').value.trim()
+  };
+  if (!data.nome || !data.url) return toast('Preencha nome e URL', true);
+  closeModal('modal-link');
+  if (id) {
+    const idx = state.links.findIndex(x => x.id === id);
+    if (idx > -1) state.links[idx] = Object.assign(state.links[idx], data);
+    renderLinks();
+    bgCall(() => call('update', 'Links', id, data), 'Erro ao salvar link');
+  } else {
+    const novo = Object.assign({ id: genId('l') }, data);
+    state.links.push(novo);
+    renderLinks();
+    bgCall(() => call('create', 'Links', novo), 'Erro ao criar link');
+  }
+  toast('Link salvo!');
+}
+function deleteLink() {
+  const id = document.getElementById('l-id').value; if (!id || !confirm('Excluir este link?')) return;
+  state.links = state.links.filter(x => x.id !== id);
+  closeModal('modal-link'); renderLinks();
+  toast('Link excluído');
+  bgCall(() => call('delete', 'Links', id), 'Erro ao excluir link');
+}
+
+/* ============ EVENTO ============ */
+function renderProdTable() {
+  let produtos = [];
+  try { produtos = JSON.parse(state.evento.produtos || '[]'); } catch (e) { produtos = []; }
+  const tbody = document.getElementById('prodTbody');
+  let rows = '';
+  for (let i = 0; i < 15; i++) {
+    const p = produtos[i] || {};
+    rows += `<tr>
+      <td><input id="prod-nome-${i}" value="${esc(p.nome || '')}"></td>
+      <td><input id="prod-id-${i}" value="${esc(p.id || '')}"></td>
+      <td><input id="prod-oferta-${i}" value="${esc(p.oferta || '')}"></td>
+      <td><input id="prod-valor-${i}" value="${esc(p.valorOriginal || '')}"></td>
+    </tr>`;
+  }
+  tbody.innerHTML = rows;
+}
+function collectProdTable() {
+  const arr = [];
+  for (let i = 0; i < 15; i++) {
+    const nome = document.getElementById('prod-nome-' + i).value.trim();
+    const id = document.getElementById('prod-id-' + i).value.trim();
+    const oferta = document.getElementById('prod-oferta-' + i).value.trim();
+    const valorOriginal = document.getElementById('prod-valor-' + i).value.trim();
+    arr.push({ nome, id, oferta, valorOriginal });
+  }
+  return arr;
+}
+function renderEvento() {
+  document.getElementById('ev-nomeEvento').value = state.evento.nomeEvento || '10 Anos Escola Karen Abecia';
+  document.getElementById('ev-dataEvento').value = state.evento.dataEvento || '2026-09-01';
+  document.getElementById('ev-inicioAquecimento').value = state.evento.inicioAquecimento || '2026-08-13';
+  document.getElementById('ev-inicioCaptacao').value = state.evento.inicioCaptacao || '2026-08-20';
+  document.getElementById('ev-aberturaCarrinho').value = state.evento.aberturaCarrinho || '';
+  document.getElementById('ev-liveAula').value = state.evento.liveAula || '';
+  document.getElementById('ev-promessaPrincipal').value = state.evento.promessaPrincipal || '';
+  document.getElementById('ev-observacoes').value = state.evento.observacoes || '';
+  document.getElementById('ev-valorFinalOferta').value = state.evento.valorFinalOferta || '';
+  document.getElementById('ev-bonus').value = state.evento.bonus || '';
+  document.getElementById('ev-acoesComplementares').value = state.evento.acoesComplementares || '';
+  document.getElementById('ev-identidadeCores').value = state.evento.identidadeCores || '#FF7000, #57B95C, #F0F0F0, #020617';
+  document.getElementById('ev-identidadeFonte').value = state.evento.identidadeFonte || 'Montserrat + Poppins';
+  document.getElementById('ev-identidadeCanva').value = state.evento.identidadeCanva || '';
+  renderProdTable();
+  updateCountdown();
+}
+function updateCountdown() {
+  const pill = document.getElementById('countdownPill');
+  const dataStr = state.evento.aberturaCarrinho;
+  if (!dataStr) { pill.style.display = 'none'; return; }
+  const alvo = new Date(dataStr + 'T00:00:00');
+  if (isNaN(alvo)) { pill.style.display = 'none'; return; }
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const dias = Math.round((alvo - hoje) / 86400000);
+  pill.style.display = 'flex';
+  if (dias > 1) pill.textContent = `🛒 Faltam ${dias} dias para abertura do carrinho`;
+  else if (dias === 1) pill.textContent = '🛒 Falta 1 dia para abertura do carrinho';
+  else if (dias === 0) pill.textContent = '🛒 Carrinho abre hoje!';
+  else pill.textContent = '🛒 Carrinho já está aberto';
+}
+function saveEvento() {
+  const campos = {
+    nomeEvento: document.getElementById('ev-nomeEvento').value.trim(),
+    dataEvento: document.getElementById('ev-dataEvento').value,
+    inicioAquecimento: document.getElementById('ev-inicioAquecimento').value,
+    inicioCaptacao: document.getElementById('ev-inicioCaptacao').value,
+    aberturaCarrinho: document.getElementById('ev-aberturaCarrinho').value,
+    liveAula: document.getElementById('ev-liveAula').value,
+    promessaPrincipal: document.getElementById('ev-promessaPrincipal').value.trim(),
+    observacoes: document.getElementById('ev-observacoes').value.trim(),
+    produtos: JSON.stringify(collectProdTable()),
+    valorFinalOferta: document.getElementById('ev-valorFinalOferta').value.trim(),
+    bonus: document.getElementById('ev-bonus').value,
+    acoesComplementares: document.getElementById('ev-acoesComplementares').value,
+    identidadeCores: document.getElementById('ev-identidadeCores').value.trim(),
+    identidadeFonte: document.getElementById('ev-identidadeFonte').value.trim(),
+    identidadeCanva: document.getElementById('ev-identidadeCanva').value.trim()
+  };
+  state.evento = campos;
+  renderCalendar();
+  updateCountdown();
+  toast('Detalhes salvos!');
+  Object.keys(campos).forEach(chave => {
+    const existenteId = state.eventoIds[chave];
+    if (existenteId) {
+      bgCall(() => call('update', 'Evento', existenteId, { valor: campos[chave] }), 'Erro ao salvar ' + chave);
+    } else {
+      const novoId = genId('ev');
+      state.eventoIds[chave] = novoId;
+      bgCall(() => call('create', 'Evento', { id: novoId, chave, valor: campos[chave] }), 'Erro ao salvar ' + chave);
+    }
+  });
+}
+
+/* ============ IMPORTAR PLANEJAMENTO INICIAL ============ */
+function seedInitialData() {
+  if (state.tarefas.length || state.roteiros.length) {
+    if (!confirm('Já existem dados cadastrados. Importar mesmo assim (pode duplicar itens)?')) return;
+  }
+  // Gera todos os IDs localmente primeiro, então tudo aparece na tela instantaneamente
+  // e as chamadas à API rodam em segundo plano, sem travar a interface.
+  const etByNome = {};
+  const etiquetasToCreate = SEED_ETIQUETAS.map(e => {
+    const id = genId('et'); etByNome[e.nome] = id; return Object.assign({ id }, e);
+  });
+  const roteiroByNome = {};
+  const roteirosToCreate = SEED_ROTEIROS.map(r => {
+    const id = genId('ro'); roteiroByNome[r.nome] = id;
+    return Object.assign({ id }, r, { etiquetas: etByNome['Instagram'] || '' });
+  });
+  const tarefasToCreate = SEED_TAREFAS.map(t => {
+    const etId = etByNome[t.canal] || '';
+    const roteiroId = t.roteiroNome ? (roteiroByNome[t.roteiroNome] || '') : '';
+    const copy = Object.assign({ id: genId('t') }, t);
+    delete copy.canal; delete copy.roteiroNome;
+    copy.etiquetas = etId; copy.roteiroId = roteiroId;
+    return copy;
+  });
+
+  state.etiquetas.push(...etiquetasToCreate);
+  state.roteiros.push(...roteirosToCreate);
+  state.tarefas.push(...tarefasToCreate);
+  renderAll();
+  toast('Planejamento inicial importado!');
+
+  bgCall(() => call('bulkCreate', 'Etiquetas', etiquetasToCreate), 'Erro ao importar etiquetas');
+  bgCall(() => call('bulkCreate', 'Roteiros', roteirosToCreate), 'Erro ao importar roteiros');
+  bgCall(() => call('bulkCreate', 'Tarefas', tarefasToCreate), 'Erro ao importar tarefas');
+}
+
+const SEED_ETIQUETAS = [
+  { nome: 'Instagram', cor: '#E1306C' },
+  { nome: 'WhatsApp', cor: '#25D366' },
+  { nome: 'LinkedIn', cor: '#0A66C2' },
+  { nome: 'YouTube', cor: '#FF0000' },
+  { nome: 'E-mail', cor: '#6B7280' },
+  { nome: 'Shorts', cor: '#F59E0B' }
+];
+
+const SEED_ROTEIROS = [
+  { nome: 'Antes & Depois: 10 anos de dashboard', pilar: 'Antes & Depois',
+    slides: [
+      '1. Capa: "Isso aqui era meu dashboard em 2016 😳 (desliza pro terror)"',
+      '2. [print de planilha simples/feia real de 2016] — "Sim, era assim mesmo. Fórmula na unha, cor escolhida no desespero."',
+      '3. "Levei uns bons anos pra entender uma coisa: dashboard bonito não é sobre design. É sobre entender o que os dados estão tentando te contar."',
+      '4. [print de dashboard intermediário, uns 3-4 anos atrás] — "Aqui já dava pra ver a evolução. Ainda tinha muito erro. Mas já tinha direção."',
+      '5. [print do dashboard atual, profissional] — "E hoje? Isso. 10 anos de prática, muita aula dada, muito Efeito UAU testado nos alunos antes de chegar aqui."',
+      '6. Fechamento: "10 anos, essa evolução toda. E o que vem no dia 1 de setembro? Isso eu ainda não posso contar 👀"'
+    ].join('\n'),
+    legenda: 'Guardem esse carrossel. Em 10 anos dá pra ver a diferença entre quem começou e quem virou referência. E olha que a gente nem chegou na parte boa da comemoração ainda.' },
+  { nome: '10 coisas que eu fazia em 2016', pilar: '10 mudanças',
+    slides: [
+      '1. Capa: "10 coisas que eu fazia sozinha em 2016... e a IA faz por mim hoje"',
+      '2. "#1 — Copiar e colar fórmula célula por célula. Hoje: peço pra IA aplicar em toda a planilha em 1 comando."',
+      '3. "#2 — Montar gráfico manualmente, ajustando cor por cor. Hoje: a IA já sugere o gráfico certo pro tipo de dado."',
+      '4. "#3 — Ficar 40 minutos procurando o erro de uma fórmula. Hoje: a IA aponta o erro e ainda explica o motivo."',
+      '5. "#4 — Resumir relatório enorme lendo linha por linha. Hoje: a IA lê e resume em segundos."',
+      '6. "#5 — Cruzar duas planilhas diferentes na mão. Hoje: a IA cruza os dados e já entrega pronto."',
+      '7. Fechamento: "10 anos vendo essa evolução de perto. Dia 1 de setembro tem uma comemoração à altura disso 👀"'
+    ].join('\n'),
+    legenda: 'De 2016 pra 2026 o jogo virou completamente. Quem começou comigo sabe bem essa diferença.' },
+  { nome: 'Manifesto: 10 anos de Efeito UAU', pilar: 'Manifesto',
+    slides: [
+      '1. Capa: "10 anos. 1 propósito. Um manifesto sobre o Efeito UAU."',
+      '2. "Em 2016 eu ensinava Excel numa sala emprestada, com um projetor que travava toda aula."',
+      '3. "Eu não queria ensinar fórmula. Eu queria mudar a cara de quem finalmente entendia."',
+      "4. \"Foi aí que nasceu o Efeito UAU: aquele momento em que o aluno olha pra tela e pensa 'eu consegui isso sozinho'.\"",
+      '5. "10 anos depois, isso não mudou. Mudaram as ferramentas. A IA entrou no jogo. Mas o objetivo continua o mesmo: fazer você dizer UAU."',
+      '6. "Cada aluno que aprendeu aqui carrega um pouco desse propósito. E isso, pra mim, vale mais que qualquer métrica."',
+      '7. Fechamento: "10 anos de Efeito UAU. E o próximo capítulo começa dia 1 de setembro 👀"'
+    ].join('\n'),
+    legenda: 'Esse é o motivo de tudo isso existir. Obrigada por fazerem parte dessa década. O que vem a seguir eu conto no dia 1/9.' },
+  { nome: 'A Trilogia dos Erros de Fórmula', pilar: 'Referências pop',
+    slides: [
+      '1. Capa: "A TRILOGIA DOS ERROS DE FÓRMULA — baseado em fatos reais de quem já chorou com #REF!"',
+      '2. "EPISÓDIO 1: O Despertar do #DIV/0! Ano: 2016. Ninguém sabia o que aquilo significava."',
+      '3. "EPISÓDIO 2: A Vingança do PROCV. Ano: 2019. A fórmula que funcionava... até não funcionar mais."',
+      '4. "EPISÓDIO 3: O Retorno da Tabela Dinâmica. Ano: 2022. A vitória, finalmente, depois de muita luta."',
+      '5. "EPÍLOGO: A Era da I.A. Ano: 2026. A trilogia virou comédia — porque agora a I.A. resolve isso em segundos."',
+      '6. Fechamento: "10 anos, 3 eras, 1 evolução. E tem uma continuação chegando dia 1 de setembro 👀"'
+    ].join('\n'),
+    legenda: 'Quem já viveu os 3 episódios dessa trilogia levanta a mão 🙋 10 anos de guerra contra fórmula, e olha onde a gente chegou.' },
+  { nome: 'Bastidores: como era a Karen Abecia em 2016', pilar: 'Bastidores & prova social',
+    slides: [
+      '1. Capa: "Achei essas fotos de 2016 e precisava compartilhar com vocês 😅"',
+      '2. [foto real da primeira sala de aula/setup antigo] — "Essa era a estrutura da primeira turma. Sim, era bem diferente de hoje."',
+      "3. [foto de equipamento antigo, projetor, notebook antigo] — \"O 'estúdio' de gravação era literalmente essa mesa aqui.\"",
+      '4. [print de post antigo, com poucos likes/comentários] — "E esse era o alcance dos posts. Cresceu bastante, né?"',
+      '5. [foto de alguma primeira turma/aluno] — "Mas o mais importante sempre foi isso: gente aprendendo de verdade."',
+      '6. [foto atual, comparando com a estrutura de hoje] — "10 anos depois, a estrutura mudou. O propósito, não."',
+      '7. Fechamento: "Muita coisa mudou nesses 10 anos. E tem mais mudança chegando dia 1 de setembro 👀"'
+    ].join('\n'),
+    legenda: 'Arquivo morto é isso: parte vergonha alheia, parte orgulho enorme. 10 anos de história — e a próxima página começa dia 1/9.' }
+];
+
+const SEED_TAREFAS_RAW = [
+  ["2026-08-13","Instagram","Comunicação geral focada na live (Stories)",""],
+  ["2026-08-13","Instagram","Comunicação geral focada na live (Reels)",""],
+  ["2026-08-13","LinkedIn","Comunicação geral focada na live",""],
+  ["2026-08-13","WhatsApp","Grupos de WhatsApp — comunicação geral focada na live",""],
+  ["2026-08-13","YouTube","LIVE: contar que estão chegando os 10 anos",""],
+  ["2026-08-14","WhatsApp","Mensagem de antecipação",""],
+  ["2026-08-14","LinkedIn","10 anos",""],
+  ["2026-08-14","Instagram","Carrossel 1 — Antes & Depois: 10 anos de dashboard","Antes & Depois: 10 anos de dashboard"],
+  ["2026-08-14","Instagram","Stories 10 anos",""],
+  ["2026-08-15","WhatsApp","Enviar o carrossel do dia anterior",""],
+  ["2026-08-15","LinkedIn","Webinário",""],
+  ["2026-08-15","YouTube","1º vídeo história",""],
+  ["2026-08-15","Instagram","Reels — 1º vídeo história",""],
+  ["2026-08-15","Instagram","Stories — Webinário",""],
+  ["2026-08-16","WhatsApp","Webinário",""],
+  ["2026-08-16","LinkedIn","Webinário",""],
+  ["2026-08-16","LinkedIn","10 anos",""],
+  ["2026-08-16","Instagram","Stories",""],
+  ["2026-08-16","Instagram","Carrossel 2 — 10 coisas que eu fazia em 2016","10 coisas que eu fazia em 2016"],
+  ["2026-08-17","WhatsApp","10 anos",""],
+  ["2026-08-17","LinkedIn","10 anos",""],
+  ["2026-08-17","YouTube","React Live Antiga",""],
+  ["2026-08-17","Instagram","Reels → comente para ver o react completo",""],
+  ["2026-08-17","Instagram","Carrossel 3 — Manifesto: 10 anos de Efeito UAU","Manifesto: 10 anos de Efeito UAU"],
+  ["2026-08-18","WhatsApp","10 anos",""],
+  ["2026-08-18","WhatsApp","Webinário",""],
+  ["2026-08-18","LinkedIn","10 anos",""],
+  ["2026-08-18","LinkedIn","Webinário",""],
+  ["2026-08-18","YouTube","2º vídeo história",""],
+  ["2026-08-18","Instagram","Carrossel 4 — A Trilogia dos Erros de Fórmula","A Trilogia dos Erros de Fórmula"],
+  ["2026-08-18","Instagram","2º vídeo história",""],
+  ["2026-08-19","WhatsApp","Antecipação live",""],
+  ["2026-08-19","LinkedIn","10 anos",""],
+  ["2026-08-19","LinkedIn","Webinário",""],
+  ["2026-08-19","YouTube","React vídeo antigo",""],
+  ["2026-08-19","Instagram","Reels → comente para ver o react completo",""],
+  ["2026-08-19","Instagram","Carrossel 5 — Bastidores: como era a Karen Abecia em 2016","Bastidores: como era a Karen Abecia em 2016"],
+  ["2026-08-20","Instagram","Comunicação geral focada na live",""]
+];
+const SEED_TAREFAS = SEED_TAREFAS_RAW.map((r, i) => ({
+  titulo: r[2], descricao: '', responsavel: '', categoria: 'Post', urgente: false,
+  prazo: r[0], canal: r[1], roteiroNome: r[3] || '', concluida: false
+})).concat([
+  { titulo: 'Criar cabeçalho comemorativo "10 anos Escola Karen Abecia"', descricao: 'Usar em arquivos de live, área de membros, e-mails e Instagram (faixa na foto de perfil).', responsavel: '', categoria: 'Geral', urgente: true, prazo: '2026-08-12', canal: '', roteiroNome: '', concluida: false },
+  { titulo: 'Definir oferta oficial dos 10 anos', descricao: 'Preencher a aba Evento com preço, condições e link de checkout.', responsavel: 'Karen', categoria: 'Oferta', urgente: true, prazo: '2026-08-20', canal: '', roteiroNome: '', concluida: false }
+]);
+
+/* ============ INIT: aguarda seleção de usuário ============ */
+</script>
+</body>
+</html>
