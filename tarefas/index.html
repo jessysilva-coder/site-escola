@@ -85,8 +85,11 @@
   .etiqueta-manager-row:first-child{border-top:none;}
   .color-dot{width:16px;height:16px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.1);}
   .checkbox-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-  .checkbox-pill{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:20px;padding:5px 10px 5px 6px;font-size:12.5px;cursor:pointer;}
-  .checkbox-pill input{margin:0;}
+  .toggle-chip{display:inline-flex;align-items:center;justify-content:center;text-align:center;border:1.5px solid var(--chip-color, var(--orange));
+    color:var(--chip-color, var(--orange));background:#fff;border-radius:20px;padding:7px 15px;font-size:12.5px;font-weight:700;
+    cursor:pointer;font-family:'Poppins',sans-serif;transition:.12s;}
+  .toggle-chip:hover{opacity:.85;}
+  .toggle-chip.selected{background:var(--chip-color, var(--orange));color:#fff;}
 
   /* Tarefas table */
   .filters-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
@@ -274,7 +277,6 @@
     <div><h2>Roteiros</h2><p>Scripts prontos, vinculáveis a tarefas.</p></div>
     <button class="btn btn-orange" onclick="openRoteiroModal()">+ Novo roteiro</button>
   </div>
-  <div class="filters-bar" id="roteiroFilterBar"></div>
   <div class="grid-cards" id="roteiroGrid"></div>
 </div>
 
@@ -293,6 +295,7 @@
       <div class="field"><label>Início do aquecimento</label><input type="date" id="ev-inicioAquecimento"></div>
       <div class="field"><label>Início da captação</label><input type="date" id="ev-inicioCaptacao"><span class="hint">É também o fim do aquecimento.</span></div>
       <div class="field"><label>Abertura de carrinho</label><input type="date" id="ev-aberturaCarrinho"></div>
+      <div class="field"><label>Fechamento de carrinho</label><input type="date" id="ev-fechamentoCarrinho"></div>
       <div class="field"><label>Live / aula</label><input type="date" id="ev-liveAula"></div>
     </div>
     <div class="field"><label>Promessa principal</label><input id="ev-promessaPrincipal"></div>
@@ -342,7 +345,7 @@
     <input type="hidden" id="t-id">
     <div class="field"><label>Título</label><input id="t-titulo" placeholder="Ex: Criar cabeçalho comemorativo da live"></div>
     <div class="field"><label>Descrição</label><textarea id="t-descricao"></textarea></div>
-    <div class="field"><label>Responsáveis</label><div class="checkbox-list" id="t-responsavel-list"></div></div>
+    <div class="field"><label>Responsáveis</label><div class="checkbox-list" id="t-responsavel-list" style="justify-content:center;"></div></div>
     <div class="evento-grid">
       <div class="field"><label>Categoria</label>
         <select id="t-categoria"><option>Post</option><option>Oferta</option><option>Evento</option><option>Link</option><option>Geral</option></select>
@@ -356,11 +359,12 @@
     <div class="field">
       <label>Roteiro vinculado</label>
       <select id="t-roteiro" onchange="onTaskRoteiroChange()"></select>
+      <div class="roteiro-box" id="t-roteiro-preview" style="display:none;"></div>
       <div class="roteiro-box" id="t-novo-roteiro-box" style="display:none;">
-        <div class="field"><label>Nome do novo roteiro</label><input id="nr-nome"></div>
-        <div class="field"><label>Etiquetas do roteiro</label><div class="checkbox-list" id="nr-etiquetas-list"></div></div>
-        <div class="field"><label>Slides (um por linha)</label><textarea id="nr-slides"></textarea></div>
-        <div class="field"><label>Legenda</label><textarea id="nr-legenda"></textarea></div>
+        <div class="field"><label>Título do roteiro</label><input id="nr-titulo"></div>
+        <div class="field"><label>Texto</label><textarea id="nr-texto" style="min-height:120px;"></textarea></div>
+        <div class="field"><label>CTA</label><input id="nr-cta" placeholder="Ex: Comente EU QUERO"></div>
+        <div class="field"><label>Link</label><input id="nr-link" placeholder="https://..."></div>
         <button type="button" class="btn btn-green btn-sm" onclick="createAndLinkRoteiro()">Criar e vincular</button>
       </div>
     </div>
@@ -390,11 +394,10 @@
   <div class="modal">
     <div class="modal-head"><h3 id="roteiroModalTitle">Novo roteiro</h3><button class="modal-close" onclick="closeModal('modal-roteiro')">✕</button></div>
     <input type="hidden" id="r-id">
-    <div class="field"><label>Nome</label><input id="r-nome" placeholder="Ex: Antes & Depois: 10 anos de dashboard"></div>
-    <div class="field"><label>Categoria / pilar</label><input id="r-pilar" placeholder="Ex: Antes & Depois"></div>
-    <div class="field"><label>Etiquetas</label><div class="checkbox-list" id="r-etiquetas-list"></div></div>
-    <div class="field"><label>Slides (um por linha)</label><textarea id="r-slides" style="min-height:160px;"></textarea></div>
-    <div class="field"><label>Legenda</label><textarea id="r-legenda"></textarea></div>
+    <div class="field"><label>Título do roteiro</label><input id="r-titulo" placeholder="Ex: Antes & Depois: 10 anos de dashboard"></div>
+    <div class="field"><label>Texto</label><textarea id="r-texto" style="min-height:160px;"></textarea></div>
+    <div class="field"><label>CTA</label><input id="r-cta" placeholder="Ex: Comente EU QUERO"></div>
+    <div class="field"><label>Link</label><input id="r-link" placeholder="https://..."></div>
     <div class="modal-foot">
       <button class="btn btn-danger" id="r-delete" onclick="deleteRoteiro()" style="display:none;">Excluir</button>
       <button class="btn btn-orange" onclick="saveRoteiro()" style="margin-left:auto;">Salvar</button>
@@ -591,26 +594,24 @@ function setStatus(mode) {
 function renderAll() { renderTasks(); renderConcluidas(); renderCalendar(); renderRoteiros(); renderLinks(); renderEvento(); }
 
 /* ============ ETIQUETAS ============ */
+function toggleChip(btn) { btn.classList.toggle('selected'); }
+function getCheckedEtiquetas(containerId) {
+  return Array.from(document.querySelectorAll('#' + containerId + ' .toggle-chip.selected')).map(b => b.dataset.value).join(',');
+}
+const getCheckedValues = getCheckedEtiquetas;
 function renderEtiquetaCheckboxes(containerId, selectedCsv) {
   const selected = (selectedCsv || '').split(',').map(s => s.trim()).filter(Boolean);
   const wrap = document.getElementById(containerId);
   wrap.innerHTML = state.etiquetas.map(et => `
-    <label class="checkbox-pill" style="border-color:${esc(et.cor)};">
-      <input type="checkbox" value="${et.id}" ${selected.indexOf(et.id) > -1 ? 'checked' : ''}>
-      <span class="color-dot" style="background:${esc(et.cor)};"></span>${esc(et.nome)}
-    </label>`).join('') || '<span style="font-size:12px;color:var(--muted);">Nenhuma etiqueta cadastrada ainda.</span>';
+    <button type="button" class="toggle-chip ${selected.indexOf(et.id) > -1 ? 'selected' : ''}" data-value="${et.id}" style="--chip-color:${esc(et.cor)};" onclick="toggleChip(this)">${esc(et.nome)}</button>
+  `).join('') || '<span style="font-size:12px;color:var(--muted);">Nenhuma etiqueta cadastrada ainda.</span>';
 }
-function getCheckedEtiquetas(containerId) {
-  return Array.from(document.querySelectorAll('#' + containerId + ' input:checked')).map(i => i.value).join(',');
-}
-const getCheckedValues = getCheckedEtiquetas;
 function renderResponsavelCheckboxes(containerId, selectedCsv) {
   const selected = (selectedCsv || '').split(',').map(s => s.trim()).filter(Boolean);
   const wrap = document.getElementById(containerId);
   wrap.innerHTML = TEAM.map(nome => `
-    <label class="checkbox-pill">
-      <input type="checkbox" value="${nome}" ${selected.indexOf(nome) > -1 ? 'checked' : ''}>${nome}
-    </label>`).join('');
+    <button type="button" class="toggle-chip ${selected.indexOf(nome) > -1 ? 'selected' : ''}" data-value="${esc(nome)}" onclick="toggleChip(this)">${esc(nome)}</button>
+  `).join('');
 }
 function openEtiquetaManager() {
   renderEtiquetaManagerList();
@@ -687,25 +688,43 @@ function toggleConcluida(id, value) {
 function populateRoteiroSelect(selectedId) {
   const sel = document.getElementById('t-roteiro');
   sel.innerHTML = '<option value="">Nenhum</option>' +
-    state.roteiros.map(r => `<option value="${r.id}" ${r.id === selectedId ? 'selected' : ''}>${esc(r.nome)}</option>`).join('') +
+    state.roteiros.map(r => `<option value="${r.id}" ${r.id === selectedId ? 'selected' : ''}>${esc(r.titulo)}</option>`).join('') +
     '<option value="__new__">➕ Criar novo roteiro</option>';
+  renderRoteiroPreview(selectedId);
+}
+function renderRoteiroPreview(roteiroId) {
+  const box = document.getElementById('t-roteiro-preview');
+  if (!roteiroId || roteiroId === '__new__') { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const r = state.roteiros.find(x => x.id === roteiroId);
+  if (!r) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div style="font-weight:700;font-size:13.5px;margin-bottom:6px;">${esc(r.titulo)}</div>
+    ${r.texto ? `<p style="font-size:12.5px;color:var(--muted);white-space:pre-wrap;margin:4px 0;">${esc(r.texto)}</p>` : ''}
+    ${r.cta ? `<p style="font-size:12.5px;margin:4px 0;"><b>CTA:</b> ${esc(r.cta)}</p>` : ''}
+    ${r.link ? `<p style="font-size:12.5px;margin:4px 0;"><a href="${esc(r.link)}" target="_blank" style="color:var(--orange);">${esc(r.link)} ↗</a></p>` : ''}
+  `;
 }
 function onTaskRoteiroChange() {
+  const val = document.getElementById('t-roteiro').value;
   const box = document.getElementById('t-novo-roteiro-box');
-  if (document.getElementById('t-roteiro').value === '__new__') { box.style.display = 'block'; renderEtiquetaCheckboxes('nr-etiquetas-list', document.getElementById('t-etiquetas-list') ? getCheckedEtiquetas('t-etiquetas-list') : ''); }
-  else box.style.display = 'none';
+  if (val === '__new__') { box.style.display = 'block'; document.getElementById('t-roteiro-preview').style.display = 'none'; }
+  else { box.style.display = 'none'; renderRoteiroPreview(val); }
 }
 function createAndLinkRoteiro() {
-  const nome = document.getElementById('nr-nome').value.trim();
-  if (!nome) return toast('Dê um nome ao novo roteiro', true);
+  const titulo = document.getElementById('nr-titulo').value.trim();
+  if (!titulo) return toast('Dê um título ao novo roteiro', true);
   const novoRoteiro = {
-    id: genId('ro'), nome, etiquetas: getCheckedEtiquetas('nr-etiquetas-list'),
-    slides: document.getElementById('nr-slides').value, legenda: document.getElementById('nr-legenda').value.trim(), pilar: ''
+    id: genId('ro'), titulo,
+    texto: document.getElementById('nr-texto').value,
+    cta: document.getElementById('nr-cta').value.trim(),
+    link: document.getElementById('nr-link').value.trim()
   };
   state.roteiros.push(novoRoteiro);
   populateRoteiroSelect(novoRoteiro.id);
   document.getElementById('t-novo-roteiro-box').style.display = 'none';
-  document.getElementById('nr-nome').value = ''; document.getElementById('nr-slides').value = ''; document.getElementById('nr-legenda').value = '';
+  document.getElementById('nr-titulo').value = ''; document.getElementById('nr-texto').value = '';
+  document.getElementById('nr-cta').value = ''; document.getElementById('nr-link').value = '';
   toast('Roteiro criado e vinculado!');
   bgCall(() => call('create', 'Roteiros', novoRoteiro), 'Erro ao salvar roteiro');
 }
@@ -774,7 +793,8 @@ const IMPORTANT_DATE_LABELS = {
   dataEvento: '🎉 Evento',
   inicioAquecimento: '🔥 Aquecimento',
   inicioCaptacao: '📣 Captação',
-  aberturaCarrinho: '🛒 Carrinho',
+  aberturaCarrinho: '🛒 Abre carrinho',
+  fechamentoCarrinho: '🔒 Fecha carrinho',
   liveAula: '🎥 Live/aula'
 };
 function getImportantDates() {
@@ -829,55 +849,38 @@ function renderCalendar() {
 }
 
 /* ============ ROTEIROS ============ */
-let roteiroFilterActive = [];
-function renderRoteiroFilterBar() {
-  const bar = document.getElementById('roteiroFilterBar');
-  bar.innerHTML = '<button class="btn btn-ghost btn-sm ' + (roteiroFilterActive.length === 0 ? 'active' : '') + '" onclick="setRoteiroFilter(null)">Todas</button>' +
-    state.etiquetas.map(et => `<button class="btn btn-ghost btn-sm ${roteiroFilterActive.indexOf(et.id) > -1 ? 'active' : ''}" style="${roteiroFilterActive.indexOf(et.id) > -1 ? 'background:' + et.cor + ';color:#fff;border-color:' + et.cor + ';' : ''}" onclick="setRoteiroFilter('${et.id}')">${esc(et.nome)}</button>`).join('');
-}
-function setRoteiroFilter(id) {
-  if (id === null) roteiroFilterActive = [];
-  else if (roteiroFilterActive.indexOf(id) > -1) roteiroFilterActive = roteiroFilterActive.filter(x => x !== id);
-  else roteiroFilterActive.push(id);
-  renderRoteiroFilterBar(); renderRoteiros();
-}
 function renderRoteiros() {
-  renderRoteiroFilterBar();
   const wrap = document.getElementById('roteiroGrid');
-  let list = state.roteiros;
-  if (roteiroFilterActive.length) list = list.filter(r => etiquetaIdsOf(r).some(id => roteiroFilterActive.indexOf(id) > -1));
+  const list = state.roteiros;
   if (!list.length) { wrap.innerHTML = '<div class="empty">Nenhum roteiro encontrado.</div>'; return; }
-  wrap.innerHTML = list.map(r => {
-    const slides = (r.slides || '').split('\n').filter(Boolean);
-    return `<div class="item-card">
-      ${renderTagChips(r)}
-      <h4 style="margin-top:8px;">${esc(r.nome)}</h4>
-      <ul class="slide-list">${slides.slice(0, 4).map((s, i) => `<li><b>${i + 1}.</b> ${esc(s.replace(/^\d+\.\s*/, ''))}</li>`).join('')}${slides.length > 4 ? `<li style="color:#9CA3AF;">+ ${slides.length - 4} slide(s)</li>` : ''}</ul>
+  wrap.innerHTML = list.map(r => `
+    <div class="item-card">
+      <h4>${esc(r.titulo)}</h4>
+      ${r.texto ? `<p style="white-space:pre-wrap;">${esc((r.texto || '').slice(0, 220))}${(r.texto || '').length > 220 ? '…' : ''}</p>` : ''}
+      ${r.cta ? `<p><b>CTA:</b> ${esc(r.cta)}</p>` : ''}
+      ${r.link ? `<p><a href="${esc(r.link)}" target="_blank" style="color:var(--orange);">${esc(r.link)} ↗</a></p>` : ''}
       <div class="actions"><button class="btn btn-ghost btn-sm" onclick='openRoteiroModal(${JSON.stringify(r).replace(/'/g, "&#39;")})'>Ver / editar</button></div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 function openRoteiroModal(r) {
   document.getElementById('roteiroModalTitle').textContent = r ? 'Editar roteiro' : 'Novo roteiro';
   document.getElementById('r-id').value = r ? r.id : '';
-  document.getElementById('r-nome').value = r ? r.nome || '' : '';
-  document.getElementById('r-pilar').value = r ? r.pilar || '' : '';
-  document.getElementById('r-slides').value = r ? r.slides || '' : '';
-  document.getElementById('r-legenda').value = r ? r.legenda || '' : '';
-  renderEtiquetaCheckboxes('r-etiquetas-list', r ? r.etiquetas : '');
+  document.getElementById('r-titulo').value = r ? r.titulo || '' : '';
+  document.getElementById('r-texto').value = r ? r.texto || '' : '';
+  document.getElementById('r-cta').value = r ? r.cta || '' : '';
+  document.getElementById('r-link').value = r ? r.link || '' : '';
   document.getElementById('r-delete').style.display = r ? 'inline-flex' : 'none';
   openModal('modal-roteiro');
 }
 function saveRoteiro() {
   const id = document.getElementById('r-id').value;
   const data = {
-    nome: document.getElementById('r-nome').value.trim(),
-    pilar: document.getElementById('r-pilar').value.trim(),
-    etiquetas: getCheckedEtiquetas('r-etiquetas-list'),
-    slides: document.getElementById('r-slides').value,
-    legenda: document.getElementById('r-legenda').value.trim()
+    titulo: document.getElementById('r-titulo').value.trim(),
+    texto: document.getElementById('r-texto').value,
+    cta: document.getElementById('r-cta').value.trim(),
+    link: document.getElementById('r-link').value.trim()
   };
-  if (!data.nome) return toast('Dê um nome ao roteiro', true);
+  if (!data.titulo) return toast('Dê um título ao roteiro', true);
   closeModal('modal-roteiro');
   if (id) {
     const idx = state.roteiros.findIndex(x => x.id === id);
@@ -1012,6 +1015,7 @@ function renderEvento() {
   document.getElementById('ev-inicioAquecimento').value = state.evento.inicioAquecimento || '2026-08-13';
   document.getElementById('ev-inicioCaptacao').value = state.evento.inicioCaptacao || '2026-08-20';
   document.getElementById('ev-aberturaCarrinho').value = state.evento.aberturaCarrinho || '';
+  document.getElementById('ev-fechamentoCarrinho').value = state.evento.fechamentoCarrinho || '';
   document.getElementById('ev-liveAula').value = state.evento.liveAula || '';
   document.getElementById('ev-promessaPrincipal').value = state.evento.promessaPrincipal || '';
   document.getElementById('ev-observacoes').value = state.evento.observacoes || '';
@@ -1045,6 +1049,7 @@ function saveEvento() {
     inicioAquecimento: document.getElementById('ev-inicioAquecimento').value,
     inicioCaptacao: document.getElementById('ev-inicioCaptacao').value,
     aberturaCarrinho: document.getElementById('ev-aberturaCarrinho').value,
+    fechamentoCarrinho: document.getElementById('ev-fechamentoCarrinho').value,
     liveAula: document.getElementById('ev-liveAula').value,
     promessaPrincipal: document.getElementById('ev-promessaPrincipal').value.trim(),
     observacoes: document.getElementById('ev-observacoes').value.trim(),
@@ -1085,8 +1090,8 @@ function seedInitialData() {
   });
   const roteiroByNome = {};
   const roteirosToCreate = SEED_ROTEIROS.map(r => {
-    const id = genId('ro'); roteiroByNome[r.nome] = id;
-    return Object.assign({ id }, r, { etiquetas: etByNome['Instagram'] || '' });
+    const id = genId('ro'); roteiroByNome[r.titulo] = id;
+    return Object.assign({ id }, r);
   });
   const tarefasToCreate = SEED_TAREFAS.map(t => {
     const etId = etByNome[t.canal] || '';
@@ -1118,59 +1123,59 @@ const SEED_ETIQUETAS = [
 ];
 
 const SEED_ROTEIROS = [
-  { nome: 'Antes & Depois: 10 anos de dashboard', pilar: 'Antes & Depois',
-    slides: [
+  { titulo: 'Antes & Depois: 10 anos de dashboard',
+    texto: [
       '1. Capa: "Isso aqui era meu dashboard em 2016 😳 (desliza pro terror)"',
       '2. [print de planilha simples/feia real de 2016] — "Sim, era assim mesmo. Fórmula na unha, cor escolhida no desespero."',
       '3. "Levei uns bons anos pra entender uma coisa: dashboard bonito não é sobre design. É sobre entender o que os dados estão tentando te contar."',
       '4. [print de dashboard intermediário, uns 3-4 anos atrás] — "Aqui já dava pra ver a evolução. Ainda tinha muito erro. Mas já tinha direção."',
       '5. [print do dashboard atual, profissional] — "E hoje? Isso. 10 anos de prática, muita aula dada, muito Efeito UAU testado nos alunos antes de chegar aqui."',
-      '6. Fechamento: "10 anos, essa evolução toda. E o que vem no dia 1 de setembro? Isso eu ainda não posso contar 👀"'
-    ].join('\n'),
-    legenda: 'Guardem esse carrossel. Em 10 anos dá pra ver a diferença entre quem começou e quem virou referência. E olha que a gente nem chegou na parte boa da comemoração ainda.' },
-  { nome: '10 coisas que eu fazia em 2016', pilar: '10 mudanças',
-    slides: [
+      '6. Fechamento: "10 anos, essa evolução toda. E o que vem no dia 1 de setembro? Isso eu ainda não posso contar 👀"',
+      '', 'Legenda: Guardem esse carrossel. Em 10 anos dá pra ver a diferença entre quem começou e quem virou referência. E olha que a gente nem chegou na parte boa da comemoração ainda.'
+    ].join('\n'), cta: 'Salve esse post', link: '' },
+  { titulo: '10 coisas que eu fazia em 2016',
+    texto: [
       '1. Capa: "10 coisas que eu fazia sozinha em 2016... e a IA faz por mim hoje"',
       '2. "#1 — Copiar e colar fórmula célula por célula. Hoje: peço pra IA aplicar em toda a planilha em 1 comando."',
       '3. "#2 — Montar gráfico manualmente, ajustando cor por cor. Hoje: a IA já sugere o gráfico certo pro tipo de dado."',
       '4. "#3 — Ficar 40 minutos procurando o erro de uma fórmula. Hoje: a IA aponta o erro e ainda explica o motivo."',
       '5. "#4 — Resumir relatório enorme lendo linha por linha. Hoje: a IA lê e resume em segundos."',
       '6. "#5 — Cruzar duas planilhas diferentes na mão. Hoje: a IA cruza os dados e já entrega pronto."',
-      '7. Fechamento: "10 anos vendo essa evolução de perto. Dia 1 de setembro tem uma comemoração à altura disso 👀"'
-    ].join('\n'),
-    legenda: 'De 2016 pra 2026 o jogo virou completamente. Quem começou comigo sabe bem essa diferença.' },
-  { nome: 'Manifesto: 10 anos de Efeito UAU', pilar: 'Manifesto',
-    slides: [
+      '7. Fechamento: "10 anos vendo essa evolução de perto. Dia 1 de setembro tem uma comemoração à altura disso 👀"',
+      '', 'Legenda: De 2016 pra 2026 o jogo virou completamente. Quem começou comigo sabe bem essa diferença.'
+    ].join('\n'), cta: 'Comente qual você mais sentia na pele', link: '' },
+  { titulo: 'Manifesto: 10 anos de Efeito UAU',
+    texto: [
       '1. Capa: "10 anos. 1 propósito. Um manifesto sobre o Efeito UAU."',
       '2. "Em 2016 eu ensinava Excel numa sala emprestada, com um projetor que travava toda aula."',
       '3. "Eu não queria ensinar fórmula. Eu queria mudar a cara de quem finalmente entendia."',
       "4. \"Foi aí que nasceu o Efeito UAU: aquele momento em que o aluno olha pra tela e pensa 'eu consegui isso sozinho'.\"",
       '5. "10 anos depois, isso não mudou. Mudaram as ferramentas. A IA entrou no jogo. Mas o objetivo continua o mesmo: fazer você dizer UAU."',
       '6. "Cada aluno que aprendeu aqui carrega um pouco desse propósito. E isso, pra mim, vale mais que qualquer métrica."',
-      '7. Fechamento: "10 anos de Efeito UAU. E o próximo capítulo começa dia 1 de setembro 👀"'
-    ].join('\n'),
-    legenda: 'Esse é o motivo de tudo isso existir. Obrigada por fazerem parte dessa década. O que vem a seguir eu conto no dia 1/9.' },
-  { nome: 'A Trilogia dos Erros de Fórmula', pilar: 'Referências pop',
-    slides: [
+      '7. Fechamento: "10 anos de Efeito UAU. E o próximo capítulo começa dia 1 de setembro 👀"',
+      '', 'Legenda: Esse é o motivo de tudo isso existir. Obrigada por fazerem parte dessa década. O que vem a seguir eu conto no dia 1/9.'
+    ].join('\n'), cta: 'Marque quem viveu essa jornada com você', link: '' },
+  { titulo: 'A Trilogia dos Erros de Fórmula',
+    texto: [
       '1. Capa: "A TRILOGIA DOS ERROS DE FÓRMULA — baseado em fatos reais de quem já chorou com #REF!"',
       '2. "EPISÓDIO 1: O Despertar do #DIV/0! Ano: 2016. Ninguém sabia o que aquilo significava."',
       '3. "EPISÓDIO 2: A Vingança do PROCV. Ano: 2019. A fórmula que funcionava... até não funcionar mais."',
       '4. "EPISÓDIO 3: O Retorno da Tabela Dinâmica. Ano: 2022. A vitória, finalmente, depois de muita luta."',
       '5. "EPÍLOGO: A Era da I.A. Ano: 2026. A trilogia virou comédia — porque agora a I.A. resolve isso em segundos."',
-      '6. Fechamento: "10 anos, 3 eras, 1 evolução. E tem uma continuação chegando dia 1 de setembro 👀"'
-    ].join('\n'),
-    legenda: 'Quem já viveu os 3 episódios dessa trilogia levanta a mão 🙋 10 anos de guerra contra fórmula, e olha onde a gente chegou.' },
-  { nome: 'Bastidores: como era a Karen Abecia em 2016', pilar: 'Bastidores & prova social',
-    slides: [
+      '6. Fechamento: "10 anos, 3 eras, 1 evolução. E tem uma continuação chegando dia 1 de setembro 👀"',
+      '', 'Legenda: Quem já viveu os 3 episódios dessa trilogia levanta a mão 🙋 10 anos de guerra contra fórmula, e olha onde a gente chegou.'
+    ].join('\n'), cta: 'Levante a mão nos comentários 🙋', link: '' },
+  { titulo: 'Bastidores: como era a Karen Abecia em 2016',
+    texto: [
       '1. Capa: "Achei essas fotos de 2016 e precisava compartilhar com vocês 😅"',
       '2. [foto real da primeira sala de aula/setup antigo] — "Essa era a estrutura da primeira turma. Sim, era bem diferente de hoje."',
       "3. [foto de equipamento antigo, projetor, notebook antigo] — \"O 'estúdio' de gravação era literalmente essa mesa aqui.\"",
       '4. [print de post antigo, com poucos likes/comentários] — "E esse era o alcance dos posts. Cresceu bastante, né?"',
       '5. [foto de alguma primeira turma/aluno] — "Mas o mais importante sempre foi isso: gente aprendendo de verdade."',
       '6. [foto atual, comparando com a estrutura de hoje] — "10 anos depois, a estrutura mudou. O propósito, não."',
-      '7. Fechamento: "Muita coisa mudou nesses 10 anos. E tem mais mudança chegando dia 1 de setembro 👀"'
-    ].join('\n'),
-    legenda: 'Arquivo morto é isso: parte vergonha alheia, parte orgulho enorme. 10 anos de história — e a próxima página começa dia 1/9.' }
+      '7. Fechamento: "Muita coisa mudou nesses 10 anos. E tem mais mudança chegando dia 1 de setembro 👀"',
+      '', 'Legenda: Arquivo morto é isso: parte vergonha alheia, parte orgulho enorme. 10 anos de história — e a próxima página começa dia 1/9.'
+    ].join('\n'), cta: '', link: '' }
 ];
 
 const SEED_TAREFAS_RAW = [
