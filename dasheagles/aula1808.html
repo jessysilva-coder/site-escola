@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Otimize seu LinkedIn com I.A. | Escola Karen Abecia</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+<style>
+  :root{
+    --laranja:#FF7000;
+    --verde:#57B95C;
+    --fundo:#F0F0F0;
+    --card:#FFFFFF;
+    --texto:#020617;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--fundo);
+    color:var(--texto);
+    font-family:'Poppins',sans-serif;
+    line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Montserrat',sans-serif;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1000px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  .hero{
+    padding:64px 0 48px;
+    text-align:center;
+  }
+  .hero .selo{
+    display:inline-block;
+    background:#fff;
+    color:var(--laranja);
+    font-weight:600;
+    font-size:14px;
+    padding:8px 18px;
+    border-radius:999px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    margin-bottom:20px;
+  }
+  .hero h1{
+    font-size:clamp(28px,5vw,42px);
+    font-weight:800;
+    color:var(--texto);
+    margin-bottom:16px;
+    line-height:1.2;
+  }
+  .hero h1 span{color:var(--laranja);}
+  .hero p.subtitulo{
+    font-size:18px;
+    color:#334;
+    max-width:680px;
+    margin:0 auto;
+    opacity:0.85;
+  }
+
+  /* SEÇÃO GERAL */
+  section{padding:40px 0;}
+  .titulo-secao{
+    font-size:clamp(22px,3.5vw,30px);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .subtitulo-secao{
+    font-size:16px;
+    color:#334;
+    opacity:0.8;
+    margin-bottom:32px;
+    max-width:640px;
+  }
+
+  /* COMO FUNCIONA - PASSOS */
+  .passos{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .passo-card{
+    background:var(--card);
+    border-radius:20px;
+    padding:28px 24px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+  }
+  .passo-numero{
+    width:38px;height:38px;
+    background:var(--laranja);
+    color:#fff;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+    font-family:'Montserrat',sans-serif;
+    margin-bottom:16px;
+  }
+  .passo-card h3{font-size:17px;margin-bottom:8px;}
+  .passo-card p{font-size:14.5px;color:#334;opacity:0.85;}
+
+  /* CAIXA MÉTODO INSPECIONAR */
+  .metodo-box{
+    background:var(--card);
+    border-radius:20px;
+    padding:32px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+    margin-top:24px;
+  }
+  .metodo-box h3{
+    font-size:19px;
+    margin-bottom:18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .metodo-box ol{
+    padding-left:20px;
+  }
+  .metodo-box li{
+    margin-bottom:12px;
+    font-size:15px;
+  }
+  .metodo-box li strong{color:var(--laranja);}
+  .dica-alt{
+    margin-top:18px;
+    padding:14px 18px;
+    background:var(--fundo);
+    border-radius:12px;
+    font-size:14px;
+    opacity:0.85;
+  }
+
+  /* GRUPOS DE AVALIAÇÃO */
+  .grupo{
+    margin-bottom:44px;
+  }
+  .grupo-titulo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .grupo-titulo .badge{
+    background:var(--laranja);
+    color:#fff;
+    font-family:'Montserrat',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding:4px 12px;
+    border-radius:999px;
+  }
+  .grupo-titulo h3{font-size:19px;}
+  .cards-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+  .item-card{
+    background:var(--card);
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.04);
+  }
+  .item-card h4{
+    font-size:15.5px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:var(--texto);
+  }
+  .item-card p{
+    font-size:14px;
+    color:#334;
+    opacity:0.85;
+  }
+
+  /* RESUMO RÁPIDO */
+  .resumo-box{
+    background:linear-gradient(135deg,#FF7000,#ff8c3d);
+    border-radius:20px;
+    padding:32px;
+    color:#fff;
+  }
+  .resumo-box h3{
+    font-size:20px;
+    margin-bottom:16px;
+  }
+  .resumo-lista{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px 24px;
+    list-style:none;
+  }
+  .resumo-lista li{
+    font-size:14.5px;
+    padding-left:22px;
+    position:relative;
+    opacity:0.95;
+  }
+  .resumo-lista li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    font-weight:700;
+  }
+
+  /* PROMPT BOX */
+  .prompt-box{
+    background:#020617;
+    border-radius:20px;
+    padding:0;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+  }
+  .prompt-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 24px;
+    background:#0b1220;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .prompt-header span{
+    color:#fff;
+    font-family:'Montserrat',sans-serif;
+    font-weight:600;
+    font-size:14px;
+  }
+  .btn-copiar{
+    background:var(--verde);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    font-family:'Poppins',sans-serif;
+    font-weight:500;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:transform 0.2s ease, background 0.2s ease;
+  }
+  .btn-copiar:hover{transform:scale(1.04);}
+  .btn-copiar.copiado{background:#3d9541;}
+  .prompt-conteudo{
+    padding:24px;
+    color:#e7e9ee;
+    font-size:14px;
+    white-space:pre-wrap;
+    font-family:'Poppins',sans-serif;
+    max-height:520px;
+    overflow-y:auto;
+    line-height:1.7;
+  }
+  .prompt-conteudo .destaque{
+    color:var(--laranja);
+    font-weight:600;
+  }
+
+  /* CTA FINAL */
+  .cta-final{
+    text-align:center;
+    padding:48px 0 64px;
+  }
+  .cta-final h2{
+    font-size:clamp(22px,4vw,28px);
+    margin-bottom:12px;
+  }
+  .cta-final p{
+    color:#334;
+    opacity:0.85;
+    max-width:560px;
+    margin:0 auto 24px;
+  }
+  .btn-cta{
+    display:inline-block;
+    background:var(--verde);
+    color:#fff;
+    text-decoration:none;
+    font-weight:500;
+    padding:16px 32px;
+    border-radius:10px;
+    font-size:15px;
+    transition:transform 0.2s ease;
+  }
+  .btn-cta:hover{transform:scale(1.03);}
+
+  footer{
+    text-align:center;
+    font-size:13px;
+    opacity:0.5;
+    padding:24px;
+  }
+
+  @media(max-width:760px){
+    .passos{grid-template-columns:1fr;}
+    .cards-grid{grid-template-columns:1fr;}
+    .resumo-lista{grid-template-columns:1fr;}
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="hero">
+    <span class="selo">Material de Apoio · Aula de LinkedIn</span>
+    <h1>Otimize seu Perfil do LinkedIn com <span>I.A.</span></h1>
+    <p class="subtitulo">Nesta aula, você vai aprender a usar a Inteligência Artificial como uma revisora completa do seu perfil: ela analisa cada seção e te devolve correções práticas para aplicar ainda hoje.</p>
+  </div>
+
+  <section data-aos="fade-up">
+    <h2 class="titulo-secao">Como Funciona a Análise</h2>
+    <p class="subtitulo-secao">São três etapas simples para transformar seu perfil em uma ferramenta de atração de oportunidades.</p>
+    <div class="passos">
+      <div class="passo-card">
+        <div class="passo-numero">1</div>
+        <h3>Copie o HTML do seu perfil</h3>
+        <p>Acesse seu perfil completo do LinkedIn e extraia o código-fonte da página.</p>
+      </div>
+      <div class="passo-card">
+        <div class="passo-numero">2</div>
+        <h3>Cole no prompt de análise</h3>
+        <p>Use o prompt pronto desta página, cole o HTML no lugar indicado e envie para a I.A. de sua preferência.</p>
+      </div>
+      <div class="passo-card">
+        <div class="passo-numero">3</div>
+        <h3>Aplique as correções</h3>
+        <p>Revise o diagnóstico, o plano de ação e comece pelos pontos mais urgentes apontados pela I.A.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-aos="fade-up">
+    <h2 class="titulo-secao">O Que Precisa Ser Avaliado</h2>
+    <p class="subtitulo-secao">Cada elemento do perfil comunica algo para quem está do outro lado — recrutador, cliente ou parceiro. Veja tudo o que entra na análise.</p>
+
+    <div class="grupo">
+      <div class="grupo-titulo"><span class="badge">01</span><h3>Primeira Impressão</h3></div>
+      <div class="cards-grid">
+        <div class="item-card">
+          <h4>Foto de perfil</h4>
+          <p>Precisa ser profissional, com boa iluminação, rosto visível e fundo neutro. É o primeiro elemento que gera confiança.</p>
+        </div>
+        <div class="item-card">
+          <h4>Banner (foto de capa)</h4>
+          <p>Reforça seu posicionamento. Pode conter sua área de atuação, proposta de valor ou identidade visual — nunca deixar o padrão genérico do LinkedIn.</p>
+        </div>
+        <div class="item-card">
+          <h4>Nome</h4>
+          <p>Nome completo, sem emojis em excesso ou títulos exagerados. Clareza acima de tudo.</p>
+        </div>
+        <div class="item-card">
+          <h4>Frase de destaque (headline)</h4>
+          <p>Não deve repetir só o cargo atual. É o espaço para mostrar o que você entrega, para quem e com quais resultados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-titulo"><span class="badge">02</span><h3>Contato e Acesso</h3></div>
+      <div class="cards-grid">
+        <div class="item-card">
+          <h4>Informações de contato</h4>
+          <p>E-mail, site ou portfólio e redes relevantes precisam estar visíveis e atualizados no campo de contato.</p>
+        </div>
+        <div class="item-card">
+          <h4>URL personalizada do perfil</h4>
+          <p>Trocar o link padrão (com números aleatórios) por um endereço personalizado com seu nome facilita o compartilhamento.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-titulo"><span class="badge">03</span><h3>Apresentação</h3></div>
+      <div class="cards-grid">
+        <div class="item-card">
+          <h4>Seção "Sobre"</h4>
+          <p>As primeiras linhas precisam prender a atenção antes do "ver mais". O texto deve contar trajetória, resultados e terminar com um convite claro.</p>
+        </div>
+        <div class="item-card">
+          <h4>Palavras-chave da área</h4>
+          <p>Repetir termos relevantes da sua área ao longo do perfil ajuda recrutadores a te encontrarem nas buscas internas do LinkedIn.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-titulo"><span class="badge">04</span><h3>Trajetória</h3></div>
+      <div class="cards-grid">
+        <div class="item-card">
+          <h4>Experiências profissionais</h4>
+          <p>As descrições devem mostrar resultados e não apenas tarefas, com verbos de ação e, quando possível, números.</p>
+        </div>
+        <div class="item-card">
+          <h4>Formação e certificações</h4>
+          <p>Cursos e certificações relevantes reforçam autoridade e devem estar organizados por ordem de importância para sua área.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-titulo"><span class="badge">05</span><h3>Autoridade</h3></div>
+      <div class="cards-grid">
+        <div class="item-card">
+          <h4>Competências (skills)</h4>
+          <p>O LinkedIn destaca as três primeiras competências listadas — priorize as mais relevantes para a vaga ou área que você quer atrair.</p>
+        </div>
+        <div class="item-card">
+          <h4>Destaques (Featured)</h4>
+          <p>Projetos, posts ou materiais fixados no topo do perfil funcionam como um portfólio rápido de prova social.</p>
+        </div>
+        <div class="item-card">
+          <h4>Recomendações</h4>
+          <p>Recomendações de colegas, gestores ou clientes aumentam a credibilidade — vale pedir a quem já trabalhou com você.</p>
+        </div>
+        <div class="item-card">
+          <h4>Endossos de competências</h4>
+          <p>Pedir endossos das competências mais importantes reforça a percepção de domínio naquela habilidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-aos="fade-up">
+    <div class="resumo-box">
+      <h3>Resumo Rápido: O que Todo Perfil Precisa Ter</h3>
+      <ul class="resumo-lista">
+        <li>Foto profissional e banner alinhado ao posicionamento</li>
+        <li>Frase de destaque com proposta de valor clara</li>
+        <li>Sobre com trajetória, resultados e convite ao final</li>
+        <li>Experiências com resultados, não só tarefas</li>
+        <li>Competências priorizadas por relevância</li>
+        <li>Contato completo e link personalizado</li>
+        <li>Formação e certificações organizadas</li>
+        <li>Destaques e recomendações reforçando credibilidade</li>
+      </ul>
+    </div>
+  </section>
+
+  <section data-aos="fade-up">
+    <h2 class="titulo-secao">Prompt Pronto para Enviar à I.A.</h2>
+    <p class="subtitulo-secao">Copie o texto abaixo, cole o HTML do seu perfil no espaço indicado e envie para a I.A. de sua preferência.</p>
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span>Prompt de Análise de Perfil — LinkedIn</span>
+        <button class="btn-copiar" id="btnCopiar">Copiar prompt</button>
+      </div>
+      <div class="prompt-conteudo" id="promptTexto">Você vai atuar como um especialista em otimização de perfis do LinkedIn, com foco em atrair recrutadores, clientes e oportunidades profissionais.
+
+Vou colar abaixo o código HTML do meu perfil do LinkedIn. Analise o conteúdo real presente nesse código (textos, títulos, descrições e links) e me devolva um diagnóstico completo e prático, organizado exatamente nestes tópicos:
+
+1. Nome e frase de destaque (headline) — o nome está completo e sem excessos? A frase de destaque comunica com clareza o que eu faço e para quem? Sugira uma versão otimizada.
+
+2. Foto e banner — verifique se os campos existem e estão preenchidos no HTML. Como você não consegue avaliar a imagem visualmente, me dê orientações objetivas do que uma boa foto de perfil e um bom banner profissional precisam transmitir.
+
+3. Informações de contato — quais dados de contato aparecem no perfil? O que está faltando para facilitar que alguém entre em contato comigo?
+
+4. Sobre — avalie a primeira linha (é o que aparece antes do "ver mais"), a estrutura do texto, se mostra resultados reais e se termina com um convite claro. Reescreva uma versão melhorada.
+
+5. Experiências — verifique se as descrições mostram resultados e não apenas tarefas, se usam verbos de ação e palavras-chave da minha área. Aponte quais experiências estão fracas e como melhorar cada uma.
+
+6. Competências — quais estão listadas e em que ordem? Sugira quais competências priorizar de acordo com a área em que quero ser encontrado.
+
+7. Formação, destaques e recomendações — o que está presente no perfil e o que vale a pena adicionar.
+
+Antes de me entregar qualquer texto reescrito (headline, sobre ou experiências), me faça as perguntas necessárias para personalizar o resultado com a minha linguagem, minha trajetória e meu jeito de falar. O objetivo é que o texto final pareça escrito por mim, e não algo genérico ou visivelmente gerado por inteligência artificial.
+
+No final, monte um resumo com:
+- Nota geral do perfil (de 0 a 10)
+- Os 3 pontos mais urgentes para corrigir
+- Um plano de ação simples, em ordem, para eu aplicar as melhorias
+
+Aqui está o HTML do meu perfil:
+[COLE AQUI O HTML DO SEU PERFIL]</div>
+    </div>
+  </section>
+
+  <div class="cta-final" data-aos="fade-up">
+    <h2>Pronto para Colocar em Prática?</h2>
+    <p>Extraia o HTML do seu perfil, use o prompt acima e comece pelos pontos mais urgentes apontados pela I.A.</p>
+    <a class="btn-cta" href="#" onclick="document.getElementById('promptTexto').scrollIntoView({behavior:'smooth'});return false;">Acessar o prompt de análise</a>
+  </div>
+
+</div>
+
+<footer>
+  © Todos os direitos reservados para Escola Karen Abecia — 2026
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+
+  const btnCopiar = document.getElementById('btnCopiar');
+  const promptTexto = document.getElementById('promptTexto');
+
+  btnCopiar.addEventListener('click', () => {
+    const texto = promptTexto.innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+      const original = btnCopiar.textContent;
+      btnCopiar.textContent = 'Copiado! ✓';
+      btnCopiar.classList.add('copiado');
+      setTimeout(() => {
+        btnCopiar.textContent = original;
+        btnCopiar.classList.remove('copiado');
+      }, 2000);
+    }).catch(() => {
+      alert('Não foi possível copiar automaticamente. Selecione o texto manualmente.');
+    });
+  });
+</script>
+
+</body>
+</html>
