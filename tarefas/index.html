@@ -244,7 +244,7 @@
   </div>
   <div style="overflow-x:auto;">
     <table class="tarefas-table" id="tarefasTable">
-      <thead><tr><th></th><th>Tarefa</th><th>Etiquetas</th><th>Entrega</th><th>Responsável</th></tr></thead>
+      <thead><tr><th></th><th>Tarefa</th><th>Etiquetas</th><th>Roteiro</th><th>Entrega</th><th>Responsável</th></tr></thead>
       <tbody id="tarefasTbody"></tbody>
     </table>
   </div>
@@ -257,7 +257,7 @@
   </div>
   <div style="overflow-x:auto;">
     <table class="tarefas-table" id="concluidasTable">
-      <thead><tr><th>Tarefa</th><th>Etiquetas</th><th>Entrega</th><th>Responsável</th><th></th></tr></thead>
+      <thead><tr><th>Tarefa</th><th>Etiquetas</th><th>Roteiro</th><th>Entrega</th><th>Responsável</th><th></th></tr></thead>
       <tbody id="concluidasTbody"></tbody>
     </table>
   </div>
@@ -447,7 +447,15 @@ function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { retur
 function genId(prefix) { return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 function bgCall(promiseFn, errMsg) {
   // Dispara a chamada à API sem travar a interface. A tela já foi atualizada antes disso.
-  Promise.resolve().then(promiseFn).catch(err => toast((errMsg || 'Erro ao sincronizar') + ': ' + err.message, true));
+  Promise.resolve().then(promiseFn).then(res => {
+    if (res && res.success === false) {
+      console.error('Erro da API:', res.error);
+      toast((errMsg || 'Erro ao sincronizar') + ': ' + (res.error || 'falha desconhecida na planilha'), true);
+    }
+  }).catch(err => {
+    console.error('Erro de rede:', err);
+    toast((errMsg || 'Erro ao sincronizar') + ': ' + err.message, true);
+  });
 }
 
 /* ============ GATE ============ */
@@ -654,25 +662,33 @@ function renderTasks() {
     if (sortBy === 'responsavel') return (a.responsavel || '').localeCompare(b.responsavel || '');
     return (a.prazo || '9999').localeCompare(b.prazo || '9999');
   });
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma tarefa por aqui. Clique em "+ Nova tarefa" pra começar.</td></tr>'; return; }
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma tarefa por aqui. Clique em "+ Nova tarefa" pra começar.</td></tr>'; return; }
   tbody.innerHTML = list.map(t => `
     <tr>
       <td><input type="checkbox" class="chk" onclick="toggleConcluida('${t.id}', true)"></td>
       <td class="task-title-cell" onclick='openTaskModal(${JSON.stringify(t).replace(/'/g, "&#39;")})'>${esc(t.titulo)}${(t.urgente === true || t.urgente === 'true') ? '<span class="task-urgent">URGENTE</span>' : ''}</td>
       <td>${renderTagChips(t)}</td>
+      <td>${renderRoteiroBadge(t.roteiroId)}</td>
       <td>${fmtDate(t.prazo)}</td>
       <td>${esc(responsavelIdsOf(t).join(', ') || '—')}</td>
     </tr>`).join('');
+}
+function renderRoteiroBadge(roteiroId) {
+  if (!roteiroId) return '<span style="font-size:11.5px;color:#C4C4C4;">—</span>';
+  const r = state.roteiros.find(x => x.id === roteiroId);
+  if (!r) return '<span style="font-size:11.5px;color:#C4C4C4;">—</span>';
+  return `<span class="tag-chip" style="background:var(--green);" title="${esc(r.titulo)}">🎠 ${esc(r.titulo.length > 22 ? r.titulo.slice(0, 22) + '…' : r.titulo)}</span>`;
 }
 function responsavelIdsOf(item) { return (item.responsavel || '').split(',').map(s => s.trim()).filter(Boolean); }
 function renderConcluidas() {
   const tbody = document.getElementById('concluidasTbody');
   const list = state.tarefas.filter(t => t.concluida === true || t.concluida === 'true');
-  if (!list.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma tarefa concluída ainda.</td></tr>'; return; }
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma tarefa concluída ainda.</td></tr>'; return; }
   tbody.innerHTML = list.map(t => `
     <tr>
       <td>${esc(t.titulo)}</td>
       <td>${renderTagChips(t)}</td>
+      <td>${renderRoteiroBadge(t.roteiroId)}</td>
       <td>${fmtDate(t.prazo)}</td>
       <td>${esc(responsavelIdsOf(t).join(', ') || '—')}</td>
       <td><button class="btn btn-ghost btn-sm" onclick="toggleConcluida('${t.id}', false)">Reabrir</button></td>
@@ -885,12 +901,12 @@ function saveRoteiro() {
   if (id) {
     const idx = state.roteiros.findIndex(x => x.id === id);
     if (idx > -1) state.roteiros[idx] = Object.assign(state.roteiros[idx], data);
-    renderRoteiros();
+    renderRoteiros(); renderTasks(); renderConcluidas();
     bgCall(() => call('update', 'Roteiros', id, data), 'Erro ao salvar roteiro');
   } else {
     const novo = Object.assign({ id: genId('ro') }, data);
     state.roteiros.push(novo);
-    renderRoteiros();
+    renderRoteiros(); renderTasks(); renderConcluidas();
     bgCall(() => call('create', 'Roteiros', novo), 'Erro ao criar roteiro');
   }
   toast('Roteiro salvo!');
@@ -898,7 +914,7 @@ function saveRoteiro() {
 function deleteRoteiro() {
   const id = document.getElementById('r-id').value; if (!id || !confirm('Excluir este roteiro?')) return;
   state.roteiros = state.roteiros.filter(x => x.id !== id);
-  closeModal('modal-roteiro'); renderRoteiros();
+  closeModal('modal-roteiro'); renderRoteiros(); renderTasks(); renderConcluidas();
   toast('Roteiro excluído');
   bgCall(() => call('delete', 'Roteiros', id), 'Erro ao excluir roteiro');
 }
