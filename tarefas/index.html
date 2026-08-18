@@ -127,9 +127,9 @@
   .link-row .row-actions{display:flex;gap:6px;margin-left:auto;}
 
   /* Calendário */
-  .cal-month{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:22px;overflow:hidden;}
-  .cal-month-head{padding:16px 20px;font-weight:700;font-size:15px;border-bottom:1px solid var(--border);background:var(--bg);}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+  .cal-month{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:22px;}
+  .cal-month-head{padding:16px 20px;font-weight:700;font-size:15px;border-bottom:1px solid var(--border);background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border-radius:0 0 var(--radius) var(--radius);overflow:hidden;}
   .cal-dow{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:10px 0;text-transform:uppercase;background:#FAFAFA;border-bottom:1px solid var(--border);}
   .cal-day{height:118px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px;position:relative;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;}
   .cal-day:nth-child(7n){border-right:none;}
@@ -141,9 +141,17 @@
   .cal-badge{font-size:9.5px;font-weight:800;color:#fff;background:var(--orange);padding:2px 6px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cal-day-tasks{display:flex;flex-direction:column;gap:3px;overflow:hidden;flex:1;min-height:0;}
   .cal-task-chip{font-size:10px;font-weight:600;color:#fff;padding:2px 6px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0;flex:none;}
-  .cal-more{font-size:9.5px;color:var(--muted);font-weight:700;padding:1px 2px;}
-  .cal-day:hover{background:#FFF7EE;}
+  .cal-more{font-size:9.5px;color:var(--muted);font-weight:700;padding:1px 2px;flex:none;}
+  .cal-empty-day{font-size:11px;color:var(--muted);padding:4px;}
+  .cal-day:hover:not(.outside){background:#FFF7EE;}
   .cal-day.outside:hover{background:#FAFAFA;cursor:default;}
+  /* Balão flutuante único com todas as tarefas do dia — sempre por cima do calendário inteiro */
+  .cal-hover-popup{position:fixed;display:none;flex-direction:column;gap:5px;background:#fff;width:240px;max-height:300px;overflow-y:auto;
+    border:1px solid var(--border);border-top:3px solid var(--orange);border-radius:0 0 10px 10px;box-shadow:0 18px 36px rgba(0,0,0,.24);
+    padding:10px;z-index:90;}
+  .cal-hover-popup.show{display:flex;}
+  .cal-hover-popup .cal-popup-date{font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px;}
+  .cal-hover-popup .cal-task-chip{white-space:normal;display:block;padding:6px 9px;font-size:11.5px;}
 
   /* Evento form */
   .evento-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
@@ -245,6 +253,7 @@
     </label>
     <label><input type="checkbox" id="onlyMineChk" onchange="renderTasks()"> Somente minhas tarefas</label>
   </div>
+  <div class="filters-bar" id="taskEtiquetaFilterBar"></div>
   <div style="overflow-x:auto;">
     <table class="tarefas-table" id="tarefasTable">
       <thead><tr><th></th><th>Tarefa</th><th>Etiquetas</th><th>Roteiro</th><th>Entrega</th><th>Responsável</th></tr></thead>
@@ -271,7 +280,9 @@
   <div class="view-header">
     <div><h2>Calendário — Ago/Set 2026</h2><p>Clique numa tarefa para editar, ou num dia vazio para criar uma nova.</p></div>
   </div>
+  <div class="filters-bar" id="calEtiquetaFilterBar"></div>
   <div id="calWrap"></div>
+  <div class="cal-hover-popup" id="calHoverPopup" onmouseenter="clearTimeout(calPopupHideTimeout)" onmouseleave="scheduleHideCalPopup()"></div>
 </div>
 
 <!-- ROTEIROS -->
@@ -555,6 +566,22 @@ function renderTagChips(item) {
   if (!ids.length) return '';
   return '<div class="tag-row">' + ids.map(id => { const e = etiquetaById(id); if (!e) return ''; return `<span class="tag-chip" style="background:${esc(e.cor)};">${esc(e.nome)}</span>`; }).join('') + '</div>';
 }
+/* Filtro por etiqueta reutilizável (Tarefas e Calendário): activeArr pode conter ids de etiqueta e/ou '__none__' (sem etiqueta) */
+function itemMatchesEtiquetaFilter(item, activeArr) {
+  if (!activeArr.length) return true;
+  const ids = etiquetaIdsOf(item);
+  if (ids.length === 0) return activeArr.indexOf('__none__') > -1;
+  return ids.some(id => activeArr.indexOf(id) > -1);
+}
+function renderEtiquetaFilterBarHtml(activeArr, toggleFnName) {
+  const allBtn = `<button class="btn btn-ghost btn-sm ${activeArr.length === 0 ? 'active' : ''}" onclick="${toggleFnName}(null)">Todas</button>`;
+  const noneBtn = `<button class="btn btn-ghost btn-sm ${activeArr.indexOf('__none__') > -1 ? 'active' : ''}" onclick="${toggleFnName}('__none__')">Sem etiqueta</button>`;
+  const etBtns = state.etiquetas.map(et => {
+    const isSel = activeArr.indexOf(et.id) > -1;
+    return `<button class="btn btn-ghost btn-sm ${isSel ? 'active' : ''}" style="${isSel ? 'background:' + et.cor + ';color:#fff;border-color:' + et.cor + ';' : 'border-color:' + et.cor + ';color:' + et.cor + ';'}" onclick="${toggleFnName}('${et.id}')">${esc(et.nome)}</button>`;
+  }).join('');
+  return allBtn + noneBtn + etBtns;
+}
 
 document.getElementById('tabs').addEventListener('click', (e) => {
   const tab = e.target.closest('.tab'); if (!tab) return;
@@ -671,10 +698,22 @@ function deleteEtiqueta(id) {
   bgCall(() => call('delete', 'Etiquetas', id), 'Erro ao excluir etiqueta');
 }
 /* ============ TAREFAS ============ */
+let taskEtiquetaFilterActive = [];
+function renderTaskEtiquetaFilterBar() {
+  document.getElementById('taskEtiquetaFilterBar').innerHTML = renderEtiquetaFilterBarHtml(taskEtiquetaFilterActive, 'setTaskEtiquetaFilter');
+}
+function setTaskEtiquetaFilter(id) {
+  if (id === null) taskEtiquetaFilterActive = [];
+  else if (taskEtiquetaFilterActive.indexOf(id) > -1) taskEtiquetaFilterActive = taskEtiquetaFilterActive.filter(x => x !== id);
+  else taskEtiquetaFilterActive.push(id);
+  renderTaskEtiquetaFilterBar(); renderTasks();
+}
 function renderTasks() {
+  renderTaskEtiquetaFilterBar();
   const tbody = document.getElementById('tarefasTbody');
   let list = state.tarefas.filter(t => t.concluida !== true && t.concluida !== 'true');
   if (document.getElementById('onlyMineChk').checked) list = list.filter(t => responsavelIdsOf(t).indexOf(state.currentUser) > -1);
+  if (taskEtiquetaFilterActive.length) list = list.filter(t => itemMatchesEtiquetaFilter(t, taskEtiquetaFilterActive));
   const sortBy = document.getElementById('sortSelect').value;
   list = list.slice().sort((a, b) => {
     if (sortBy === 'responsavel') return (a.responsavel || '').localeCompare(b.responsavel || '');
@@ -763,6 +802,7 @@ function createAndLinkRoteiro() {
   bgCall(() => call('create', 'Roteiros', novoRoteiro), 'Erro ao salvar roteiro');
 }
 function openTaskModal(t) {
+  hideCalPopup();
   document.getElementById('tarefaModalTitle').textContent = t ? 'Editar tarefa' : 'Nova tarefa';
   document.getElementById('t-id').value = t ? t.id : '';
   document.getElementById('t-titulo').value = t ? t.titulo || '' : '';
@@ -818,9 +858,21 @@ function deleteTask() {
 }
 
 /* ============ CALENDÁRIO ============ */
+let calEtiquetaFilterActive = [];
+function renderCalEtiquetaFilterBar() {
+  document.getElementById('calEtiquetaFilterBar').innerHTML = renderEtiquetaFilterBarHtml(calEtiquetaFilterActive, 'setCalEtiquetaFilter');
+}
+function setCalEtiquetaFilter(id) {
+  if (id === null) calEtiquetaFilterActive = [];
+  else if (calEtiquetaFilterActive.indexOf(id) > -1) calEtiquetaFilterActive = calEtiquetaFilterActive.filter(x => x !== id);
+  else calEtiquetaFilterActive.push(id);
+  renderCalEtiquetaFilterBar(); renderCalendar();
+}
 function tasksByDate() {
   const map = {};
-  state.tarefas.filter(t => t.concluida !== true && t.concluida !== 'true').forEach(t => { if (t.prazo) (map[t.prazo] = map[t.prazo] || []).push(t); });
+  let tarefas = state.tarefas.filter(t => t.concluida !== true && t.concluida !== 'true');
+  if (calEtiquetaFilterActive.length) tarefas = tarefas.filter(t => itemMatchesEtiquetaFilter(t, calEtiquetaFilterActive));
+  tarefas.forEach(t => { if (t.prazo) (map[t.prazo] = map[t.prazo] || []).push(t); });
   return map;
 }
 const IMPORTANT_DATE_LABELS = {
@@ -839,7 +891,12 @@ function getImportantDates() {
   });
   return map;
 }
-const CAL_MAX_VISIBLE_TASKS = 3;
+const CAL_MAX_VISIBLE_TASKS = 2;
+function chipHtml(t) {
+  const ids = etiquetaIdsOf(t); const e = ids.length ? etiquetaById(ids[0]) : null;
+  const color = e ? e.cor : '#9CA3AF';
+  return `<span class="cal-task-chip" style="background:${esc(color)};" onclick='event.stopPropagation();hideCalPopup();openTaskModal(${JSON.stringify(t).replace(/'/g, "&#39;")})'>${esc(t.titulo)}</span>`;
+}
 function renderMonth(year, monthIdx, byDate, importantDates) {
   const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const first = new Date(year, monthIdx, 1);
@@ -857,18 +914,15 @@ function renderMonth(year, monthIdx, byDate, importantDates) {
     }
     const tasks = dateStr ? (byDate[dateStr] || []) : [];
     const badges = dateStr ? (importantDates[dateStr] || []) : [];
-    const visibleTasks = tasks.slice(0, CAL_MAX_VISIBLE_TASKS);
-    const extraCount = tasks.length - visibleTasks.length;
     const badgeHtml = badges.map(b => `<span class="cal-badge">${esc(b)}</span>`).join('');
-    const chips = visibleTasks.map(t => {
-      const ids = etiquetaIdsOf(t); const e = ids.length ? etiquetaById(ids[0]) : null;
-      const color = e ? e.cor : '#9CA3AF';
-      return `<span class="cal-task-chip" style="background:${esc(color)};" onclick='event.stopPropagation();openTaskModal(${JSON.stringify(t).replace(/'/g, "&#39;")})'>${esc(t.titulo)}</span>`;
-    }).join('') + (extraCount > 0 ? `<span class="cal-more">+${extraCount} mais</span>` : '');
-    cells += `<div class="cal-day ${isOutside ? 'outside' : ''} ${badges.length ? 'important' : ''}" ${!isOutside ? `onclick="openTaskModalForDate('${dateStr}')"` : ''}>
+    const collapsedTasks = tasks.slice(0, CAL_MAX_VISIBLE_TASKS);
+    const extraCount = tasks.length - collapsedTasks.length;
+    const collapsedHtml = collapsedTasks.map(chipHtml).join('') + (extraCount > 0 ? `<span class="cal-more">+${extraCount} mais</span>` : '');
+    const hoverAttrs = !isOutside ? `onmouseenter="showCalPopup(event,'${dateStr}')" onmouseleave="scheduleHideCalPopup()"` : '';
+    cells += `<div class="cal-day ${isOutside ? 'outside' : ''} ${badges.length ? 'important' : ''}" ${!isOutside ? `onclick="openTaskModalForDate('${dateStr}')"` : ''} ${hoverAttrs}>
       <div class="num">${isOutside ? '' : dayNum}</div>
       <div class="cal-badges">${badgeHtml}</div>
-      <div class="cal-day-tasks">${chips}</div>
+      <div class="cal-day-tasks">${collapsedHtml}</div>
     </div>`;
   }
   return `<div class="cal-month">
@@ -876,8 +930,42 @@ function renderMonth(year, monthIdx, byDate, importantDates) {
     <div class="cal-grid">${dow.map(d => `<div class="cal-dow">${d}</div>`).join('')}${cells}</div>
   </div>`;
 }
+let lastCalByDate = {};
+let calPopupHideTimeout = null;
+function showCalPopup(evt, dateStr) {
+  clearTimeout(calPopupHideTimeout);
+  const popup = document.getElementById('calHoverPopup');
+  const tasks = lastCalByDate[dateStr] || [];
+  const dt = new Date(dateStr + 'T00:00:00');
+  const label = dt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', weekday: 'short' });
+  popup.innerHTML = `<div class="cal-popup-date">${esc(label)}</div>` + (tasks.length ? tasks.map(chipHtml).join('') : '<span class="cal-empty-day">Sem tarefas</span>');
+  const rect = evt.currentTarget.getBoundingClientRect();
+  const popupWidth = 240;
+  let left = rect.left;
+  if (left + popupWidth > window.innerWidth - 10) left = window.innerWidth - popupWidth - 10;
+  if (left < 10) left = 10;
+  popup.style.left = left + 'px';
+  const spaceBelow = window.innerHeight - rect.bottom;
+  if (spaceBelow >= 160) {
+    popup.style.top = (rect.bottom + 4) + 'px';
+    popup.style.bottom = 'auto';
+  } else {
+    popup.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+    popup.style.top = 'auto';
+  }
+  popup.classList.add('show');
+}
+function scheduleHideCalPopup() {
+  calPopupHideTimeout = setTimeout(hideCalPopup, 150);
+}
+function hideCalPopup() {
+  const popup = document.getElementById('calHoverPopup');
+  if (popup) popup.classList.remove('show');
+}
 function renderCalendar() {
+  renderCalEtiquetaFilterBar();
   const byDate = tasksByDate();
+  lastCalByDate = byDate;
   const importantDates = getImportantDates();
   document.getElementById('calWrap').innerHTML = renderMonth(2026, 7, byDate, importantDates) + renderMonth(2026, 8, byDate, importantDates);
 }
