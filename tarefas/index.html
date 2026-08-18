@@ -443,19 +443,26 @@ let memStore = {};
 function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; } }
 function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; } }
 
-/* ============ UI OTIMISTA: id local + chamada de API em segundo plano ============ */
+/* ============ UI OTIMISTA: id local + fila de chamadas em segundo plano ============ */
 function genId(prefix) { return prefix + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+let bgQueue = Promise.resolve();
 function bgCall(promiseFn, errMsg) {
-  // Dispara a chamada à API sem travar a interface. A tela já foi atualizada antes disso.
-  Promise.resolve().then(promiseFn).then(res => {
-    if (res && res.success === false) {
-      console.error('Erro da API:', res.error);
-      toast((errMsg || 'Erro ao sincronizar') + ': ' + (res.error || 'falha desconhecida na planilha'), true);
-    }
-  }).catch(err => {
-    console.error('Erro de rede:', err);
-    toast((errMsg || 'Erro ao sincronizar') + ': ' + err.message, true);
-  });
+  // A tela já foi atualizada antes disso (otimista). Aqui só sincronizamos com a planilha,
+  // uma chamada de cada vez e na ordem em que foram disparadas — evita que uma edição
+  // rápida (ex: atualizar uma tarefa logo depois de criá-la) chegue ao servidor fora de ordem.
+  bgQueue = bgQueue
+    .then(() => promiseFn())
+    .then(res => {
+      if (res && res.success === false) {
+        console.error('Erro da API:', res.error);
+        toast((errMsg || 'Erro ao sincronizar') + ': ' + (res.error || 'falha desconhecida na planilha'), true);
+      }
+    })
+    .catch(err => {
+      console.error('Erro de rede:', err);
+      toast((errMsg || 'Erro ao sincronizar') + ': ' + err.message, true);
+    });
+  return bgQueue;
 }
 
 /* ============ GATE ============ */
@@ -674,10 +681,10 @@ function renderTasks() {
     </tr>`).join('');
 }
 function renderRoteiroBadge(roteiroId) {
-  if (!roteiroId) return '<span style="font-size:11.5px;color:#C4C4C4;">—</span>';
+  if (!roteiroId) return '<span style="color:#D8D8D8;">—</span>';
   const r = state.roteiros.find(x => x.id === roteiroId);
-  if (!r) return '<span style="font-size:11.5px;color:#C4C4C4;">—</span>';
-  return `<span class="tag-chip" style="background:var(--green);" title="${esc(r.titulo)}">🎠 ${esc(r.titulo.length > 22 ? r.titulo.slice(0, 22) + '…' : r.titulo)}</span>`;
+  if (!r) return '<span style="color:#D8D8D8;">—</span>';
+  return `<span style="color:var(--green);font-weight:800;font-size:16px;" title="${esc(r.titulo)}">✓</span>`;
 }
 function responsavelIdsOf(item) { return (item.responsavel || '').split(',').map(s => s.trim()).filter(Boolean); }
 function renderConcluidas() {
