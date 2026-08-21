@@ -53,6 +53,7 @@
   .user-pill{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:var(--bg);padding:6px 12px;border-radius:20px;}
   .user-pill button{background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-size:12px;font-family:'Poppins',sans-serif;}
   .countdown-pill{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#fff;background:var(--orange);padding:7px 13px;border-radius:20px;white-space:nowrap;}
+  .inscritos-pill{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#fff;background:var(--green);padding:7px 13px;border-radius:20px;white-space:nowrap;}
 
   /* Nav tabs */
   #appHeader{position:sticky;top:0;z-index:40;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.04);}
@@ -213,6 +214,7 @@
   </div>
   <div class="topbar-right">
     <div class="countdown-pill" id="countdownPill" style="display:none;"></div>
+    <div class="inscritos-pill" id="inscritosPill" style="display:none;"></div>
     <div class="status-pill"><span class="status-dot" id="statusDot"></span><span id="statusText">Conectando…</span></div>
     <div class="user-pill">👤 <span id="currentUserLabel"></span> <button onclick="openGate()">trocar</button></div>
     <button class="btn btn-ghost btn-sm" onclick="refreshAll()">↻ Atualizar</button>
@@ -521,7 +523,8 @@ const api = {
   create: (sheet, data) => jsonp({ action: 'create', sheet, payload: encodeURIComponent(JSON.stringify(data)) }),
   update: (sheet, id, data) => jsonp({ action: 'update', sheet, id, payload: encodeURIComponent(JSON.stringify(data)) }),
   delete: (sheet, id) => jsonp({ action: 'delete', sheet, id }),
-  bulkCreate: (sheet, items) => jsonp({ action: 'bulkCreate', sheet, payload: encodeURIComponent(JSON.stringify(items)) })
+  bulkCreate: (sheet, items) => jsonp({ action: 'bulkCreate', sheet, payload: encodeURIComponent(JSON.stringify(items)) }),
+  getCell: (sheet, cell) => jsonp({ action: 'getCell', sheet, cell })
 };
 
 /* ============ DEMO MODE ============ */
@@ -538,6 +541,7 @@ function demoApi(action, sheet, arg1, arg2) {
   if (action === 'update') { const idx = store[sheet].findIndex(x => x.id === arg1); if (idx > -1) store[sheet][idx] = Object.assign({}, store[sheet][idx], arg2); return Promise.resolve({ success: true, data: store[sheet][idx] }); }
   if (action === 'delete') { store[sheet] = store[sheet].filter(x => x.id !== arg1); return Promise.resolve({ success: true }); }
   if (action === 'bulkCreate') { arg1.forEach(it => store[sheet].push(Object.assign({ id: 'demo-' + Math.random().toString(36).slice(2) }, it))); return Promise.resolve({ success: true }); }
+  if (action === 'getCell') return Promise.resolve({ success: true, data: 0 });
 }
 async function call(action, sheet, arg1, arg2) {
   if (DEMO_MODE) return demoApi(action, sheet, arg1, arg2);
@@ -546,6 +550,7 @@ async function call(action, sheet, arg1, arg2) {
   if (action === 'update') return api.update(sheet, arg1, arg2);
   if (action === 'delete') return api.delete(sheet, arg1);
   if (action === 'bulkCreate') return api.bulkCreate(sheet, arg1);
+  if (action === 'getCell') return api.getCell(sheet, arg1);
 }
 
 /* ============ UI HELPERS ============ */
@@ -628,6 +633,7 @@ async function refreshAll(retryCount, silent) {
     (ev.data || []).forEach(row => { if (row.chave) { state.evento[row.chave] = row.valor; state.eventoIds[row.chave] = row.id; } });
     renderAll();
     setStatus('on');
+    refreshInscritos();
   } catch (err) {
     // O Apps Script pode demorar mais na primeira chamada depois de um tempo parado (cold start).
     // Tenta de novo automaticamente uma vez antes de mostrar erro pro usuário.
@@ -638,6 +644,21 @@ async function refreshAll(retryCount, silent) {
     if (!silent) setStatus('off');
     if (!silent) toast('Erro ao carregar dados: ' + err.message, true);
   }
+}
+async function refreshInscritos() {
+  try {
+    const res = await call('getCell', 'Inscritos', 'A2');
+    updateInscritosPill(res && res.success !== false ? res.data : null);
+  } catch (err) {
+    console.error('Erro ao buscar total de inscritos:', err);
+  }
+}
+function updateInscritosPill(val) {
+  const pill = document.getElementById('inscritosPill');
+  if (val === null || val === undefined || val === '') { pill.style.display = 'none'; return; }
+  const num = typeof val === 'number' ? val : parseInt(String(val).replace(/\D/g, ''), 10);
+  pill.style.display = 'flex';
+  pill.textContent = '🎓 ' + (isNaN(num) ? val : num.toLocaleString('pt-BR')) + ' inscritos';
 }
 function setStatus(mode) {
   const dot = document.getElementById('statusDot'), txt = document.getElementById('statusText');
