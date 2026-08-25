@@ -213,6 +213,48 @@
   .lista-ranking .nome{flex:1;}
   .lista-ranking .pontos{color:var(--laranja); font-weight:700;}
 
+  /* ===== Projetômetro embutido ===== */
+  .pm-painel{
+    background:linear-gradient(180deg, #14161f, #0d0e15); border:1px solid var(--escuro-borda); border-radius:20px;
+    padding:30px 20px; text-align:center; margin-bottom:18px; position:relative; overflow:hidden;
+  }
+  .pm-rotulo{font-size:12px; color:#a3a8bd; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;}
+  .pm-digitos{display:flex; justify-content:center; gap:6px; flex-wrap:wrap;}
+  .pm-digitos .digito{
+    font-family:'Share Tech Mono', monospace, 'Poppins'; font-size:clamp(30px, 6vw, 52px); font-weight:700;
+    background:#000; color:#22E37A; border:1px solid #123a24; border-radius:8px;
+    padding:4px 2px; min-width:0.9em; text-align:center; text-shadow:0 0 14px rgba(34,227,122,0.7);
+  }
+  .pm-desde{font-size:11px; color:#7c8199; margin-top:12px;}
+  .pm-bloco-meta{
+    background:linear-gradient(180deg, #14161f, #0d0e15); border:1px solid rgba(34,227,122,0.4); border-radius:16px;
+    padding:20px 22px; box-shadow:0 0 18px rgba(34,227,122,0.15); position:relative; overflow:hidden;
+  }
+  .pm-meta-topo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:6px;}
+  .pm-titulo{
+    font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+    background:linear-gradient(90deg, #fff, #22E37A, #fff); background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent; animation:pmBrilhoTitulo 3s linear infinite;
+  }
+  @keyframes pmBrilhoTitulo{ 0%{background-position:0% center;} 100%{background-position:200% center;} }
+  .pm-valor{font-weight:800; font-size:18px; color:#22E37A;}
+  .pm-barra-fundo{width:100%; height:22px; background:#0a0b10; border-radius:20px; border:1px solid var(--escuro-borda); position:relative;}
+  .pm-barra-preenchimento{
+    height:100%; border-radius:20px; background:linear-gradient(90deg, #0FAE5A, #22E37A);
+    transition:width 1.2s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:8px;
+    box-shadow:0 0 16px rgba(34,227,122,0.7); position:relative; overflow:hidden; min-width:22px;
+  }
+  .pm-barra-preenchimento::after{
+    content:''; position:absolute; top:0; bottom:0; width:40%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation:pmBrilhoBarra 1.8s linear infinite;
+  }
+  @keyframes pmBrilhoBarra{ 0%{left:-40%;} 100%{left:100%;} }
+  .pm-barra-preenchimento span{font-size:10px; font-weight:700; color:#03150a; position:relative; z-index:2;}
+  .pm-foguete{position:absolute; top:50%; transform:translate(-50%, -50%); font-size:16px; z-index:3; animation:pmFlutuar 1.6s ease-in-out infinite;}
+  @keyframes pmFlutuar{ 0%,100%{transform:translate(-50%, -50%) rotate(-8deg);} 50%{transform:translate(-50%, -60%) rotate(8deg);} }
+  .pm-meta-rodape{display:flex; justify-content:space-between; font-size:11px; color:#7c8199; margin-top:10px;}
+
   /* ===== Tela de carregamento ===== */
   .overlay-carregando{
     display:none; position:fixed; inset:0; background:rgba(18,20,28,0.85); z-index:600;
@@ -290,8 +332,10 @@
     <button class="sb-btn destaque" id="btnNovoMentorado" type="button">+ Novo mentorado</button>
     <button class="sb-btn ativo" id="btnTelaResumo" type="button">Resumo do programa</button>
     <button class="sb-btn" id="btnTelaDashboard" type="button">Dashboard</button>
+    <button class="sb-btn" id="btnTelaProjetometro" type="button">🚀 Projetômetro</button>
     <button class="sb-btn" id="btnAbrirMassa" type="button">Lançamento em massa</button>
     <button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button>
+    <a class="sb-btn" id="btnLinkProjetoAluno" href="https://site.escolakarenabecia.com/dasheagles/cad-projeto.html" target="_blank" rel="noopener" style="display:block; text-decoration:none;">🔗 Link projeto p/ aluno</a>
     <div class="sb-secao">Baixar relatórios</div>
     <button class="sb-btn" id="btnRelatorioResumo" type="button">📄 Resumo do programa</button>
     <button class="sb-btn" id="btnRelatorioTodos" type="button">📄 Todos os mentorados</button>
@@ -310,7 +354,7 @@
         <div class="dashboard" id="dashboard" aria-label="Indicadores gerais">
           <div class="metric"><div class="num" id="mAtivos">–</div><div class="lbl">Mentorados ativos</div></div>
           <div class="metric"><div class="num" id="mEncontrosIndividuais">–</div><div class="lbl">Encontros individuais</div></div>
-          <div class="metric"><div class="num" id="mIndicacoes">–</div><div class="lbl">Indicações realizadas</div></div>
+          <div class="metric"><div class="num" id="mProjetosConcluidos">–</div><div class="lbl">Projetos concluídos</div></div>
           <div class="metric"><div class="num" id="mProjetosFaturados">–</div><div class="lbl">Projetos faturados</div></div>
         </div>
 
@@ -351,6 +395,7 @@
           <div class="metric"><div class="num" id="dashNovosMentorados">–</div><div class="lbl">Novos mentorados no período</div></div>
           <div class="metric"><div class="num" id="dashProjetosConcluidos">–</div><div class="lbl">Projetos concluídos no período</div></div>
           <div class="metric"><div class="num" id="dashFaturadoProjetos" style="font-size:20px;">–</div><div class="lbl">Faturado em projetos no período</div></div>
+          <div class="metric"><div class="num" id="dashFaturadoTotal" style="font-size:20px;">–</div><div class="lbl">Faturamento total no período</div></div>
         </div>
 
         <div class="dash-grid">
@@ -379,6 +424,36 @@
             <ul class="lista-tipos" id="dashPorFerramenta"></ul>
           </div>
         </div>
+      </section>
+
+      <!-- ===================== TELA: PROJETÔMETRO (cópia interna) ===================== -->
+      <section id="telaProjetometro" class="oculto">
+        <div class="detalhe-topo">
+          <h2>🚀 Projetômetro DashEagles</h2>
+          <button class="btn-secundario" id="btnAtualizarProjetometro" type="button" style="margin-left:auto;">Atualizar agora</button>
+        </div>
+        <div class="pm-painel">
+          <div class="pm-rotulo">Projetos concluídos desde 2025</div>
+          <div class="pm-digitos" id="pmDigitos"></div>
+          <div class="pm-desde" id="pmAtualizadoEm">Carregando...</div>
+        </div>
+        <div class="pm-bloco-meta">
+          <div class="pm-meta-topo">
+            <span class="pm-titulo">Rumo aos 1.000 projetos</span>
+            <span class="pm-valor" id="pmPercentual">0%</span>
+          </div>
+          <div class="pm-barra-fundo">
+            <div class="pm-barra-preenchimento" id="pmBarra" style="width:0%;">
+              <span id="pmBarraTexto"></span>
+              <span class="pm-foguete" id="pmFoguete" style="left:100%;">🚀</span>
+            </div>
+          </div>
+          <div class="pm-meta-rodape">
+            <span id="pmFaltam">calculando...</span>
+            <span>Meta: 1.000</span>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:11px; color:#565b73; margin-top:10px;">Mesmos dados da página pública do Projetômetro — atualiza sozinho a cada 30s enquanto essa tela estiver aberta.</p>
       </section>
 
       <!-- ===================== TELA: DETALHE DO MENTORADO ===================== -->
@@ -880,8 +955,9 @@ document.getElementById('btnTrocarAtendente').addEventListener('click', () => {
 
 /* ===================== Navegação entre telas ===================== */
 function esconderTodasTelas() {
-  ['telaResumo', 'telaDashboard', 'telaDetalhe', 'telaOutros', 'telaMassa', 'telaConfig'].forEach(id => document.getElementById(id).classList.add('oculto'));
+  ['telaResumo', 'telaDashboard', 'telaProjetometro', 'telaDetalhe', 'telaOutros', 'telaMassa', 'telaConfig'].forEach(id => document.getElementById(id).classList.add('oculto'));
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('ativo'));
+  pararAtualizacaoProjetometro();
 }
 document.getElementById('btnTelaResumo').addEventListener('click', () => {
   esconderTodasTelas();
@@ -893,6 +969,12 @@ document.getElementById('btnTelaDashboard').addEventListener('click', () => {
   renderizarDashboardCompleto();
   document.getElementById('telaDashboard').classList.remove('oculto');
   document.getElementById('btnTelaDashboard').classList.add('ativo');
+});
+document.getElementById('btnTelaProjetometro').addEventListener('click', () => {
+  esconderTodasTelas();
+  document.getElementById('telaProjetometro').classList.remove('oculto');
+  document.getElementById('btnTelaProjetometro').classList.add('ativo');
+  iniciarAtualizacaoProjetometro();
 });
 document.getElementById('btnTelaConfig').addEventListener('click', () => {
   esconderTodasTelas();
@@ -971,9 +1053,10 @@ function renderizarDashboard() {
   const idsAtivos = new Set(ativos.map(m => m.id_mentorado));
   const regsAtivos = registros.filter(r => idsAtivos.has(r.id_mentorado));
   const indAtivos = indicacoes.filter(r => idsAtivos.has(r.id_mentorado));
+  const projAtivos = projetos.filter(p => idsAtivos.has(p.id_mentorado));
   document.getElementById('mAtivos').textContent = ativos.length;
   document.getElementById('mEncontrosIndividuais').textContent = regsAtivos.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL).length;
-  document.getElementById('mIndicacoes').textContent = indAtivos.length;
+  document.getElementById('mProjetosConcluidos').textContent = projAtivos.length;
   document.getElementById('mProjetosFaturados').textContent = indAtivos.filter(i => ehFaturado(i.status)).length;
 }
 
@@ -1030,6 +1113,7 @@ function atualizarDashboard() {
   document.getElementById('dashNovosMentorados').textContent = novosPeriodo.length;
   document.getElementById('dashProjetosConcluidos').textContent = projetosPeriodo.length;
   document.getElementById('dashFaturadoProjetos').textContent = formatarMoeda(faturadoProjetosPeriodo);
+  document.getElementById('dashFaturadoTotal').textContent = formatarMoeda(faturadoPeriodo + faturadoProjetosPeriodo);
 
   // Gráfico: participação nos últimos 5 encontros em grupo (sempre os mais recentes, independente do filtro)
   const gruposPorData = {};
@@ -1586,10 +1670,30 @@ function renderizarProjetosDoMentorado(idMentorado) {
   if (!projs.length) { ul.innerHTML = '<li>Nenhum projeto registrado.</li>'; return; }
   ul.innerHTML = projs.map(p => `
     <li data-id="${p.id_projeto}" class="projeto">
-      <strong>${p.nome_projeto || 'Projeto sem nome'}</strong> · ${p.ferramenta_principal} · ${formatarData(p.data_conclusao)} · ${p.para_quem}
-      ${p.cobrou === 'Sim' ? ' · Faturado: ' + formatarMoeda(p.valor) : ' · Não faturado'}
+      <div class="reg-linha">
+        <div class="reg-info" style="cursor:pointer;" data-abrir="${p.id_projeto}">
+          <strong>${p.nome_projeto || 'Projeto sem nome'}</strong> · ${p.ferramenta_principal} · ${formatarData(p.data_conclusao)} · ${p.para_quem}
+          ${p.cobrou === 'Sim' ? ' · Faturado: ' + formatarMoeda(p.valor) : ' · Não faturado'}
+        </div>
+        <div class="reg-acoes"><button type="button" data-excluir-projeto="${p.id_projeto}" title="Excluir">🗑️</button></div>
+      </div>
     </li>`).join('');
-  ul.querySelectorAll('li').forEach(li => li.addEventListener('click', () => abrirModalProjeto(projs.find(p => p.id_projeto === li.dataset.id))));
+  ul.querySelectorAll('[data-abrir]').forEach(el => el.addEventListener('click', () => abrirModalProjeto(projs.find(p => p.id_projeto === el.dataset.abrir))));
+  ul.querySelectorAll('[data-excluir-projeto]').forEach(b => b.addEventListener('click', async (ev) => {
+    ev.stopPropagation();
+    const ok = await confirmarAcao('Excluir este projeto? Essa ação não pode ser desfeita.');
+    if (!ok) return;
+    mostrarCarregando('Excluindo projeto...');
+    try {
+      await chamarApi('deletarProjeto', { id: b.dataset.excluirProjeto });
+      projetos = projetos.filter(p => p.id_projeto !== b.dataset.excluirProjeto);
+      renderizarDashboard();
+      renderizarTabela();
+      abrirDetalhe(mentoradoSelecionado.id_mentorado);
+    } finally {
+      esconderCarregando();
+    }
+  }));
 }
 
 function abrirModalProjeto(p = null) {
@@ -1793,6 +1897,58 @@ document.getElementById('btnAdicionarFerramenta').addEventListener('click', asyn
   document.getElementById('novaFerramentaInput').value = '';
   preencherTelaConfig();
 });
+
+/* ===================== Projetômetro (cópia interna) ===================== */
+let intervaloProjetometro = null;
+
+function renderizarDigitosPm(total) {
+  const texto = String(total);
+  const grupos = texto.length > 3 ? [texto.slice(0, texto.length - 3), texto.slice(-3)] : [texto];
+  const container = document.getElementById('pmDigitos');
+  container.innerHTML = '';
+  grupos.forEach((grupo, gi) => {
+    grupo.split('').forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'digito';
+      el.textContent = d;
+      container.appendChild(el);
+    });
+    if (gi < grupos.length - 1) {
+      const sep = document.createElement('div');
+      sep.style.fontSize = 'clamp(30px, 6vw, 52px)';
+      sep.style.color = '#123a24';
+      sep.textContent = '.';
+      container.appendChild(sep);
+    }
+  });
+}
+
+async function atualizarProjetometroInterno() {
+  try {
+    const resp = await chamarApi('contarProjetosDesde2025');
+    if (resp.erro) throw new Error(resp.erro);
+    const total = resp.total || 0;
+    const meta = resp.meta || 1000;
+    renderizarDigitosPm(total);
+    const pct = Math.min(100, (total / meta) * 100);
+    document.getElementById('pmPercentual').textContent = pct.toFixed(1) + '%';
+    document.getElementById('pmBarra').style.width = pct + '%';
+    document.getElementById('pmBarraTexto').textContent = pct > 10 ? pct.toFixed(1) + '%' : '';
+    const faltam = Math.max(0, meta - total);
+    document.getElementById('pmFaltam').textContent = faltam > 0 ? `Faltam ${faltam} projetos` : 'Meta batida! 🎉';
+    document.getElementById('pmAtualizadoEm').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch (err) {
+    document.getElementById('pmAtualizadoEm').textContent = 'Não foi possível atualizar agora.';
+  }
+}
+function iniciarAtualizacaoProjetometro() {
+  atualizarProjetometroInterno();
+  intervaloProjetometro = setInterval(atualizarProjetometroInterno, 30000);
+}
+function pararAtualizacaoProjetometro() {
+  if (intervaloProjetometro) { clearInterval(intervaloProjetometro); intervaloProjetometro = null; }
+}
+document.getElementById('btnAtualizarProjetometro').addEventListener('click', atualizarProjetometroInterno);
 
 /* ===================== Fechar modais clicando fora ===================== */
 [modalMentorado, modalHistorico, modalIndicacao].forEach(modal => {
