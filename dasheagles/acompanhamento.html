@@ -230,29 +230,43 @@
     background:linear-gradient(180deg, #14161f, #0d0e15); border:1px solid rgba(34,227,122,0.4); border-radius:16px;
     padding:20px 22px; box-shadow:0 0 18px rgba(34,227,122,0.15); position:relative; overflow:hidden;
   }
-  .pm-meta-topo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:6px;}
+  .pm-titulo-estrela{display:inline-block; animation:pmBrilharEstrela 1.6s ease-in-out infinite;}
+  @keyframes pmBrilharEstrela{
+    0%, 100%{opacity:0.5; transform:scale(0.9) rotate(0deg);}
+    50%{opacity:1; transform:scale(1.2) rotate(20deg);}
+  }
+  .pm-meta-topo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; flex-wrap:wrap; gap:6px; position:relative;}
   .pm-titulo{
     font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
     background:linear-gradient(90deg, #fff, #22E37A, #fff); background-size:200% auto;
     -webkit-background-clip:text; background-clip:text; color:transparent; animation:pmBrilhoTitulo 3s linear infinite;
   }
   @keyframes pmBrilhoTitulo{ 0%{background-position:0% center;} 100%{background-position:200% center;} }
-  .pm-valor{font-weight:800; font-size:18px; color:#22E37A;}
+  .pm-valor{font-weight:800; font-size:18px; color:#22E37A; display:inline-block; animation:pmPulsarValor 1.8s ease-in-out infinite;}
+  @keyframes pmPulsarValor{
+    0%,100%{ transform:scale(1); text-shadow:0 0 10px rgba(34,227,122,0.6); }
+    50%{ transform:scale(1.12); text-shadow:0 0 22px rgba(34,227,122,1); }
+  }
   .pm-barra-fundo{width:100%; height:22px; background:#0a0b10; border-radius:20px; border:1px solid var(--escuro-borda); position:relative;}
   .pm-barra-preenchimento{
     height:100%; border-radius:20px; background:linear-gradient(90deg, #0FAE5A, #22E37A);
     transition:width 1.2s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:8px;
     box-shadow:0 0 16px rgba(34,227,122,0.7); position:relative; overflow:hidden; min-width:22px;
+    animation:pmPulsarBarra 1.8s ease-in-out infinite;
+  }
+  @keyframes pmPulsarBarra{
+    0%,100%{ box-shadow:0 0 14px rgba(34,227,122,0.6); }
+    50%{ box-shadow:0 0 28px rgba(34,227,122,1); }
   }
   .pm-barra-preenchimento::after{
     content:''; position:absolute; top:0; bottom:0; width:40%;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
     animation:pmBrilhoBarra 1.8s linear infinite;
   }
   @keyframes pmBrilhoBarra{ 0%{left:-40%;} 100%{left:100%;} }
   .pm-barra-preenchimento span{font-size:10px; font-weight:700; color:#03150a; position:relative; z-index:2;}
-  .pm-foguete{position:absolute; top:50%; transform:translate(-50%, -50%); font-size:16px; z-index:3; animation:pmFlutuar 1.6s ease-in-out infinite;}
-  @keyframes pmFlutuar{ 0%,100%{transform:translate(-50%, -50%) rotate(-8deg);} 50%{transform:translate(-50%, -60%) rotate(8deg);} }
+  .pm-foguete{position:absolute; top:50%; transform:translate(-50%, -50%); font-size:20px; z-index:3; animation:pmFlutuar 1.2s ease-in-out infinite; filter:drop-shadow(0 0 8px rgba(34,227,122,1));}
+  @keyframes pmFlutuar{ 0%,100%{transform:translate(-50%, -50%) rotate(-10deg) scale(1);} 50%{transform:translate(-50%, -65%) rotate(10deg) scale(1.15);} }
   .pm-meta-rodape{display:flex; justify-content:space-between; font-size:11px; color:#7c8199; margin-top:10px;}
 
   /* ===== Tela de carregamento ===== */
@@ -439,7 +453,7 @@
         </div>
         <div class="pm-bloco-meta">
           <div class="pm-meta-topo">
-            <span class="pm-titulo">Rumo aos 1.000 projetos</span>
+            <span class="pm-titulo">Rumo aos 1.000 projetos <span class="pm-titulo-estrela">⭐</span></span>
             <span class="pm-valor" id="pmPercentual">0%</span>
           </div>
           <div class="pm-barra-fundo">
