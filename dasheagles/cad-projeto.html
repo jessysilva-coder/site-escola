@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Projeto — DashEagles</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laranja:#FF7000;
+    --verde:#57B95C;
+    --vermelho:#E5484D;
+    --escuro-bg:#12141c;
+    --escuro-card:#1b1e2b;
+    --escuro-borda:#2a2e3f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Poppins',sans-serif; background:var(--escuro-bg); color:#fff;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  h1{font-family:'Montserrat',sans-serif; font-size:22px; margin-bottom:6px;}
+  .subtitulo{color:var(--laranja); font-size:13px; font-weight:600; margin-bottom:24px;}
+  .card{background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:20px; padding:32px; width:100%; max-width:480px;}
+  .campo{margin-bottom:16px; position:relative;}
+  .campo label{display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:#a3a8bd; text-transform:uppercase;}
+  .campo input, .campo select{
+    width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--escuro-borda);
+    background:#0f1119; color:#fff; font-family:'Poppins',sans-serif; font-size:14px;
+  }
+  .campo input:focus, .campo select:focus{outline:2px solid var(--laranja); border-color:var(--laranja);}
+  .oculto{display:none !important;}
+  .lista-sugestoes{
+    position:absolute; top:100%; left:0; right:0; background:#0f1119; border:1px solid var(--escuro-borda);
+    border-radius:8px; margin-top:4px; max-height:200px; overflow-y:auto; z-index:10; display:none;
+  }
+  .lista-sugestoes.aberta{display:block;}
+  .item-sugestao{width:100%; text-align:left; background:none; border:none; color:#fff; padding:10px 14px; font-size:14px; cursor:pointer;}
+  .item-sugestao:hover{background:var(--escuro-borda);}
+  .nome-confirmado{font-size:13px; color:var(--verde); margin-top:6px; display:none;}
+  .nome-confirmado.mostrar{display:block;}
+  .btn-enviar{
+    width:100%; background:var(--laranja); color:#fff; border:none; padding:14px; border-radius:10px;
+    font-weight:600; font-size:15px; cursor:pointer; margin-top:8px;
+  }
+  .btn-enviar:hover{filter:brightness(0.95);}
+  .btn-enviar:disabled{opacity:0.6; cursor:not-allowed;}
+  .erro{color:var(--vermelho); font-size:13px; margin-top:10px; text-align:center; min-height:16px;}
+  .tela-sucesso{display:none; text-align:center;}
+  .tela-sucesso.mostrar{display:block;}
+  .tela-sucesso .icone{font-size:48px; margin-bottom:12px;}
+  .tela-sucesso h2{font-size:19px; margin-bottom:8px;}
+  .tela-sucesso p{color:#a3a8bd; font-size:14px; margin-bottom:20px;}
+  .explicacao{
+    background:rgba(87,185,92,0.1); border:1px solid rgba(87,185,92,0.3); border-radius:12px;
+    padding:14px 16px; margin-bottom:22px; font-size:13px; color:#c7cbe0; line-height:1.5;
+  }
+  .explicacao strong{color:var(--verde);}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="telaForm">
+    <h1>Registrar Projeto</h1>
+    <div class="subtitulo">DashEagles · Escola Karen Abecia</div>
+
+    <div class="explicacao">
+      🚀 O <strong>Projetômetro DashEagles</strong> conta quantos projetos as nossas águias já tiraram do papel desde 2025.
+      Cada projeto que você registra aqui ajuda a comunidade a chegar mais perto da meta de <strong>1.000 projetos concluídos</strong> — voe alto e faça o seu contar!
+    </div>
+
+    <form id="formProjetoAluno">
+      <div class="campo">
+        <label for="nomeInput">Seu nome</label>
+        <input type="text" id="nomeInput" placeholder="Digite pra buscar seu nome..." autocomplete="off" required>
+        <div class="lista-sugestoes" id="listaSugestoes"></div>
+        <div class="nome-confirmado" id="nomeConfirmado">✓ Nome confirmado</div>
+      </div>
+
+      <div class="campo">
+        <label for="nomeProjeto">Nome do projeto</label>
+        <input type="text" id="nomeProjeto" placeholder="Ex: Dashboard de vendas" required>
+      </div>
+
+      <div class="campo">
+        <label for="dataConclusao">Data de conclusão do projeto</label>
+        <input type="date" id="dataConclusao" required>
+      </div>
+
+      <div class="campo">
+        <label for="ferramenta">Principal ferramenta utilizada</label>
+        <select id="ferramenta" required></select>
+      </div>
+      <div class="campo oculto" id="campoFerramentaOutra">
+        <label for="ferramentaOutra">Qual ferramenta?</label>
+        <input type="text" id="ferramentaOutra" placeholder="Digite o nome da ferramenta">
+      </div>
+
+      <div class="campo">
+        <label for="paraQuem">Para quem é esse projeto?</label>
+        <select id="paraQuem" required>
+          <option>Uso pessoal</option>
+          <option>Portfólio</option>
+          <option>Empresa onde trabalho</option>
+          <option>Cliente de consultoria</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="cobrou">Você cobrou para fazer esse projeto?</label>
+        <select id="cobrou" required>
+          <option>Não</option>
+          <option>Sim</option>
+        </select>
+      </div>
+      <div class="campo oculto" id="campoValor">
+        <label for="valor">Quanto você cobrou (R$)</label>
+        <input type="number" id="valor" step="0.01" min="0">
+      </div>
+
+      <button type="submit" class="btn-enviar" id="btnEnviar">Enviar projeto</button>
+      <div class="erro" id="erroForm"></div>
+    </form>
+  </div>
+
+  <div class="tela-sucesso" id="telaSucesso">
+    <div class="icone">🎉</div>
+    <h2>Projeto registrado!</h2>
+    <p>Parabéns por tirar mais um projeto do papel. Seu registro já entrou pra contagem do Projetômetro DashEagles.</p>
+    <button type="button" class="btn-outro" id="btnRegistrarOutro">Registrar outro projeto</button>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec"
+};
+const DEFAULT_FERRAMENTAS = ['Excel', 'Google Sheets', 'Power BI', 'Claude', 'ChatGPT'];
+
+let mentoradosAtivos = [];
+let mentoradoSelecionado = null;
+
+async function chamarApi(action, params = {}, tentativasRestantes = 2) {
+  const url = new URL(CONFIG.API_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v ?? ''));
+  try {
+    const resp = await fetch(url.toString());
+    const texto = await resp.text();
+    return JSON.parse(texto);
+  } catch (err) {
+    if (tentativasRestantes > 0) {
+      await new Promise(r => setTimeout(r, 600));
+      return chamarApi(action, params, tentativasRestantes - 1);
+    }
+    throw err;
+  }
+}
+
+async function carregarMentorados() {
+  try {
+    const resp = await chamarApi('listarMentoradosAtivos');
+    mentoradosAtivos = resp.mentorados || [];
+    const extra = (resp.ferramentas_extra || '').split(',').map(s => s.trim()).filter(Boolean);
+    const ferramentas = [...DEFAULT_FERRAMENTAS, ...extra, 'Outra'];
+    document.getElementById('ferramenta').innerHTML = ferramentas.map(f => `<option>${f}</option>`).join('');
+  } catch (err) {
+    document.getElementById('erroForm').textContent = 'Não foi possível carregar a lista de mentorados. Recarregue a página.';
+  }
+}
+carregarMentorados();
+
+/* ---------- Busca de nome com validação ---------- */
+const nomeInput = document.getElementById('nomeInput');
+const listaSugestoes = document.getElementById('listaSugestoes');
+const nomeConfirmado = document.getElementById('nomeConfirmado');
+
+nomeInput.addEventListener('input', () => {
+  mentoradoSelecionado = null;
+  nomeConfirmado.classList.remove('mostrar');
+  const termo = nomeInput.value.trim().toLowerCase();
+  if (!termo) { listaSugestoes.classList.remove('aberta'); return; }
+  const sugestoes = mentoradosAtivos.filter(m => m.nome.toLowerCase().includes(termo)).slice(0, 8);
+  if (!sugestoes.length) { listaSugestoes.classList.remove('aberta'); return; }
+  listaSugestoes.innerHTML = sugestoes.map(m => `<button type="button" class="item-sugestao" data-id="${m.id_mentorado}" data-nome="${m.nome}">${m.nome}</button>`).join('');
+  listaSugestoes.classList.add('aberta');
+});
+listaSugestoes.addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.item-sugestao');
+  if (!btn) return;
+  nomeInput.value = btn.dataset.nome;
+  mentoradoSelecionado = { id_mentorado: btn.dataset.id, nome: btn.dataset.nome };
+  listaSugestoes.classList.remove('aberta');
+  nomeConfirmado.classList.add('mostrar');
+});
+document.addEventListener('click', (ev) => {
+  if (!ev.target.closest('.campo')) listaSugestoes.classList.remove('aberta');
+});
+
+/* ---------- Campos condicionais ---------- */
+document.getElementById('ferramenta').addEventListener('change', (ev) => {
+  document.getElementById('campoFerramentaOutra').classList.toggle('oculto', ev.target.value !== 'Outra');
+});
+document.getElementById('cobrou').addEventListener('change', (ev) => {
+  document.getElementById('campoValor').classList.toggle('oculto', ev.target.value !== 'Sim');
+});
+
+/* ---------- Envio ---------- */
+document.getElementById('formProjetoAluno').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const erroEl = document.getElementById('erroForm');
+  erroEl.textContent = '';
+
+  if (!mentoradoSelecionado) {
+    erroEl.textContent = 'Selecione seu nome na lista antes de enviar.';
+    return;
+  }
+
+  const ferramentaSelecionada = document.getElementById('ferramenta').value;
+  const ferramentaFinal = ferramentaSelecionada === 'Outra'
+    ? document.getElementById('ferramentaOutra').value.trim()
+    : ferramentaSelecionada;
+  if (ferramentaSelecionada === 'Outra' && !ferramentaFinal) {
+    erroEl.textContent = 'Digite o nome da ferramenta utilizada.';
+    return;
+  }
+
+  const cobrou = document.getElementById('cobrou').value;
+  const payload = {
+    id_mentorado: mentoradoSelecionado.id_mentorado,
+    nome_mentorado: mentoradoSelecionado.nome,
+    nome_projeto: document.getElementById('nomeProjeto').value.trim(),
+    data_conclusao: document.getElementById('dataConclusao').value,
+    ferramenta_principal: ferramentaFinal,
+    para_quem: document.getElementById('paraQuem').value,
+    cobrou: cobrou,
+    valor: cobrou === 'Sim' ? (document.getElementById('valor').value || 0) : 0,
+  };
+
+  const botao = document.getElementById('btnEnviar');
+  botao.disabled = true;
+  botao.textContent = 'Enviando...';
+  try {
+    const resp = await chamarApi('criarProjeto', payload);
+    if (resp.erro) throw new Error(resp.erro);
+    document.getElementById('telaForm').style.display = 'none';
+    document.getElementById('telaSucesso').classList.add('mostrar');
+  } catch (err) {
+    erroEl.textContent = 'Não foi possível enviar. Tente novamente. (' + err.message + ')';
+  } finally {
+    botao.disabled = false;
+    botao.textContent = 'Enviar projeto';
+  }
+});
+
+document.getElementById('btnRegistrarOutro').addEventListener('click', () => {
+  document.getElementById('formProjetoAluno').reset();
+  mentoradoSelecionado = null;
+  nomeConfirmado.classList.remove('mostrar');
+  document.getElementById('campoFerramentaOutra').classList.add('oculto');
+  document.getElementById('campoValor').classList.add('oculto');
+  document.getElementById('telaSucesso').classList.remove('mostrar');
+  document.getElementById('telaForm').style.display = 'block';
+});
+</script>
+
+</body>
+</html>
