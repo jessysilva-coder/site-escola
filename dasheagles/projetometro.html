@@ -74,11 +74,12 @@
     background:linear-gradient(180deg, var(--escuro-card), #0d0e15);
     border:1px solid rgba(34,227,122,0.4); border-radius:18px; padding:26px 28px; margin-bottom:20px;
     position:relative; overflow:hidden;
-    animation:pulsarBorda 2.4s ease-in-out infinite;
+    box-shadow:0 0 24px rgba(34,227,122,0.2);
   }
-  @keyframes pulsarBorda{
-    0%, 100%{ box-shadow:0 0 18px rgba(34,227,122,0.15), inset 0 0 0 rgba(34,227,122,0); }
-    50%{ box-shadow:0 0 34px rgba(34,227,122,0.4), inset 0 0 20px rgba(34,227,122,0.06); }
+  .titulo-estrela{display:inline-block; animation:brilharEstrela 1.6s ease-in-out infinite;}
+  @keyframes brilharEstrela{
+    0%, 100%{opacity:0.5; transform:scale(0.9) rotate(0deg);}
+    50%{opacity:1; transform:scale(1.2) rotate(20deg);}
   }
   .meta-topo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; flex-wrap:wrap; gap:6px; position:relative;}
   .meta-topo .titulo{
@@ -89,25 +90,41 @@
     animation:brilhoTitulo 3s linear infinite;
   }
   @keyframes brilhoTitulo{ 0%{background-position:0% center;} 100%{background-position:200% center;} }
-  .meta-topo .valor{font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:var(--verde); text-shadow:0 0 14px rgba(34,227,122,0.6);}
+  .meta-topo .valor{
+    font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:var(--verde);
+    text-shadow:0 0 14px rgba(34,227,122,0.6); display:inline-block; animation:pulsarValor 1.8s ease-in-out infinite;
+  }
+  @keyframes pulsarValor{
+    0%,100%{ transform:scale(1); text-shadow:0 0 14px rgba(34,227,122,0.6); }
+    50%{ transform:scale(1.12); text-shadow:0 0 26px rgba(34,227,122,1); }
+  }
   .barra-meta-fundo{width:100%; height:26px; background:#0a0b10; border-radius:20px; overflow:visible; border:1px solid var(--escuro-borda); position:relative;}
   .barra-meta-preenchimento{
     height:100%; border-radius:20px; background:linear-gradient(90deg, var(--verde-escuro), var(--verde));
     transition:width 1.2s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:10px;
     box-shadow:0 0 20px rgba(34,227,122,0.7); position:relative; overflow:hidden; min-width:26px;
+    animation:pulsarBarra 1.8s ease-in-out infinite;
+  }
+  @keyframes pulsarBarra{
+    0%,100%{ box-shadow:0 0 16px rgba(34,227,122,0.6); }
+    50%{ box-shadow:0 0 32px rgba(34,227,122,1); }
   }
   .barra-meta-preenchimento::after{
     content:''; position:absolute; top:0; bottom:0; width:40%;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
     animation:brilhoBarra 1.8s linear infinite;
   }
   @keyframes brilhoBarra{ 0%{left:-40%;} 100%{left:100%;} }
   .barra-meta-preenchimento span{font-size:11px; font-weight:700; color:#03150a; position:relative; z-index:2;}
   .foguete{
-    position:absolute; top:50%; transform:translate(-50%, -50%); font-size:22px;
-    filter:drop-shadow(0 0 6px rgba(34,227,122,0.9)); animation:flutuarFoguete 1.6s ease-in-out infinite; z-index:3;
+    position:absolute; top:50%; transform:translate(-50%, -50%); font-size:26px;
+    filter:drop-shadow(0 0 10px rgba(34,227,122,1)); animation:flutuarFoguete 1.2s ease-in-out infinite; z-index:3;
   }
-  @keyframes flutuarFoguete{ 0%,100%{ transform:translate(-50%, -50%) rotate(-8deg);} 50%{ transform:translate(-50%, -60%) rotate(8deg);} }
+  .foguete::after{
+    content:'✨'; position:absolute; font-size:12px; left:-16px; top:8px; animation:faiscar 0.9s ease-in-out infinite;
+  }
+  @keyframes flutuarFoguete{ 0%,100%{ transform:translate(-50%, -50%) rotate(-10deg) scale(1);} 50%{ transform:translate(-50%, -65%) rotate(10deg) scale(1.15);} }
+  @keyframes faiscar{ 0%,100%{opacity:0.3; transform:scale(0.7);} 50%{opacity:1; transform:scale(1.1);} }
   .meta-rodape{display:flex; justify-content:space-between; font-size:12px; color:#7c8199; margin-top:12px; position:relative;}
 
   .stats-extras{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px;}
@@ -143,7 +160,7 @@
 
   <div class="bloco-meta">
     <div class="meta-topo">
-      <span class="titulo">Rumo aos 1.000 projetos</span>
+      <span class="titulo">Rumo aos 1.000 projetos com Efeito UAU <span class="titulo-estrela">⭐</span></span>
       <span class="valor" id="percentualMeta">0%</span>
     </div>
     <div class="barra-meta-fundo">
@@ -158,15 +175,9 @@
     </div>
   </div>
 
-  <div class="stats-extras">
-    <div class="stat-card"><div class="num" id="statMedia">–</div><div class="lbl">Média de projetos por mês</div></div>
-    <div class="stat-card"><div class="num" id="statMes">–</div><div class="lbl">Projetos concluídos este mês</div></div>
-    <div class="stat-card"><div class="num" id="statPrevisao">–</div><div class="lbl">Previsão pra bater a meta</div></div>
-  </div>
-
   <div class="rodape">
     <div class="status-live"><span class="bolinha-live"></span> Atualização automática a cada 30 segundos</div>
-    <div>© Escola Karen Abecia — dados em tempo real da planilha de projetos</div>
+    <div>© Escola Karen Abecia 2026 — dados em tempo real</div>
   </div>
 </div>
 
@@ -174,7 +185,6 @@
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec"
 };
-const DESDE = new Date('2025-01-01T00:00:00');
 let ultimoTotal = null;
 
 async function chamarApi(action, params = {}, tentativasRestantes = 2) {
@@ -195,7 +205,7 @@ async function chamarApi(action, params = {}, tentativasRestantes = 2) {
 }
 
 function renderizarDigitos(total, animarTodos) {
-  const texto = String(total).padStart(4, '0');
+  const texto = String(total);
   const grupos = texto.length > 3 ? [texto.slice(0, texto.length - 3), texto.slice(-3)] : [texto];
   const container = document.getElementById('digitos');
   container.innerHTML = '';
@@ -214,10 +224,6 @@ function renderizarDigitos(total, animarTodos) {
       container.appendChild(sep);
     }
   });
-}
-
-function mesesEntre(d1, d2) {
-  return Math.max(1, (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth()) + 1);
 }
 
 async function atualizarContador() {
@@ -239,25 +245,6 @@ async function atualizarContador() {
     document.getElementById('faltamTexto').textContent = faltam > 0 ? `Faltam ${faltam} projetos` : 'Meta batida! 🎉';
 
     const agora = new Date();
-    const meses = mesesEntre(DESDE, agora);
-    const media = total / meses;
-    document.getElementById('statMedia').textContent = media.toFixed(1);
-
-    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
-    const diasNoMes = agora.getDate();
-    const mediaDiaria = total / ((agora - DESDE) / (1000 * 60 * 60 * 24));
-    document.getElementById('statMes').textContent = Math.round(mediaDiaria * diasNoMes);
-
-    if (media > 0 && faltam > 0) {
-      const mesesRestantes = Math.ceil(faltam / media);
-      const dataPrevisao = new Date(agora.getFullYear(), agora.getMonth() + mesesRestantes, 1);
-      document.getElementById('statPrevisao').textContent = dataPrevisao.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
-    } else if (faltam <= 0) {
-      document.getElementById('statPrevisao').textContent = 'Já batemos!';
-    } else {
-      document.getElementById('statPrevisao').textContent = '—';
-    }
-
     document.getElementById('ultimaAtualizacao').textContent =
       'Desde 01/01/2025 · atualizado às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   } catch (err) {
