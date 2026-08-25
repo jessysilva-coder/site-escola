@@ -180,7 +180,8 @@
 
   .lista-indicacoes{list-style:none; display:flex; flex-direction:column; gap:8px;}
   .lista-indicacoes li{background:#0f1119; border-radius:8px; padding:10px 12px; font-size:13px; cursor:pointer; border-left:3px solid var(--amarelo);}
-  .lista-indicacoes li.Fechado{border-left-color:var(--verde);}
+  .lista-indicacoes li.Fechado, .lista-indicacoes li.Faturado{border-left-color:var(--verde);}
+  .lista-indicacoes li.projeto{border-left-color:var(--verde);}
 
   .footer-txt{text-align:center; font-size:12px; color:#7c8199; padding:30px 0 10px;}
 
@@ -310,7 +311,7 @@
           <div class="metric"><div class="num" id="mAtivos">–</div><div class="lbl">Mentorados ativos</div></div>
           <div class="metric"><div class="num" id="mEncontrosIndividuais">–</div><div class="lbl">Encontros individuais</div></div>
           <div class="metric"><div class="num" id="mIndicacoes">–</div><div class="lbl">Indicações realizadas</div></div>
-          <div class="metric"><div class="num" id="mProjetosFechados">–</div><div class="lbl">Projetos fechados</div></div>
+          <div class="metric"><div class="num" id="mProjetosFaturados">–</div><div class="lbl">Projetos faturados</div></div>
         </div>
 
         <div class="toolbar">
@@ -345,7 +346,7 @@
           <div class="metric"><div class="num" id="dashEncontrosIndividuais">–</div><div class="lbl">Encontros individuais no período</div></div>
           <div class="metric"><div class="num" id="dashTotalAtendimentos">–</div><div class="lbl">Atendimentos no período</div></div>
           <div class="metric"><div class="num" id="dashIndicacoes">–</div><div class="lbl">Indicações no período</div></div>
-          <div class="metric"><div class="num" id="dashProjetosFechados">–</div><div class="lbl">Projetos fechados (indicações) no período</div></div>
+          <div class="metric"><div class="num" id="dashProjetosFaturados">–</div><div class="lbl">Projetos faturados (indicações) no período</div></div>
           <div class="metric"><div class="num" id="dashFaturado" style="font-size:20px;">–</div><div class="lbl">Faturado em indicações no período</div></div>
           <div class="metric"><div class="num" id="dashNovosMentorados">–</div><div class="lbl">Novos mentorados no período</div></div>
           <div class="metric"><div class="num" id="dashProjetosConcluidos">–</div><div class="lbl">Projetos concluídos no período</div></div>
@@ -621,7 +622,7 @@
       <div class="linha-campos">
         <div class="campo"><label for="iValor">Valor do projeto (R$)</label><input type="number" id="iValor" step="0.01"></div>
         <div class="campo"><label for="iStatus">Status</label>
-          <select id="iStatus"><option>Em negociação</option><option>Fechado</option><option>Não fechado</option></select>
+          <select id="iStatus"><option>Em negociação</option><option>Faturado</option><option>Não faturado</option></select>
         </div>
       </div>
       <div class="campo"><label for="iObservacao">Observação</label><textarea id="iObservacao"></textarea></div>
@@ -640,6 +641,7 @@
     <h2 id="tituloModalProjeto">Novo projeto</h2>
     <form id="formProjeto">
       <input type="hidden" id="pjId">
+      <div class="campo"><label for="pjNomeProjeto">Nome do projeto</label><input type="text" id="pjNomeProjeto" placeholder="Ex: Dashboard de vendas Q3"></div>
       <div class="linha-campos">
         <div class="campo"><label for="pjDataConclusao">Data de conclusão</label><input type="date" id="pjDataConclusao"></div>
         <div class="campo"><label for="pjFerramenta">Principal ferramenta utilizada</label><select id="pjFerramenta"></select></div>
@@ -770,6 +772,7 @@ function agoraLegivel() {
   return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 function formatarMoeda(v) { return (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function ehFaturado(status) { return status === 'Faturado' || status === 'Fechado'; } // 'Fechado' mantido por compatibilidade com registros antigos
 function registrosDoMentorado(id) { return registros.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
 function indicacoesDoMentorado(id) { return indicacoes.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
 function projetosDoMentorado(id) { return projetos.filter(p => p.id_mentorado === id).sort((a, b) => new Date(b.data_conclusao) - new Date(a.data_conclusao)); }
@@ -971,7 +974,7 @@ function renderizarDashboard() {
   document.getElementById('mAtivos').textContent = ativos.length;
   document.getElementById('mEncontrosIndividuais').textContent = regsAtivos.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL).length;
   document.getElementById('mIndicacoes').textContent = indAtivos.length;
-  document.getElementById('mProjetosFechados').textContent = indAtivos.filter(i => i.status === 'Fechado').length;
+  document.getElementById('mProjetosFaturados').textContent = indAtivos.filter(i => ehFaturado(i.status)).length;
 }
 
 /* ===================== Dashboard completo (com filtro de mês/ano) ===================== */
@@ -1015,14 +1018,14 @@ function atualizarDashboard() {
   const indPeriodo = indicacoes.filter(i => dataNoPeriodo(i.data, mes, ano));
   const projetosPeriodo = projetos.filter(pr => dataNoPeriodo(pr.data_conclusao, mes, ano));
   const novosPeriodo = mentorados.filter(m => dataNoPeriodo(m.data_cadastro, mes, ano));
-  const fechadosPeriodo = indPeriodo.filter(i => i.status === 'Fechado');
+  const fechadosPeriodo = indPeriodo.filter(i => ehFaturado(i.status));
   const faturadoPeriodo = fechadosPeriodo.reduce((s, i) => s + (Number(i.valor_projeto) || 0), 0);
   const faturadoProjetosPeriodo = projetosPeriodo.filter(pr => pr.cobrou === 'Sim').reduce((s, pr) => s + (Number(pr.valor) || 0), 0);
 
   document.getElementById('dashEncontrosIndividuais').textContent = regsPeriodo.filter(r => r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL).length;
   document.getElementById('dashTotalAtendimentos').textContent = regsPeriodo.length;
   document.getElementById('dashIndicacoes').textContent = indPeriodo.length;
-  document.getElementById('dashProjetosFechados').textContent = fechadosPeriodo.length;
+  document.getElementById('dashProjetosFaturados').textContent = fechadosPeriodo.length;
   document.getElementById('dashFaturado').textContent = formatarMoeda(faturadoPeriodo);
   document.getElementById('dashNovosMentorados').textContent = novosPeriodo.length;
   document.getElementById('dashProjetosConcluidos').textContent = projetosPeriodo.length;
@@ -1355,9 +1358,10 @@ function renderizarIndicadores(idMentorado, regs) {
   const ultimaMsg = ultimaDataPorTipo(regs, TIPOS_MENSAGEM);
   const proximoAgendado = proximoEncontroAgendado(regs);
   const inds = indicacoesDoMentorado(idMentorado);
-  const fechados = inds.filter(i => i.status === 'Fechado');
-  const totalFaturado = fechados.reduce((s, i) => s + (Number(i.valor_projeto) || 0), 0);
+  const faturadas = inds.filter(i => ehFaturado(i.status));
+  const totalFaturadoIndicacoes = faturadas.reduce((s, i) => s + (Number(i.valor_projeto) || 0), 0);
   const projs = projetosDoMentorado(idMentorado);
+  const totalFaturadoProjetos = projs.filter(p => p.cobrou === 'Sim').reduce((s, p) => s + (Number(p.valor) || 0), 0);
   const ultimasDatas = (lista) => lista.slice(0, 3).map(r => formatarData(r.data)).join(', ') || '—';
 
   document.getElementById('detIndicadores').innerHTML = `
@@ -1366,8 +1370,9 @@ function renderizarIndicadores(idMentorado, regs) {
     <div class="sidebar-card"><div class="num">${analises.length}</div><div class="lbl">Análises individuais</div><div class="datas">${ultimasDatas(analises)}</div></div>
     <div class="sidebar-card"><div class="num" style="font-size:15px;">${ultimaMsg ? formatarData(ultimaMsg) : '—'}</div><div class="lbl">Última mensagem</div></div>
     <div class="sidebar-card"><div class="num" style="font-size:15px;">${proximoAgendado ? formatarData(proximoAgendado) : '—'}</div><div class="lbl">Próximo encontro individual</div></div>
-    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturado)}</div><div class="lbl">Total faturado em projetos</div></div>
-    <div class="sidebar-card"><div class="num">${fechados.length}</div><div class="lbl">Projetos fechados (indicações)</div></div>
+    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturadoIndicacoes)}</div><div class="lbl">Faturado em indicações</div></div>
+    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturadoProjetos)}</div><div class="lbl">Faturado em projetos</div></div>
+    <div class="sidebar-card"><div class="num">${faturadas.length}</div><div class="lbl">Projetos faturados (indicações)</div></div>
     <div class="sidebar-card"><div class="num">${projs.length}</div><div class="lbl">Total de projetos concluídos</div></div>
     <div class="sidebar-card"><div class="num">${inds.length}</div><div class="lbl">Indicações realizadas</div></div>
   `;
@@ -1510,7 +1515,7 @@ function renderizarIndicacoesDoMentorado(idMentorado) {
   const ul = document.getElementById('detIndicacoes');
   if (!inds.length) { ul.innerHTML = '<li>Nenhuma indicação registrada.</li>'; return; }
   ul.innerHTML = inds.map(i => `
-    <li data-id="${i.id_indicacao}" class="${i.status === 'Fechado' ? 'Fechado' : ''}">
+    <li data-id="${i.id_indicacao}" class="${ehFaturado(i.status) ? 'Faturado' : ''}">
       <strong>${i.tipo_indicacao}</strong> · ${formatarData(i.data)} · ${i.status} · ${formatarMoeda(i.valor_projeto)}
       ${i.observacao ? '<br><span style="color:#a3a8bd; font-size:12px;">' + i.observacao + '</span>' : ''}
     </li>`).join('');
@@ -1580,9 +1585,9 @@ function renderizarProjetosDoMentorado(idMentorado) {
   const ul = document.getElementById('detProjetos');
   if (!projs.length) { ul.innerHTML = '<li>Nenhum projeto registrado.</li>'; return; }
   ul.innerHTML = projs.map(p => `
-    <li data-id="${p.id_projeto}" class="Fechado">
-      <strong>${p.ferramenta_principal}</strong> · ${formatarData(p.data_conclusao)} · ${p.para_quem}
-      ${p.cobrou === 'Sim' ? ' · Cobrado: ' + formatarMoeda(p.valor) : ' · Não cobrado'}
+    <li data-id="${p.id_projeto}" class="projeto">
+      <strong>${p.nome_projeto || 'Projeto sem nome'}</strong> · ${p.ferramenta_principal} · ${formatarData(p.data_conclusao)} · ${p.para_quem}
+      ${p.cobrou === 'Sim' ? ' · Faturado: ' + formatarMoeda(p.valor) : ' · Não faturado'}
     </li>`).join('');
   ul.querySelectorAll('li').forEach(li => li.addEventListener('click', () => abrirModalProjeto(projs.find(p => p.id_projeto === li.dataset.id))));
 }
@@ -1590,6 +1595,7 @@ function renderizarProjetosDoMentorado(idMentorado) {
 function abrirModalProjeto(p = null) {
   document.getElementById('tituloModalProjeto').textContent = p ? 'Editar projeto' : 'Novo projeto';
   document.getElementById('pjId').value = p ? p.id_projeto : '';
+  document.getElementById('pjNomeProjeto').value = p ? (p.nome_projeto || '') : '';
   document.getElementById('pjDataConclusao').value = p ? p.data_conclusao.split('T')[0] : hojeISO();
   preencherSelectFerramentas(document.getElementById('pjFerramenta'), p ? p.ferramenta_principal : null);
   document.getElementById('pjParaQuem').value = p ? p.para_quem : 'Uso pessoal';
@@ -1610,6 +1616,7 @@ formProjeto.addEventListener('submit', async (ev) => {
   if (!mentoradoSelecionado) return;
   const id = document.getElementById('pjId').value;
   const payload = {
+    nome_projeto: document.getElementById('pjNomeProjeto').value,
     data_conclusao: document.getElementById('pjDataConclusao').value,
     ferramenta_principal: document.getElementById('pjFerramenta').value,
     para_quem: document.getElementById('pjParaQuem').value,
