@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projetômetro DashEagles</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde:#22E37A;
+    --verde-escuro:#0FAE5A;
+    --laranja:#FF7000;
+    --amarelo:#FFC700;
+    --escuro-bg:#0a0b10;
+    --escuro-card:#14161f;
+    --escuro-borda:#2a2e3f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Poppins',sans-serif; background:var(--escuro-bg); color:#fff;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(34,227,122,0.14), transparent 45%),
+      radial-gradient(circle at 80% 80%, rgba(34,227,122,0.08), transparent 45%);
+    overflow-x:hidden;
+  }
+  .container{width:100%; max-width:900px; text-align:center;}
+
+  .topo{margin-bottom:32px;}
+  .topo .marca{font-size:13px; letter-spacing:3px; color:var(--verde); font-weight:700; text-transform:uppercase; margin-bottom:8px;}
+  .topo h1{
+    font-family:'Montserrat',sans-serif; font-weight:900; font-size:clamp(28px, 5vw, 46px);
+    background:linear-gradient(90deg, #fff, var(--verde));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    letter-spacing:1px;
+  }
+  .topo p{color:#a3a8bd; font-size:14px; margin-top:8px;}
+
+  .painel-contador{
+    background:linear-gradient(180deg, var(--escuro-card), #0d0e15);
+    border:1px solid var(--escuro-borda); border-radius:24px; padding:40px 20px;
+    box-shadow:0 0 60px rgba(34,227,122,0.12), inset 0 0 40px rgba(0,0,0,0.4);
+    margin-bottom:28px; position:relative; overflow:hidden;
+  }
+  .painel-contador::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(34,227,122,0.08), transparent);
+    animation:varrer 4s linear infinite;
+  }
+  @keyframes varrer{ 0%{transform:translateX(-100%);} 100%{transform:translateX(100%);} }
+
+  .rotulo-contador{font-size:13px; color:#a3a8bd; text-transform:uppercase; letter-spacing:2px; margin-bottom:16px; position:relative;}
+  .digitos{display:flex; justify-content:center; gap:8px; flex-wrap:wrap; position:relative;}
+  .digito{
+    font-family:'Share Tech Mono', monospace; font-size:clamp(36px, 9vw, 76px); font-weight:700;
+    background:#000; color:var(--verde); border:1px solid #123a24; border-radius:10px;
+    padding:6px 4px; min-width:0.9em; text-align:center; text-shadow:0 0 18px rgba(34,227,122,0.7);
+    box-shadow:inset 0 0 20px rgba(34,227,122,0.1), 0 4px 0 #000;
+    transition:transform 0.25s ease;
+  }
+  .digito.pulsando{animation:pulso 0.5s ease;}
+  @keyframes pulso{
+    0%{transform:scale(1); color:var(--verde);}
+    30%{transform:scale(1.15); color:#fff; text-shadow:0 0 30px #fff;}
+    100%{transform:scale(1); color:var(--verde);}
+  }
+  .separador{font-size:clamp(36px, 9vw, 76px); color:#123a24; align-self:center;}
+
+  .desde{font-size:12px; color:#7c8199; margin-top:16px; position:relative;}
+
+  .bloco-meta{
+    background:linear-gradient(180deg, var(--escuro-card), #0d0e15);
+    border:1px solid rgba(34,227,122,0.4); border-radius:18px; padding:26px 28px; margin-bottom:20px;
+    position:relative; overflow:hidden;
+    animation:pulsarBorda 2.4s ease-in-out infinite;
+  }
+  @keyframes pulsarBorda{
+    0%, 100%{ box-shadow:0 0 18px rgba(34,227,122,0.15), inset 0 0 0 rgba(34,227,122,0); }
+    50%{ box-shadow:0 0 34px rgba(34,227,122,0.4), inset 0 0 20px rgba(34,227,122,0.06); }
+  }
+  .meta-topo{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; flex-wrap:wrap; gap:6px; position:relative;}
+  .meta-topo .titulo{
+    font-size:15px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+    background:linear-gradient(90deg, #fff, var(--verde), #fff);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:brilhoTitulo 3s linear infinite;
+  }
+  @keyframes brilhoTitulo{ 0%{background-position:0% center;} 100%{background-position:200% center;} }
+  .meta-topo .valor{font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:var(--verde); text-shadow:0 0 14px rgba(34,227,122,0.6);}
+  .barra-meta-fundo{width:100%; height:26px; background:#0a0b10; border-radius:20px; overflow:visible; border:1px solid var(--escuro-borda); position:relative;}
+  .barra-meta-preenchimento{
+    height:100%; border-radius:20px; background:linear-gradient(90deg, var(--verde-escuro), var(--verde));
+    transition:width 1.2s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:10px;
+    box-shadow:0 0 20px rgba(34,227,122,0.7); position:relative; overflow:hidden; min-width:26px;
+  }
+  .barra-meta-preenchimento::after{
+    content:''; position:absolute; top:0; bottom:0; width:40%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation:brilhoBarra 1.8s linear infinite;
+  }
+  @keyframes brilhoBarra{ 0%{left:-40%;} 100%{left:100%;} }
+  .barra-meta-preenchimento span{font-size:11px; font-weight:700; color:#03150a; position:relative; z-index:2;}
+  .foguete{
+    position:absolute; top:50%; transform:translate(-50%, -50%); font-size:22px;
+    filter:drop-shadow(0 0 6px rgba(34,227,122,0.9)); animation:flutuarFoguete 1.6s ease-in-out infinite; z-index:3;
+  }
+  @keyframes flutuarFoguete{ 0%,100%{ transform:translate(-50%, -50%) rotate(-8deg);} 50%{ transform:translate(-50%, -60%) rotate(8deg);} }
+  .meta-rodape{display:flex; justify-content:space-between; font-size:12px; color:#7c8199; margin-top:12px; position:relative;}
+
+  .stats-extras{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px;}
+  .stat-card{background:var(--escuro-card); border:1px solid var(--escuro-borda); border-radius:14px; padding:18px;}
+  .stat-card .num{font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:var(--verde);}
+  .stat-card .lbl{font-size:12px; color:#a3a8bd; margin-top:4px;}
+
+  .rodape{margin-top:28px; font-size:11px; color:#565b73;}
+  .rodape .status-live{display:inline-flex; align-items:center; gap:6px; margin-bottom:6px;}
+  .bolinha-live{width:8px; height:8px; border-radius:50%; background:var(--verde); box-shadow:0 0 8px var(--verde); animation:piscar 1.6s ease-in-out infinite;}
+  @keyframes piscar{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  @media (max-width:520px){
+    .digito{padding:4px 2px;}
+    .foguete{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topo">
+    <div class="marca">DashEagles · Escola Karen Abecia</div>
+    <h1>PROJETÔMETRO</h1>
+    <p>Quantos projetos os nossos mentorados já tiraram do papel</p>
+  </div>
+
+  <div class="painel-contador">
+    <div class="rotulo-contador">Projetos concluídos desde 2025</div>
+    <div class="digitos" id="digitos"></div>
+    <div class="desde" id="ultimaAtualizacao">Carregando dados da planilha...</div>
+  </div>
+
+  <div class="bloco-meta">
+    <div class="meta-topo">
+      <span class="titulo">Rumo aos 1.000 projetos</span>
+      <span class="valor" id="percentualMeta">0%</span>
+    </div>
+    <div class="barra-meta-fundo">
+      <div class="barra-meta-preenchimento" id="barraMeta" style="width:0%;">
+        <span id="barraMetaTexto"></span>
+        <span class="foguete" id="foguete" style="left:100%;">🚀</span>
+      </div>
+    </div>
+    <div class="meta-rodape">
+      <span id="faltamTexto">calculando...</span>
+      <span>Meta: 1.000</span>
+    </div>
+  </div>
+
+  <div class="stats-extras">
+    <div class="stat-card"><div class="num" id="statMedia">–</div><div class="lbl">Média de projetos por mês</div></div>
+    <div class="stat-card"><div class="num" id="statMes">–</div><div class="lbl">Projetos concluídos este mês</div></div>
+    <div class="stat-card"><div class="num" id="statPrevisao">–</div><div class="lbl">Previsão pra bater a meta</div></div>
+  </div>
+
+  <div class="rodape">
+    <div class="status-live"><span class="bolinha-live"></span> Atualização automática a cada 30 segundos</div>
+    <div>© Escola Karen Abecia — dados em tempo real da planilha de projetos</div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec"
+};
+const DESDE = new Date('2025-01-01T00:00:00');
+let ultimoTotal = null;
+
+async function chamarApi(action, params = {}, tentativasRestantes = 2) {
+  const url = new URL(CONFIG.API_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v ?? ''));
+  try {
+    const resp = await fetch(url.toString());
+    const texto = await resp.text();
+    return JSON.parse(texto);
+  } catch (err) {
+    if (tentativasRestantes > 0) {
+      await new Promise(r => setTimeout(r, 800));
+      return chamarApi(action, params, tentativasRestantes - 1);
+    }
+    throw err;
+  }
+}
+
+function renderizarDigitos(total, animarTodos) {
+  const texto = String(total).padStart(4, '0');
+  const grupos = texto.length > 3 ? [texto.slice(0, texto.length - 3), texto.slice(-3)] : [texto];
+  const container = document.getElementById('digitos');
+  container.innerHTML = '';
+  grupos.forEach((grupo, gi) => {
+    grupo.split('').forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'digito';
+      el.textContent = d;
+      if (animarTodos) { el.classList.add('pulsando'); }
+      container.appendChild(el);
+    });
+    if (gi < grupos.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'separador';
+      sep.textContent = '.';
+      container.appendChild(sep);
+    }
+  });
+}
+
+function mesesEntre(d1, d2) {
+  return Math.max(1, (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth()) + 1);
+}
+
+async function atualizarContador() {
+  try {
+    const resp = await chamarApi('contarProjetosDesde2025');
+    if (resp.erro) throw new Error(resp.erro);
+    const total = resp.total || 0;
+    const meta = resp.meta || 1000;
+
+    const animou = ultimoTotal !== null && total !== ultimoTotal;
+    renderizarDigitos(total, animou);
+    ultimoTotal = total;
+
+    const pct = Math.min(100, (total / meta) * 100);
+    document.getElementById('percentualMeta').textContent = pct.toFixed(1) + '%';
+    document.getElementById('barraMeta').style.width = pct + '%';
+    document.getElementById('barraMetaTexto').textContent = pct > 8 ? pct.toFixed(1) + '%' : '';
+    const faltam = Math.max(0, meta - total);
+    document.getElementById('faltamTexto').textContent = faltam > 0 ? `Faltam ${faltam} projetos` : 'Meta batida! 🎉';
+
+    const agora = new Date();
+    const meses = mesesEntre(DESDE, agora);
+    const media = total / meses;
+    document.getElementById('statMedia').textContent = media.toFixed(1);
+
+    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
+    const diasNoMes = agora.getDate();
+    const mediaDiaria = total / ((agora - DESDE) / (1000 * 60 * 60 * 24));
+    document.getElementById('statMes').textContent = Math.round(mediaDiaria * diasNoMes);
+
+    if (media > 0 && faltam > 0) {
+      const mesesRestantes = Math.ceil(faltam / media);
+      const dataPrevisao = new Date(agora.getFullYear(), agora.getMonth() + mesesRestantes, 1);
+      document.getElementById('statPrevisao').textContent = dataPrevisao.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+    } else if (faltam <= 0) {
+      document.getElementById('statPrevisao').textContent = 'Já batemos!';
+    } else {
+      document.getElementById('statPrevisao').textContent = '—';
+    }
+
+    document.getElementById('ultimaAtualizacao').textContent =
+      'Desde 01/01/2025 · atualizado às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch (err) {
+    document.getElementById('ultimaAtualizacao').textContent = 'Não foi possível atualizar agora — tentando de novo em instantes...';
+  }
+}
+
+atualizarContador();
+setInterval(atualizarContador, 30000);
+</script>
+
+</body>
+</html>
