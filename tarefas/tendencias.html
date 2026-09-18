@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tendências de Conteúdo em 2027</title>
+<style>
+:root{
+  --orange:#FF7000;
+  --green:#57B95C;
+  --bg:#F0F0F0;
+  --dark:#020617;
+  --purple:#7030A0;
+  --copilot:#bf66f1;
+  --white:#ffffff;
+  --muted:#64748b;
+  --line:#d9dee8;
+  --card:#ffffff;
+  --shadow:0 14px 40px rgba(2,6,23,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(191,102,241,.10), transparent 28%),
+    radial-gradient(circle at top left, rgba(255,112,0,.10), transparent 26%),
+    var(--bg);
+  color:var(--dark);
+}
+a{color:inherit}
+.wrapper{max-width:1480px;margin:auto;padding:0 24px 80px}
+.hero{
+  margin:24px 0 18px;
+  border-radius:28px;
+  padding:38px 40px;
+  background:linear-gradient(135deg,#020617 0%,#111827 64%,#28113a 100%);
+  color:white;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.hero:after{
+  content:"";
+  position:absolute; width:360px; height:360px; border-radius:50%;
+  right:-120px; top:-160px; background:rgba(191,102,241,.20); filter:blur(4px)
+}
+.hero:before{
+  content:"";
+  position:absolute; width:280px; height:280px; border-radius:50%;
+  left:-100px; bottom:-160px; background:rgba(255,112,0,.20)
+}
+.kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:#fbbf24}
+.hero h1{font-size:clamp(34px,5vw,66px);line-height:.98;margin:10px 0 18px;max-width:970px}
+.hero p{font-size:18px;line-height:1.55;max-width:900px;color:#d8deea;margin:0}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;position:relative;z-index:2}
+.pill{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700}
+
+.sticky{
+  position:sticky;top:0;z-index:50;margin:14px 0 22px;
+  background:rgba(240,240,240,.88);backdrop-filter:blur(12px);
+  border:1px solid rgba(100,116,139,.16);border-radius:18px;padding:10px;
+  display:flex;gap:8px;overflow:auto;box-shadow:0 8px 24px rgba(2,6,23,.06)
+}
+.sticky a{white-space:nowrap;text-decoration:none;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:750}
+.sticky a:hover{background:#fff}
+
+.section{margin-top:28px;scroll-margin-top:90px}
+.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin:0 4px 14px}
+.section-head h2{margin:0;font-size:28px}
+.section-head p{margin:0;color:var(--muted);max-width:720px;line-height:1.5}
+
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{
+  background:var(--card);border:1px solid rgba(100,116,139,.16);
+  border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(2,6,23,.05)
+}
+.card h3{margin:0 0 8px;font-size:19px}
+.card p{margin:0;color:#475569;line-height:1.55}
+.card .label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;margin-bottom:10px;color:var(--purple)}
+.accent-orange{border-top:4px solid var(--orange)}
+.accent-green{border-top:4px solid var(--green)}
+.accent-purple{border-top:4px solid var(--purple)}
+.accent-copilot{border-top:4px solid var(--copilot)}
+
+.mindmap{
+  position:relative;display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:18px;
+  min-height:680px;padding:26px;border-radius:26px;background:#fff;
+  border:1px solid rgba(100,116,139,.15);box-shadow:var(--shadow);overflow:hidden
+}
+.mindmap:before{
+  content:"";position:absolute;inset:50% auto auto 50%;width:72%;height:2px;
+  background:linear-gradient(90deg,var(--orange),var(--copilot),var(--green));transform:translate(-50%,-50%);opacity:.22
+}
+.branch{display:flex;flex-direction:column;gap:12px;justify-content:center;z-index:2}
+.center{
+  z-index:3;display:flex;align-items:center;justify-content:center;text-align:center
+}
+.center-node{
+  width:260px;height:260px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#020617,#3d1b55);color:#fff;padding:28px;
+  box-shadow:0 24px 60px rgba(2,6,23,.26), 0 0 0 12px rgba(191,102,241,.08)
+}
+.center-node strong{display:block;font-size:28px;line-height:1.05}
+.center-node span{display:block;color:#d8deea;margin-top:10px;font-size:13px;line-height:1.4}
+.node{
+  border-radius:16px;background:#f8fafc;border:1px solid #e6eaf0;padding:14px 16px;
+  transition:.2s ease;cursor:pointer
+}
+.node:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(2,6,23,.08);border-color:#cbd5e1}
+.node strong{display:block;font-size:15px;margin-bottom:4px}
+.node small{color:#64748b;line-height:1.35;display:block}
+.node.orange{border-left:5px solid var(--orange)}
+.node.purple{border-left:5px solid var(--purple)}
+.node.green{border-left:5px solid var(--green)}
+.node.copilot{border-left:5px solid var(--copilot)}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:0;background:#e7ebf2;padding:10px 14px;border-radius:999px;font-weight:800;cursor:pointer;color:#334155}
+.tab.active{background:var(--dark);color:white}
+.catalog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.course{
+  background:#fff;border:1px solid rgba(100,116,139,.16);border-radius:18px;padding:18px;
+  display:flex;flex-direction:column;gap:10px;min-height:156px
+}
+.course .tag{align-self:flex-start;font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;background:#f1f5f9;color:#475569}
+.course h4{margin:0;font-size:17px}
+.course p{margin:0;color:#64748b;font-size:13px;line-height:1.45}
+.course[data-hidden="1"]{display:none}
+
+.matrix{overflow:auto;background:#fff;border-radius:20px;border:1px solid rgba(100,116,139,.16)}
+table{width:100%;border-collapse:collapse;min-width:940px}
+th,td{padding:14px 15px;text-align:left;border-bottom:1px solid #edf0f4;vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;background:#f8fafc;color:#475569}
+td{font-size:14px;line-height:1.45}
+.score{display:inline-flex;gap:5px}
+.dot{width:9px;height:9px;border-radius:50%;background:#d7dce5}
+.dot.on{background:var(--orange)}
+
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.step{
+  background:#fff;border-radius:18px;padding:18px 15px;border:1px solid rgba(100,116,139,.16);
+  position:relative;min-height:146px
+}
+.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--dark);color:#fff;font-weight:900;margin-bottom:12px}
+.step h4{margin:0 0 7px;font-size:15px}
+.step p{margin:0;color:#64748b;font-size:12px;line-height:1.45}
+
+.callout{
+  background:linear-gradient(135deg,#fff7ed,#fff);border:1px solid #fed7aa;border-radius:20px;padding:22px
+}
+.callout strong{color:#9a3412}
+.small{font-size:13px;color:#64748b;line-height:1.5}
+
+.searchbar{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid rgba(100,116,139,.16);padding:10px 14px;border-radius:14px;max-width:520px}
+.searchbar input{border:0;outline:0;font:inherit;width:100%}
+.footer{margin-top:36px;padding:26px 4px;color:#64748b;font-size:12px;line-height:1.55}
+
+@media(max-width:1050px){
+  .grid-4,.grid-3,.grid-2,.catalog{grid-template-columns:1fr 1fr}
+  .mindmap{grid-template-columns:1fr;min-height:auto}
+  .center{order:-1}
+  .center-node{width:210px;height:210px}
+  .flow{grid-template-columns:1fr 1fr 1fr}
+}
+@media(max-width:680px){
+  .wrapper{padding:0 14px 50px}.hero{padding:28px 22px;border-radius:22px}
+  .grid-4,.grid-3,.grid-2,.catalog{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr}
+  .section-head{display:block}.section-head p{margin-top:8px}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<header class="hero">
+<div class="kicker">Mapa mental + estudo mercadológico</div>
+<h1>Tendências de Conteúdo em 2027</h1>
+<p>Mapa mental e estudo mercadológico centrado em dois grandes eixos: Excel e Inteligência Artificial. A proposta organiza competências, estilos de aprendizagem, aplicações profissionais e soluções práticas para transformar conhecimento em entregas reais.</p>
+<div class="meta"><span class="pill">Excel como base de dados e produtividade</span><span class="pill">IA como copiloto e camada de automação</span><span class="pill">Aprender fazendo</span><span class="pill">Microaprendizagem</span><span class="pill">Entregáveis reais</span></div>
+</header>
+<nav class="sticky"><a href="#visao">Visão geral</a><a href="#mapa">Mapa mental</a><a href="#formatos">Estilos de aprendizagem</a><a href="#catalogo">Catálogo</a><a href="#solucoes">Soluções temáticas</a></nav>
+<section class="section" id="visao">
+<div class="section-head">
+<div><h2>1. Visão geral: dois grandes eixos</h2></div>
+<p>O portfólio passa a ser organizado a partir de Excel e Inteligência Artificial. Os demais temas entram como competências de apoio para ampliar análise, automação, segurança e aplicação profissional.</p>
+</div>
+<div class="grid grid-4"><div class="card accent-green"><div class="label">Eixo principal 01</div><h3>Excel</h3><p>Base para organização, tratamento, análise e visualização de dados. Inclui fórmulas, funções, modelagem, Power Query, dashboards, controles e aplicações profissionais.</p></div><div class="card accent-orange"><div class="label">Eixo principal 02</div><h3>Inteligência Artificial</h3><p>Camada para análise, produtividade, investigação, automação, criação de agentes, apoio à tomada de decisão e aceleração do trabalho com Excel.</p></div><div class="card accent-purple"><div class="label">Competência transversal</div><h3>Segurança &amp; governança</h3><p>Uso responsável de dados com IA, compartilhamento seguro, revisão humana, critérios de acesso, anonimização e boas práticas corporativas.</p></div><div class="card accent-copilot"><div class="label">Aplicação</div><h3>Negócios &amp; solução</h3><p>Os conteúdos devem terminar em uma entrega útil: análise, dashboard, automação, sistema, agente, relatório executivo ou solução para uma área de negócio.</p></div></div>
+</section>
+<section class="section" id="mapa">
+<div class="section-head">
+<div><h2>2. Mapa mental: Excel + IA</h2></div>
+<p>O centro do portfólio é a integração entre Excel e IA. Em volta dele ficam as competências que tornam essa combinação mais poderosa no trabalho.</p>
+</div>
+<div class="mindmap"><div class="branch"><div class="node green"><strong>Excel — Fundamentos</strong><small>Fórmulas, funções, tabelas, organização, tratamento e estruturação de dados.</small></div><div class="node green"><strong>Excel — Análise</strong><small>Indicadores, dashboards, análise de negócios, visualização e modelagem.</small></div><div class="node green"><strong>Excel — Automação</strong><small>Power Query, automações administrativas, integração de dados e rotinas repetitivas.</small></div><div class="node purple"><strong>Excel — Aplicações profissionais</strong><small>Financeiro, RH, vendas, projetos, compras, operações e pequenas empresas.</small></div></div><div class="center"><div class="center-node"><div><strong>Excel<br/>+ IA</strong><span>A combinação central para produtividade, análise, automação e solução de problemas no trabalho.</span></div></div></div><div class="branch"><div class="node orange"><strong>IA — Fundamentos</strong><small>Alfabetização, iniciantes, fundamentos profissionais e uso responsável.</small></div><div class="node orange"><strong>IA — Produtividade</strong><small>ChatGPT, Claude, Copilot, investigação, escrita, síntese, planejamento e apoio ao trabalho.</small></div><div class="node orange"><strong>IA — Construção</strong><small>Engenharia de prompt, agentes, automações, low-code/no-code e desenvolvimento assistido.</small></div><div class="node copilot"><strong>IA aplicada ao Excel</strong><small>Análise orientada por IA, explicação de dados, geração de fórmulas, investigação, insights e automações.</small></div></div></div>
+</section><section class="section" id="formatos">
+<div class="section-head">
+<div><h2>3. Estilos de aprendizagem</h2></div>
+<p>Os estilos definem como o aluno aprende Excel e IA. A proposta é combinar formatos, em vez de depender apenas de aulas tradicionais.</p>
+</div>
+<div class="grid grid-3"><div class="card"><div class="label">Microaprendizagem</div><h3>Conteúdos curtos e em camadas</h3><p>Pílulas rápidas para fórmulas, recursos do Excel, conceitos de IA e pequenas aplicações. Ideal para continuidade e atualização.</p></div><div class="card"><div class="label">Gravado</div><h3>Aulas curtas e acionáveis</h3><p>Conteúdo direto, preferencialmente dividido em blocos pequenos. Bom para fundamentos, preparação e referência futura.</p></div><div class="card"><div class="label">Ao vivo</div><h3>Prática com feedback instantâneo</h3><p>Aulas de nivelamento, resolução de problemas reais, exercícios guiados e intensivos de prática focados em Excel ou IA.</p></div><div class="card"><div class="label">Caminho personalizado</div><h3>Trilha adaptada ao aluno</h3><p>O percurso muda conforme nível de Excel, acesso às ferramentas de IA, área profissional e objetivo de aplicação.</p></div><div class="card"><div class="label">Galerias</div><h3>Biblioteca de materiais prontos</h3><p>Planilhas, dashboards, prompts, agentes, mockups, modelos de análise e ferramentas complementares.</p></div><div class="card"><div class="label">Tutorial inteligente</div><h3>Ajuda no momento da necessidade</h3><p>Em vez de um único passo a passo longo, o aluno consulta pequenas orientações interativas para resolver exatamente o ponto em que travou.</p></div><div class="card"><div class="label">Conteúdo + prática + feedback</div><h3>Aprendizagem com comprovação</h3><p>Cada módulo combina explicação, execução, revisão e prova de competência, com apoio humano ou artificial.</p></div><div class="card"><div class="label">Gamificação</div><h3>Progressão e continuidade</h3><p>Desafios, níveis, marcos e missões práticas para estimular constância e evolução ao longo da trilha.</p></div><div class="card"><div class="label">Intensivos</div><h3>Blocos densos de prática</h3><p>Encontros mais longos, focados em uma única competência: dashboards, Power Query, análise com IA, agentes ou automação.</p></div><div class="card"><div class="label">Galeria de cases</div><h3>Aprender por solução pronta</h3><p>O aluno explora casos de RH, Financeiro, Vendas, Projetos e Operações para adaptar a lógica à própria realidade.</p></div></div>
+</section>
+
+<section class="section" id="catalogo">
+<div class="section-head">
+<div>
+<h2>4. Catálogo de competências — Excel + IA</h2>
+<p>Use os filtros para navegar pelos conteúdos dos dois eixos e pelas competências de apoio.</p>
+</div>
+<label class="searchbar">⌕ <input id="search" placeholder="Buscar tema, ferramenta ou competência..."/></label>
+</div>
+<div class="tabs"><button class="tab active" data-filter="todos">Todos</button><button class="tab" data-filter="excel">Excel</button><button class="tab" data-filter="ia">IA</button><button class="tab" data-filter="excelia">Excel + IA</button><button class="tab" data-filter="seguranca">Segurança</button><button class="tab" data-filter="processos">Automação &amp; processos</button><button class="tab" data-filter="negocios">Aplicação em negócios</button></div>
+<div class="catalog" id="catalog"><article class="course" data-cat="excel"><span class="tag">Excel · base</span><h4>Excel Essencial</h4><p>Fórmulas, funções, tabelas, organização, referências, validação e estruturação de dados.</p></article><article class="course" data-cat="excel"><span class="tag">Excel · análise</span><h4>Excel para Análise de Dados</h4><p>Transformação de bases em análises, indicadores e decisões.</p></article><article class="course" data-cat="excel"><span class="tag">Excel · modelagem</span><h4>Modelagem de Dados no Excel</h4><p>Estrutura correta de dados, relacionamentos lógicos e preparação para análise.</p></article><article class="course" data-cat="excel"><span class="tag">Excel · automação</span><h4>Power Query no Excel</h4><p>Importação, limpeza, combinação e atualização de dados.</p></article><article class="course" data-cat="excel"><span class="tag">Excel · dashboards</span><h4>Dashboards no Excel</h4><p>Indicadores, gráficos, filtros, experiência visual e comunicação.</p></article><article class="course" data-cat="excel"><span class="tag">Excel · profissional</span><h4>Excel para Negócios</h4><p>Aplicações em financeiro, RH, vendas, operações, projetos e gestão.</p></article><article class="course" data-cat="ia"><span class="tag">IA · base</span><h4>Alfabetização em Inteligência Artificial</h4><p>Conceitos, possibilidades, limites, riscos e linguagem essencial.</p></article><article class="course" data-cat="ia"><span class="tag">IA · base</span><h4>Inteligência Artificial para Iniciantes</h4><p>Primeiro contato prático com ferramentas generativas e aplicações do trabalho.</p></article><article class="course" data-cat="ia"><span class="tag">IA · profissional</span><h4>Fundamentos Profissionais de IA</h4><p>Boas práticas, pensamento crítico, aplicações corporativas e uso responsável.</p></article><article class="course" data-cat="ia"><span class="tag">IA · produtividade</span><h4>IA para Produtividade Pessoal e Profissional</h4><p>Pesquisa, escrita, síntese, planejamento, organização e execução assistida.</p></article><article class="course" data-cat="ia"><span class="tag">IA · ferramentas</span><h4>ChatGPT, Claude e Copilot Essencial</h4><p>Uso prático das principais ferramentas, escolhendo a melhor abordagem para cada tarefa.</p></article><article class="course" data-cat="ia"><span class="tag">IA · Claude</span><h4>Claude para Iniciantes</h4><p>Conversas, arquivos, projetos, análise e produtividade com Claude.</p></article><article class="course" data-cat="ia"><span class="tag">IA · avançado</span><h4>ChatGPT / Claude: Além do Prompt</h4><p>Contexto, arquivos, projetos, automações e fluxos mais completos.</p></article><article class="course" data-cat="ia"><span class="tag">IA · prompt</span><h4>Engenharia de Prompt</h4><p>Contexto, instruções, exemplos, critérios, testes e refinamento.</p></article><article class="course" data-cat="ia processos"><span class="tag">IA · agentes</span><h4>Como Criar Agentes de IA</h4><p>Agentes orientados a tarefas, conhecimento, ferramentas e fluxos.</p></article><article class="course" data-cat="ia"><span class="tag">IA · Microsoft</span><h4>Primeiros Passos com Microsoft 365 Copilot</h4><p>Uso do Copilot em contexto corporativo dentro do ecossistema Microsoft.</p></article><article class="course" data-cat="ia processos"><span class="tag">IA · Copilot Studio</span><h4>Agentes com Copilot Studio</h4><p>Criação de agentes conectados a conhecimento, ações e processos.</p></article><article class="course" data-cat="excelia"><span class="tag">Excel + IA</span><h4>Excel com Copilot</h4><p>Análise de dados orientada por IA, exploração, fórmulas, explicações e insights.</p></article><article class="course" data-cat="excelia"><span class="tag">Excel + IA</span><h4>Excel com ChatGPT e Claude</h4><p>Uso de IA para fórmulas, limpeza, investigação, documentação e apoio à análise.</p></article><article class="course" data-cat="excelia"><span class="tag">Excel + IA</span><h4>Análise de Dados com IA</h4><p>Descoberta de padrões, anomalias, causas, hipóteses e recomendações a partir de bases estruturadas.</p></article><article class="course" data-cat="excelia processos"><span class="tag">Excel + IA</span><h4>Automação de Rotinas com Excel e IA</h4><p>Fluxos que combinam planilhas, IA, formulários, arquivos e automações.</p></article><article class="course" data-cat="processos ia"><span class="tag">Automação</span><h4>Automação de Processos Administrativos</h4><p>Formulários, aprovações, documentos, notificações e controles.</p></article><article class="course" data-cat="processos ia"><span class="tag">Integração</span><h4>Integração de Sistemas com IA</h4><p>Conexão entre planilhas, formulários, APIs, e-mails e aplicações.</p></article><article class="course" data-cat="processos ia"><span class="tag">Low-code / no-code</span><h4>Low-code, No-code e IA</h4><p>Construção de soluções rápidas com apoio de IA e ferramentas visuais.</p></article><article class="course" data-cat="seguranca ia"><span class="tag">Segurança</span><h4>Compartilhamento de Dados com IA</h4><p>Critérios para envio, anonimização, acesso e uso seguro das informações.</p></article><article class="course" data-cat="seguranca excelia"><span class="tag">Segurança</span><h4>Análise de Dados Segura</h4><p>Privacidade, controle de acesso, anonimização, revisão e rastreabilidade.</p></article><article class="course" data-cat="seguranca"><span class="tag">Governança</span><h4>Governança de Dados e IA</h4><p>Papéis, qualidade, políticas, responsabilidade e revisão humana.</p></article><article class="course" data-cat="negocios excelia"><span class="tag">Negócios</span><h4>Storytelling com Dados e IA</h4><p>Transformação de análises em mensagens claras, recomendações e apresentações executivas.</p></article></div>
+</section>
+<section class="section" id="solucoes">
+<div class="section-head">
+<div><h2>5. Soluções temáticas por área</h2></div>
+<p>Cada solução temática deve mostrar como Excel organiza e analisa os dados enquanto a IA investiga, automatiza, explica ou acelera a execução.</p>
+</div>
+<div class="matrix">
+<table>
+<thead><tr><th>Área</th><th>Problemas centrais</th><th>Soluções possíveis</th><th>Entregável de destaque</th></tr></thead>
+<tbody><tr><td><b>Recursos Humanos</b></td><td>Cadastros, treinamentos, clima, desempenho, indicadores.</td><td>Excel para base e indicadores; IA para descrições, análises, sínteses e apoio ao recrutamento.</td><td>Dashboard de RH + assistente de análise.</td></tr><tr><td><b>Financeiro</b></td><td>Caixa, despesas, orçamento, conciliação, rentabilidade.</td><td>Excel para controles, cálculos e dashboards; IA para investigação de desvios, classificação e resumo executivo.</td><td>Controle financeiro + análise assistida por IA.</td></tr><tr><td><b>Vendas</b></td><td>Metas, carteira, pipeline, conversão, forecast.</td><td>Excel para base comercial e dashboards; IA para análise de carteira, follow-up, propostas e hipóteses de queda.</td><td>Dashboard comercial + copiloto de análise.</td></tr><tr><td><b>Marketing</b></td><td>Campanhas, canais, conversão, ROI, calendário.</td><td>Excel para consolidar métricas; IA para conteúdo, análise de campanhas e storytelling.</td><td>Painel de campanhas + análise por IA.</td></tr><tr><td><b>Compras</b></td><td>Fornecedores, cotações, contratos, gastos.</td><td>Excel para comparação e controle; IA para síntese de propostas, classificação e apoio à negociação.</td><td>Mapa de cotação + análise de fornecedores.</td></tr><tr><td><b>Atendimento</b></td><td>Chamados, SLA, satisfação, recorrências.</td><td>Excel para base e indicadores; IA para classificar demandas, resumir causas e gerar respostas.</td><td>Painel de atendimento + assistente de triagem.</td></tr><tr><td><b>Operações</b></td><td>Rotinas, produtividade, qualidade, capacidade.</td><td>Excel para controle e indicadores; IA para análise de causas, procedimentos e automações.</td><td>Painel operacional + automação assistida.</td></tr><tr><td><b>Projetos</b></td><td>Prazo, custo, risco, status, comunicação.</td><td>Excel para cronograma, riscos e indicadores; IA para atas, relatórios, planos e síntese executiva.</td><td>Controle de projeto + relatório executivo com IA.</td></tr><tr><td><b>Pequenas empresas</b></td><td>Vendas, caixa, estoque, clientes, rotina administrativa.</td><td>Excel como sistema simples de gestão; IA para marketing, análise, atendimento e automação.</td><td>Kit de gestão em Excel + copiloto de IA.</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section class="section">
+<div class="callout"><strong>Como ler este estudo:</strong> o mapa organiza o portfólio em torno de Excel e Inteligência Artificial. As competências de segurança, automação e negócios aparecem como camadas de apoio, enquanto os estilos de aprendizagem definem a forma de entrega dos treinamentos.</div>
+</section>
+<footer class="footer">Documento interativo — Tendências de Conteúdo em 2027. Foco estratégico: Excel + Inteligência Artificial, estilos de aprendizagem, aplicações profissionais e soluções temáticas.</footer>
+</div>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+const courses=[...document.querySelectorAll('.course')];
+const search=document.getElementById('search');
+let current='todos';
+
+function applyFilters(){
+  const q=(search.value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  courses.forEach(c=>{
+    const cats=(c.dataset.cat||'').split(' ');
+    const text=c.innerText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const okCat=current==='todos'||cats.includes(current);
+    const okText=!q||text.includes(q);
+    c.dataset.hidden=(okCat&&okText)?'0':'1';
+  });
+}
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); current=t.dataset.filter; applyFilters();
+}));
+search.addEventListener('input',applyFilters);
+</script>
+</body>
+</html>
