@@ -59,22 +59,64 @@ button{cursor:pointer}
 .btn-link:hover{text-decoration:underline}
 .aviso-limite{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 16px}
 
+
+/* Identidade visual da home Escola Karen Abecia. */
+:root{--bg:#F0F0F0;--card:#fff;--card2:#f7f8fa;--borda:#dce0e6;--txt:#020617;--muted:#586174;--erro:#b42318;--ok:#287630}
+body{background:var(--bg);line-height:1.7}
+.wrap{max-width:1180px;padding:0 24px 0;min-height:100vh;display:flex;flex-direction:column}
+.topo{min-height:94px;margin:0;gap:24px;border-bottom:1px solid var(--borda)}
+.marca{display:flex;align-items:center;gap:24px}.marca img{width:155px;height:auto;display:block}.marca span{border-left:1px solid #cdd2da;padding-left:24px;color:var(--muted);font-size:12px}
+.pill{background:#fff;color:var(--muted);padding:8px 14px}
+.hero{background:none;border:0;border-radius:0;padding:48px 0 32px;margin:0}
+.eyebrow{display:block;text-transform:uppercase;letter-spacing:.14em;font:700 11px Montserrat,sans-serif;color:#a54800;margin-bottom:16px}
+.hero h2{font-size:clamp(30px,4.3vw,48px);line-height:1.15;letter-spacing:-.04em;margin-bottom:16px;font-weight:700}.hero h2 em{font-style:normal;color:var(--laranja)}
+.hero p{font-size:14px;max-width:680px;color:var(--muted)}
+.card{background:#fff;border:1px solid #e5e7eb;padding:28px;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,.04);margin-bottom:22px}
+.card h3{font-size:18px;letter-spacing:-.02em}.step-caption{margin:-6px 0 22px;color:var(--muted);font-size:13px}
+#cardIdentificacao{position:relative;border-top:4px solid var(--laranja);padding:32px}
+.campo label{font-size:11px;color:#495267;margin-bottom:8px}.campo input,.campo select{background:#fafbfc;color:var(--txt);padding:13px 14px;min-height:48px}
+.autocomplete-lista{background:#fff;box-shadow:0 12px 30px #02061718}.autocomplete-item{color:var(--txt);padding:13px 14px}.autocomplete-item:hover,.autocomplete-item.ativo{color:var(--txt);background:#fff1e6}.autocomplete-ajuda{color:var(--muted);margin-top:9px}
+.btn-principal{background:var(--laranja);color:#020617;border-radius:10px;padding:13px 24px;min-height:48px;font-weight:600;transition:box-shadow .18s,background .18s}.btn-principal:hover{filter:none;background:#f08029;box-shadow:0 6px 18px #ff700026}.btn-principal:disabled{opacity:.55}
+.btn-sec,.cal-nav button{background:#fff;color:var(--txt)}.btn-sec{min-height:48px}.btn-link{color:#a54800}.linha-acoes{margin-top:24px;gap:16px}
+.msg.erro{color:#b42318}.msg.ok{color:#287630}.barra{background:#eef0f4}
+.chip{background:#fff;color:#495267;padding:10px 14px;min-height:44px}.chip.ativo{color:#853800;background:#fff1e6}.chip.karen.ativo{color:#256c2a;background:#eef8ef}.chip.jessica.ativo{color:#7030a0;background:#f5eefb}
+.etapa-tag{color:#a54800;margin-bottom:5px}.cache-status{grid-column:1/-1;margin-top:0}.filtros{gap:14px}
+.agenda-grid{gap:28px;grid-template-columns:minmax(0,1.45fr) minmax(290px,1fr)}.cal-head{margin-bottom:20px}.cal-nav button{width:42px;height:42px;font-size:24px}.semana div{color:#586174;padding:8px 0}.dia{background:#f7f8fa;color:var(--txt);min-height:80px}.dia:disabled{opacity:1;color:#949cab;background:#f8f9fb;border-color:#edf0f3}.dia.disponivel{background:#fff;border-color:#9da9b7;box-shadow:0 2px 4px #02061705}.dia:hover:not(:disabled){border-color:var(--laranja)}.dia.selecionado{background:#fff1e6;border-color:var(--laranja)}.qtd{color:#586174}
+.lateral{background:#f7f8fa;border-color:#e5e7eb;padding:22px}.slot{background:#fff;color:var(--txt);min-height:54px}.slot:hover{border-color:#7d8796}.slot.ativo{background:#fff1e6}.resumo-confirmar strong{color:var(--txt)}
+.modal,.loading-box{background:#fff;color:var(--txt);box-shadow:0 18px 60px #02061726}.modal .detalhes{background:#f7f8fa}.modal .icone{color:#287630}.loading{background:#f0f0f0f5}.spin{border-color:#e5e7eb;border-top-color:var(--laranja)}
+.rodape{margin-top:auto;padding:28px 0 24px;border-top:1px solid #dce0e6;display:flex;justify-content:space-between;align-items:center;gap:20px;color:#586174;font-size:12px}.rodape strong{display:block;color:var(--txt);font:700 13px Montserrat,sans-serif;margin-bottom:4px}.rodape a{color:var(--txt);font-weight:500;text-decoration:none;border-bottom:2px solid var(--laranja);padding:6px 0}.rodape a:hover{color:#a54800}
+button:focus-visible,a:focus-visible{outline:3px solid #a54800;outline-offset:4px}
+@media(max-width:850px){.agenda-grid{grid-template-columns:1fr}.filtros{grid-template-columns:1fr}.hero{padding-top:36px}.marca{gap:16px}.marca span{padding-left:16px}.pill{font-size:10px}.dia{min-height:72px}}
+@media(max-width:560px){.wrap{padding:0 16px}.topo{min-height:82px}.marca img{width:130px}.marca span{font-size:10px;max-width:125px}.hero{padding:30px 0 24px}.hero h2{font-size:32px}.hero p{font-size:13px}.card,#cardIdentificacao{padding:22px 18px;border-radius:18px}.card h3{font-size:16px}.etapa-cabecalho{align-items:flex-start}.btn-link{font-size:11px}.chip{padding:9px 11px;font-size:11px}.lateral{padding:18px}.dia{min-height:60px}.rodape{align-items:flex-start;flex-direction:column;gap:12px;margin-top:16px}.linha-acoes>.btn-principal{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.spin{animation-duration:1.8s}}
+
+/* Indicadores em linhas próprias evitam sobreposição em células estreitas. */
+.dia{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:5px}
+.dia .pontos{margin-top:auto;min-height:7px;flex-shrink:0}
+.dia .ponto{flex-shrink:0}
+.dia .qtd{position:static;font-size:9px;line-height:1.3;max-width:100%;overflow-wrap:anywhere}
+.slot{gap:12px}
+.slot-descricao{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;row-gap:2px;min-width:0;line-height:1.6}
+.slot .hora,.slot .prof{font-size:13px;font-weight:600;color:var(--txt)}
+.slot .hora{white-space:nowrap}
+.slot>.slot-seta{flex-shrink:0}
 </style>
 </head>
 <body>
 <div class="wrap oculto" id="appAgendamento">
   <div class="topo">
-    <div class="marca"><h1>DashEagles</h1><span>Agendamento de encontros</span></div>
+    <div class="marca"><img src="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/logo-claro/escola.png" alt="Escola Karen Abecia"><span>Mentoria<br><strong>DashEagles</strong></span></div>
     <div class="pill">Horários exibidos no fuso de Brasília</div>
   </div>
 
   <section class="hero">
-    <h2>Agende seu encontro</h2>
+    <span class="eyebrow">Seu próximo passo na mentoria</span>
+    <h2>Agende seu <em>encontro.</em></h2>
     <p>Primeiro confirme seu nome. Na etapa seguinte você verá somente os horários disponíveis para agendamento.</p>
   </section>
 
   <section class="card" id="cardIdentificacao">
-    <h3>1. Identificação</h3>
+    <div class="etapa-tag">Etapa 1 de 2</div><h3>Vamos começar por você</h3><p class="step-caption">Confirme seu nome para consultar a agenda da mentoria.</p>
     <form id="formIdentificacao">
       <div class="campo autocomplete-wrap" style="max-width:620px">
         <label for="nome">Nome completo</label>
@@ -124,7 +166,7 @@ button{cursor:pointer}
     </section>
   </div>
 
-  <div class="rodape">© Escola Karen Abecia — DashEagles</div>
+  <footer class="rodape"><div><strong>Escola Karen Abecia</strong><span>© Escola Karen Abecia · Mentoria DashEagles</span></div><a href="https://sites.karenabecia.com.br/dasheagles/alunos/">Voltar à área exclusiva dos alunos &rarr;</a></footer>
 </div>
 
 <div class="overlay oculto" id="modalSucesso">
@@ -141,7 +183,7 @@ button{cursor:pointer}
 <script>
 const CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec'};
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const CACHE_ATIVOS='dasheagles_agendamento_ativos_v2';
+const CACHE_ATIVOS='dasheagles_agendamento_ativos_v4';
 const CACHE_ATIVOS_MS=10*60*1000;
 const CACHE_AGENDA_MS=5*60*1000;
 
@@ -175,7 +217,7 @@ function formatarData(iso){const [a,m,d]=iso.split('-').map(Number);return new I
 function professoraClasse(nome){return nome.startsWith('Karen')?'karen':'jessica'}
 function periodoDoHorario(hora){const h=Number(String(hora).split(':')[0]);return h<12?'manha':h<18?'tarde':'noite'}
 function normalizarTexto(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ')}
-function cacheAgendaKey(id){return `dasheagles_agendamento_agenda_v2_${id}`}
+function cacheAgendaKey(id){return `dasheagles_agendamento_agenda_v4_${id}`}
 function lerCache(chave,ttl){
   try{
     const item=JSON.parse(sessionStorage.getItem(chave)||'null');
@@ -302,7 +344,7 @@ function renderDia(iso){
   if(!diaSlots.length){lista.innerHTML='<div class="estado-vazio">Não há horários disponíveis nesse dia.</div>';return}
   diaSlots.forEach(s=>{
     const b=document.createElement('button');b.type='button';b.className=`slot ${professoraClasse(s.professora)}`;
-    b.innerHTML=`<span><span class="hora">${s.hora_inicio}–${s.hora_fim}</span><span class="prof">${s.professora}</span></span><span>›</span>`;
+    b.innerHTML=`<span class="slot-descricao"><span class="hora">${s.hora_inicio} - ${s.hora_fim}</span> <span class="prof">com a ${s.professora}</span></span><span class="slot-seta">›</span>`;
     b.addEventListener('click',()=>{document.querySelectorAll('.slot.ativo').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');slotSelecionado=s;mostrarResumo()});
     lista.appendChild(b);
   });
