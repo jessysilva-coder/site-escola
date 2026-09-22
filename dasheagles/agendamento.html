@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendamento de encontros — DashEagles</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --laranja:#FF7000;
+  --verde:#57B95C;
+  --roxo:#7030A0;
+  --bg:#0f1118;
+  --card:#171a24;
+  --card2:#11141d;
+  --borda:#292d3c;
+  --txt:#f7f8fb;
+  --muted:#9da3b7;
+  --erro:#ef6262;
+  --ok:#72d178;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--txt)}
+body{background:
+  radial-gradient(circle at 12% 10%,rgba(255,112,0,.10),transparent 30%),
+  radial-gradient(circle at 88% 18%,rgba(112,48,160,.10),transparent 27%),
+  var(--bg)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.oculto{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 50px}
+.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+.marca h1{font-family:'Montserrat';font-size:22px;margin:0}.marca span{font-size:12px;color:var(--laranja);font-weight:600}
+.pill{border:1px solid var(--borda);background:rgba(23,26,36,.75);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px}
+.hero{background:linear-gradient(135deg,rgba(255,112,0,.12),rgba(112,48,160,.08));border:1px solid var(--borda);border-radius:24px;padding:28px;margin-bottom:22px}
+.hero h2{font-family:'Montserrat';font-size:clamp(24px,4vw,38px);margin:0 0 8px}.hero p{margin:0;color:var(--muted);max-width:760px;line-height:1.7}
+.card{background:rgba(23,26,36,.96);border:1px solid var(--borda);border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 16px 45px rgba(0,0,0,.18)}
+.card h3{font-family:'Montserrat';font-size:16px;margin:0 0 16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.campo label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;margin-bottom:6px}.campo input,.campo select{width:100%;background:#0b0e15;border:1px solid var(--borda);color:#fff;padding:12px 13px;border-radius:10px;outline:none}.campo input:focus,.campo select:focus{border-color:var(--laranja);box-shadow:0 0 0 3px rgba(255,112,0,.12)}
+.autocomplete-wrap{position:relative}.autocomplete-lista{position:absolute;left:0;right:0;top:calc(100% + 5px);background:#11141d;border:1px solid var(--borda);border-radius:11px;max-height:260px;overflow-y:auto;z-index:30;box-shadow:0 18px 38px rgba(0,0,0,.35);display:none}.autocomplete-lista.aberta{display:block}.autocomplete-item{width:100%;border:0;border-bottom:1px solid var(--borda);background:transparent;color:#fff;text-align:left;padding:11px 13px;font-size:13px}.autocomplete-item:last-child{border-bottom:0}.autocomplete-item:hover,.autocomplete-item.ativo{background:rgba(255,112,0,.12);color:#fff}.autocomplete-vazio{padding:11px 13px;color:var(--muted);font-size:12px}.autocomplete-ajuda{font-size:11px;color:#72798f;margin-top:6px}
+.btn-principal{border:0;border-radius:11px;background:var(--laranja);color:white;font-weight:600;padding:12px 18px}.btn-principal:hover{filter:brightness(.95)}.btn-principal:disabled{opacity:.5;cursor:not-allowed}.btn-sec{border:1px solid var(--borda);border-radius:10px;background:#10131c;color:#fff;padding:10px 14px}.btn-sec:hover{border-color:var(--laranja)}
+.linha-acoes{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}.msg{font-size:13px;color:var(--muted)}.msg.erro{color:#ff9696}.msg.ok{color:#8ee593}
+.identidade{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.aluno strong{font-family:'Montserrat'}.aluno small{display:block;color:var(--muted);margin-top:2px}.uso{min-width:250px}.uso-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}.barra{height:8px;border-radius:99px;background:#0b0e15;overflow:hidden}.barra>div{height:100%;width:0;background:var(--laranja);transition:.25s}
+.filtros{display:grid;grid-template-columns:1.4fr 1fr auto;gap:12px;align-items:end}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--borda);background:#10131c;color:#d5d8e5;padding:9px 12px;border-radius:999px;font-size:12px}.chip.ativo{border-color:var(--laranja);background:rgba(255,112,0,.14);color:#fff}.chip.karen.ativo{border-color:var(--verde);background:rgba(87,185,92,.14)}.chip.jessica.ativo{border-color:var(--roxo);background:rgba(112,48,160,.2)}
+.agenda-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.9fr);gap:18px}.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.cal-head h3{margin:0;font-size:17px}.cal-nav{display:flex;gap:7px}.cal-nav button{width:36px;height:36px;border-radius:9px;border:1px solid var(--borda);background:#10131c;color:#fff}.semana,.dias{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.semana div{text-align:center;font-size:10px;color:#7e8498;text-transform:uppercase;font-weight:600;padding:4px}.dia{min-height:86px;border:1px solid var(--borda);background:#10131c;border-radius:12px;padding:8px;position:relative;text-align:left;color:#d5d8e5;transition:.16s}.dia:hover:not(:disabled){transform:translateY(-1px);border-color:#4c536b}.dia:disabled{opacity:.35;cursor:default}.dia.vazio{visibility:hidden}.dia.disponivel{border-color:#394059}.dia.selecionado{outline:2px solid var(--laranja);background:rgba(255,112,0,.08)}.numdia{font-size:12px;font-weight:600}.pontos{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}.ponto{width:7px;height:7px;border-radius:50%}.ponto.verde{background:var(--verde)}.ponto.roxo{background:var(--roxo)}.qtd{position:absolute;right:8px;bottom:7px;font-size:10px;color:#7e8498}
+.lateral{background:#121620;border:1px solid var(--borda);border-radius:16px;padding:18px;min-height:340px}.lateral h3{font-size:15px;margin:0 0 4px}.lateral .sub{font-size:12px;color:var(--muted);margin-bottom:14px}.slots{display:flex;flex-direction:column;gap:8px}.slot{width:100%;border:1px solid var(--borda);background:#0e1118;border-radius:11px;color:#fff;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;text-align:left}.slot:hover{border-color:#59627f}.slot.karen{border-left:4px solid var(--verde)}.slot.jessica{border-left:4px solid var(--roxo)}.slot .hora{font-weight:600}.slot .prof{font-size:11px;color:var(--muted)}.slot.ativo{outline:2px solid var(--laranja)}
+.resumo-confirmar{margin-top:14px;border-top:1px solid var(--borda);padding-top:14px}.resumo-confirmar p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 12px}.resumo-confirmar strong{color:#fff}.estado-vazio{padding:40px 15px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+.overlay{position:fixed;inset:0;background:rgba(3,5,10,.74);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modal{width:min(460px,100%);background:#171a24;border:1px solid var(--borda);border-radius:20px;padding:26px;text-align:center}.modal .icone{font-size:42px;margin-bottom:10px}.modal h2{font-family:'Montserrat';margin:0 0 8px;font-size:21px}.modal p{color:var(--muted);font-size:13px;line-height:1.7}.modal .detalhes{background:#10131c;border:1px solid var(--borda);border-radius:12px;padding:13px;margin:14px 0;text-align:left;font-size:13px;line-height:1.8}.loading{position:fixed;inset:0;background:rgba(7,9,14,.68);display:flex;align-items:center;justify-content:center;z-index:80}.loading-box{background:#171a24;border:1px solid var(--borda);padding:20px 24px;border-radius:16px;font-size:13px}.spin{width:24px;height:24px;border:3px solid #303548;border-top-color:var(--laranja);border-radius:50%;animation:girar .8s linear infinite;margin:0 auto 10px}@keyframes girar{to{transform:rotate(360deg)}}
+.rodape{text-align:center;color:#676d82;font-size:11px;padding-top:16px}
+@media(max-width:850px){.agenda-grid{grid-template-columns:1fr}.filtros{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.dia{min-height:72px}.uso{width:100%;min-width:0}}
+@media(max-width:560px){.wrap{padding:18px 10px 35px}.hero,.card{padding:17px;border-radius:16px}.topo{margin-bottom:18px}.pill{display:none}.semana,.dias{gap:4px}.dia{min-height:62px;border-radius:9px;padding:6px}.qtd{display:none}.pontos{margin-top:8px}.agenda-grid{gap:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topo">
+    <div class="marca"><h1>DashEagles</h1><span>Agendamento de encontros</span></div>
+    <div class="pill">Horários exibidos no fuso de Brasília</div>
+  </div>
+
+  <section class="hero">
+    <h2>Agende seu encontro</h2>
+    <p>Digite seu nome completo, filtre pela professora ou período e escolha um dos horários disponíveis. O sistema usa seu cadastro da mentoria e consulta as agendas antes da confirmação para evitar conflitos.</p>
+  </section>
+
+  <section class="card" id="cardIdentificacao">
+    <h3>1. Identificação</h3>
+    <form id="formIdentificacao">
+      <div class="campo autocomplete-wrap" style="max-width:620px">
+        <label for="nome">Nome completo</label>
+        <input id="nome" type="text" required autocomplete="off" placeholder="Comece a digitar seu nome..." aria-autocomplete="list" aria-controls="listaNomes" aria-expanded="false">
+        <div class="autocomplete-lista" id="listaNomes" role="listbox"></div>
+        <div class="autocomplete-ajuda">Selecione seu nome na lista de mentorados ativos.</div>
+      </div>
+      <div class="linha-acoes"><button class="btn-principal" type="submit">Ver horários disponíveis</button><span class="msg" id="msgIdentificacao"></span></div>
+    </form>
+  </section>
+
+  <div id="areaAgenda" class="oculto">
+    <section class="card identidade">
+      <div class="aluno"><strong id="alunoNome">—</strong><small>Mentorado DashEagles</small></div>
+      <div class="uso"><div class="uso-top"><span id="usoTexto">Agendamentos no mês</span><strong id="usoContagem">0 de 0</strong></div><div class="barra"><div id="usoBarra"></div></div></div>
+    </section>
+
+    <section class="card">
+      <h3>2. Filtre os horários</h3>
+      <div class="filtros">
+        <div class="campo"><label>Professora</label><div class="chips" id="filtroProf">
+          <button class="chip ativo" data-prof="todas" type="button">Todas</button>
+          <button class="chip karen" data-prof="Karen Abecia" type="button">● Karen Abecia</button>
+          <button class="chip jessica" data-prof="Jéssica Gleiciane" type="button">● Jéssica Gleiciane</button>
+        </div></div>
+        <div class="campo"><label>Período</label><select id="filtroPeriodo"><option value="todos">Todos os períodos</option><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
+        <button class="btn-sec" id="btnAtualizar" type="button">Atualizar horários</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="agenda-grid">
+        <div>
+          <div class="cal-head"><h3 id="tituloMes">—</h3><div class="cal-nav"><button id="mesAnterior" type="button" aria-label="Mês anterior">‹</button><button id="mesProximo" type="button" aria-label="Próximo mês">›</button></div></div>
+          <div class="semana"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+          <div class="dias" id="calendario"></div>
+        </div>
+        <aside class="lateral">
+          <h3 id="tituloDia">Selecione uma data</h3>
+          <div class="sub" id="subDia">Os horários aparecerão aqui.</div>
+          <div class="slots" id="listaSlots"><div class="estado-vazio">Escolha no calendário um dia destacado como disponível.</div></div>
+          <div class="resumo-confirmar oculto" id="resumoConfirmar"><p id="textoResumo"></p><button class="btn-principal" id="btnConfirmar" type="button" style="width:100%">Confirmar agendamento</button></div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="rodape">© Escola Karen Abecia — DashEagles</div>
+</div>
+
+<div class="overlay oculto" id="modalSucesso">
+  <div class="modal"><div class="icone">✓</div><h2>Agendamento confirmado!</h2><p>Seu encontro foi reservado e a confirmação foi enviada por e-mail.</p><div class="detalhes" id="detalhesSucesso"></div><button class="btn-principal" id="fecharSucesso" type="button">Voltar ao calendário</button></div>
+</div>
+<div class="loading oculto" id="loading"><div class="loading-box"><div class="spin"></div><span id="loadingTexto">Carregando...</span></div></div>
+
+<script>
+const CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec'};
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let aluno=null, mesVisual=new Date(), professoraFiltro='todas', periodoFiltro='todos', slots=[], dataSelecionada='', slotSelecionado=null, limiteMes=0, utilizadosMes=0, mentoradosAtivos=[], nomeSelecionado=null, indiceSugestao=-1;
+mesVisual=new Date(mesVisual.getFullYear(),mesVisual.getMonth(),1);
+
+async function api(action,params={}){
+  const url=new URL(CONFIG.API_URL);url.searchParams.set('action',action);url.searchParams.set('_ts',Date.now());Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v??''));
+  const r=await fetch(url.toString(),{method:'GET',redirect:'follow',cache:'no-store'});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Não foi possível interpretar a resposta do servidor.')}if(j.erro)throw new Error(j.erro);return j;
+}
+function loading(on,texto='Carregando...'){document.getElementById('loading').classList.toggle('oculto',!on);document.getElementById('loadingTexto').textContent=texto}
+function isoMes(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function formatarData(iso){const [a,m,d]=iso.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(new Date(a,m-1,d))}
+function professoraClasse(nome){return nome.startsWith('Karen')?'karen':'jessica'}
+function atualizarUso(){document.getElementById('usoContagem').textContent=`${utilizadosMes} de ${limiteMes}`;document.getElementById('usoTexto').textContent=`Agendamentos em ${MESES[mesVisual.getMonth()].toLowerCase()}`;document.getElementById('usoBarra').style.width=(limiteMes?Math.min(100,(utilizadosMes/limiteMes)*100):0)+'%'}
+
+async function carregarDisponibilidade(){
+  if(!aluno)return;loading(true,'Consultando agendas...');slotSelecionado=null;dataSelecionada='';
+  try{
+    const r=await api('listarDisponibilidadeAgendamento',{id_mentorado:aluno.id_mentorado,mes:isoMes(mesVisual),professora:professoraFiltro,periodo:periodoFiltro});
+    slots=r.slots||[];limiteMes=Number(r.limite_mes||0);utilizadosMes=Number(r.utilizados_mes||0);atualizarUso();renderCalendario();renderDia('');
+  }catch(e){alert(e.message)}finally{loading(false)}
+}
+
+function renderCalendario(){
+  document.getElementById('tituloMes').textContent=`${MESES[mesVisual.getMonth()]} ${mesVisual.getFullYear()}`;
+  const el=document.getElementById('calendario');el.innerHTML='';const ano=mesVisual.getFullYear(),mes=mesVisual.getMonth();const primeiro=new Date(ano,mes,1).getDay();const total=new Date(ano,mes+1,0).getDate();
+  for(let i=0;i<primeiro;i++){const b=document.createElement('button');b.className='dia vazio';b.disabled=true;el.appendChild(b)}
+  for(let d=1;d<=total;d++){
+    const iso=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const diaSlots=slots.filter(s=>s.data===iso);const b=document.createElement('button');b.type='button';b.className='dia'+(diaSlots.length?' disponivel':'');b.disabled=!diaSlots.length;b.dataset.data=iso;
+    const profs=[...new Set(diaSlots.map(s=>s.professora))];b.innerHTML=`<span class="numdia">${d}</span><div class="pontos">${profs.map(p=>`<span class="ponto ${professoraClasse(p)==='karen'?'verde':'roxo'}"></span>`).join('')}</div>${diaSlots.length?`<span class="qtd">${diaSlots.length} horário${diaSlots.length>1?'s':''}</span>`:''}`;
+    b.addEventListener('click',()=>{document.querySelectorAll('.dia.selecionado').forEach(x=>x.classList.remove('selecionado'));b.classList.add('selecionado');dataSelecionada=iso;slotSelecionado=null;renderDia(iso)});el.appendChild(b);
+  }
+}
+function renderDia(iso){
+  const titulo=document.getElementById('tituloDia'),sub=document.getElementById('subDia'),lista=document.getElementById('listaSlots'),resumo=document.getElementById('resumoConfirmar');resumo.classList.add('oculto');lista.innerHTML='';
+  if(!iso){titulo.textContent='Selecione uma data';sub.textContent='Os horários aparecerão aqui.';lista.innerHTML='<div class="estado-vazio">Escolha no calendário um dia destacado como disponível.</div>';return}
+  titulo.textContent=formatarData(iso);const diaSlots=slots.filter(s=>s.data===iso).sort((a,b)=>a.hora_inicio.localeCompare(b.hora_inicio));sub.textContent=`${diaSlots.length} horário${diaSlots.length===1?'':'s'} disponível${diaSlots.length===1?'':'is'}`;
+  if(!diaSlots.length){lista.innerHTML='<div class="estado-vazio">Não há horários disponíveis nesse dia.</div>';return}
+  diaSlots.forEach(s=>{const b=document.createElement('button');b.type='button';b.className=`slot ${professoraClasse(s.professora)}`;b.innerHTML=`<span><span class="hora">${s.hora_inicio}–${s.hora_fim}</span><span class="prof">${s.professora}</span></span><span>›</span>`;b.addEventListener('click',()=>{document.querySelectorAll('.slot.ativo').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');slotSelecionado=s;mostrarResumo()});lista.appendChild(b)});
+}
+function mostrarResumo(){if(!slotSelecionado)return;document.getElementById('textoResumo').innerHTML=`Você está reservando com <strong>${slotSelecionado.professora}</strong><br>${formatarData(slotSelecionado.data)}<br><strong>${slotSelecionado.hora_inicio} às ${slotSelecionado.hora_fim}</strong> — horário de Brasília.`;document.getElementById('resumoConfirmar').classList.remove('oculto')}
+
+
+function normalizarTexto(txt){return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()}
+function fecharAutocomplete(){const lista=document.getElementById('listaNomes'),input=document.getElementById('nome');lista.classList.remove('aberta');input.setAttribute('aria-expanded','false');indiceSugestao=-1}
+function selecionarNome(m){const input=document.getElementById('nome');input.value=m.nome;nomeSelecionado=m;document.getElementById('msgIdentificacao').textContent='';fecharAutocomplete()}
+function sugestoesAtuais(){const termo=normalizarTexto(document.getElementById('nome').value);if(!termo)return mentoradosAtivos.slice(0,12);return mentoradosAtivos.filter(m=>normalizarTexto(m.nome).includes(termo)).slice(0,12)}
+function renderAutocomplete(){const input=document.getElementById('nome'),lista=document.getElementById('listaNomes'),sugs=sugestoesAtuais();lista.innerHTML='';indiceSugestao=-1;if(!input.value.trim()){fecharAutocomplete();return}if(!sugs.length){lista.innerHTML='<div class="autocomplete-vazio">Nenhum mentorado ativo encontrado com esse nome.</div>';lista.classList.add('aberta');input.setAttribute('aria-expanded','true');return}sugs.forEach((m,i)=>{const b=document.createElement('button');b.type='button';b.className='autocomplete-item';b.setAttribute('role','option');b.textContent=m.nome;b.addEventListener('mousedown',e=>{e.preventDefault();selecionarNome(m)});lista.appendChild(b)});lista.classList.add('aberta');input.setAttribute('aria-expanded','true')}
+async function carregarMentoradosAtivos(){try{const r=await api('listarMentoradosAtivos');mentoradosAtivos=(r.mentorados||[]).filter(m=>m&&m.nome).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));}catch(e){console.warn('Não foi possível carregar a lista de mentorados ativos:',e.message)}}
+const inputNome=document.getElementById('nome');
+inputNome.addEventListener('input',()=>{nomeSelecionado=null;renderAutocomplete()});
+inputNome.addEventListener('focus',()=>{if(inputNome.value.trim())renderAutocomplete()});
+inputNome.addEventListener('keydown',e=>{const lista=document.getElementById('listaNomes');if(!lista.classList.contains('aberta'))return;const itens=[...lista.querySelectorAll('.autocomplete-item')];if(!itens.length)return;if(e.key==='ArrowDown'){e.preventDefault();indiceSugestao=(indiceSugestao+1)%itens.length}else if(e.key==='ArrowUp'){e.preventDefault();indiceSugestao=(indiceSugestao-1+itens.length)%itens.length}else if(e.key==='Enter'&&indiceSugestao>=0){e.preventDefault();const sugs=sugestoesAtuais();if(sugs[indiceSugestao])selecionarNome(sugs[indiceSugestao]);return}else if(e.key==='Escape'){fecharAutocomplete();return}else{return}itens.forEach((x,i)=>x.classList.toggle('ativo',i===indiceSugestao));itens[indiceSugestao]?.scrollIntoView({block:'nearest'})});
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))fecharAutocomplete()});
+carregarMentoradosAtivos();
+
+document.getElementById('formIdentificacao').addEventListener('submit',async e=>{e.preventDefault();const nome=document.getElementById('nome').value.trim(),msg=document.getElementById('msgIdentificacao');msg.textContent='';if(!nome)return;if(!nomeSelecionado){const exatos=mentoradosAtivos.filter(m=>normalizarTexto(m.nome)===normalizarTexto(nome));if(exatos.length===1)nomeSelecionado=exatos[0];else{msg.textContent='Selecione seu nome na lista de mentorados ativos.';msg.className='msg erro';renderAutocomplete();return}}loading(true,'Validando cadastro...');try{const r=await api('validarMentoradoAgendamento',{nome:nomeSelecionado.nome});aluno=r.mentorado;limiteMes=Number(r.limite_mes||0);utilizadosMes=Number(r.utilizados_mes||0);document.getElementById('alunoNome').textContent=aluno.nome;document.getElementById('areaAgenda').classList.remove('oculto');atualizarUso();await carregarDisponibilidade();document.getElementById('areaAgenda').scrollIntoView({behavior:'smooth',block:'start'})}catch(err){msg.textContent=err.message;msg.className='msg erro'}finally{loading(false)}});
+
+document.querySelectorAll('#filtroProf .chip').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#filtroProf .chip').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');professoraFiltro=b.dataset.prof;carregarDisponibilidade()}));
+document.getElementById('filtroPeriodo').addEventListener('change',e=>{periodoFiltro=e.target.value;carregarDisponibilidade()});document.getElementById('btnAtualizar').addEventListener('click',carregarDisponibilidade);
+document.getElementById('mesAnterior').addEventListener('click',()=>{mesVisual=new Date(mesVisual.getFullYear(),mesVisual.getMonth()-1,1);carregarDisponibilidade()});document.getElementById('mesProximo').addEventListener('click',()=>{mesVisual=new Date(mesVisual.getFullYear(),mesVisual.getMonth()+1,1);carregarDisponibilidade()});
+
+document.getElementById('btnConfirmar').addEventListener('click',async()=>{if(!slotSelecionado||!aluno)return;if(utilizadosMes>=limiteMes){alert('Você já utilizou o limite de agendamentos deste mês.');return}loading(true,'Confirmando seu horário...');try{const r=await api('criarAgendamento',{id_mentorado:aluno.id_mentorado,professora:slotSelecionado.professora,data:slotSelecionado.data,hora_inicio:slotSelecionado.hora_inicio});document.getElementById('detalhesSucesso').innerHTML=`<strong>${r.professora}</strong><br>${formatarData(r.data)}<br>${r.hora_inicio} às ${r.hora_fim}<br>Horário de Brasília`;document.getElementById('modalSucesso').classList.remove('oculto');await carregarDisponibilidade()}catch(err){alert(err.message);await carregarDisponibilidade()}finally{loading(false)}});
+document.getElementById('fecharSucesso').addEventListener('click',()=>document.getElementById('modalSucesso').classList.add('oculto'));
+</script>
+</body>
+</html>
