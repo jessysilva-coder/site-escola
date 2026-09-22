@@ -321,6 +321,47 @@
     }
     @page{ margin:12mm; }
   }
+
+
+  /* ===== Configurações de agenda ===== */
+  .agenda-config-intro{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;}
+  .agenda-config-intro p{font-size:13px;color:#a3a8bd;max-width:760px;line-height:1.6;}
+  .agenda-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .agenda-tab{background:#0f1119;border:1px solid var(--escuro-borda);color:#c7cbe0;padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;}
+  .agenda-tab.ativo{background:var(--laranja);border-color:var(--laranja);color:#fff;}
+  .agenda-subtela{display:none;}.agenda-subtela.ativa{display:block;}
+  .agenda-grid-geral{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;}
+  @media(max-width:900px){.agenda-grid-geral{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.agenda-grid-geral{grid-template-columns:1fr;}}
+  .prof-config{border:1px solid var(--escuro-borda);border-radius:18px;overflow:hidden;margin-bottom:18px;background:var(--escuro-card);}
+  .prof-config.karen{--prof:#57B95C;}.prof-config.jessica{--prof:#7030A0;}
+  .prof-cabecalho{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--escuro-borda);background:linear-gradient(90deg,color-mix(in srgb,var(--prof) 16%,transparent),transparent);}
+  .prof-identidade{display:flex;align-items:center;gap:12px;}.prof-bolinha{width:13px;height:13px;border-radius:50%;background:var(--prof);box-shadow:0 0 14px color-mix(in srgb,var(--prof) 55%,transparent);}
+  .prof-cabecalho h3{font-size:17px;}.prof-cabecalho small{display:block;color:#8f94aa;font-size:11px;margin-top:2px;}
+  .prof-cor{font-size:11px;font-weight:700;color:var(--prof);text-transform:uppercase;letter-spacing:.8px;}
+  .prof-corpo{padding:20px;}
+  .agenda-secao-titulo{font-size:12px;font-weight:700;text-transform:uppercase;color:#a3a8bd;margin-bottom:10px;}
+  .agenda-linha-topo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+  @media(max-width:700px){.agenda-linha-topo{grid-template-columns:1fr;}}
+  .agenda-box{background:#0f1119;border:1px solid var(--escuro-borda);border-radius:12px;padding:14px;}
+  .agenda-box label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#8f94aa;margin-bottom:6px;}
+  .agenda-box input,.agenda-box select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--escuro-borda);background:#12141c;color:#fff;}
+  .semana-lista{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+  .dia-agenda{background:#0f1119;border:1px solid var(--escuro-borda);border-radius:12px;padding:12px;}
+  .dia-topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;}
+  .dia-nome{font-size:13px;font-weight:700;}.btn-add-janela{background:transparent;border:1px solid var(--prof);color:var(--prof);padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;}
+  .janelas{display:flex;flex-direction:column;gap:7px;}.janela{display:grid;grid-template-columns:1fr 24px 1fr 34px;gap:8px;align-items:center;}
+  .janela input{padding:8px 9px;border-radius:7px;border:1px solid var(--escuro-borda);background:#12141c;color:#fff;}
+  .janela span{text-align:center;color:#70758d;font-size:12px;}.btn-remover-janela{border:none;background:transparent;color:#e76a70;font-size:18px;line-height:1;}
+  .sem-janelas{font-size:12px;color:#666c83;padding:4px 0;}
+  .folgas-lista{display:flex;flex-direction:column;gap:8px;margin:10px 0 12px;}
+  .folga-item{display:grid;grid-template-columns:1fr 20px 1fr 1.4fr 34px;gap:8px;align-items:center;background:#0f1119;border:1px solid var(--escuro-borda);border-radius:10px;padding:10px;}
+  .folga-item input{padding:8px;border-radius:7px;border:1px solid var(--escuro-borda);background:#12141c;color:#fff;min-width:0;}.folga-item span{text-align:center;color:#70758d;}
+  @media(max-width:720px){.folga-item{grid-template-columns:1fr 1fr;}.folga-item span{display:none;}.folga-item .btn-remover-janela{grid-column:2;text-align:right;}}
+  .btn-prof{background:var(--prof);color:#fff;border:none;padding:11px 18px;border-radius:9px;font-weight:600;font-size:13px;}
+  .agenda-ajuda{font-size:11px;color:#73788f;margin-top:6px;line-height:1.5;}
+  .agenda-status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;font-size:12px;}.agenda-status.ok{display:block;background:rgba(87,185,92,.13);border:1px solid #57B95C;color:#9de2a1;}.agenda-status.erro{display:block;background:rgba(229,72,77,.13);border:1px solid #E5484D;color:#ffaaaa;}
+
 </style>
 </head>
 <body>
@@ -606,6 +647,18 @@
       <!-- ===================== TELA: CONFIGURAÇÕES ===================== -->
       <section id="telaConfig" class="oculto">
         <div class="detalhe-topo"><h2>Configurações</h2></div>
+
+        <div class="agenda-config-intro">
+          <div>
+            <h3 style="font-size:17px;margin-bottom:5px;">Central de configurações</h3>
+            <p>Gerencie as regras gerais do acompanhamento e a liberação de horários para os encontros individuais. Karen Abecia é sempre identificada em verde e Jéssica Gleiciane em roxo.</p>
+          </div>
+        </div>
+        <div class="agenda-tabs">
+          <button type="button" class="agenda-tab ativo" data-agenda-tab="sistema">Sistema</button>
+          <button type="button" class="agenda-tab" data-agenda-tab="agenda">Agenda dos encontros</button>
+        </div>
+        <div id="configSubSistema" class="agenda-subtela ativa">
         <div class="bloco">
           <h3 class="secao">Alertas</h3>
           <form id="formConfigAlertas">
@@ -638,6 +691,59 @@
           <div class="linha-campos">
             <input type="text" id="novaFerramentaInput" placeholder="Nome da nova ferramenta">
             <button type="button" class="btn-secundario" id="btnAdicionarFerramenta">Adicionar ferramenta</button>
+          </div>
+        </div>
+        </div>
+
+        <div id="configSubAgenda" class="agenda-subtela">
+          <div class="bloco">
+            <h3 class="secao">Regras gerais do programa</h3>
+            <form id="formAgendaGeral">
+              <div class="agenda-grid-geral">
+                <div class="campo"><label for="agendaDuracao">Duração padrão</label><select id="agendaDuracao"><option value="30">30 minutos</option><option value="45">45 minutos</option><option value="60">60 minutos</option><option value="90">90 minutos</option><option value="120">120 minutos</option></select></div>
+                <div class="campo"><label for="agendaAntecedenciaMin">Antecedência mínima</label><div style="display:flex;gap:8px;align-items:center;"><input type="number" id="agendaAntecedenciaMin" min="0" value="24"><span style="font-size:12px;color:#8f94aa;">horas</span></div></div>
+                <div class="campo"><label for="agendaAntecedenciaMax">Antecedência máxima</label><div style="display:flex;gap:8px;align-items:center;"><input type="number" id="agendaAntecedenciaMax" min="1" value="30"><span style="font-size:12px;color:#8f94aa;">dias</span></div></div>
+                <div class="campo"><label for="agendaLimiteMes">Agendamentos por mentorado/mês</label><input type="number" id="agendaLimiteMes" min="1" value="2"></div>
+              </div>
+              <div class="agenda-ajuda">Essas regras valem para as duas professoras. Todos os horários são considerados no fuso de Brasília (America/Sao_Paulo).</div>
+              <button type="submit" class="btn-salvar" style="margin-top:14px;">Salvar regras gerais</button>
+            </form>
+          </div>
+
+          <div class="prof-config karen" data-professora="Karen Abecia">
+            <div class="prof-cabecalho"><div class="prof-identidade"><span class="prof-bolinha"></span><div><h3>Karen Abecia</h3><small>Configuração individual de disponibilidade</small></div></div><span class="prof-cor">Verde</span></div>
+            <div class="prof-corpo">
+              <div class="agenda-linha-topo">
+                <div class="agenda-box"><label>ID da agenda Google</label><input type="text" class="prof-calendar-id" placeholder="ex.: seuemail@gmail.com"><div class="agenda-ajuda">A agenda será consultada antes de liberar qualquer horário.</div></div>
+                <div class="agenda-box"><label>E-mail da professora</label><input type="email" class="prof-email" placeholder="email@exemplo.com"><div class="agenda-ajuda">Usado para enviar a confirmação do agendamento.</div></div>
+                <div class="agenda-box"><label>Máximo de agendamentos por dia</label><input type="number" class="prof-limite-dia" min="1" value="3"><div class="agenda-ajuda">Ao atingir este limite, nenhum outro horário do dia será liberado.</div></div>
+              </div>
+              <div class="agenda-secao-titulo">Disponibilidade semanal</div>
+              <div class="semana-lista" data-semana></div>
+              <div class="agenda-secao-titulo" style="margin-top:18px;">Dias de folga / bloqueios</div>
+              <div class="folgas-lista" data-folgas></div>
+              <button type="button" class="btn-secundario btn-add-folga">+ Adicionar período de folga</button>
+              <div style="margin-top:18px;"><button type="button" class="btn-prof btn-salvar-prof">Salvar Karen</button></div>
+              <div class="agenda-status" data-status></div>
+            </div>
+          </div>
+
+          <div class="prof-config jessica" data-professora="Jéssica Gleiciane">
+            <div class="prof-cabecalho"><div class="prof-identidade"><span class="prof-bolinha"></span><div><h3>Jéssica Gleiciane</h3><small>Configuração individual de disponibilidade</small></div></div><span class="prof-cor">Roxo</span></div>
+            <div class="prof-corpo">
+              <div class="agenda-linha-topo">
+                <div class="agenda-box"><label>ID da agenda Google</label><input type="text" class="prof-calendar-id" placeholder="ex.: seuemail@gmail.com"><div class="agenda-ajuda">A agenda será consultada antes de liberar qualquer horário.</div></div>
+                <div class="agenda-box"><label>E-mail da professora</label><input type="email" class="prof-email" placeholder="email@exemplo.com"><div class="agenda-ajuda">Usado para enviar a confirmação do agendamento.</div></div>
+                <div class="agenda-box"><label>Máximo de agendamentos por dia</label><input type="number" class="prof-limite-dia" min="1" value="3"><div class="agenda-ajuda">Ao atingir este limite, nenhum outro horário do dia será liberado.</div></div>
+              </div>
+              <div class="agenda-secao-titulo">Disponibilidade semanal</div>
+              <div class="semana-lista" data-semana></div>
+              <div class="agenda-secao-titulo" style="margin-top:18px;">Dias de folga / bloqueios</div>
+              <div class="folgas-lista" data-folgas></div>
+              <button type="button" class="btn-secundario btn-add-folga">+ Adicionar período de folga</button>
+              <div style="margin-top:18px;"><button type="button" class="btn-prof btn-salvar-prof">Salvar Jéssica</button></div>
+              <div class="agenda-status" data-status></div>
+            </div>
           </div>
         </div>
       </section>
@@ -802,7 +908,8 @@ const PONTOS_ENCONTRO = 5;
 const PONTOS_PROJETO = 10;
 
 let mentorados = [], registros = [], indicacoes = [], projetos = [];
-let configuracoes = { dias_alerta_mensagem: 15, dias_alerta_encontro: 30, tipos_atendimento_extra: '', atendentes_extra: '', ferramentas_extra: '' };
+let configuracoes = { dias_alerta_mensagem: 15, dias_alerta_encontro: 30, tipos_atendimento_extra: '', atendentes_extra: '', ferramentas_extra: '', duracao_encontro_min: 60, antecedencia_min_horas: 24, antecedencia_max_dias: 30, limite_agendamentos_mes: 2 };
+let agendaConfig = { professoras: [], disponibilidade: [], folgas: [] };
 let mentoradoSelecionado = null;
 let origemDetalhe = 'resumo';
 
@@ -1850,12 +1957,90 @@ document.getElementById('formMassa').addEventListener('submit', (ev) => {
 });
 
 /* ===================== Configurações ===================== */
+const DIAS_AGENDA = [
+  ['segunda','Segunda-feira'],['terca','Terça-feira'],['quarta','Quarta-feira'],
+  ['quinta','Quinta-feira'],['sexta','Sexta-feira'],['sabado','Sábado'],['domingo','Domingo']
+];
+
+function criarJanelaHTML(inicio = '', fim = '') {
+  return `<div class="janela"><input type="time" class="janela-inicio" value="${inicio}"><span>até</span><input type="time" class="janela-fim" value="${fim}"><button type="button" class="btn-remover-janela" title="Remover">×</button></div>`;
+}
+
+function montarDisponibilidadeProfessor(card) {
+  const professora = card.dataset.professora;
+  const container = card.querySelector('[data-semana]');
+  const linhas = agendaConfig.disponibilidade.filter(x => x.professora === professora && String(x.ativo || 'Sim').toLowerCase() !== 'não');
+  container.innerHTML = DIAS_AGENDA.map(([chave, rotulo]) => {
+    const janelas = linhas.filter(x => x.dia_semana === chave);
+    return `<div class="dia-agenda" data-dia="${chave}"><div class="dia-topo"><span class="dia-nome">${rotulo}</span><button type="button" class="btn-add-janela">+ Janela</button></div><div class="janelas">${janelas.length ? janelas.map(j => criarJanelaHTML(j.hora_inicio || '', j.hora_fim || '')).join('') : '<div class="sem-janelas">Sem disponibilidade</div>'}</div></div>`;
+  }).join('');
+}
+
+function montarFolgasProfessor(card) {
+  const professora = card.dataset.professora;
+  const container = card.querySelector('[data-folgas]');
+  const itens = agendaConfig.folgas.filter(x => x.professora === professora && String(x.ativo || 'Sim').toLowerCase() !== 'não');
+  container.innerHTML = itens.map(f => `<div class="folga-item"><input type="date" class="folga-inicio" value="${(f.data_inicio||'').split('T')[0]}"><span>até</span><input type="date" class="folga-fim" value="${(f.data_fim||'').split('T')[0]}"><input type="text" class="folga-motivo" placeholder="Motivo (opcional)" value="${f.motivo || ''}"><button type="button" class="btn-remover-janela" title="Remover">×</button></div>`).join('');
+  if (!itens.length) container.innerHTML = '<div class="sem-janelas">Nenhum período de folga cadastrado</div>';
+}
+
+function preencherConfigAgenda() {
+  document.getElementById('agendaDuracao').value = String(configuracoes.duracao_encontro_min || 60);
+  document.getElementById('agendaAntecedenciaMin').value = configuracoes.antecedencia_min_horas ?? 24;
+  document.getElementById('agendaAntecedenciaMax').value = configuracoes.antecedencia_max_dias ?? 30;
+  document.getElementById('agendaLimiteMes').value = configuracoes.limite_agendamentos_mes ?? 2;
+  document.querySelectorAll('.prof-config').forEach(card => {
+    const prof = agendaConfig.professoras.find(p => p.professora === card.dataset.professora) || {};
+    card.querySelector('.prof-calendar-id').value = prof.calendar_id || '';
+    const emailProf = card.querySelector('.prof-email'); if (emailProf) emailProf.value = prof.email_professora || '';
+    card.querySelector('.prof-limite-dia').value = prof.limite_agendamentos_dia || 3;
+    montarDisponibilidadeProfessor(card);
+    montarFolgasProfessor(card);
+  });
+}
+
+async function carregarConfigAgenda() {
+  try {
+    const resp = await chamarApi('listarConfigAgenda');
+    if (resp && !resp.erro) {
+      agendaConfig.professoras = resp.professoras || [];
+      agendaConfig.disponibilidade = resp.disponibilidade || [];
+      agendaConfig.folgas = resp.folgas || [];
+      if (resp.configuracoes) configuracoes = { ...configuracoes, ...resp.configuracoes };
+    }
+  } catch (e) { /* compatibilidade: backend antigo ainda sem ações de agenda */ }
+  preencherConfigAgenda();
+}
+
+function coletarProfessor(card) {
+  const disponibilidade = [];
+  card.querySelectorAll('.dia-agenda').forEach(dia => {
+    dia.querySelectorAll('.janela').forEach(j => {
+      const inicio = j.querySelector('.janela-inicio').value;
+      const fim = j.querySelector('.janela-fim').value;
+      if (inicio && fim) disponibilidade.push({dia_semana: dia.dataset.dia, hora_inicio: inicio, hora_fim: fim});
+    });
+  });
+  const folgas = [];
+  card.querySelectorAll('.folga-item').forEach(f => {
+    const ini = f.querySelector('.folga-inicio').value, fim = f.querySelector('.folga-fim').value;
+    if (ini && fim) folgas.push({data_inicio: ini, data_fim: fim, motivo: f.querySelector('.folga-motivo').value.trim()});
+  });
+  return { professora: card.dataset.professora, calendar_id: card.querySelector('.prof-calendar-id').value.trim(), email_professora: (card.querySelector('.prof-email')?.value || '').trim(), limite_agendamentos_dia: card.querySelector('.prof-limite-dia').value, disponibilidade, folgas };
+}
+
+function mostrarStatusAgenda(card, mensagem, tipo) {
+  const el = card.querySelector('[data-status]'); el.className = 'agenda-status ' + tipo; el.textContent = mensagem;
+  setTimeout(() => { el.className = 'agenda-status'; }, 4500);
+}
+
 function preencherTelaConfig() {
   document.getElementById('cDiasMensagem').value = configuracoes.dias_alerta_mensagem;
   document.getElementById('cDiasEncontro').value = configuracoes.dias_alerta_encontro;
   document.getElementById('listaTiposConfig').innerHTML = listaTipos().map(t => `<div>• ${t}</div>`).join('');
   document.getElementById('listaAtendentesConfig').innerHTML = listaAtendentes().map(a => `<div>• ${a}</div>`).join('');
   document.getElementById('listaFerramentasConfig').innerHTML = listaFerramentas().map(f => `<div>• ${f}</div>`).join('');
+  carregarConfigAgenda();
 }
 
 document.getElementById('formConfigAlertas').addEventListener('submit', async (ev) => {
@@ -1970,6 +2155,48 @@ document.getElementById('btnAtualizarProjetometro').addEventListener('click', at
 });
 
 /* ===================== Início ===================== */
+
+
+/* ===================== Eventos — Configuração de agenda ===================== */
+document.querySelectorAll('.agenda-tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.agenda-tab').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('.agenda-subtela').forEach(s => s.classList.remove('ativa'));
+  btn.classList.add('ativo');
+  document.getElementById(btn.dataset.agendaTab === 'agenda' ? 'configSubAgenda' : 'configSubSistema').classList.add('ativa');
+}));
+
+document.getElementById('formAgendaGeral').addEventListener('submit', async ev => {
+  ev.preventDefault(); const btn = ev.target.querySelector('.btn-salvar'); const original = btn.textContent;
+  const dados = { duracao_encontro_min: document.getElementById('agendaDuracao').value, antecedencia_min_horas: document.getElementById('agendaAntecedenciaMin').value, antecedencia_max_dias: document.getElementById('agendaAntecedenciaMax').value, limite_agendamentos_mes: document.getElementById('agendaLimiteMes').value };
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  try {
+    const resp = await chamarApi('atualizarConfiguracoes', dados); if (resp && resp.erro) throw new Error(resp.erro);
+    Object.assign(configuracoes, dados); alert('Regras gerais de agendamento salvas.');
+  } catch(e) { alert('Não foi possível salvar as regras de agendamento. ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = original; }
+});
+
+document.querySelectorAll('.prof-config').forEach(card => {
+  card.addEventListener('click', ev => {
+    const add = ev.target.closest('.btn-add-janela');
+    if (add) { const area = add.closest('.dia-agenda').querySelector('.janelas'); if (area.querySelector('.sem-janelas')) area.innerHTML=''; area.insertAdjacentHTML('beforeend', criarJanelaHTML()); return; }
+    const rem = ev.target.closest('.btn-remover-janela');
+    if (rem) { const item = rem.closest('.janela,.folga-item'); if (item) item.remove(); return; }
+    if (ev.target.closest('.btn-add-folga')) { const area = card.querySelector('[data-folgas]'); if (area.querySelector('.sem-janelas')) area.innerHTML=''; area.insertAdjacentHTML('beforeend','<div class="folga-item"><input type="date" class="folga-inicio"><span>até</span><input type="date" class="folga-fim"><input type="text" class="folga-motivo" placeholder="Motivo (opcional)"><button type="button" class="btn-remover-janela" title="Remover">×</button></div>'); return; }
+  });
+  card.querySelector('.btn-salvar-prof').addEventListener('click', async ev => {
+    const btn = ev.currentTarget, original = btn.textContent, dados = coletarProfessor(card);
+    if (!dados.calendar_id) { mostrarStatusAgenda(card,'Informe o ID da agenda Google desta professora.','erro'); return; }
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      const resp = await chamarApi('salvarConfigProfessorAgenda', { professora:dados.professora, calendar_id:dados.calendar_id, email_professora:dados.email_professora, limite_agendamentos_dia:dados.limite_agendamentos_dia, disponibilidade:JSON.stringify(dados.disponibilidade), folgas:JSON.stringify(dados.folgas) });
+      if (resp && resp.erro) throw new Error(resp.erro);
+      mostrarStatusAgenda(card,'Configuração salva com sucesso.','ok');
+    } catch(e) { mostrarStatusAgenda(card,'Não foi possível salvar: ' + e.message,'erro'); }
+    finally { btn.disabled=false; btn.textContent=original; }
+  });
+});
+
 iniciarApp();
 </script>
 
