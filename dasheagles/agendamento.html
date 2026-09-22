@@ -53,7 +53,7 @@ button{cursor:pointer}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap oculto" id="appAgendamento">
   <div class="topo">
     <div class="marca"><h1>DashEagles</h1><span>Agendamento de encontros</span></div>
     <div class="pill">Horários exibidos no fuso de Brasília</div>
@@ -119,7 +119,13 @@ button{cursor:pointer}
 <div class="overlay oculto" id="modalSucesso">
   <div class="modal"><div class="icone">✓</div><h2>Agendamento confirmado!</h2><p>Seu encontro foi reservado e a confirmação foi enviada por e-mail.</p><div class="detalhes" id="detalhesSucesso"></div><button class="btn-principal" id="fecharSucesso" type="button">Voltar ao calendário</button></div>
 </div>
-<div class="loading oculto" id="loading"><div class="loading-box"><div class="spin"></div><span id="loadingTexto">Carregando...</span></div></div>
+<div class="loading" id="loading">
+  <div class="loading-box" id="loadingBox" style="text-align:center;max-width:420px">
+    <div class="spin" id="loadingSpin"></div>
+    <div id="loadingTexto">Carregando lista de mentorados...</div>
+    <button class="btn-principal oculto" id="btnTentarNovamente" type="button" style="margin-top:14px">Tentar novamente</button>
+  </div>
+</div>
 
 <script>
 const CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec'};
@@ -131,7 +137,14 @@ async function api(action,params={}){
   const url=new URL(CONFIG.API_URL);url.searchParams.set('action',action);url.searchParams.set('_ts',Date.now());Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v??''));
   const r=await fetch(url.toString(),{method:'GET',redirect:'follow',cache:'no-store'});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error('Não foi possível interpretar a resposta do servidor.')}if(j.erro)throw new Error(j.erro);return j;
 }
-function loading(on,texto='Carregando...'){document.getElementById('loading').classList.toggle('oculto',!on);document.getElementById('loadingTexto').textContent=texto}
+function loading(on,texto='Carregando...'){
+  const el=document.getElementById('loading');
+  const spin=document.getElementById('loadingSpin');
+  const btn=document.getElementById('btnTentarNovamente');
+  el.classList.toggle('oculto',!on);
+  document.getElementById('loadingTexto').textContent=texto;
+  if(on){spin.classList.remove('oculto');btn.classList.add('oculto')}
+}
 function isoMes(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function formatarData(iso){const [a,m,d]=iso.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(new Date(a,m-1,d))}
 function professoraClasse(nome){return nome.startsWith('Karen')?'karen':'jessica'}
@@ -170,12 +183,35 @@ function fecharAutocomplete(){const lista=document.getElementById('listaNomes'),
 function selecionarNome(m){const input=document.getElementById('nome');input.value=m.nome;nomeSelecionado=m;document.getElementById('msgIdentificacao').textContent='';fecharAutocomplete()}
 function sugestoesAtuais(){const termo=normalizarTexto(document.getElementById('nome').value);if(!termo)return mentoradosAtivos.slice(0,12);return mentoradosAtivos.filter(m=>normalizarTexto(m.nome).includes(termo)).slice(0,12)}
 function renderAutocomplete(){const input=document.getElementById('nome'),lista=document.getElementById('listaNomes'),sugs=sugestoesAtuais();lista.innerHTML='';indiceSugestao=-1;if(!input.value.trim()){fecharAutocomplete();return}if(!sugs.length){lista.innerHTML='<div class="autocomplete-vazio">Nenhum mentorado ativo encontrado com esse nome.</div>';lista.classList.add('aberta');input.setAttribute('aria-expanded','true');return}sugs.forEach((m,i)=>{const b=document.createElement('button');b.type='button';b.className='autocomplete-item';b.setAttribute('role','option');b.textContent=m.nome;b.addEventListener('mousedown',e=>{e.preventDefault();selecionarNome(m)});lista.appendChild(b)});lista.classList.add('aberta');input.setAttribute('aria-expanded','true')}
-async function carregarMentoradosAtivos(){try{const r=await api('listarMentoradosAtivos');mentoradosAtivos=(r.mentorados||[]).filter(m=>m&&m.nome).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));}catch(e){console.warn('Não foi possível carregar a lista de mentorados ativos:',e.message)}}
+async function carregarMentoradosAtivos(){
+  const app=document.getElementById('appAgendamento');
+  const loadingEl=document.getElementById('loading');
+  const spin=document.getElementById('loadingSpin');
+  const btnRetry=document.getElementById('btnTentarNovamente');
+  app.classList.add('oculto');
+  loadingEl.classList.remove('oculto');
+  spin.classList.remove('oculto');
+  btnRetry.classList.add('oculto');
+  document.getElementById('loadingTexto').textContent='Carregando lista de mentorados...';
+  try{
+    const r=await api('listarMentoradosAtivos');
+    mentoradosAtivos=(r.mentorados||[]).filter(m=>m&&m.nome&&m.id_mentorado).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+    if(!mentoradosAtivos.length) throw new Error('Nenhum mentorado ativo foi encontrado no momento.');
+    app.classList.remove('oculto');
+    loadingEl.classList.add('oculto');
+  }catch(e){
+    console.warn('Não foi possível carregar a lista de mentorados ativos:',e.message);
+    document.getElementById('loadingTexto').textContent='Não foi possível carregar a lista de mentorados. Verifique sua conexão e tente novamente.';
+    spin.classList.add('oculto');
+    btnRetry.classList.remove('oculto');
+  }
+}
 const inputNome=document.getElementById('nome');
 inputNome.addEventListener('input',()=>{nomeSelecionado=null;renderAutocomplete()});
 inputNome.addEventListener('focus',()=>{if(inputNome.value.trim())renderAutocomplete()});
 inputNome.addEventListener('keydown',e=>{const lista=document.getElementById('listaNomes');if(!lista.classList.contains('aberta'))return;const itens=[...lista.querySelectorAll('.autocomplete-item')];if(!itens.length)return;if(e.key==='ArrowDown'){e.preventDefault();indiceSugestao=(indiceSugestao+1)%itens.length}else if(e.key==='ArrowUp'){e.preventDefault();indiceSugestao=(indiceSugestao-1+itens.length)%itens.length}else if(e.key==='Enter'&&indiceSugestao>=0){e.preventDefault();const sugs=sugestoesAtuais();if(sugs[indiceSugestao])selecionarNome(sugs[indiceSugestao]);return}else if(e.key==='Escape'){fecharAutocomplete();return}else{return}itens.forEach((x,i)=>x.classList.toggle('ativo',i===indiceSugestao));itens[indiceSugestao]?.scrollIntoView({block:'nearest'})});
 document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))fecharAutocomplete()});
+document.getElementById('btnTentarNovamente').addEventListener('click',carregarMentoradosAtivos);
 carregarMentoradosAtivos();
 
 document.getElementById('formIdentificacao').addEventListener('submit',async e=>{e.preventDefault();const nome=document.getElementById('nome').value.trim(),msg=document.getElementById('msgIdentificacao');msg.textContent='';if(!nome)return;if(!nomeSelecionado){const exatos=mentoradosAtivos.filter(m=>normalizarTexto(m.nome)===normalizarTexto(nome));if(exatos.length===1)nomeSelecionado=exatos[0];else{msg.textContent='Selecione seu nome na lista de mentorados ativos.';msg.className='msg erro';renderAutocomplete();return}}loading(true,'Validando cadastro...');try{const r=await api('validarMentoradoAgendamento',{nome:nomeSelecionado.nome});aluno=r.mentorado;limiteMes=Number(r.limite_mes||0);utilizadosMes=Number(r.utilizados_mes||0);document.getElementById('alunoNome').textContent=aluno.nome;document.getElementById('areaAgenda').classList.remove('oculto');atualizarUso();await carregarDisponibilidade();document.getElementById('areaAgenda').scrollIntoView({behavior:'smooth',block:'start'})}catch(err){msg.textContent=err.message;msg.className='msg erro'}finally{loading(false)}});
