@@ -297,7 +297,7 @@ function atualizarCacheStatus(origem){
 
 async function carregarAgendaCompleta(forcar=false){
   if(!aluno)return;
-  let dados=!forcar?lerCache(cacheAgendaKey(aluno.id_mentorado),CACHE_AGENDA_MS):null;
+  let dados=null; // Consulta o saldo atualizado após presenças, ausências e remarcações.
   if(dados){
     agendaBase=dados;
     atualizarCacheStatus('cache');
