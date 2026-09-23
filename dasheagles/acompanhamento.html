@@ -362,9 +362,49 @@
   .agenda-ajuda{font-size:11px;color:#73788f;margin-top:6px;line-height:1.5;}
   .agenda-status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;font-size:12px;}.agenda-status.ok{display:block;background:rgba(87,185,92,.13);border:1px solid #57B95C;color:#9de2a1;}.agenda-status.erro{display:block;background:rgba(229,72,77,.13);border:1px solid #E5484D;color:#ffaaaa;}
 
+
+/* Expansão do menu; preserva cores e componentes existentes. */
+.sidebar a.sb-btn{text-decoration:none}
+.sb-expansor{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sb-expansor[aria-expanded="true"]>span{transform:rotate(180deg)}
+.sb-submenu{margin:0 0 8px 12px;padding-left:7px;border-left:1px solid var(--escuro-borda)}
+.sb-submenu[hidden]{display:none}
+.sb-submenu .sb-btn{font-size:12px;padding:9px 10px;white-space:normal}
+.sb-submenu .sb-btn small{display:block;color:#a3a8bd;font-size:10px}
+.sb-btn:disabled{opacity:.55;cursor:not-allowed}
+.sb-btn:disabled:hover{background:transparent;color:#c7cbe0}
+.sb-grupo:has(.sb-submenu .ativo)>.sb-expansor{color:var(--laranja)}
+.sb-btn:focus-visible{outline:2px solid var(--laranja);outline-offset:2px}
+.agenda-abrir-link{text-decoration:none;display:inline-block}
+@media(max-width:820px){.sidebar{align-items:flex-start}.sidebar>.sb-btn,.sb-grupo{flex:0 0 auto;width:auto}.sb-grupo{min-width:170px}.sb-submenu{max-width:210px}.sidebar>.sb-btn{white-space:nowrap}}
+.tabela-brindes{width:100%;min-width:600px}.tabela-brindes input{width:100%;min-width:110px;padding:9px;border:1px solid var(--escuro-borda);border-radius:8px;background:#12141c;color:#fff;font:inherit}.tabela-brindes td{padding:8px}.tabela-brindes th{text-align:left}#modalCadastroCompleto h2{padding-right:22px}
+.linha-campos-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#formDetalheCadastro .campo{min-width:0}#formDetalheCadastro input,#formDetalheCadastro select{min-width:0;width:100%}
+#btnCadastroCompleto{text-transform:none;flex-shrink:0}
+#detIndicadores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#detIndicadores .sidebar-card{margin:0;min-width:0;overflow-wrap:anywhere;padding:12px}
+#detIndicadores .indicador-largo{grid-column:1/-1}
+#detIndicadores .num.valor{font-size:clamp(14px,1.3vw,19px)}
+#detIndicadores .num.data{font-size:14px}
+.lista-agendamentos{padding:0;margin:10px 0 0;list-style:none}.lista-agendamentos li{border-top:1px solid var(--escuro-borda);padding:9px 0;font-size:12px}.lista-agendamentos small{display:block;color:#a3a8bd;margin-top:3px}
+#statusGravacao{background:var(--escuro-card);border-bottom:1px solid var(--escuro-borda);padding:10px 24px;font-size:12px;color:#c7cbe0}#statusGravacao[hidden]{display:none}#statusGravacao>div{margin-top:8px;color:#ffaaaa}
+@media(max-width:1100px) and (min-width:901px){.grid-detalhe{grid-template-columns:minmax(0,1.6fr) minmax(290px,1fr)}.linha-campos-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.linha-campos-4{grid-template-columns:1fr}#btnCadastroCompleto{flex-shrink:1}.grid-detalhe>div{min-width:0}}
+
+.nome-lista{background:none;border:0;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}.nome-lista:hover{color:var(--laranja)}.nome-lista:focus-visible{outline:2px solid var(--laranja);outline-offset:4px}
+.grupo-aniversario{margin-bottom:26px}.grupo-aniversario .secao{margin-bottom:10px}.contagem-lista{font-weight:400;color:#7c8199}
+#telaBrindes td{overflow-wrap:anywhere}#telaBrindes .tag-alerta{display:inline-block}
+#telaAniversariantes th:first-child{width:65%}
+.filtro-atrasados{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#c7cbe0;cursor:pointer;white-space:nowrap}.filtro-atrasados input{width:16px;height:16px;margin:0;accent-color:var(--laranja)}
+
+.cal-tipo{display:grid;grid-template-columns:minmax(160px,1fr) minmax(220px,2fr) auto;gap:14px;align-items:center;margin-bottom:16px}.cal-paleta{display:flex;gap:7px;flex-wrap:wrap}.cal-paleta button{width:27px;height:27px;border:2px solid transparent;border-radius:50%;padding:0}.cal-paleta button[aria-pressed=true]{outline:2px solid #fff;outline-offset:2px}.cal-preview-scroll{overflow:auto;max-width:100%;border-radius:12px}.cal-tipo .campo{margin:0}#calEditorCampos:disabled{opacity:.7}@media(max-width:760px){.cal-tipo{grid-template-columns:1fr}.cal-tipo>button{justify-self:start}}
+.cal-controles{display:grid;grid-template-columns:minmax(160px,1fr) minmax(210px,1.2fr) auto auto;gap:14px;align-items:end}.cal-controles .campo{margin:0}.cal-controles button{min-height:42px}.cal-controles button:disabled{opacity:.35;cursor:not-allowed}.cal-config-grid{display:grid;grid-template-columns:minmax(350px,.9fr) minmax(420px,1.3fr);gap:20px;align-items:start}.cal-config-grid>.bloco{min-width:0;padding:18px}.cal-tabela th,.cal-tabela td{padding:8px 4px}.cal-tabela input,.cal-tabela select{width:100%;min-width:0;font:inherit;font-size:11px;padding:9px 5px;border:1px solid var(--escuro-borda);border-radius:7px;background:#12141c;color:#fff}.cal-tabela th:first-child{width:31%}.cal-tabela th:nth-child(2){width:40%}.cal-cor-linha{display:flex;gap:4px;align-items:center}.cal-apagar{background:none;border:0;color:#a3a8bd;font-size:20px;padding:1px 3px}.cal-preview-bloco{position:sticky;top:16px}@media(max-width:1150px){.cal-controles{grid-template-columns:1fr 1fr}.cal-config-grid{grid-template-columns:1fr}.cal-preview-bloco{position:static}}@media(max-width:600px){.cal-controles{grid-template-columns:1fr}}
+.cal-config-grid{grid-template-columns:minmax(0,1fr);gap:22px}.cal-preview-bloco{position:static;top:auto}.cal-config-grid>.bloco{padding:24px}.cal-tabela th:first-child{width:24%}.cal-tabela th:nth-child(2){width:48%}.cal-tabela input,.cal-tabela select{font-size:13px;padding:11px 10px}.cal-tabela th,.cal-tabela td{padding:9px 6px}@media(max-width:600px){.cal-config-grid>.bloco{padding:16px}}
+.sb-btn{transition:background-color .18s ease,color .18s ease}.sb-submenu{overflow:hidden;transition:max-height .22s ease,opacity .18s ease;margin-bottom:0}.sb-expansor>span{transition:transform .22s ease}.sb-submenu .sb-btn{margin-bottom:4px}.sb-submenu[hidden]{display:none}#inicioLoading{position:fixed;inset:0;z-index:200;background:#10121a;display:grid;place-items:center;padding:24px}#inicioLoading[hidden]{display:none}.inicio-caixa{max-width:480px;text-align:center;color:#c7cbe0}.inicio-caixa h2{font:700 23px Montserrat;color:#fff;margin-bottom:14px}.inicio-caixa p{font-size:13px;line-height:1.7}.inicio-spinner{width:34px;height:34px;border:3px solid #303548;border-top-color:var(--laranja);border-radius:50%;animation:inicioGiro .8s linear infinite;margin:0 auto 22px}@keyframes inicioGiro{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.sb-btn,.sb-submenu,.sb-expansor>span{transition:none}}
+.modulo-pendente>:not(.modulo-status){display:none!important}.modulo-status{padding:32px;background:var(--escuro-card);border:1px solid var(--escuro-borda);border-radius:14px;color:#c7cbe0;font-size:13px}.modulo-status p{margin-bottom:14px}.modulo-status[hidden]{display:none}
 </style>
 </head>
-<body>
+<body><div id="inicioLoading" role="status"><div class="inicio-caixa"><div class="inicio-spinner" id="inicioSpinner"></div><h2>Carregando seu acompanhamento</h2><p id="inicioMensagem">Carregando resumo e dados dos mentorados…</p><button id="inicioTentar" type="button" class="btn-salvar" hidden>Tentar novamente</button></div></div>
 
 
 <!-- ===================== TELA: SELECIONAR ATENDENTE ===================== -->
@@ -384,14 +424,16 @@
       <h1>DashEagles</h1>
       <span>Acompanhamento</span>
     </div>
+
     <button class="sb-btn destaque" id="btnNovoMentorado" type="button">+ Novo mentorado</button>
     <button class="sb-btn ativo" id="btnTelaResumo" type="button">Resumo do programa</button>
-    <button class="sb-btn" id="btnTelaDashboard" type="button">Dashboard</button>
-    <button class="sb-btn" id="btnTelaProjetometro" type="button">🚀 Projetômetro</button>
     <button class="sb-btn" id="btnAbrirMassa" type="button">Lançamento em massa</button>
-    <button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button>
-    <a class="sb-btn" id="btnLinkProjetoAluno" href="https://site.escolakarenabecia.com/dasheagles/cad-projeto.html" target="_blank" rel="noopener" style="display:block; text-decoration:none;">🔗 Link projeto p/ aluno</a>
-    <div class="sb-secao">Baixar relatórios</div>
+    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuProjetometro">Projetômetro<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuProjetometro" hidden><button class="sb-btn" id="btnTelaProjetometro" type="button">Tela do Projetômetro</button><a class="sb-btn" id="btnLinkProjetoAluno" href="https://site.escolakarenabecia.com/dasheagles/cad-projeto.html" target="_blank" rel="noopener">Link projeto p/ aluno</a></div></div>
+    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuEncontro">Encontro Individual<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuEncontro" hidden><button class="sb-btn" id="btnTelaAgenda" type="button">Configurar agenda</button><a class="sb-btn" id="btnLinkAgendamento" href="https://site.escolakarenabecia.com/dasheagles/agendamento" target="_blank" rel="noopener">Link de agendamento</a></div></div>
+    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuCalendario">Calendário mensal<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuCalendario" hidden><button class="sb-btn" type="button" id="btnConfigCalendario">Configurar calendário</button><a class="sb-btn" href="https://sites.karenabecia.com.br/dasheagles/alunos/" target="_blank" rel="noopener">Link do calendário ↗</a></div></div>
+    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuOutros">Outros<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuOutros" hidden><button class="sb-btn" type="button" id="btnTelaAniversariantes">Aniversariantes</button><button class="sb-btn" type="button" id="btnTelaBrindes">Brindes</button><button class="sb-btn" type="button" id="btnTelaEncontros">Encontros individuais</button><button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button></div></div>
+    <div class="sb-secao">Indicadores e relatórios</div>
+    <button class="sb-btn" id="btnTelaDashboard" type="button">Dashboard</button>
     <button class="sb-btn" id="btnRelatorioResumo" type="button">📄 Resumo do programa</button>
     <button class="sb-btn" id="btnRelatorioTodos" type="button">📄 Todos os mentorados</button>
   </aside>
@@ -402,6 +444,7 @@
       <button class="nav-btn" id="btnTelaConfig" type="button">⚙️ Configurações</button>
     </div>
 
+    <div id="statusGravacao" role="status" aria-live="polite" hidden></div>
     <main>
 
       <!-- ===================== TELA: RESUMO DO PROGRAMA ===================== -->
@@ -418,10 +461,11 @@
             <input type="search" id="buscaUnica" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar mentorado" autocomplete="off">
             <div class="autocomplete-lista" id="listaAutocomplete"></div>
           </div>
+          <label class="filtro-atrasados"><input type="checkbox" id="filtroAtrasados"> Atrasados</label>
         </div>
 
         <table aria-label="Lista de mentorados ativos">
-          <thead><tr><th>Nome</th><th>Última mensagem</th><th>Último encontro individual</th><th>Último encontro em grupo</th><th>Próximo encontro agendado</th><th>Fim do ciclo</th></tr></thead>
+          <thead><tr><th>Nome</th><th>Última mensagem</th><th>Último individual</th><th>Próximo encontro agendado</th><th>Último em grupo</th><th>Fim do ciclo</th></tr></thead>
           <tbody id="corpoTabela"><tr><td colspan="6">Carregando...</td></tr></tbody>
         </table>
       </section>
@@ -482,7 +526,7 @@
       </section>
 
       <!-- ===================== TELA: PROJETÔMETRO (cópia interna) ===================== -->
-      <section id="telaProjetometro" class="oculto">
+      <section id="telaProjetometro" class="oculto modulo-pendente"><div class="modulo-status" id="statusModulo-projetometro" role="status"><p>Preparando esta tela…</p></div>
         <div class="detalhe-topo">
           <h2>🚀 Projetômetro DashEagles</h2>
           <button class="btn-secundario" id="btnAtualizarProjetometro" type="button" style="margin-left:auto;">Atualizar agora</button>
@@ -525,39 +569,19 @@
         <div class="grid-detalhe">
           <div>
             <div class="bloco">
-              <h3 class="secao">Dados do mentorado</h3>
-              <form id="formDetalheCadastro">
-                <div class="linha-campos">
-                  <div class="campo"><label for="dNome">Nome</label><input type="text" id="dNome"></div>
-                  <div class="campo"><label for="dEmail">E-mail</label><input type="email" id="dEmail"></div>
-                </div>
-                <div class="linha-campos-3">
-                  <div class="campo"><label for="dTelefone">Telefone</label><input type="text" id="dTelefone"></div>
-                  <div class="campo"><label for="dStatus">Status</label>
+              <h3 class="secao" style="display:flex;justify-content:space-between;align-items:center;gap:12px">Dados do mentorado<button type="button" class="btn-salvar" id="btnCadastroCompleto">Cadastro completo</button></h3>
+              <form id="formDetalheCadastro"><div class="linha-campos"><div class="campo"><label for="dNome">Nome</label><input type="text" id="dNome"></div><div class="campo"><label for="dEmail">E-mail</label><input type="email" id="dEmail"></div></div>
+<div class="linha-campos-3"><div class="campo"><label for="dTelefone">Telefone</label><input type="text" id="dTelefone"></div><div class="campo"><label for="dAniversario">Aniversário</label><input type="date" id="dAniversario" ></div><div class="campo"><label for="dStatus">Status</label>
                     <select id="dStatus"><option>Ativo</option><option>Inativo</option><option>Bloqueado</option></select>
-                  </div>
-                  <div class="campo"><label for="dDataFimCiclo">Fim do ciclo</label><input type="date" id="dDataFimCiclo"></div>
-                </div>
-                <div class="linha-campos-3">
-                  <div class="campo"><label for="dDuracaoCiclo">Duração do ciclo (meses)</label><input type="number" id="dDuracaoCiclo" min="0"></div>
-                  <div class="campo"><label for="dTotalCiclos">Total de ciclos contínuos</label><input type="number" id="dTotalCiclos" min="0"></div>
-                  <div class="campo"><label for="dStatusPagamento">Pagamento</label>
+                  </div></div>
+<div class="linha-campos-3"><div class="campo"><label for="dDataInicioCiclo">Início do ciclo</label><input type="date" id="dDataInicioCiclo" ></div><div class="campo"><label for="dDataFimCiclo">Fim do ciclo</label><input type="date" id="dDataFimCiclo"></div><div class="campo"><label for="dDuracaoCiclo">Duração do ciclo (meses)</label><input type="number" id="dDuracaoCiclo" min="0"></div></div>
+<div class="linha-campos-4"><div class="campo"><label for="dTotalCiclos">Total de ciclos contínuos</label><input type="number" id="dTotalCiclos" min="0"></div><div class="campo"><label for="dStatusPagamento">Pagamento</label>
                     <select id="dStatusPagamento"><option>Não quitado</option><option>Quitado</option></select>
-                  </div>
-                </div>
-                <div class="linha-campos-3">
-                  <div class="campo"><label for="dDisponivelProjetos">Disponível p/ projetos</label>
+                  </div><div class="campo"><label for="dDisponivelProjetos">Disponível p/ projetos</label>
                     <select id="dDisponivelProjetos"><option>Não</option><option>Sim</option></select>
-                  </div>
-                  <div class="campo"><label for="dAreaMembros">Área de membros</label>
+                  </div><div class="campo"><label for="dAreaMembros">Área de membros</label>
                     <select id="dAreaMembros"><option>Não</option><option>Sim</option></select>
-                  </div>
-                  <div class="campo"><label for="dLinkGrupo">Link do grupo</label><input type="text" id="dLinkGrupo"></div>
-                </div>
-                <div class="campo"><label for="dDetalhesPagamento">Observação do pagamento</label><input type="text" id="dDetalhesPagamento"></div>
-                <div class="campo"><label for="dObservacaoInicial">Observação inicial</label><textarea id="dObservacaoInicial"></textarea></div>
-                <button type="submit" class="btn-salvar">Salvar alterações</button>
-              </form>
+                  </div></div><button type="submit" class="btn-salvar">Salvar alterações</button></form>
             </div>
 
             <div class="bloco">
@@ -568,7 +592,7 @@
                   <div class="campo"><label for="rData">Data do atendimento</label><input type="date" id="rData"></div>
                 </div>
                 <div class="campo oculto" id="campoDataAgendamento"><label for="rDataAgendamento">Data do próximo encontro agendado</label><input type="date" id="rDataAgendamento"></div>
-                <div class="campo"><label for="rObservacao">Observação</label><textarea id="rObservacao"></textarea></div>
+                <div id="camposBrinde" class="oculto"><div class="linha-campos"><div class="campo"><label for="rDataEnvio">Data do envio</label><input type="date" id="rDataEnvio" disabled></div><div class="campo"><label for="rCodigoRastreio">Código de rastreio</label><input type="text" id="rCodigoRastreio" disabled></div></div><div class="campo"><label for="rMotivoBrinde">Motivo do brinde</label><input type="text" id="rMotivoBrinde" disabled></div></div><div class="campo"><label for="rObservacao">Observação</label><textarea id="rObservacao"></textarea></div>
                 <button type="submit" class="btn-salvar">Registrar</button>
               </form>
             </div>
@@ -608,7 +632,8 @@
       </section>
 
       <!-- ===================== TELA: OUTROS MENTORADOS ===================== -->
-      <section id="telaOutros" class="oculto">
+      <section id="telaEncontros" class="oculto"><div class="detalhe-topo"><h2>Encontros individuais</h2></div><p class="agenda-ajuda">Confira o resultado de cada encontro. Ausência consome a vaga do mês; remarcação libera essa vaga para novo agendamento no mesmo mês.</p><div class="toolbar"><button type="button" class="btn-secundario" id="encontrosAtualizar">Atualizar</button></div><p id="encontrosStatus" role="status"></p><div style="overflow-x:auto"><table><thead><tr><th>Data do encontro</th><th>Mentorado</th><th>Professora</th><th>Status</th></tr></thead><tbody id="encontrosTabela"></tbody></table></div></section>
+<section id="telaOutros" class="oculto">
         <div class="detalhe-topo"><h2>Outros mentorados (inativos e bloqueados)</h2></div>
         <div class="toolbar">
           <div class="autocomplete-wrap" style="max-width:400px;">
@@ -621,6 +646,17 @@
         </table>
       </section>
 
+
+      <section id="telaBrindes" class="oculto">
+        <div class="detalhe-topo"><h2>Brindes — mentorados ativos</h2></div>
+        <div class="toolbar"><div class="autocomplete-wrap" style="max-width:400px"><input type="search" id="buscaBrindes" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar mentorados em brindes"></div></div>
+        <table aria-label="Último brinde dos mentorados ativos"><thead><tr><th>Nome</th><th>Último envio</th><th>Motivo do brinde</th><th>Código de rastreio</th><th>Situação</th></tr></thead><tbody id="corpoListaBrindes"></tbody></table>
+      </section>
+      <section id="telaAniversariantes" class="oculto">
+        <div class="detalhe-topo"><h2>Aniversariantes — mentorados ativos</h2></div>
+        <div class="toolbar"><div class="autocomplete-wrap" style="max-width:400px"><input type="search" id="buscaAniversariantes" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar aniversariantes"></div></div>
+        <div id="gruposAniversariantes"></div>
+      </section>
       <!-- ===================== TELA: LANÇAMENTO EM MASSA ===================== -->
       <section id="telaMassa" class="oculto">
         <div class="detalhe-topo"><h2>Lançamento em massa</h2></div>
@@ -651,13 +687,10 @@
         <div class="agenda-config-intro">
           <div>
             <h3 style="font-size:17px;margin-bottom:5px;">Central de configurações</h3>
-            <p>Gerencie as regras gerais do acompanhamento e a liberação de horários para os encontros individuais. Karen Abecia é sempre identificada em verde e Jéssica Gleiciane em roxo.</p>
+            <p>Gerencie os alertas, os tipos de atendimento, os atendentes e as ferramentas de projeto.</p>
           </div>
         </div>
-        <div class="agenda-tabs">
-          <button type="button" class="agenda-tab ativo" data-agenda-tab="sistema">Sistema</button>
-          <button type="button" class="agenda-tab" data-agenda-tab="agenda">Agenda dos encontros</button>
-        </div>
+
         <div id="configSubSistema" class="agenda-subtela ativa">
         <div class="bloco">
           <h3 class="secao">Alertas</h3>
@@ -695,7 +728,12 @@
         </div>
         </div>
 
-        <div id="configSubAgenda" class="agenda-subtela">
+      </section>
+
+      <section id="telaAgenda" class="oculto modulo-pendente"><div class="modulo-status" id="statusModulo-agenda" role="status"><p>Preparando esta tela…</p></div>
+        <div class="detalhe-topo"><h2>Agenda dos encontros</h2><a class="btn-secundario agenda-abrir-link" href="https://site.escolakarenabecia.com/dasheagles/agendamento" target="_blank" rel="noopener" style="margin-left:auto">Abrir agendamentos ↗</a></div>
+        <div class="agenda-config-intro"><p>Gerencie as regras e os horários dos encontros individuais. Karen Abecia é identificada em verde e Jéssica Gleiciane em roxo.</p></div>
+        <div id="configSubAgenda" class="agenda-subtela ativa"><div class="bloco"><h3 class="secao">Feriados e dias off — ambas as professoras</h3><p class="agenda-ajuda">Bloqueia novos agendamentos de Karen e Jéssica durante todo o período, incluindo as datas de início e fim. Para apenas um dia, use a mesma data nos dois campos.</p><div id="bloqueiosGeraisLista" class="folgas-lista"></div><button type="button" class="btn-secundario" id="btnAdicionarBloqueioGeral">+ Adicionar feriado ou dia off</button> <button type="button" class="btn-salvar" id="btnSalvarBloqueiosGerais">Salvar bloqueios compartilhados</button><p id="bloqueiosGeraisStatus" class="agenda-ajuda" role="status"></p></div>
           <div class="bloco">
             <h3 class="secao">Regras gerais do programa</h3>
             <form id="formAgendaGeral">
@@ -748,12 +786,44 @@
         </div>
       </section>
 
+      <section id="telaCalendarioMensal" class="oculto modulo-pendente"><div class="modulo-status" id="statusModulo-calendario" role="status"><p>Preparando esta tela…</p></div>
+<div class="detalhe-topo"><h2>Calendário mensal</h2><a class="btn-secundario" href="https://sites.karenabecia.com.br/dasheagles/alunos/" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none">Abrir página dos alunos ↗</a></div>
+<button type="button" class="btn-secundario" id="btnRecarregarCalendarios">Recarregar calendários</button><p id="calErro" role="alert" style="color:#ffaaaa;margin:14px 0"></p>
+<div id="calEditor" class="oculto"><fieldset id="calEditorCampos" style="border:0;padding:0;min-width:0">
+<div class="agenda-tabs"><button type="button" class="agenda-tab ativo" data-cal-slot="atual">Mês atual</button><button type="button" class="agenda-tab" data-cal-slot="proximo">Próximo mês</button></div>
+<div class="bloco cal-controles"><div class="campo"><label for="calMes">Mês e ano do calendário</label><input type="month" id="calMes" min="2000-01" max="2099-12"></div><div class="campo"><label for="calLiberar">Agendar liberação — Brasília</label><input type="datetime-local" id="calLiberar"></div><button type="button" class="btn-salvar" id="calPublicarAgora">Publicar agora</button><button type="button" class="btn-salvar" id="calAgendar">Agendar liberação</button></div>
+<div class="cal-config-grid"><div class="bloco"><h3 class="secao">Encontros do mês</h3><table class="cal-tabela"><thead><tr><th>Data</th><th>Tipo de encontro</th><th>Cor</th></tr></thead><tbody id="calLinhas"></tbody></table><button type="button" class="btn-salvar" id="calAtualizar" style="margin-top:18px">Atualizar calendário</button><p class="agenda-ajuda">Atualizar salva o rascunho. Para levar as alterações aos alunos, use Publicar agora ou Agendar liberação. Um encontro por dia.</p></div><div class="bloco cal-preview-bloco"><h3 class="secao">Pré-visualização do calendário</h3><iframe id="calPreview" title="Prévia do calendário dos alunos" sandbox="allow-scripts" style="width:100%;height:1100px;border:0;background:#f0f0f0;border-radius:12px"></iframe></div></div>
+</fieldset></div></section>
     </main>
 
     <div class="footer-txt">© Todos os direitos reservados para Escola Karen Abecia — 2026</div>
   </div>
 
 </div><!-- fim #app -->
+
+
+<div class="modal-overlay" id="modalCadastroCompleto" role="dialog" aria-modal="true" aria-labelledby="tituloCadastroCompleto">
+  <div class="modal largo">
+    <button class="fechar-modal" id="fecharCadastroCompleto" type="button" aria-label="Fechar cadastro completo">×</button>
+    <h2 id="tituloCadastroCompleto">Cadastro completo</h2>
+    <form id="formCadastroCompleto">
+      <h3 class="secao">Endereço</h3>
+      <div class="linha-campos"><div class="campo"><label for="cCep">CEP</label><input type="text" id="cCep" inputmode="numeric" maxlength="9" placeholder="00000-000"></div><div class="campo"><label>&nbsp;</label><button type="button" class="btn-secundario" id="btnBuscarCep">Buscar CEP</button></div></div>
+      <p id="cCepStatus" role="status" style="font-size:12px;margin-bottom:14px;color:#a3a8bd"></p>
+      <div class="linha-campos"><div class="campo"><label for="cRua">Rua</label><input type="text" id="cRua" ></div><div class="campo"><label for="cBairro">Bairro</label><input type="text" id="cBairro" ></div></div>
+      <div class="linha-campos"><div class="campo"><label for="cCidade">Cidade</label><input type="text" id="cCidade" ></div><div class="campo"><label for="cEstado">Estado (UF)</label><input type="text" id="cEstado" maxlength="2"></div></div>
+      <div class="linha-campos"><div class="campo"><label for="cNumero">Número</label><input type="text" id="cNumero" ></div><div class="campo"><label for="cComplemento">Complemento</label><input type="text" id="cComplemento" ></div></div>
+      <div class="campo"><label for="cTipoEndereco">Tipo de endereço</label><select id="cTipoEndereco"><option value="">Selecione</option><option>Casa</option><option>Trabalho</option><option>Outro</option></select></div>
+      <h3 class="secao" style="margin-top:22px">Outras informações</h3><div class="campo"><label for="dLinkGrupo">Link do grupo</label><input type="text" id="dLinkGrupo"></div>
+<div class="campo"><label for="dDetalhesPagamento">Observação do pagamento</label><input type="text" id="dDetalhesPagamento"></div>
+<div class="campo"><label for="dObservacaoInicial">Observação inicial</label><textarea id="dObservacaoInicial"></textarea></div>
+      <div class="modal-acoes"><button type="submit" class="btn-salvar">Salvar cadastro completo</button></div>
+    </form>
+    <div class="bloco" style="margin-top:24px"><h3 class="secao">Brindes enviados</h3><p style="font-size:12px;color:#a3a8bd;margin-bottom:12px">Cadastre novos envios em Registrar atendimento → Envio de brinde. Edite os envios abaixo e clique em Salvar.</p>
+      <div style="overflow-x:auto"><table class="tabela-brindes"><thead><tr><th>Motivo do brinde</th><th>Código de rastreio</th><th>Data do envio</th><th>Ação</th></tr></thead><tbody id="tabelaBrindes"></tbody></table></div>
+    </div>
+  </div>
+</div>
 
 <!-- ===================== MODAL: Novo mentorado ===================== -->
 <div class="modal-overlay" id="modalMentorado">
@@ -894,7 +964,7 @@ const CONFIG = {
 
 const DEFAULT_ATENDENTES = ['Fabiola', 'Karen', 'Stefano', 'Jessica'];
 const DEFAULT_TIPOS = [
-  'Mensagem de acompanhamento', 'Encontro individual', 'Encontro em grupo', 'Encontro com a Karen', 'Encontro com a Jéssica',
+  'Mensagem de acompanhamento', 'Encontro individual', 'Encontro em grupo', 'Envio de brinde', 'Ausência de encontro individual', 'Remarcação encontro individual',
   'Análise individual', 'Indicação de projeto', 'Mensagem de dúvida',
   'Agendamento de solicitações', 'Lançamento de pagamento', 'Outros'
 ];
@@ -919,7 +989,7 @@ function listaAtendentes() {
 }
 function listaTipos() {
   const extra = (configuracoes.tipos_atendimento_extra || '').split(',').map(s => s.trim()).filter(Boolean);
-  return [...DEFAULT_TIPOS, ...extra];
+  return [...new Set([...DEFAULT_TIPOS, ...extra])].filter(t=>!/^encontro com a (karen|jessica)(?:\s|$)/i.test(t.normalize('NFD').replace(/[\u0300-\u036f]/g,''))); 
 }
 function listaFerramentas() {
   const extra = (configuracoes.ferramentas_extra || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -927,32 +997,18 @@ function listaFerramentas() {
 }
 
 /* ===================== Utilidades ===================== */
-async function chamarApi(action, params = {}, tentativasRestantes = 2) {
-  const url = new URL(CONFIG.API_URL);
-  url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v ?? ''));
-  try {
-    const resp = await fetch(url.toString());
-    const texto = await resp.text();
-    try {
-      return JSON.parse(texto);
-    } catch (erroParse) {
-      // Às vezes a primeira chamada de uma sessão recebe uma resposta intermediária do Google
-      // (não é JSON ainda). Tenta de novo automaticamente antes de desistir.
-      if (tentativasRestantes > 0) {
-        await new Promise(r => setTimeout(r, 500));
-        return chamarApi(action, params, tentativasRestantes - 1);
-      }
-      throw new Error('O servidor demorou para responder. Tente novamente em alguns segundos.');
-    }
-  } catch (erroRede) {
-    if (tentativasRestantes > 0) {
-      await new Promise(r => setTimeout(r, 500));
-      return chamarApi(action, params, tentativasRestantes - 1);
-    }
-    throw erroRede;
-  }
+async function chamarApi(action,params={},tentativasRestantes=1){
+  const leitura=/^(listar|contar|verificar|validar)/.test(action);
+  if(!leitura){tentativasRestantes=0;versaoDados++;}
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+  try{
+    const url=new URL(CONFIG.API_URL);url.searchParams.set('action',action);url.searchParams.set('t',Date.now());Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v??''));
+    const r=await fetch(url,{signal:controller.signal,cache:'no-store'});if(!r.ok)throw Error('Falha na conexão.');
+    const dados=await r.json();if(dados.erro)throw Error(dados.erro);return dados;
+  }catch(err){if(leitura&&tentativasRestantes>0)return chamarApi(action,params,tentativasRestantes-1);throw err;}
+  finally{clearTimeout(timer);}
 }
+
 function diasDesde(dataStr) {
   if (!dataStr) return null;
   return Math.floor((new Date() - new Date(dataStr)) / (1000 * 60 * 60 * 24));
@@ -969,13 +1025,19 @@ function agoraLegivel() {
 }
 function formatarMoeda(v) { return (Number(v) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 function ehFaturado(status) { return status === 'Faturado' || status === 'Fechado'; } // 'Fechado' mantido por compatibilidade com registros antigos
-function registrosDoMentorado(id) { return registros.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
+function registrosDoMentorado(id){
+  if(indiceRegistrosFonte!==registros||indiceRegistrosVersao!==versaoDados){
+    indiceRegistrosFonte=registros;indiceRegistrosVersao=versaoDados;indiceRegistros=new Map();
+    for(const r of registros){if(!indiceRegistros.has(r.id_mentorado))indiceRegistros.set(r.id_mentorado,[]);indiceRegistros.get(r.id_mentorado).push(r);}
+    for(const lista of indiceRegistros.values())lista.sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+  }return indiceRegistros.get(id)||[];
+}
 function indicacoesDoMentorado(id) { return indicacoes.filter(r => r.id_mentorado === id).sort((a, b) => new Date(b.data) - new Date(a.data)); }
 function projetosDoMentorado(id) { return projetos.filter(p => p.id_mentorado === id).sort((a, b) => new Date(b.data_conclusao) - new Date(a.data_conclusao)); }
 function ultimaDataPorTipo(regs, tipos) { const f = regs.filter(r => tipos.includes(r.tipo_atendimento)); return f.length ? f[0].data : null; }
 function proximoEncontroAgendado(regs) {
   const hoje = hojeISO();
-  const agendamentos = regs.filter(r => r.tipo_atendimento === TIPO_AGENDAMENTO && r.data_agendamento && r.data_agendamento.split('T')[0] >= hoje);
+  const agendamentos = regs.filter(r => r.tipo_atendimento === TIPO_AGENDAMENTO && encontroAindaPendente(r) && r.data_agendamento && r.data_agendamento.split('T')[0] >= hoje);
   if (!agendamentos.length) return null;
   return agendamentos.sort((a, b) => new Date(a.data_agendamento) - new Date(b.data_agendamento))[0].data_agendamento;
 }
@@ -1038,34 +1100,23 @@ function mostrarApp() {
   renderizarTabela();
 }
 
-async function iniciarApp() {
-  const cache = lerCache();
-  if (cache) {
-    // mostra os dados salvos localmente na hora, sem esperar a rede
-    aplicarDados(cache);
-    if (!atendenteAtual()) {
-      montarTelaAtendenteGate();
-      document.getElementById('telaAtendenteGate').classList.remove('oculto');
-    } else {
-      mostrarApp();
-    }
-    // atualiza em segundo plano
-    carregarDados().then(() => {
-      if (!document.getElementById('app').classList.contains('oculto')) {
-        renderizarDashboard();
-        renderizarTabela();
-      }
-    });
-  } else {
-    await carregarDados();
-    if (!atendenteAtual()) {
-      montarTelaAtendenteGate();
-      document.getElementById('telaAtendenteGate').classList.remove('oculto');
-    } else {
-      mostrarApp();
-    }
-  }
+let inicializando=false;
+async function iniciarApp(){
+  if(inicializando)return;inicializando=true;
+  const overlay=document.getElementById('inicioLoading'),btn=document.getElementById('inicioTentar'),spinner=document.getElementById('inicioSpinner');
+  overlay.hidden=false;btn.hidden=true;spinner.hidden=false;document.getElementById('inicioMensagem').textContent='Carregando resumo e dados dos mentorados…';
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),90000);
+  try{
+    const url=new URL(CONFIG.API_URL);url.searchParams.set('action','listar');url.searchParams.set('t',Date.now());
+    const response=await fetch(url,{signal:controller.signal,cache:'no-store'});if(!response.ok)throw Error('Falha na conexão.');
+    const dados=await response.json();if(dados.erro||!Array.isArray(dados.mentorados)||!Array.isArray(dados.registros))throw Error(dados.erro||'Não foi possível carregar os dados do acompanhamento.');
+    aplicarDados(dados);salvarCache(dados);
+    if(!atendenteAtual()){montarTelaAtendenteGate();document.getElementById('telaAtendenteGate').classList.remove('oculto');}else mostrarApp();
+    overlay.hidden=true;prepararModulosEmSegundoPlano();
+  }catch(err){document.getElementById('inicioMensagem').textContent=(err.name==='AbortError'?'O carregamento demorou mais que o esperado.':err.message)+' Clique em Tentar novamente.';spinner.hidden=true;btn.hidden=false;}
+  finally{clearTimeout(timer);inicializando=false;}
 }
+document.getElementById('inicioTentar').addEventListener('click',iniciarApp);
 
 document.getElementById('btnTrocarAtendente').addEventListener('click', () => {
   localStorage.removeItem('dh_atendente');
@@ -1074,9 +1125,33 @@ document.getElementById('btnTrocarAtendente').addEventListener('click', () => {
   document.getElementById('telaAtendenteGate').classList.remove('oculto');
 });
 
+
+document.getElementById('btnTelaAgenda').addEventListener('click', () => {
+  esconderTodasTelas();
+  document.getElementById('telaAgenda').classList.remove('oculto');
+  document.getElementById('btnTelaAgenda').classList.add('ativo');
+  if(!agendaPronta)carregarConfigAgenda();
+});
+document.querySelectorAll('.sb-grupo').forEach(grupo=>{
+  const botao=grupo.querySelector('.sb-expansor'),submenu=grupo.querySelector('.sb-submenu');let abrirTimer,fecharTimer,ocultarTimer;
+  const definir=aberto=>{
+    clearTimeout(ocultarTimer);botao.setAttribute('aria-expanded',String(aberto));
+    submenu.inert=!aberto;
+    if(aberto){submenu.hidden=false;requestAnimationFrame(()=>{if(botao.getAttribute('aria-expanded')==='true'){submenu.style.maxHeight=submenu.scrollHeight+'px';submenu.style.opacity='1';}});}
+    else{submenu.style.maxHeight='0px';submenu.style.opacity='0';ocultarTimer=setTimeout(()=>{submenu.hidden=true;},220);}
+  };
+  const cancelar=()=>{clearTimeout(abrirTimer);clearTimeout(fecharTimer);};
+  submenu.style.maxHeight='0px';submenu.style.opacity='0';submenu.inert=true;
+  grupo.addEventListener('mouseenter',()=>{cancelar();if(window.matchMedia('(hover: hover)').matches)abrirTimer=setTimeout(()=>definir(true),180);});
+  grupo.addEventListener('mouseleave',()=>{cancelar();if(!grupo.contains(document.activeElement))fecharTimer=setTimeout(()=>definir(false),420);});
+  botao.addEventListener('click',()=>{cancelar();definir(botao.getAttribute('aria-expanded')!=='true');});
+  grupo.addEventListener('focusout',ev=>{if(!grupo.contains(ev.relatedTarget)){cancelar();fecharTimer=setTimeout(()=>definir(false),420);}});
+  grupo.addEventListener('keydown',ev=>{if(ev.key==='Escape'){cancelar();definir(false);botao.focus();}});
+});
+
 /* ===================== Navegação entre telas ===================== */
 function esconderTodasTelas() {
-  ['telaResumo', 'telaDashboard', 'telaProjetometro', 'telaDetalhe', 'telaOutros', 'telaMassa', 'telaConfig'].forEach(id => document.getElementById(id).classList.add('oculto'));
+  ['telaEncontros', 'telaResumo', 'telaDashboard', 'telaProjetometro', 'telaDetalhe', 'telaOutros', 'telaMassa', 'telaConfig', 'telaAgenda', 'telaBrindes', 'telaAniversariantes', 'telaCalendarioMensal'].forEach(id => document.getElementById(id).classList.add('oculto'));
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('ativo'));
   pararAtualizacaoProjetometro();
 }
@@ -1116,6 +1191,7 @@ document.getElementById('btnAbrirOutros').addEventListener('click', () => {
 });
 document.getElementById('btnVoltarDetalhe').addEventListener('click', () => {
   esconderTodasTelas();
+  if (origemDetalhe === 'brindes' || origemDetalhe === 'aniversariantes') { abrirListaAtivos(origemDetalhe); return; }
   if (origemDetalhe === 'outros') {
     renderizarTabelaOutros();
     document.getElementById('telaOutros').classList.remove('oculto');
@@ -1144,6 +1220,8 @@ function lerCache() {
 }
 
 function aplicarDados(dados) {
+  versaoDados++;
+  agendaEncontros = dados.agenda_encontros || [];
   mentorados = dados.mentorados || [];
   registros = dados.registros || [];
   indicacoes = dados.indicacoes || [];
@@ -1161,6 +1239,7 @@ async function carregarDados({ usarCache = false } = {}) {
     if (dados.erro) throw new Error(dados.erro);
     aplicarDados(dados);
     salvarCache(dados);
+    atualizarListasAtivosVisiveis();
   } catch (err) {
     if (!usarCache || !lerCache()) {
       document.getElementById('corpoTabela').innerHTML = `<tr><td colspan="6">Não consegui carregar os dados. (${err.message})</td></tr>`;
@@ -1325,11 +1404,26 @@ function mentoradosAtivosOrdenados(termo) {
   return ativos.sort((a, b) => a.nome.localeCompare(b.nome));
 }
 
+function alertasResumoMentorado(m) {
+  const regs=registrosDoMentorado(m.id_mentorado);
+  const ultimaMsg=ultimaDataPorTipo(regs,TIPOS_MENSAGEM);
+  const ultimoEnc=ultimaDataPorTipo(regs,[TIPO_ENCONTRO_INDIVIDUAL]);
+  const proximoAgendado=proximoEncontroAgendado(regs);
+  return {alertaMsg:ultimaMsg===null||diasDesde(ultimaMsg)>configuracoes.dias_alerta_mensagem,alertaEnc:!proximoAgendado&&(ultimoEnc===null||diasDesde(ultimoEnc)>configuracoes.dias_alerta_encontro)};
+}
+function mentoradosFiltradosResumo(termo) {
+  const ativos=mentoradosAtivosOrdenados(termo);
+  if(!document.getElementById('filtroAtrasados').checked)return ativos;
+  return ativos.filter(m=>{const a=alertasResumoMentorado(m);return a.alertaMsg||a.alertaEnc;});
+}
+document.getElementById('filtroAtrasados').addEventListener('change',()=>{
+  renderizarTabela();document.getElementById('listaAutocomplete').classList.remove('aberta');
+});
 function renderizarTabela() {
   const termo = document.getElementById('buscaUnica').value.trim().toLowerCase();
   const corpo = document.getElementById('corpoTabela');
-  const ativos = mentoradosAtivosOrdenados(termo);
-  if (!ativos.length) { corpo.innerHTML = '<tr><td colspan="6">Nenhum mentorado ativo encontrado.</td></tr>'; return; }
+  const ativos = mentoradosFiltradosResumo(termo);
+  if (!ativos.length) { corpo.innerHTML = '<tr><td colspan="6">'+(document.getElementById('filtroAtrasados').checked?'Nenhum mentorado atrasado encontrado para esta busca.':'Nenhum mentorado ativo encontrado.')+'</td></tr>'; return; }
   corpo.innerHTML = '';
   ativos.forEach(m => {
     const regs = registrosDoMentorado(m.id_mentorado);
@@ -1337,15 +1431,14 @@ function renderizarTabela() {
     const ultimoEnc = ultimaDataPorTipo(regs, [TIPO_ENCONTRO_INDIVIDUAL]);
     const ultimoGrupo = ultimaDataPorTipo(regs, [TIPO_ENCONTRO_GRUPO]);
     const proximoAgendado = proximoEncontroAgendado(regs);
-    const alertaMsg = ultimaMsg === null || diasDesde(ultimaMsg) > configuracoes.dias_alerta_mensagem;
-    const alertaEnc = !proximoAgendado && (ultimoEnc === null || diasDesde(ultimoEnc) > configuracoes.dias_alerta_encontro);
+    const {alertaMsg,alertaEnc}=alertasResumoMentorado(m);
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td data-label="Nome">${m.nome}</td>
       <td data-label="Última mensagem">${ultimaMsg ? formatarData(ultimaMsg) : 'Sem registro'}${alertaMsg ? '<span class="tag-alerta">⚠️ atrasado</span>' : ''}</td>
-      <td data-label="Último encontro individual">${ultimoEnc ? formatarData(ultimoEnc) : 'Sem registro'}${alertaEnc ? '<span class="tag-alerta">⚠️ atrasado</span>' : ''}</td>
-      <td data-label="Último encontro em grupo">${ultimoGrupo ? formatarData(ultimoGrupo) : 'Sem registro'}</td>
-      <td data-label="Próximo encontro agendado" style="text-align:center;">${proximoAgendado ? '✅' : '—'}</td>
+      <td data-label="Último individual">${ultimoEnc ? formatarData(ultimoEnc) : 'Sem registro'}${alertaEnc ? '<span class="tag-alerta">⚠️ atrasado</span>' : ''}</td>
+      <td data-label="Próximo encontro agendado">${proximoAgendado ? formatarData(proximoAgendado) : '—'}</td>
+      <td data-label="Último em grupo">${ultimoGrupo ? formatarData(ultimoGrupo) : 'Sem registro'}</td>
       <td data-label="Fim do ciclo">${formatarData(m.data_fim_ciclo)}</td>
     `;
     tr.addEventListener('dblclick', () => { origemDetalhe = 'resumo'; abrirDetalhe(m.id_mentorado); });
@@ -1359,7 +1452,7 @@ inputBusca.addEventListener('input', () => {
   const termo = inputBusca.value.trim().toLowerCase();
   renderizarTabela();
   if (!termo) { listaAuto.classList.remove('aberta'); return; }
-  const sugestoes = mentoradosAtivosOrdenados(termo).slice(0, 8);
+  const sugestoes = mentoradosFiltradosResumo(termo).slice(0, 8);
   if (!sugestoes.length) { listaAuto.classList.remove('aberta'); return; }
   listaAuto.innerHTML = sugestoes.map(m => `<button type="button" class="autocomplete-item" data-id="${m.id_mentorado}">${m.nome} <span style="color:#7c8199;">· ${m.email || ''}</span></button>`).join('');
   listaAuto.classList.add('aberta');
@@ -1404,6 +1497,8 @@ function preencherSelectTipos(selectEl) {
 }
 
 function abrirDetalhe(idMentorado) {
+  if(String(arguments[0]).startsWith('temp_')){alert('O novo cadastro está sendo confirmado. Você pode continuar usando as outras telas.');return;}
+
   const m = mentorados.find(x => x.id_mentorado === idMentorado);
   if (!m) return;
   mentoradoSelecionado = m;
@@ -1452,43 +1547,27 @@ function abrirDetalhe(idMentorado) {
   renderizarIndicadores(idMentorado, regs);
   renderizarIndicacoesDoMentorado(idMentorado);
   renderizarProjetosDoMentorado(idMentorado);
+  preencherCadastroExtra(m);
 }
 
 document.getElementById('formDetalheCadastro').addEventListener('submit', async (ev) => {
   ev.preventDefault();
   if (!mentoradoSelecionado) return;
-  const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Salvando dados do mentorado...');
   const payload = {
     nome: document.getElementById('dNome').value,
     email: document.getElementById('dEmail').value,
     telefone: document.getElementById('dTelefone').value,
     status: document.getElementById('dStatus').value,
     data_fim_ciclo: document.getElementById('dDataFimCiclo').value,
+    data_inicio_ciclo: document.getElementById('dDataInicioCiclo').value,
+    aniversario: document.getElementById('dAniversario').value,
     duracao_ciclo_meses: document.getElementById('dDuracaoCiclo').value,
     total_ciclos: document.getElementById('dTotalCiclos').value,
-    link_grupo: document.getElementById('dLinkGrupo').value,
     disponivel_projetos: document.getElementById('dDisponivelProjetos').value,
     area_membros: document.getElementById('dAreaMembros').value,
     status_pagamento: document.getElementById('dStatusPagamento').value,
-    detalhes_pagamento: document.getElementById('dDetalhesPagamento').value,
-    observacao_inicial: document.getElementById('dObservacaoInicial').value,
   };
-  try {
-    await chamarApi('atualizarMentorado', { id: mentoradoSelecionado.id_mentorado, ...payload });
-    Object.assign(mentoradoSelecionado, payload);
-    const idx = mentorados.findIndex(m => m.id_mentorado === mentoradoSelecionado.id_mentorado);
-    if (idx > -1) Object.assign(mentorados[idx], payload);
-    renderizarDashboard();
-    renderizarTabela();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-  } catch (err) {
-    alert('Não foi possível salvar. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+  gravarAlteracaoOtimista(mentoradoSelecionado,payload,'atualizarCadastroCompleto',mentoradoSelecionado.id_mentorado,'Cadastro de '+mentoradoSelecionado.nome);
 });
 
 function renderizarUltimosRegistros(regs) {
@@ -1500,7 +1579,7 @@ function renderizarUltimosRegistros(regs) {
 }
 
 function linhaRegistro(r, hoje) {
-  const podeEditar = (r.criado_em || '').split('T')[0] === hoje;
+  const podeEditar = !r._pendente && (r.criado_em || '').split('T')[0] === hoje;
   const classe = r.tipo_atendimento === TIPO_ENCONTRO_INDIVIDUAL ? 'encontro-individual' : '';
   return `
     <li class="${classe}">
@@ -1512,7 +1591,7 @@ function linhaRegistro(r, hoje) {
         </div>
         <div class="reg-acoes">
           ${podeEditar ? `<button type="button" data-editar="${r.id_registro}" title="Editar">✏️</button>` : ''}
-          <button type="button" data-excluir="${r.id_registro}" title="Excluir">🗑️</button>
+          ${r._pendente ? '' : `<button type="button" data-excluir="${r.id_registro}" title="Excluir">🗑️</button>`}
         </div>
       </div>
     </li>`;
@@ -1522,17 +1601,7 @@ function ligarAcoesRegistro(container, ehHistorico) {
   container.querySelectorAll('[data-excluir]').forEach(b => b.addEventListener('click', async () => {
     const ok = await confirmarAcao('Excluir este registro? Essa ação não pode ser desfeita.');
     if (!ok) return;
-    mostrarCarregando('Excluindo registro...');
-    try {
-      await chamarApi('deletarRegistro', { id: b.dataset.excluir });
-      registros = registros.filter(r => r.id_registro !== b.dataset.excluir);
-      renderizarDashboard();
-      renderizarTabela();
-      abrirDetalhe(mentoradoSelecionado.id_mentorado);
-      if (ehHistorico) renderizarHistorico();
-    } finally {
-      esconderCarregando();
-    }
+    excluirEntidade(registros,'id_registro',b.dataset.excluir,'deletarRegistro');
   }));
   container.querySelectorAll('[data-editar]').forEach(b => b.addEventListener('click', async () => {
     await editarRegistroInline(b.dataset.editar);
@@ -1545,15 +1614,7 @@ async function editarRegistroInline(idRegistro) {
   if (!r) return;
   const novaObs = prompt('Editar observação:', r.observacao || '');
   if (novaObs === null) return;
-  mostrarCarregando('Salvando alterações...');
-  try {
-    await chamarApi('atualizarRegistro', { id: idRegistro, observacao: novaObs });
-    r.observacao = novaObs;
-    renderizarTabela();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-  } finally {
-    esconderCarregando();
-  }
+  salvarEntidade(registros,'id_registro',idRegistro,{observacao:novaObs},'criarRegistro','atualizarRegistro',()=>editarRegistroInline(idRegistro));
 }
 
 function renderizarIndicadores(idMentorado, regs) {
@@ -1569,55 +1630,35 @@ function renderizarIndicadores(idMentorado, regs) {
   const totalFaturadoProjetos = projs.filter(p => p.cobrou === 'Sim').reduce((s, p) => s + (Number(p.valor) || 0), 0);
   const ultimasDatas = (lista) => lista.slice(0, 3).map(r => formatarData(r.data)).join(', ') || '—';
 
-  document.getElementById('detIndicadores').innerHTML = `
-    <div class="sidebar-card"><div class="num">${grupo.length}</div><div class="lbl">Encontros em grupo</div><div class="datas">${ultimasDatas(grupo)}</div></div>
-    <div class="sidebar-card"><div class="num">${individuais.length}</div><div class="lbl">Encontros individuais</div><div class="datas">${ultimasDatas(individuais)}</div></div>
-    <div class="sidebar-card"><div class="num">${analises.length}</div><div class="lbl">Análises individuais</div><div class="datas">${ultimasDatas(analises)}</div></div>
-    <div class="sidebar-card"><div class="num" style="font-size:15px;">${ultimaMsg ? formatarData(ultimaMsg) : '—'}</div><div class="lbl">Última mensagem</div></div>
-    <div class="sidebar-card"><div class="num" style="font-size:15px;">${proximoAgendado ? formatarData(proximoAgendado) : '—'}</div><div class="lbl">Próximo encontro individual</div></div>
-    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturadoIndicacoes)}</div><div class="lbl">Faturado em indicações</div></div>
-    <div class="sidebar-card"><div class="num" style="font-size:17px;">${formatarMoeda(totalFaturadoProjetos)}</div><div class="lbl">Faturado em projetos</div></div>
-    <div class="sidebar-card"><div class="num">${faturadas.length}</div><div class="lbl">Projetos faturados (indicações)</div></div>
-    <div class="sidebar-card"><div class="num">${projs.length}</div><div class="lbl">Total de projetos concluídos</div></div>
-    <div class="sidebar-card"><div class="num">${inds.length}</div><div class="lbl">Indicações realizadas</div></div>
-  `;
+
+  const escapeIndicador=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ultimoIndividual=ultimaDataPorTipo(regs,[TIPO_ENCONTRO_INDIVIDUAL]);
+  const agendamentos=regs.filter(r=>r.tipo_atendimento===TIPO_AGENDAMENTO&&encontroAindaPendente(r)&&r.data_agendamento&&r.data_agendamento.split('T')[0]>=hojeISO()).sort((a,b)=>String(a.data_agendamento).localeCompare(String(b.data_agendamento))||String(a.observacao||'').localeCompare(String(b.observacao||'')));
+  const card=(valor,label,classe='',extra='')=>'<div class="sidebar-card '+classe+'"><div class="num '+(label.startsWith('Faturado')?'valor':label.startsWith('Últim')?'data':'')+'">'+valor+'</div><div class="lbl">'+label+'</div>'+extra+'</div>';
+  document.getElementById('detIndicadores').innerHTML=[
+    card(grupo.length,'Encontros em grupo'),card(individuais.length,'Encontros individuais'),
+    card(regs.filter(r=>r.tipo_atendimento==='Ausência de encontro individual').length,'Ausências em encontros'),card(analises.length,'Análises individuais'),
+    card(ultimaMsg?formatarData(ultimaMsg):'—','Última mensagem'),card(ultimoIndividual?formatarData(ultimoIndividual):'—','Último encontro individual'),
+    '<div class="sidebar-card indicador-largo"><div class="lbl">Próximo encontro individual</div><ul class="lista-agendamentos">'+(agendamentos.length?agendamentos.map(r=>'<li><strong>'+formatarData(r.data_agendamento)+'</strong>'+(r.observacao?'<small>'+escapeIndicador(r.observacao)+'</small>':'')+'</li>').join(''):'<li>Nenhum encontro agendado.</li>')+'</ul></div>',
+    card(formatarMoeda(totalFaturadoIndicacoes),'Faturado em indicações'),card(formatarMoeda(totalFaturadoProjetos),'Faturado em projetos'),
+    card(faturadas.length,'Projetos faturados (indicações)','indicador-largo'),
+    card(projs.length,'Total de projetos concluídos'),card(inds.length,'Indicações realizadas')
+  ].join('');
 }
 
 document.getElementById('rTipo').addEventListener('change', (ev) => {
   document.getElementById('campoDataAgendamento').classList.toggle('oculto', ev.target.value !== TIPO_AGENDAMENTO);
 });
 
-document.getElementById('formRegistro').addEventListener('submit', (ev) => {
-  ev.preventDefault();
-  if (!mentoradoSelecionado) return;
-  const payload = {
-    id_mentorado: mentoradoSelecionado.id_mentorado,
-    nome_mentorado: mentoradoSelecionado.nome,
-    usuario: atendenteAtual(),
-    tipo_atendimento: document.getElementById('rTipo').value,
-    data: document.getElementById('rData').value || hojeISO(),
-    data_agendamento: document.getElementById('rTipo').value === TIPO_AGENDAMENTO ? document.getElementById('rDataAgendamento').value : '',
-    observacao: document.getElementById('rObservacao').value,
-  };
-  // Atualização otimista: mostra na tela na hora, sem esperar o servidor responder.
-  const agora = new Date().toISOString().split('.')[0];
-  const registroTemp = { id_registro: 'reg_temp_' + Date.now(), ...payload, criado_em: agora, atualizado_em: agora };
-  registros.push(registroTemp);
-  document.getElementById('rObservacao').value = '';
-  document.getElementById('rDataAgendamento').value = '';
-  renderizarDashboard();
-  renderizarTabela();
-  abrirDetalhe(mentoradoSelecionado.id_mentorado);
+document.getElementById('formRegistro').addEventListener('submit', async ev => {
+  ev.preventDefault();if(!mentoradoSelecionado)return;
+  const m=mentoradoSelecionado,brinde=document.getElementById('rTipo').value==='Envio de brinde';
+  const payload={id_mentorado:m.id_mentorado,nome_mentorado:m.nome,usuario:atendenteAtual(),tipo_atendimento:document.getElementById('rTipo').value,data:document.getElementById('rData').value||hojeISO(),data_agendamento:document.getElementById('rTipo').value===TIPO_AGENDAMENTO?document.getElementById('rDataAgendamento').value:'',observacao:document.getElementById('rObservacao').value};
+  if(brinde){Object.assign(payload,{motivo_brinde:document.getElementById('rMotivoBrinde').value.trim(),codigo_rastreio:document.getElementById('rCodigoRastreio').value.trim(),data_envio:document.getElementById('rDataEnvio').value});if(!payload.motivo_brinde||!payload.data_envio){alert('Informe o motivo e a data de envio.');return;}payload.data=payload.data_envio;}
+  registrarOtimista(payload);
+  document.getElementById('rObservacao').value='';document.getElementById('rDataAgendamento').value='';
+  document.getElementById('rMotivoBrinde').value='';document.getElementById('rCodigoRastreio').value='';
 
-  chamarApi('criarRegistro', payload).then(resp => {
-    registroTemp.id_registro = resp.id_registro; // troca o id temporário pelo definitivo
-  }).catch(err => {
-    registros = registros.filter(r => r !== registroTemp);
-    renderizarDashboard();
-    renderizarTabela();
-    if (mentoradoSelecionado) abrirDetalhe(mentoradoSelecionado.id_mentorado);
-    alert('Esse atendimento não foi salvo no servidor — tente registrar de novo. (' + err.message + ')');
-  });
 });
 
 /* ===================== Histórico completo ===================== */
@@ -1752,28 +1793,10 @@ formIndicacao.addEventListener('submit', async (ev) => {
     status: document.getElementById('iStatus').value,
     observacao: document.getElementById('iObservacao').value,
   };
-  const botao = formIndicacao.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Salvando indicação...');
-  try {
-    if (id) {
-      await chamarApi('atualizarIndicacao', { id, ...payload });
-      const ind = indicacoes.find(i => i.id_indicacao === id);
-      if (ind) Object.assign(ind, payload);
-    } else {
-      const resp = await chamarApi('criarIndicacao', { id_mentorado: mentoradoSelecionado.id_mentorado, nome_mentorado: mentoradoSelecionado.nome, ...payload });
-      indicacoes.push({ id_indicacao: resp.id_indicacao, id_mentorado: mentoradoSelecionado.id_mentorado, nome_mentorado: mentoradoSelecionado.nome, ...payload });
-    }
-    modalIndicacao.classList.remove('aberto');
-    renderizarDashboard();
-    renderizarTabela();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-  } catch (err) {
-    alert('Não foi possível salvar a indicação. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+  const mentorado=mentoradoSelecionado;
+  const dados={id_mentorado:mentorado.id_mentorado,nome_mentorado:mentorado.nome,...payload};
+  salvarEntidade(indicacoes,'id_indicacao',id,dados,'criarIndicacao','atualizarIndicacao',()=>{if(mentoradoSelecionado?.id_mentorado!==mentorado.id_mentorado)abrirDetalhe(mentorado.id_mentorado);abrirModalIndicacao({...dados,id_indicacao:id});});
+  modalIndicacao.classList.remove('aberto');
 });
 
 /* ===================== Projetos ===================== */
@@ -1804,16 +1827,7 @@ function renderizarProjetosDoMentorado(idMentorado) {
     ev.stopPropagation();
     const ok = await confirmarAcao('Excluir este projeto? Essa ação não pode ser desfeita.');
     if (!ok) return;
-    mostrarCarregando('Excluindo projeto...');
-    try {
-      await chamarApi('deletarProjeto', { id: b.dataset.excluirProjeto });
-      projetos = projetos.filter(p => p.id_projeto !== b.dataset.excluirProjeto);
-      renderizarDashboard();
-      renderizarTabela();
-      abrirDetalhe(mentoradoSelecionado.id_mentorado);
-    } finally {
-      esconderCarregando();
-    }
+    excluirEntidade(projetos,'id_projeto',b.dataset.excluirProjeto,'deletarProjeto');
   }));
 }
 
@@ -1848,27 +1862,10 @@ formProjeto.addEventListener('submit', async (ev) => {
     cobrou: document.getElementById('pjCobrou').value,
     valor: document.getElementById('pjCobrou').value === 'Sim' ? document.getElementById('pjValor').value : 0,
   };
-  const botao = formProjeto.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Salvando projeto...');
-  try {
-    if (id) {
-      await chamarApi('atualizarProjeto', { id, ...payload });
-      const proj = projetos.find(p => p.id_projeto === id);
-      if (proj) Object.assign(proj, payload);
-    } else {
-      const resp = await chamarApi('criarProjeto', { id_mentorado: mentoradoSelecionado.id_mentorado, nome_mentorado: mentoradoSelecionado.nome, ...payload });
-      projetos.push({ id_projeto: resp.id_projeto, id_mentorado: mentoradoSelecionado.id_mentorado, nome_mentorado: mentoradoSelecionado.nome, ...payload });
-    }
-    modalProjeto.classList.remove('aberto');
-    renderizarDashboard();
-    abrirDetalhe(mentoradoSelecionado.id_mentorado);
-  } catch (err) {
-    alert('Não foi possível salvar o projeto. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+  const mentorado=mentoradoSelecionado;
+  const dados={id_mentorado:mentorado.id_mentorado,nome_mentorado:mentorado.nome,...payload};
+  salvarEntidade(projetos,'id_projeto',id,dados,'criarProjeto','atualizarProjeto',()=>{if(mentoradoSelecionado?.id_mentorado!==mentorado.id_mentorado)abrirDetalhe(mentorado.id_mentorado);abrirModalProjeto({...dados,id_projeto:id});});
+  modalProjeto.classList.remove('aberto');
 });
 
 /* ===================== Novo mentorado ===================== */
@@ -1892,29 +1889,16 @@ document.getElementById('formMentorado').addEventListener('submit', async (ev) =
     link_grupo: document.getElementById('fLinkGrupo').value,
     observacao_inicial: document.getElementById('fObservacaoInicial').value,
   };
-  const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true;
-  mostrarCarregando('Cadastrando novo mentorado...');
-  try {
-    const resp = await chamarApi('criarMentorado', payload);
-    if (resp.duplicado) { alert('Mentorado já cadastrado'); return; }
-    const agora = new Date().toISOString().split('.')[0];
-    mentorados.push({ id_mentorado: resp.id_mentorado, ...payload, disponivel_projetos: 'Não', area_membros: 'Não', data_cadastro: agora, data_atualizacao: agora });
-    modalMentorado.classList.remove('aberto');
-    ev.target.reset();
-    renderizarDashboard();
-    renderizarTabela();
-  } catch (err) {
-    alert('Não foi possível salvar. ' + err.message);
-  } finally {
-    botao.disabled = false;
-    esconderCarregando();
-  }
+  if(mentorados.some(m=>String(m.email).toLowerCase()===payload.email.toLowerCase())){alert('Mentorado já cadastrado.');return;}
+  const form=ev.target;
+  salvarEntidade(mentorados,'id_mentorado','',{...payload,disponivel_projetos:'Não',area_membros:'Não',data_cadastro:new Date().toISOString()},'criarMentorado','atualizarMentorado',()=>{modalMentorado.classList.add('aberto');Object.entries(payload).forEach(([key,value])=>{const mapa={nome:'fNome',email:'fEmail',telefone:'fTelefone',status:'fStatus',data_fim_ciclo:'fDataFimCiclo',duracao_ciclo_meses:'fDuracaoCiclo',total_ciclos:'fTotalCiclos',status_pagamento:'fStatusPagamento',detalhes_pagamento:'fDetalhesPagamento',link_grupo:'fLinkGrupo',observacao_inicial:'fObservacaoInicial'};if(mapa[key])document.getElementById(mapa[key]).value=value;});});
+  modalMentorado.classList.remove('aberto');form.reset();
 });
 
 /* ===================== Lançamento em massa ===================== */
 function prepararTelaMassa() {
   preencherSelectTipos(document.getElementById('massaTipo'));
+  [...document.getElementById('massaTipo').options].filter(o=>o.value==='Envio de brinde').forEach(o=>o.remove());
   document.getElementById('massaData').value = hojeISO();
   const ativos = mentoradosAtivosOrdenados('');
   document.getElementById('listaCheagemMassa').innerHTML = ativos.map(m => `
@@ -1937,9 +1921,9 @@ document.getElementById('formMassa').addEventListener('submit', (ev) => {
   const agora = new Date().toISOString().split('.')[0];
   const registrosTemp = idsSelecionados.map(id => {
     const m = mentorados.find(x => x.id_mentorado === id);
-    return { id_registro: 'reg_temp_' + id + '_' + Date.now(), id_mentorado: id, nome_mentorado: m ? m.nome : '', usuario, tipo_atendimento: tipo, data, observacao, criado_em: agora, atualizado_em: agora };
+    return { id_registro: 'reg_temp_' + id + '_' + Date.now(), id_mentorado: id, nome_mentorado: m ? m.nome : '', usuario, tipo_atendimento: tipo, data, observacao, criado_em: agora, atualizado_em: agora, _pendente:true };
   });
-  registros.push(...registrosTemp);
+  gravacoesPendentes++;versaoDados++;registros.push(...registrosTemp);
   const totalSelecionados = idsSelecionados.length;
   ev.target.reset();
   renderizarDashboard();
@@ -1948,12 +1932,14 @@ document.getElementById('formMassa').addEventListener('submit', (ev) => {
 
   chamarApi('criarRegistrosEmMassa', { ids: idsSelecionados.join(','), usuario, tipo_atendimento: tipo, data, observacao }).then(resp => {
     if (resp.erro) throw new Error(resp.erro);
+    if(!Array.isArray(resp.registros))throw Error('Atualize o Code.gs para confirmar os registros em massa. Confira o histórico antes de repetir o lançamento.');
+    registrosTemp.forEach(temp=>{const real=resp.registros.find(r=>r.id_mentorado===temp.id_mentorado);if(real){Object.assign(temp,real);delete temp._pendente;}});
   }).catch(err => {
     registros = registros.filter(r => !registrosTemp.includes(r));
     renderizarDashboard();
     renderizarTabela();
-    alert(`O lançamento em massa para ${totalSelecionados} mentorado(s) não foi salvo no servidor — tente novamente. (${err.message})`);
-  });
+    avisarFalha('O lançamento em massa não foi confirmado: '+err.message,()=>{esconderTodasTelas();document.getElementById('telaMassa').classList.remove('oculto');prepararTelaMassa();document.getElementById('massaTipo').value=tipo;document.getElementById('massaData').value=data;document.getElementById('massaObservacao').value=observacao;document.querySelectorAll('.chk-massa').forEach(c=>c.checked=idsSelecionados.includes(c.value));});
+  }).finally(()=>{gravacoesPendentes--;versaoDados++;redesenharDados(mentoradoSelecionado?.id_mentorado);atualizarStatusGravacao();});
 });
 
 /* ===================== Configurações ===================== */
@@ -1999,18 +1985,8 @@ function preencherConfigAgenda() {
   });
 }
 
-async function carregarConfigAgenda() {
-  try {
-    const resp = await chamarApi('listarConfigAgenda');
-    if (resp && !resp.erro) {
-      agendaConfig.professoras = resp.professoras || [];
-      agendaConfig.disponibilidade = resp.disponibilidade || [];
-      agendaConfig.folgas = resp.folgas || [];
-      if (resp.configuracoes) configuracoes = { ...configuracoes, ...resp.configuracoes };
-    }
-  } catch (e) { /* compatibilidade: backend antigo ainda sem ações de agenda */ }
-  preencherConfigAgenda();
-}
+let agendaPronta=false;
+async function carregarConfigAgenda(){return garantirModulo('agenda');}
 
 function coletarProfessor(card) {
   const disponibilidade = [];
@@ -2040,26 +2016,11 @@ function preencherTelaConfig() {
   document.getElementById('listaTiposConfig').innerHTML = listaTipos().map(t => `<div>• ${t}</div>`).join('');
   document.getElementById('listaAtendentesConfig').innerHTML = listaAtendentes().map(a => `<div>• ${a}</div>`).join('');
   document.getElementById('listaFerramentasConfig').innerHTML = listaFerramentas().map(f => `<div>• ${f}</div>`).join('');
-  carregarConfigAgenda();
 }
 
-document.getElementById('formConfigAlertas').addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  const botao = ev.target.querySelector('.btn-salvar');
-  botao.disabled = true; botao.textContent = 'Salvando...';
-  const dias_alerta_mensagem = document.getElementById('cDiasMensagem').value;
-  const dias_alerta_encontro = document.getElementById('cDiasEncontro').value;
-  try {
-    await chamarApi('atualizarConfiguracoes', { dias_alerta_mensagem, dias_alerta_encontro });
-    configuracoes.dias_alerta_mensagem = dias_alerta_mensagem;
-    configuracoes.dias_alerta_encontro = dias_alerta_encontro;
-    alert('Configurações salvas.');
-  } catch (err) {
-    alert('Não foi possível salvar. ' + err.message);
-  } finally {
-    botao.disabled = false; botao.textContent = 'Salvar alertas';
-  }
-});
+
+function gravarConfiguracoes(dados){configuracoes._chave='config';salvarEntidade([configuracoes],'_chave','config',dados,'','atualizarConfiguracoes',()=>gravarConfiguracoes(dados));}
+document.getElementById('formConfigAlertas').addEventListener('submit',ev=>{ev.preventDefault();gravarConfiguracoes({dias_alerta_mensagem:document.getElementById('cDiasMensagem').value,dias_alerta_encontro:document.getElementById('cDiasEncontro').value});});
 
 document.getElementById('btnAdicionarTipo').addEventListener('click', async () => {
   const novo = document.getElementById('novoTipoInput').value.trim();
@@ -2067,8 +2028,7 @@ document.getElementById('btnAdicionarTipo').addEventListener('click', async () =
   if (listaTipos().includes(novo)) { alert('Esse tipo já existe.'); return; }
   const extraAtual = (configuracoes.tipos_atendimento_extra || '').split(',').map(s => s.trim()).filter(Boolean);
   extraAtual.push(novo);
-  await chamarApi('atualizarConfiguracoes', { tipos_atendimento_extra: extraAtual.join(',') });
-  configuracoes.tipos_atendimento_extra = extraAtual.join(',');
+  gravarConfiguracoes({tipos_atendimento_extra:extraAtual.join(',')});
   document.getElementById('novoTipoInput').value = '';
   preencherTelaConfig();
 });
@@ -2079,8 +2039,7 @@ document.getElementById('btnAdicionarAtendente').addEventListener('click', async
   if (listaAtendentes().includes(novo)) { alert('Esse atendente já existe.'); return; }
   const extraAtual = (configuracoes.atendentes_extra || '').split(',').map(s => s.trim()).filter(Boolean);
   extraAtual.push(novo);
-  await chamarApi('atualizarConfiguracoes', { atendentes_extra: extraAtual.join(',') });
-  configuracoes.atendentes_extra = extraAtual.join(',');
+  gravarConfiguracoes({atendentes_extra:extraAtual.join(',')});
   document.getElementById('novoAtendenteInput').value = '';
   preencherTelaConfig();
 });
@@ -2091,8 +2050,7 @@ document.getElementById('btnAdicionarFerramenta').addEventListener('click', asyn
   if (listaFerramentas().includes(nova)) { alert('Essa ferramenta já existe.'); return; }
   const extraAtual = (configuracoes.ferramentas_extra || '').split(',').map(s => s.trim()).filter(Boolean);
   extraAtual.push(nova);
-  await chamarApi('atualizarConfiguracoes', { ferramentas_extra: extraAtual.join(',') });
-  configuracoes.ferramentas_extra = extraAtual.join(',');
+  gravarConfiguracoes({ferramentas_extra:extraAtual.join(',')});
   document.getElementById('novaFerramentaInput').value = '';
   preencherTelaConfig();
 });
@@ -2122,10 +2080,8 @@ function renderizarDigitosPm(total) {
   });
 }
 
-async function atualizarProjetometroInterno() {
-  try {
-    const resp = await chamarApi('contarProjetosDesde2025');
-    if (resp.erro) throw new Error(resp.erro);
+let projetometroCarregadoEm=0;
+function preencherProjetometro(resp){
     const total = resp.total || 0;
     const meta = resp.meta || 1000;
     renderizarDigitosPm(total);
@@ -2136,13 +2092,12 @@ async function atualizarProjetometroInterno() {
     const faltam = Math.max(0, meta - total);
     document.getElementById('pmFaltam').textContent = faltam > 0 ? `Faltam ${faltam} projetos` : 'Meta batida! 🎉';
     document.getElementById('pmAtualizadoEm').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  } catch (err) {
-    document.getElementById('pmAtualizadoEm').textContent = 'Não foi possível atualizar agora.';
-  }
 }
+async function atualizarProjetometroInterno(){return garantirModulo('projetometro',true);}
 function iniciarAtualizacaoProjetometro() {
-  atualizarProjetometroInterno();
-  intervaloProjetometro = setInterval(atualizarProjetometroInterno, 30000);
+  pararAtualizacaoProjetometro();
+  if(Date.now()-projetometroCarregadoEm>30000)atualizarProjetometroInterno();
+  intervaloProjetometro = setInterval(()=>{if(!document.hidden&&!gravacoesPendentes)atualizarProjetometroInterno();}, 60000);
 }
 function pararAtualizacaoProjetometro() {
   if (intervaloProjetometro) { clearInterval(intervaloProjetometro); intervaloProjetometro = null; }
@@ -2158,22 +2113,10 @@ document.getElementById('btnAtualizarProjetometro').addEventListener('click', at
 
 
 /* ===================== Eventos — Configuração de agenda ===================== */
-document.querySelectorAll('.agenda-tab').forEach(btn => btn.addEventListener('click', () => {
-  document.querySelectorAll('.agenda-tab').forEach(b => b.classList.remove('ativo'));
-  document.querySelectorAll('.agenda-subtela').forEach(s => s.classList.remove('ativa'));
-  btn.classList.add('ativo');
-  document.getElementById(btn.dataset.agendaTab === 'agenda' ? 'configSubAgenda' : 'configSubSistema').classList.add('ativa');
-}));
-
 document.getElementById('formAgendaGeral').addEventListener('submit', async ev => {
   ev.preventDefault(); const btn = ev.target.querySelector('.btn-salvar'); const original = btn.textContent;
   const dados = { duracao_encontro_min: document.getElementById('agendaDuracao').value, antecedencia_min_horas: document.getElementById('agendaAntecedenciaMin').value, antecedencia_max_dias: document.getElementById('agendaAntecedenciaMax').value, limite_agendamentos_mes: document.getElementById('agendaLimiteMes').value };
-  btn.disabled = true; btn.textContent = 'Salvando...';
-  try {
-    const resp = await chamarApi('atualizarConfiguracoes', dados); if (resp && resp.erro) throw new Error(resp.erro);
-    Object.assign(configuracoes, dados); alert('Regras gerais de agendamento salvas.');
-  } catch(e) { alert('Não foi possível salvar as regras de agendamento. ' + e.message); }
-  finally { btn.disabled = false; btn.textContent = original; }
+  gravarConfiguracoes(dados);
 });
 
 document.querySelectorAll('.prof-config').forEach(card => {
@@ -2187,16 +2130,533 @@ document.querySelectorAll('.prof-config').forEach(card => {
   card.querySelector('.btn-salvar-prof').addEventListener('click', async ev => {
     const btn = ev.currentTarget, original = btn.textContent, dados = coletarProfessor(card);
     if (!dados.calendar_id) { mostrarStatusAgenda(card,'Informe o ID da agenda Google desta professora.','erro'); return; }
-    btn.disabled = true; btn.textContent = 'Salvando...';
-    try {
-      const resp = await chamarApi('salvarConfigProfessorAgenda', { professora:dados.professora, calendar_id:dados.calendar_id, email_professora:dados.email_professora, limite_agendamentos_dia:dados.limite_agendamentos_dia, disponibilidade:JSON.stringify(dados.disponibilidade), folgas:JSON.stringify(dados.folgas) });
-      if (resp && resp.erro) throw new Error(resp.erro);
-      mostrarStatusAgenda(card,'Configuração salva com sucesso.','ok');
-    } catch(e) { mostrarStatusAgenda(card,'Não foi possível salvar: ' + e.message,'erro'); }
-    finally { btn.disabled=false; btn.textContent=original; }
+    const anteriorDisponibilidade=agendaConfig.disponibilidade.filter(x=>x.professora===dados.professora),anteriorFolgas=agendaConfig.folgas.filter(x=>x.professora===dados.professora);
+    const aplicar=(disponibilidade,folgas)=>{agendaConfig.disponibilidade=[...agendaConfig.disponibilidade.filter(x=>x.professora!==dados.professora),...disponibilidade];agendaConfig.folgas=[...agendaConfig.folgas.filter(x=>x.professora!==dados.professora),...folgas];};
+    aplicar(dados.disponibilidade.map(x=>({...x,professora:dados.professora,ativo:'Sim'})),dados.folgas.map(x=>({...x,professora:dados.professora,ativo:'Sim'})));
+    btn.disabled=true;gravacoesPendentes++;versaoDados++;
+    try{await chamarApi('salvarConfigProfessorAgenda',{professora:dados.professora,calendar_id:dados.calendar_id,email_professora:dados.email_professora,limite_agendamentos_dia:dados.limite_agendamentos_dia,disponibilidade:JSON.stringify(dados.disponibilidade),folgas:JSON.stringify(dados.folgas)},0);}
+    catch(e){aplicar(anteriorDisponibilidade,anteriorFolgas);avisarFalha('A agenda de '+dados.professora+' não foi confirmada: '+e.message,()=>btn.click());}
+    finally{btn.disabled=false;gravacoesPendentes--;atualizarStatusGravacao();}
   });
 });
 
+const CAMPOS_ENDERECO={cep:'cCep',rua:'cRua',bairro:'cBairro',cidade:'cCidade',estado:'cEstado',numero:'cNumero',complemento:'cComplemento',tipo_endereco:'cTipoEndereco'};
+let cepRequest=null, cadastroFocus=null;
+const modalCadastro=document.getElementById('modalCadastroCompleto');
+async function salvarCadastroApi(action,payload){
+  const resposta=await chamarApi(action,payload,0);
+  if(!resposta||resposta.erro||resposta.sucesso!==true)throw Error(resposta?.erro||'O servidor não confirmou a gravação. Atualize o Code.gs para esta versão.');
+  return resposta;
+}
+function enderecoPayload(){return Object.fromEntries(Object.entries(CAMPOS_ENDERECO).map(([key,id])=>[key,document.getElementById(id).value.trim()]));}
+function preencherCadastroExtra(m){
+  if(cepRequest)cepRequest.abort();
+  Object.entries(CAMPOS_ENDERECO).forEach(([key,id])=>document.getElementById(id).value=m[key]||'');
+  document.getElementById('cCepStatus').textContent='';
+  document.getElementById('dDataInicioCiclo').value=String(m.data_inicio_ciclo||'').split('T')[0];
+  document.getElementById('dAniversario').value=String(m.aniversario||'').split('T')[0];
+  document.getElementById('rMotivoBrinde').value='';
+  document.getElementById('rCodigoRastreio').value='';
+  document.getElementById('rDataEnvio').value=hojeISO();
+  atualizarCamposBrinde();
+  renderizarBrindes();
+}
+function fecharCadastroCompleto(){modalCadastro.classList.remove('aberto');if(cepRequest)cepRequest.abort();cadastroFocus?.focus();}
+document.getElementById('btnCadastroCompleto').addEventListener('click',()=>{
+  cadastroFocus=document.activeElement;renderizarBrindes();modalCadastro.classList.add('aberto');document.getElementById('cCep').focus();
+});
+document.getElementById('fecharCadastroCompleto').addEventListener('click',fecharCadastroCompleto);
+modalCadastro.addEventListener('click',ev=>{if(ev.target===modalCadastro)fecharCadastroCompleto();});
+modalCadastro.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'){ev.preventDefault();fecharCadastroCompleto();}
+  if(ev.key==='Tab'){
+    const items=[...modalCadastro.querySelectorAll('button,input,select,textarea,a[href]')].filter(el=>!el.disabled&&el.getClientRects().length);
+    if(ev.shiftKey&&document.activeElement===items[0]){ev.preventDefault();items.at(-1).focus();}
+    else if(!ev.shiftKey&&document.activeElement===items.at(-1)){ev.preventDefault();items[0].focus();}
+  }
+});
+async function buscarCep(){
+  const input=document.getElementById('cCep'),status=document.getElementById('cCepStatus');
+  const cep=input.value.replace(/\D/g,'');
+  if(cepRequest)cepRequest.abort();
+  if(!/^\d{8}$/.test(cep)){status.textContent='Informe um CEP com 8 dígitos.';return;}
+  const controller=new AbortController();cepRequest=controller;
+  const id=mentoradoSelecionado.id_mentorado;
+  const timer=setTimeout(()=>controller.abort(),10000);
+  status.textContent='Consultando CEP...';
+  try{
+    const response=await fetch('https://viacep.com.br/ws/'+cep+'/json/',{signal:controller.signal});
+    if(!response.ok)throw Error('Falha na consulta.');
+    const data=await response.json();
+    if(controller!==cepRequest||mentoradoSelecionado.id_mentorado!==id||input.value.replace(/\D/g,'')!==cep)return;
+    if(data.erro)throw Error('CEP não encontrado.');
+    input.value=cep.slice(0,5)+'-'+cep.slice(5);
+    ['rua','bairro','cidade','estado'].forEach((key,i)=>document.getElementById(CAMPOS_ENDERECO[key]).value=data[['logradouro','bairro','localidade','uf'][i]]||'');
+    status.textContent='Endereço preenchido. Confira os dados e informe número e complemento, se houver.';
+  }catch(err){if(controller===cepRequest)status.textContent=(err.name==='AbortError'?'Consulta interrompida.':err.message)+' Você pode preencher o endereço manualmente.';}
+  finally{clearTimeout(timer);}
+}
+document.getElementById('btnBuscarCep').addEventListener('click',buscarCep);
+document.getElementById('cCep').addEventListener('change',()=>{if(document.getElementById('cCep').value.trim())buscarCep();});
+document.getElementById('cCep').addEventListener('input',()=>{if(cepRequest)cepRequest.abort();cepRequest=null;document.getElementById('cCepStatus').textContent='';});
+document.getElementById('formCadastroCompleto').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const m=mentoradoSelecionado;
+  const payload={...enderecoPayload(),link_grupo:document.getElementById('dLinkGrupo').value,detalhes_pagamento:document.getElementById('dDetalhesPagamento').value,observacao_inicial:document.getElementById('dObservacaoInicial').value};
+  gravarAlteracaoOtimista(m,payload,'atualizarCadastroCompleto',m.id_mentorado,'Cadastro completo de '+m.nome);
+  fecharCadastroCompleto();
+});
+function atualizarCamposBrinde(){
+  const ativo=document.getElementById('rTipo').value==='Envio de brinde';
+  document.getElementById('camposBrinde').classList.toggle('oculto',!ativo);
+  ['rMotivoBrinde','rCodigoRastreio','rDataEnvio'].forEach(id=>{const el=document.getElementById(id);el.disabled=!ativo;el.required=ativo&&id!=='rCodigoRastreio';});
+}
+document.getElementById('rTipo').addEventListener('change',atualizarCamposBrinde);
+function renderizarBrindes(){
+  const body=document.getElementById('tabelaBrindes');body.replaceChildren();
+  const brindes=registrosDoMentorado(mentoradoSelecionado.id_mentorado).filter(r=>r.tipo_atendimento==='Envio de brinde');
+  if(!brindes.length){const row=body.insertRow();const cell=row.insertCell();cell.colSpan=4;cell.textContent='Nenhum brinde enviado para este mentorado.';return;}
+  brindes.forEach(r=>{
+    const row=body.insertRow();row.dataset.registro=r.id_registro;const fields={};
+    [['motivo_brinde','text','Motivo do brinde'],['codigo_rastreio','text','Código de rastreio'],['data_envio','date','Data do envio']].forEach(([key,type,label])=>{
+      const input=document.createElement('input');input.type=type;input.setAttribute('aria-label',label);input.value=key==='data_envio'?String(r[key]||r.data||'').split('T')[0]:(r[key]||'');fields[key]=input;row.insertCell().append(input);
+    });
+    const btn=document.createElement('button');btn.type='button';btn.className='btn-secundario';btn.textContent=r._pendente?'Salvando envio…':'Salvar';btn.disabled=!!r._pendente;Object.values(fields).forEach(input=>input.disabled=!!r._pendente);row.insertCell().append(btn);
+    btn.addEventListener('click',async()=>{
+      const payload=Object.fromEntries(Object.entries(fields).map(([key,input])=>[key,input.value.trim()]));
+      if(!payload.motivo_brinde||!payload.data_envio){alert('Preencha o motivo e a data do envio.');return;}
+      gravarAlteracaoOtimista(r,{...payload,data:payload.data_envio},'atualizarBrinde',r.id_mentorado,'Brinde de '+r.nome_mentorado);
+      btn.textContent='Atualizado';
+    });
+    Object.values(fields).forEach(input=>input.addEventListener('input',()=>btn.textContent='Salvar'));
+  });
+}
+
+// Serializa gravações por cadastro e reaplica as alterações ainda pendentes.
+const gravacoesPorObjeto=new Map();
+let gravacoesPendentes=0;
+const falhasGravacao=[];
+function atualizarStatusGravacao(){
+  const status=document.getElementById('statusGravacao');status.replaceChildren();
+  const texto=document.createElement('span');
+  texto.textContent='Há alterações que não foram confirmadas.';
+  status.append(texto);
+  falhasGravacao.forEach(falha=>{
+    const item=document.createElement('div');item.textContent=falha.texto+' ';
+    const botao=document.createElement('button');botao.type='button';botao.className='btn-secundario';botao.textContent=falha.rotulo;
+    botao.addEventListener('click',()=>{falhasGravacao.splice(falhasGravacao.indexOf(falha),1);falha.recuperar();atualizarStatusGravacao();});item.append(botao);status.append(item);
+  });
+  status.hidden=falhasGravacao.length===0;
+}
+function atualizarVisaoLocal(id){
+  versaoDados++;
+  if(!document.getElementById('telaEncontros').classList.contains('oculto'))renderizarRelatorioEncontros();
+  atualizarListasAtivosVisiveis();
+  renderizarDashboard();renderizarTabela();
+  if(mentoradoSelecionado?.id_mentorado!==id)return;
+  const m=mentoradoSelecionado,regs=registrosDoMentorado(id);
+  document.getElementById('detNome').textContent=m.nome;
+  const badge=document.getElementById('detStatusBadge');badge.textContent=m.status;badge.className='badge '+m.status;
+  renderizarIndicadores(id,regs);renderizarUltimosRegistros(regs.slice(0,5));
+  // Não preencher novamente os formulários: o usuário pode estar digitando.
+}
+function gravarAlteracaoOtimista(objeto,payload,action,idMentorado,descricao){
+  let fila=gravacoesPorObjeto.get(objeto);
+  if(!fila){fila={base:{...objeto},itens:[],rodando:false};gravacoesPorObjeto.set(objeto,fila);}
+  Object.keys(payload).forEach(key=>{if(!Object.prototype.hasOwnProperty.call(fila.base,key))fila.base[key]=objeto[key];});
+  fila.itens.push({payload:{...payload},action,descricao});
+  gravacoesPendentes++;Object.assign(objeto,payload);atualizarVisaoLocal(idMentorado);atualizarStatusGravacao();
+  if(!fila.rodando)processar();
+  async function processar(){
+    fila.rodando=true;
+    while(fila.itens.length){
+      const tarefa=fila.itens[0];
+      try{
+        await salvarCadastroApi(tarefa.action,{id:tarefa.action==='atualizarBrinde'?objeto.id_registro:objeto.id_mentorado,...tarefa.payload});
+        Object.assign(fila.base,tarefa.payload);
+      }catch(err){
+        falhasGravacao.push({texto:tarefa.descricao+' não foi confirmada: '+err.message,rotulo:'Reaplicar alterações',recuperar:()=>gravarAlteracaoOtimista(objeto,tarefa.payload,tarefa.action,idMentorado,tarefa.descricao)});
+      }
+      fila.itens.shift();gravacoesPendentes--;
+      Object.assign(objeto,fila.base,...fila.itens.map(t=>t.payload));
+      atualizarVisaoLocal(idMentorado);atualizarStatusGravacao();
+    }
+    gravacoesPorObjeto.delete(objeto);
+  }
+}
+function registrarOtimista(payload){
+  const agora=new Date().toISOString();
+  const registro={id_registro:'reg_temp_'+crypto.randomUUID(),...payload,criado_em:agora,atualizado_em:agora,_pendente:true};
+  const idTemporario=registro.id_registro;
+  registros.push(registro);gravacoesPendentes++;atualizarVisaoLocal(payload.id_mentorado);atualizarStatusGravacao();
+  chamarApi(payload.tipo_atendimento==='Envio de brinde'?'criarRegistroBrinde':'criarRegistro',payload,0).then(resp=>{
+    if(resp?.erro||!resp?.id_registro)throw Error(resp?.erro||'O servidor não confirmou o registro.');
+    registros=registros.filter(r=>r===registro||r.id_registro!==resp.id_registro);
+    Object.assign(registro,resp.registro||{});registro.id_registro=resp.id_registro;delete registro._pendente;
+    document.querySelectorAll('#tabelaBrindes tr').forEach(row=>{if(row.dataset.registro===idTemporario){row.dataset.registro=registro.id_registro;row.querySelectorAll('input,button').forEach(el=>el.disabled=false);row.querySelector('button').textContent='Salvar';}});
+  }).catch(err=>{
+    registros=registros.filter(r=>r!==registro);
+    document.querySelectorAll('#tabelaBrindes tr').forEach(row=>{if(row.dataset.registro===idTemporario)row.remove();});
+    falhasGravacao.push({texto:'Atendimento de '+payload.nome_mentorado+' não confirmado. Confira o histórico antes de reenviar. '+err.message,rotulo:'Recuperar preenchimento',recuperar:()=>{
+      abrirDetalhe(payload.id_mentorado);
+      const campos={rTipo:payload.tipo_atendimento,rData:payload.data,rDataAgendamento:payload.data_agendamento,rObservacao:payload.observacao,rMotivoBrinde:payload.motivo_brinde,rCodigoRastreio:payload.codigo_rastreio,rDataEnvio:payload.data_envio};
+      Object.entries(campos).forEach(([id,valor])=>document.getElementById(id).value=valor||'');
+      atualizarCamposBrinde();document.getElementById('campoDataAgendamento').classList.toggle('oculto',payload.tipo_atendimento!==TIPO_AGENDAMENTO);
+      document.getElementById('formRegistro').scrollIntoView({block:'center'});
+    }});
+  }).finally(()=>{gravacoesPendentes--;atualizarVisaoLocal(payload.id_mentorado);atualizarStatusGravacao();});
+}
+window.addEventListener('beforeunload',ev=>{if(gravacoesPendentes||falhasGravacao.length){ev.preventDefault();ev.returnValue='';}});
+
+function textoLista(valor){return String(valor??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function normalizarBuscaLista(valor){return String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
+function ativosParaListas(termo){
+  const busca=normalizarBuscaLista(termo);
+  return mentorados.filter(m=>m.status==='Ativo'&&(!busca||normalizarBuscaLista(m.nome).includes(busca)||normalizarBuscaLista(m.email).includes(busca))).sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR'));
+}
+function ultimoBrindeDoMentorado(id){
+  return registros.filter(r=>r.id_mentorado===id&&r.tipo_atendimento==='Envio de brinde').sort((a,b)=>String(b.data_envio||b.data||'').localeCompare(String(a.data_envio||a.data||''))||String(b.criado_em||'').localeCompare(String(a.criado_em||'')))[0]||null;
+}
+function dadosAniversario(valor){
+  const match=String(valor||'').match(/^\d{4}-(\d{2})-(\d{2})(?:T.*)?$/);
+  if(!match)return null;
+  const mes=Number(match[1]),dia=Number(match[2]);
+  if(mes<1||mes>12||dia<1||dia>[31,29,31,30,31,30,31,31,30,31,30,31][mes-1])return null;
+  return {mes,dia,texto:match[2]+'/'+match[1]};
+}
+function gruposAniversariantes(lista){
+  const grupos=Array.from({length:13},()=>[]);
+  lista.forEach(m=>{const data=dadosAniversario(m.aniversario);grupos[data?data.mes-1:12].push({mentorado:m,data});});
+  grupos.forEach(grupo=>grupo.sort((a,b)=>(a.data?.dia||0)-(b.data?.dia||0)||String(a.mentorado.nome||'').localeCompare(String(b.mentorado.nome||''),'pt-BR')));
+  return grupos;
+}
+function nomeNaLista(m){return '<button class="nome-lista" type="button" data-mentorado="'+textoLista(m.id_mentorado)+'">'+textoLista(m.nome)+'</button>';}
+function conectarListaMentorados(container,origem){
+  container.querySelectorAll('[data-mentorado]').forEach(btn=>btn.addEventListener('click',()=>{origemDetalhe=origem;abrirDetalhe(btn.dataset.mentorado);}));
+  container.querySelectorAll('tr[data-id-mentorado]').forEach(tr=>tr.addEventListener('dblclick',ev=>{if(ev.target.closest('button'))return;origemDetalhe=origem;abrirDetalhe(tr.dataset.idMentorado);}));
+}
+function renderizarTelaBrindes(){
+  const lista=ativosParaListas(document.getElementById('buscaBrindes').value);
+  const body=document.getElementById('corpoListaBrindes');
+  body.innerHTML=lista.length?lista.map(m=>{
+    const brinde=ultimoBrindeDoMentorado(m.id_mentorado);
+    const status=!brinde?'<span class="tag-alerta">⚠️ Atenção: nunca recebeu brinde</span>':brinde._pendente?'<span class="tag-alerta">Envio sendo salvo…</span>':'<span class="badge Ativo">Brinde enviado</span>';
+    return '<tr data-id-mentorado="'+textoLista(m.id_mentorado)+'"><td data-label="Nome">'+nomeNaLista(m)+'</td><td data-label="Último envio">'+(brinde?textoLista(formatarData(brinde.data_envio||brinde.data)):'—')+'</td><td data-label="Motivo do brinde">'+textoLista(brinde?.motivo_brinde||'—')+'</td><td data-label="Código de rastreio">'+textoLista(brinde?.codigo_rastreio||'—')+'</td><td data-label="Situação">'+status+'</td></tr>';
+  }).join(''):'<tr><td colspan="5">Nenhum mentorado ativo encontrado.</td></tr>';
+  conectarListaMentorados(body,'brindes');
+}
+function renderizarTelaAniversariantes(){
+  const lista=ativosParaListas(document.getElementById('buscaAniversariantes').value);
+  const container=document.getElementById('gruposAniversariantes');
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro','Sem data de aniversário'];
+  container.innerHTML=lista.length?gruposAniversariantes(lista).map((grupo,i)=>grupo.length?'<section class="grupo-aniversario" aria-labelledby="mesAniversario'+i+'"><h3 class="secao" id="mesAniversario'+i+'">'+meses[i]+' <span class="contagem-lista">('+grupo.length+')</span></h3><table aria-label="Aniversariantes — '+meses[i]+'"><thead><tr><th>Nome</th><th>Data de aniversário</th></tr></thead><tbody>'+grupo.map(({mentorado:m,data})=>'<tr data-id-mentorado="'+textoLista(m.id_mentorado)+'"><td data-label="Nome">'+nomeNaLista(m)+'</td><td data-label="Data de aniversário">'+(data?data.texto:'Não informada')+'</td></tr>').join('')+'</tbody></table></section>':'').join(''):'<table><tbody><tr><td>Nenhum mentorado ativo encontrado.</td></tr></tbody></table>';
+  conectarListaMentorados(container,'aniversariantes');
+}
+function abrirListaAtivos(tipo){
+  esconderTodasTelas();
+  const brindes=tipo==='brindes';
+  (brindes?renderizarTelaBrindes:renderizarTelaAniversariantes)();
+  document.getElementById(brindes?'telaBrindes':'telaAniversariantes').classList.remove('oculto');
+  document.getElementById(brindes?'btnTelaBrindes':'btnTelaAniversariantes').classList.add('ativo');
+}
+function atualizarListasAtivosVisiveis(){
+  if(!document.getElementById('telaBrindes').classList.contains('oculto'))renderizarTelaBrindes();
+  if(!document.getElementById('telaAniversariantes').classList.contains('oculto'))renderizarTelaAniversariantes();
+}
+document.getElementById('btnTelaBrindes').addEventListener('click',()=>abrirListaAtivos('brindes'));
+document.getElementById('btnTelaAniversariantes').addEventListener('click',()=>abrirListaAtivos('aniversariantes'));
+document.getElementById('buscaBrindes').addEventListener('input',renderizarTelaBrindes);
+document.getElementById('buscaAniversariantes').addEventListener('input',renderizarTelaAniversariantes);
+
+const CALENDARIO_PUBLICO_HTML="\u003c!doctype html>\u003chtml lang=\"pt-BR\">\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003ctitle>Central dos alunos — DashEagles\u003c/title>\u003cmeta name=\"theme-color\" content=\"#FF7000\">\n\u003clink rel=\"icon\" href=\"https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png\">\u003clink rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap\">\n\u003cstyle>\n:root{--orange:#FF7000;--green:#57B95C;--ink:#020617;--muted:#586174;--bg:#F0F0F0;--line:#e1e5eb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.65 Poppins,Arial,sans-serif}button,a,input{font:inherit}a{color:inherit}button{cursor:pointer}h1,h2,h3{font-family:Montserrat,Arial,sans-serif;line-height:1.2}h1{font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:12px 0 16px}h2{font-size:24px;margin:0}h3{font-size:17px;margin:0}.wrap{max-width:1180px;padding:0 24px;margin:auto}.brand{height:94px;display:flex;align-items:center;gap:24px;border-bottom:1px solid #dce0e6}.brand img{width:155px}.brand span{border-left:1px solid #ccd2dc;padding-left:24px;font-size:12px;color:var(--muted)}.intro{padding:44px 0 30px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#a54800;font:700 11px Montserrat}em{font-style:normal;color:var(--orange)}.intro p{color:var(--muted);margin-bottom:0}.calendar-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 8px 25px #0000000a}.calendar-top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px}.calendar-top small{color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;color:var(--ink)}.tab[aria-pressed=true]{background:#fff1e6;border-color:var(--orange);font-weight:600}.calendar-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,1fr);gap:26px;align-items:start}.week,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.week div{text-align:center;font-size:10px;font-weight:600;color:var(--muted);padding:8px 0}.day{min-height:88px;background:#f8f9fb;border:1px solid #edf0f3;border-radius:10px;padding:8px;min-width:0}.day.empty{visibility:hidden}.day.has-event{background:#fff;border-color:#bec7d2}.day.today{outline:2px solid var(--orange)}.day-number{font-weight:600;font-size:12px}.dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}.dot{width:8px;height:8px;border-radius:50%;flex:none}.day small{display:block;color:var(--muted);font-size:9px;margin-top:6px}.legend{display:flex;gap:12px 18px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px;margin-top:22px}.legend span{display:flex;gap:7px;align-items:center;font-size:11px;color:var(--muted)}.appointments{background:#f7f8fa;border:1px solid var(--line);border-radius:16px;padding:20px}.appointments h3{margin-bottom:16px}.event{background:#fff;border:1px solid var(--line);border-left:4px solid var(--event-color);border-radius:10px;padding:12px 14px;margin-top:10px}.event time{font-size:11px;color:var(--muted)}.event strong{display:block;font-size:13px;margin:4px 0}.event p{white-space:pre-wrap;font-size:12px;color:var(--muted);margin:7px 0;overflow-wrap:anywhere}.event a{display:inline-block;margin-top:8px;color:#a54800;font-weight:600;font-size:12px}.event-type{font-size:10px;color:var(--muted)}.empty-message{color:var(--muted);padding:20px 0}.quick{padding:38px 0 42px}.quick>p{color:var(--muted)}.quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.quick article{background:#fff;border-radius:20px;padding:24px;border:1px solid var(--line);display:flex;flex-direction:column}.quick article p{color:var(--muted);font-size:12px;flex:1}.quick a{background:var(--orange);border-radius:10px;padding:10px 12px;text-align:center;text-decoration:none;font-weight:600;font-size:12px}.footer{border-top:1px solid #dce0e6;padding:24px 0;color:var(--muted);font-size:11px}.load-error{color:#b42318}button:focus-visible,a:focus-visible{outline:3px solid #a54800;outline-offset:3px}\n@media(max-width:850px){.calendar-layout{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.wrap{padding:0 16px}.brand{height:82px;gap:16px}.brand img{width:130px}.brand span{padding-left:16px;font-size:10px}.intro{padding:30px 0 24px}.calendar-card{padding:18px}.calendar-top{align-items:start;flex-direction:column;gap:8px}.calendar-top h2{font-size:22px}.week,.grid{gap:4px}.day{padding:6px;min-height:66px}.day small{display:none}.dots{gap:3px;margin-top:8px}.dot{width:6px;height:6px}.quick-grid{grid-template-columns:1fr}.legend{gap:10px}.appointments{padding:16px}}\n.day{min-height:128px;display:flex;flex-direction:column;gap:8px}.day-number{font-size:13px}.day-title{font-size:12px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}.day-time,.day-link{font-size:10px;color:inherit}.day-link{margin-top:auto;font-weight:600}.legend{flex-direction:row}.preview .brand,.preview .intro,.preview .quick,.preview .footer{display:none}.preview .wrap{padding:12px}@media(max-width:650px){.day{min-height:104px;padding:5px;gap:6px}.day-title{font-size:10px}.calendar-card{padding:14px}.calendar-top small{font-size:10px}}@media(max-width:420px){.day-title{font-size:9px}.day{min-height:94px}.calendar-top h2{font-size:20px}}\n.day.has-event{border-width:1px;box-shadow:none}.day-title{font-weight:500}.day.today{outline:none}.day.today .day-number{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}.legend .dot{background:transparent!important;border:2px solid var(--legend-color);width:9px;height:9px}\n.tabs[hidden]{display:none}.tab,.tab[aria-pressed=true]{background:transparent;border:0;border-radius:0;padding:6px 0;color:var(--muted);box-shadow:none}.tabs{gap:24px}.tab[aria-pressed=true]{color:var(--ink);text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:7px}.tab:hover{color:var(--ink)}\n\u003c/style>\u003c/head>\u003cbody>\u003cdiv class=\"wrap\">\n\u003cheader class=\"brand\">\u003cimg src=\"https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/logo-claro/escola.png\" alt=\"Escola Karen Abecia\">\u003cspan>Área exclusiva dos alunos\u003cbr>\u003cstrong>Mentoria DashEagles\u003c/strong>\u003c/span>\u003c/header>\n\u003cmain>\u003csection class=\"intro\">\u003cspan class=\"eyebrow\">Sua jornada na mentoria\u003c/span>\u003ch1>Seu próximo \u003cem>encontro.\u003c/em>\u003c/h1>\u003cp>Confira a programação e encontre os acessos para continuar evoluindo.\u003c/p>\u003c/section>\n\u003csection class=\"calendar-card\" aria-label=\"Calendário da mentoria\">\u003cnav class=\"tabs\" id=\"monthTabs\" aria-label=\"Meses disponíveis\">\u003c/nav>\u003cdiv id=\"calendarContent\">\u003cp class=\"empty-message\">Carregando calendário…\u003c/p>\u003c/div>\u003cp id=\"calendarStatus\" role=\"status\">\u003c/p>\u003c/section>\n\u003csection class=\"quick\">\u003ch2>Acesso rápido\u003c/h2>\u003cp>Os principais recursos da sua mentoria em um só lugar.\u003c/p>\u003cdiv class=\"quick-grid\">\n\u003carticle>\u003ch3>Encontro semanal\u003c/h3>\u003cp>Acompanhe o encontro ao vivo da mentoria.\u003c/p>\u003ca href=\"https://teams.microsoft.com/meet/22553232127145?p=Iv3bx0uv7OyneqPj6X\" target=\"_blank\" rel=\"noopener\">Entrar no encontro\u003c/a>\u003c/article>\n\u003carticle>\u003ch3>Encontro individual\u003c/h3>\u003cp>Escolha um horário para avançar com mais clareza.\u003c/p>\u003ca href=\"https://site.escolakarenabecia.com/dasheagles/agendamento\" target=\"_blank\" rel=\"noopener\">Agendar encontro\u003c/a>\u003c/article>\n\u003carticle>\u003ch3>Área de membros\u003c/h3>\u003cp>Gravações, materiais e conteúdos da mentoria.\u003c/p>\u003ca href=\"https://hotmart.com/pt-br/club/karenabecia/products/1017484\" target=\"_blank\" rel=\"noopener\">Acessar plataforma\u003c/a>\u003c/article>\n\u003carticle>\u003ch3>Central de agentes\u003c/h3>\u003cp>Agentes de I.A. para suas análises e entregas.\u003c/p>\u003ca href=\"https://site.escolakarenabecia.com/agentes.ia/\" target=\"_blank\" rel=\"noopener\">Acessar agentes\u003c/a>\u003c/article>\n\u003c/div>\u003c/section>\u003c/main>\u003cfooter class=\"footer\">© Escola Karen Abecia · Mentoria DashEagles\u003c/footer>\u003c/div>\n\u003cscript>\nconst API_URL='https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec';\nconst PREVIEW_DATA=null;\nconst MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];\nconst COLORS=['#FF7000','#57B95C','#7030A0','#2563EB','#0891B2','#D62976','#D4A017','#DC2626','#0F766E','#64748B'];\nconst esc=v=>String(v??'').replace(/[&\u003c>\"']/g,c=>({'&':'&amp;','\u003c':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));\nlet calendars=[],selected='',fetching=false;\nfunction monthName(m){const [y,n]=m.split('-');return MONTHS[Number(n)-1]+' '+y;}\nfunction corPastel(hex){return '#'+hex.slice(1).match(/../g).map(v=>Math.round(255*.89+parseInt(v,16)*.11).toString(16).padStart(2,'0')).join('');}\nfunction monthMarkup(c){\n  const [year,month]=c.mes.split('-').map(Number),first=new Date(Date.UTC(year,month-1,1)).getUTCDay(),days=new Date(Date.UTC(year,month,0)).getUTCDate();\n  const types=Object.fromEntries(c.tipos.map(t=>[t.id,t]));const color=id=>COLORS.includes(types[id]?.cor)?types[id].cor:'#64748B';\n  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());\n  let cells='\u003cdiv class=\"day empty\" aria-hidden=\"true\">\u003c/div>'.repeat(first);\n  for(let day=1;day\u003c=days;day++){\n    const date=c.mes+'-'+String(day).padStart(2,'0'),e=c.eventos.find(e=>e.data===date),cor=e?color(e.tipo):'',name=e?e.titulo||types[e.tipo]?.nome||'':'';\n    cells+='\u003cdiv class=\"day '+(e?'has-event ':'')+(date===today?'today':'')+'\" '+(e?'style=\"background:'+corPastel(cor)+';color:#263244;border-color:'+cor+'\"':'')+' aria-label=\"'+day+' de '+esc(monthName(c.mes))+(e?' — '+esc(name):'')+'\">\u003cspan class=\"day-number\">'+day+'\u003c/span>'+(e?'\u003cspan class=\"day-title\">'+esc(name)+'\u003c/span>'+(e.inicio?'\u003cspan class=\"day-time\">'+esc(e.inicio)+'\u003c/span>':'')+(e.link&&/^https:\\/\\//i.test(e.link)?'\u003ca class=\"day-link\" href=\"'+esc(e.link)+'\" target=\"_blank\" rel=\"noopener\">Acessar ↗\u003c/a>':''):'')+'\u003c/div>';\n  }\n  const used=c.tipos.filter(t=>c.eventos.some(e=>e.tipo===t.id));\n  return '\u003cdiv class=\"calendar-top\">\u003ch2>'+esc(monthName(c.mes))+'\u003c/h2>\u003csmall>Horários de Brasília\u003c/small>\u003c/div>\u003cdiv class=\"week\">'+['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].map(d=>'\u003cdiv>'+d+'\u003c/div>').join('')+'\u003c/div>\u003cdiv class=\"grid\">'+cells+'\u003c/div>\u003cdiv class=\"legend\" aria-label=\"Legenda\">'+used.map(t=>'\u003cspan>\u003ci class=\"dot\" style=\"--legend-color:'+color(t.id)+'\">\u003c/i>'+esc(t.nome)+'\u003c/span>').join('')+'\u003c/div>'+(c.eventos.length?'':'\u003cp class=\"empty-message\">Nenhum encontro cadastrado para este mês.\u003c/p>');\n}\nfunction render(){\n  const tabs=document.getElementById('monthTabs');tabs.replaceChildren();\n  if(!calendars.some(c=>c.posicao===selected))selected=calendars[0]?.posicao||'';\n  tabs.hidden=calendars.length\u003c2;\n  (calendars.length>1?calendars:[]).forEach(c=>{const btn=document.createElement('button');btn.className='tab';btn.type='button';btn.textContent=monthName(c.mes);btn.setAttribute('aria-pressed',String(c.posicao===selected));btn.onclick=()=>{selected=c.posicao;render();};tabs.append(btn);});\n  const c=calendars.find(c=>c.posicao===selected);document.getElementById('calendarContent').innerHTML=c?monthMarkup(c):'\u003cp class=\"empty-message\">A próxima programação será disponibilizada em breve.\u003c/p>';\n}\nasync function loadCalendar(){\n  if(fetching)return;fetching=true;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);\n  try{const r=await fetch(API_URL+'?action=calendarioPublico&t='+Date.now(),{signal:controller.signal,cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();if(d.erro||!Array.isArray(d.calendarios))throw Error();calendars=d.calendarios;render();document.getElementById('calendarStatus').textContent='';}\n  catch(err){document.getElementById('calendarStatus').textContent='Não foi possível atualizar a agenda. Tentaremos novamente em instantes.';document.getElementById('calendarStatus').className='load-error';if(!calendars.length)document.getElementById('calendarContent').innerHTML='\u003cp class=\"empty-message\">Agenda temporariamente indisponível.\u003c/p>';}\n  finally{clearTimeout(timer);fetching=false;}\n}\nif(PREVIEW_DATA){document.body.classList.add('preview');calendars=PREVIEW_DATA.calendarios;selected=PREVIEW_DATA.selected;render();document.addEventListener('click',ev=>{if(ev.target.closest('a'))ev.preventDefault();});}\nelse{loadCalendar();setInterval(loadCalendar,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadCalendar();});}\n\u003c/script>\u003c/body>\u003c/html>\n";
+const CORES_CAL=['#FF7000','#57B95C','#7030A0','#2563EB','#0891B2','#D62976','#D4A017','#DC2626','#0F766E','#64748B'];
+const NOMES_CORES_CAL=['Laranja','Verde','Roxo','Azul','Ciano','Rosa','Dourado','Vermelho','Verde-petróleo','Cinza'];
+let calendariosAdmin=[],calSlot='atual',calBusy=false,calRows={},calPreviewTimer=null;
+const calDirty=new Set();
+const calEl=id=>document.getElementById(id);
+const calEsc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function calendarioSelecionado(){return calendariosAdmin.find(c=>c.posicao===calSlot);}
+async function calendarioPost(action,extra={}){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
+  try{const response=await fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...extra}),signal:controller.signal});const result=await response.json();if(result.erro||!result.sucesso)throw Error(result.erro||'Não foi possível confirmar a operação.');return result;}
+  finally{clearTimeout(timer);}
+}
+calEl('btnConfigCalendario').addEventListener('click',()=>{esconderTodasTelas();calEl('telaCalendarioMensal').classList.remove('oculto');calEl('btnConfigCalendario').classList.add('ativo');if(!calendariosAdmin.length)garantirModulo('calendario');});
+async function carregarCalendariosMensais(){
+  if(calBusy)return garantirModulo('calendario');
+  if(calDirty.size&&!confirm('Recarregar descarta as alterações ainda não salvas dos dois meses. Continuar?'))return;
+  return garantirModulo('calendario',true);
+}
+calEl('btnRecarregarCalendarios').addEventListener('click',carregarCalendariosMensais);
+function novaLinhaCalendario(){return {id:crypto.randomUUID(),data:'',nome:'',cor:CORES_CAL[0],original:null};}
+function linhasCalendario(){
+  if(!calRows[calSlot]){const c=calendarioSelecionado();calRows[calSlot]=[...c.eventos].sort((a,b)=>a.data.localeCompare(b.data)).map(e=>({id:e.id,data:e.data,nome:e.titulo||c.tipos.find(t=>t.id===e.tipo)?.nome||'',cor:c.tipos.find(t=>t.id===e.tipo)?.cor||CORES_CAL[0],original:e}));}
+  const rows=calRows[calSlot];while(rows.length<10)rows.push(novaLinhaCalendario());
+  if(rows.at(-1).data&&rows.at(-1).nome.trim())rows.push(novaLinhaCalendario());return rows;
+}
+function dadosCalendarioDasLinhas(c,rows,estrito=true){
+  if(!/^20\d{2}-(0[1-9]|1[0-2])$/.test(c.mes||'')){if(estrito)throw Error('Escolha o mês e o ano do calendário.');return null;}
+  const eventos=[],tipos=[],dias=new Set();
+  rows.forEach((r,i)=>{
+    if(!r.data&&!r.nome.trim())return;
+    if(!r.data||!r.nome.trim()){if(estrito)throw Error('Complete a data e o tipo de encontro da linha '+(i+1)+'.');return;}
+    const d=new Date(r.data+'T12:00:00Z');
+    if(!r.data.startsWith(c.mes+'-')||isNaN(d.getTime())||d.toISOString().slice(0,10)!==r.data){if(estrito)throw Error('A data da linha '+(i+1)+' deve pertencer ao mês selecionado.');return;}
+    if(dias.has(r.data)){if(estrito)throw Error('Há dois encontros em '+r.data.split('-').reverse().join('/')+'. Mantenha apenas um encontro por dia.');return;}dias.add(r.data);
+    let tipo=tipos.find(t=>t.nome===r.nome.trim()&&t.cor===r.cor);
+    if(!tipo){tipo={id:'tipo-'+tipos.length,nome:r.nome.trim(),cor:r.cor};tipos.push(tipo);}
+    eventos.push({...r.original,id:r.id,data:r.data,titulo:r.nome.trim(),tipo:tipo.id,inicio:r.original?.inicio||'',fim:r.original?.fim||'',link:r.original?.link||'',descricao:r.original?.descricao||''});
+  });
+  return {...c,tipos,eventos};
+}
+function marcarCalendarioAlterado(){calDirty.add(calSlot);clearTimeout(calPreviewTimer);calPreviewTimer=setTimeout(atualizarPreviaCalendario,180);}
+function atualizarPreviaCalendario(){
+  const c=calendarioSelecionado();const atual=dadosCalendarioDasLinhas(c,linhasCalendario(),false);
+  if(!atual){calEl('calPreview').srcdoc='<p style="font:16px Arial;padding:24px">Escolha o mês para visualizar o calendário.</p>';return;}
+  const dados={calendarios:calendariosAdmin.filter(c=>c.mes).map(c=>c.posicao===calSlot?atual:(calRows[c.posicao]?dadosCalendarioDasLinhas(c,calRows[c.posicao],false):c)).filter(Boolean),selected:calSlot};
+  calEl('calPreview').srcdoc=CALENDARIO_PUBLICO_HTML.replace('const PREVIEW_DATA=null;','const PREVIEW_DATA='+JSON.stringify(dados).replace(/</g,'\\u003c')+';');
+}
+function renderizarEditorCalendario(){
+  const c=calendarioSelecionado();calEl('calMes').value=c.mes;calEl('calLiberar').value=c.liberar_em?c.liberar_em.slice(0,16):'';
+  calEl('calLiberar').disabled=calSlot!=='proximo';calEl('calPublicarAgora').disabled=calSlot!=='atual';calEl('calAgendar').disabled=calSlot!=='proximo';
+  document.querySelectorAll('[data-cal-slot]').forEach(b=>b.classList.toggle('ativo',b.dataset.calSlot===calSlot));
+  renderizarLinhasCalendario();atualizarPreviaCalendario();
+}
+document.querySelectorAll('[data-cal-slot]').forEach(btn=>btn.addEventListener('click',()=>{calSlot=btn.dataset.calSlot;renderizarEditorCalendario();}));
+calEl('calMes').addEventListener('change',()=>{
+  const c=calendarioSelecionado(),mes=calEl('calMes').value;
+  if(mes!==c.mes&&linhasCalendario().some(r=>r.data||r.nome.trim())){if(!confirm('Trocar o mês limpa os encontros deste rascunho. A página dos alunos permanece igual até você publicar ou agendar. Continuar?')){calEl('calMes').value=c.mes;return;}calRows[calSlot]=[];c.eventos=[];}
+  c.mes=mes;marcarCalendarioAlterado();renderizarLinhasCalendario();
+});
+calEl('calLiberar').addEventListener('input',()=>{calendarioSelecionado().liberar_em=calEl('calLiberar').value?calEl('calLiberar').value+'-03:00':'';marcarCalendarioAlterado();});
+function renderizarLinhasCalendario(){
+  const body=calEl('calLinhas');body.replaceChildren();linhasCalendario().forEach(r=>adicionarLinhaDOM(r));
+}
+function adicionarLinhaDOM(r){
+  const row=document.createElement('tr'),c=calendarioSelecionado(),[y,m]=c.mes.split('-').map(Number);row.dataset.linha=r.id;
+  row.innerHTML='<td data-label="Data"><input type="date" aria-label="Data do encontro" value="'+calEsc(r.data)+'" min="'+calEsc(c.mes)+'-01" max="'+calEsc(c.mes)+'-'+(new Date(Date.UTC(y,m,0)).getUTCDate()||31)+'"></td><td data-label="Tipo de encontro"><input type="text" aria-label="Tipo de encontro" maxlength="60" placeholder="Tipo de encontro" value="'+calEsc(r.nome)+'"></td><td data-label="Cor"><div class="cal-cor-linha"><select aria-label="Cor do encontro" style="border-left:7px solid '+r.cor+'">'+CORES_CAL.map((cor,i)=>'<option value="'+cor+'" '+(cor===r.cor?'selected':'')+'>'+NOMES_CORES_CAL[i]+'</option>').join('')+'</select><button type="button" class="cal-apagar" aria-label="Limpar encontro" title="Limpar encontro">×</button></div></td>';
+  const date=row.querySelector('input[type=date]'),name=row.querySelector('input[type=text]'),color=row.querySelector('select');
+  function changed(){r.data=date.value;r.nome=name.value;r.cor=color.value;color.style.borderLeftColor=r.cor;const before=calRows[calSlot].length;const rows=linhasCalendario();for(let i=before;i<rows.length;i++)adicionarLinhaDOM(rows[i]);marcarCalendarioAlterado();}
+  date.addEventListener('input',changed);name.addEventListener('input',changed);color.addEventListener('change',changed);
+  row.querySelector('button').addEventListener('click',()=>{calRows[calSlot]=calRows[calSlot].filter(x=>x!==r);renderizarLinhasCalendario();marcarCalendarioAlterado();});
+  calEl('calLinhas').append(row);
+}
+async function salvarCalendarioTabela(modo){
+  calEl('calErro').textContent='';
+  let c;try{
+    c=dadosCalendarioDasLinhas(calendarioSelecionado(),linhasCalendario());
+    if(calendariosAdmin.some(x=>x.posicao!==c.posicao&&x.mes===c.mes))throw Error('Escolha meses diferentes para os dois calendários.');
+    if(modo==='publish'&&calSlot!=='atual')throw Error('Publicar agora está disponível apenas no mês atual.');
+    if(modo==='schedule'&&(calSlot!=='proximo'||!c.liberar_em||new Date(c.liberar_em).getTime()<=Date.now()))throw Error('Informe uma data e hora futuras para liberar o próximo mês.');
+  }catch(err){calEl('calErro').textContent=err.message;return;}
+  const salvo=JSON.stringify(linhasCalendario()),mesSalvo=c.posicao,metadados=JSON.stringify([c.mes,c.liberar_em]);
+  calendariosAdmin=calendariosAdmin.map(x=>x.posicao===mesSalvo?c:x);
+  const anteriorFila=calSavePromise;let liberarFila;calSavePromise=new Promise(resolve=>liberarFila=resolve);
+  calSavesPending++;calBusy=true;gravacoesPendentes++;versaoDados++;
+  await anteriorFila;
+  try{
+    const result=await calendarioPost('salvarCalendarioMensal',{calendario:c,modo});
+    const atual=calendariosAdmin.find(x=>x.posicao===mesSalvo);
+    if(JSON.stringify(calRows[mesSalvo])===salvo&&JSON.stringify([atual.mes,atual.liberar_em])===metadados){
+      calendariosAdmin=calendariosAdmin.map(x=>x.posicao===mesSalvo?result.calendario:x);calDirty.delete(mesSalvo);
+      if(calSlot===mesSalvo)atualizarPreviaCalendario();
+    }
+  }catch(err){avisarFalha('O calendário não foi confirmado: '+err.message,()=>{esconderTodasTelas();calEl('telaCalendarioMensal').classList.remove('oculto');calEl('calErro').textContent='Confira as alterações e clique novamente no botão desejado.';});}
+  finally{calSavesPending--;calBusy=calSavesPending>0;gravacoesPendentes--;liberarFila();atualizarStatusGravacao();}
+}
+calEl('calAtualizar').addEventListener('click',()=>salvarCalendarioTabela('draft'));
+calEl('calPublicarAgora').addEventListener('click',()=>salvarCalendarioTabela('publish'));
+calEl('calAgendar').addEventListener('click',()=>salvarCalendarioTabela('schedule'));
+window.addEventListener('beforeunload',ev=>{if(calDirty.size||calBusy){ev.preventDefault();ev.returnValue='';}});
+
+function adicionarBloqueioGeral(f={}){
+  const row=document.createElement('div');row.className='folga-item';
+  const inicio=document.createElement('input');inicio.type='date';inicio.className='bloqueio-inicio';inicio.value=String(f.data_inicio||'').slice(0,10);inicio.setAttribute('aria-label','Início do feriado ou dia off');
+  const ate=document.createElement('span');ate.textContent='até';
+  const fim=document.createElement('input');fim.type='date';fim.className='bloqueio-fim';fim.value=String(f.data_fim||'').slice(0,10);fim.setAttribute('aria-label','Fim do feriado ou dia off');
+  const motivo=document.createElement('input');motivo.type='text';motivo.className='bloqueio-motivo';motivo.placeholder='Feriado ou motivo do dia off';motivo.maxLength=200;motivo.value=f.motivo||'';motivo.setAttribute('aria-label','Motivo do bloqueio');
+  const remover=document.createElement('button');remover.type='button';remover.className='btn-remover-janela';remover.textContent='×';remover.setAttribute('aria-label','Remover bloqueio');remover.onclick=()=>row.remove();
+  inicio.addEventListener('change',()=>{if(!fim.value)fim.value=inicio.value;});
+  row.append(inicio,ate,fim,motivo,remover);document.getElementById('bloqueiosGeraisLista').append(row);
+}
+function preencherBloqueiosGerais(){document.getElementById('bloqueiosGeraisLista').replaceChildren();agendaConfig.folgas.filter(f=>f.professora==='Todas'&&f.ativo!=='Não').forEach(adicionarBloqueioGeral);}
+document.getElementById('btnAdicionarBloqueioGeral').addEventListener('click',()=>adicionarBloqueioGeral());
+document.getElementById('btnSalvarBloqueiosGerais').addEventListener('click',async ev=>{
+  const btn=ev.currentTarget,status=document.getElementById('bloqueiosGeraisStatus');
+  const rows=[...document.querySelectorAll('#bloqueiosGeraisLista .folga-item')];
+  const bloqueios=rows.map(row=>({data_inicio:row.querySelector('.bloqueio-inicio').value,data_fim:row.querySelector('.bloqueio-fim').value,motivo:row.querySelector('.bloqueio-motivo').value.trim()})).filter(f=>f.data_inicio||f.data_fim||f.motivo);
+  if(bloqueios.some(f=>!f.data_inicio||!f.data_fim||f.data_inicio>f.data_fim)){status.textContent='Preencha início e fim de cada bloqueio com um período válido.';return;}
+  const antes=agendaConfig.folgas.filter(f=>f.professora==='Todas');agendaConfig.folgas=[...agendaConfig.folgas.filter(f=>f.professora!=='Todas'),...bloqueios.map(f=>({...f,professora:'Todas',ativo:'Sim'}))];
+  gravacoesPendentes++;versaoDados++;btn.disabled=true;status.textContent='';
+  try{const result=await calendarioPost('salvarBloqueiosCompartilhados',{bloqueios});agendaConfig.folgas=[...agendaConfig.folgas.filter(f=>f.professora!=='Todas'),...result.bloqueios];status.textContent=result.agendamentos_existentes?('Bloqueios salvos para as duas professoras. Há '+result.agendamentos_existentes+' agendamento(s) já confirmado(s) nesses períodos; eles não foram cancelados.'):'Bloqueios salvos para as duas professoras.';}
+  catch(err){agendaConfig.folgas=[...agendaConfig.folgas.filter(f=>f.professora!=='Todas'),...antes];avisarFalha('Os bloqueios não foram confirmados: '+err.message,()=>btn.click());}
+  finally{btn.disabled=false;gravacoesPendentes--;atualizarStatusGravacao();}
+});
+
+const modulosPainel={
+  agenda:{tela:'telaAgenda',titulo:'Preparando disponibilidade das professoras',pronto:false,promise:null},
+  calendario:{tela:'telaCalendarioMensal',titulo:'Preparando calendário mensal',pronto:false,promise:null},
+  projetometro:{tela:'telaProjetometro',titulo:'Preparando Projetômetro',pronto:false,promise:null}
+};
+async function consultarFase(action){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+  try{const url=new URL(CONFIG.API_URL);url.searchParams.set('action',action);url.searchParams.set('t',Date.now());const r=await fetch(url,{signal:controller.signal,cache:'no-store'});if(!r.ok)throw Error('Falha na conexão.');const dados=await r.json();if(dados.erro)throw Error(dados.erro);return dados;}
+  finally{clearTimeout(timer);}
+}
+function statusModulo(chave,mensagem,erro=false){
+  const m=modulosPainel[chave],box=document.getElementById('statusModulo-'+chave);box.replaceChildren();box.hidden=!mensagem;
+  if(!mensagem)return;
+  const p=document.createElement('p');p.textContent=mensagem;box.append(p);
+  if(erro){const btn=document.createElement('button');btn.type='button';btn.className='btn-secundario';btn.textContent='Tentar novamente';btn.onclick=()=>garantirModulo(chave,true);box.append(btn);}
+}
+function garantirModulo(chave,forcar=false){
+  const m=modulosPainel[chave];if(m.promise)return m.promise;if(m.pronto&&!forcar)return Promise.resolve(true);
+  const tela=document.getElementById(m.tela);if(!m.pronto)tela.classList.add('modulo-pendente');
+  statusModulo(chave,m.pronto?'':m.titulo+'…');
+  const revisaoInicio=versaoDados;
+  m.promise=(async()=>{
+    try{
+      if(chave==='agenda'){
+        const d=await consultarFase('listarConfigAgenda');if(!Array.isArray(d.disponibilidade)||!Array.isArray(d.folgas))throw Error('Não foi possível carregar a agenda.');
+        agendaConfig=d;if(d.configuracoes&&!gravacoesPendentes&&revisaoInicio===versaoDados)Object.assign(configuracoes,d.configuracoes);preencherConfigAgenda();preencherBloqueiosGerais();agendaPronta=true;
+      }else if(chave==='calendario'){
+        calBusy=true;const d=await calendarioPost('calendarioAdmin');if(!Array.isArray(d.calendarios))throw Error('Não foi possível carregar o calendário.');
+        calendariosAdmin=d.calendarios;calRows={};calDirty.clear();calEl('calEditor').classList.remove('oculto');renderizarEditorCalendario();
+      }else{
+        const d=await consultarFase('contarProjetosDesde2025');preencherProjetometro(d);projetometroCarregadoEm=Date.now();
+      }
+      m.pronto=true;tela.classList.remove('modulo-pendente');statusModulo(chave,'');return true;
+    }catch(err){statusModulo(chave,(err.name==='AbortError'?'O carregamento demorou mais que o esperado.':err.message),true);return false;}
+    finally{if(chave==='calendario')calBusy=false;m.promise=null;}
+  })();return m.promise;
+}
+function prepararModulosEmSegundoPlano(){
+  // Ordem fixa; um acesso do usuário antecipa o módulo e reutiliza sua requisição.
+  setTimeout(async()=>{await Promise.allSettled([garantirModulo('agenda'),garantirModulo('calendario')]);await garantirModulo('projetometro');},150);
+}
+
+// Mesma conciliação no painel e no servidor. Um atendimento resolve apenas um encontro.
+function conciliarEncontros(agenda, registros) {
+  const tipos={'Encontro individual':'Realizado','Ausência de encontro individual':'Ausência do aluno','Remarcação encontro individual':'Remarcado'};
+  const dia=v=>String(v||'').slice(0,10);
+  const lista=agenda.filter(a=>!['Cancelado','Cancelada'].includes(a.status)).map(a=>({...a,data:dia(a.data),status_resultado:'Pendente',ids_origem:[]}));
+  registros.filter(r=>r.tipo_atendimento==='Agendamento de solicitações'&&r.data_agendamento).forEach(r=>{
+    const candidatos=lista.filter(a=>a.id_mentorado===r.id_mentorado&&a.data===dia(r.data_agendamento));
+    const a=lista.find(a=>r.id_agendamento&&a.id_agendamento===r.id_agendamento)||candidatos.find(a=>a.professora===r.usuario&&String(r.observacao||'').includes(a.hora_inicio))||(candidatos.length===1?candidatos[0]:null);
+    if(a)a.ids_origem.push(r.id_registro);
+    else lista.push({id_agendamento:'manual:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:r.usuario||'',data:dia(r.data_agendamento),hora_inicio:'',status_resultado:'Pendente',ids_origem:[r.id_registro]});
+  });
+  registros.filter(r=>tipos[r.tipo_atendimento]).sort((a,b)=>String(a.atualizado_em||a.criado_em).localeCompare(String(b.atualizado_em||b.criado_em))).forEach(r=>{
+    const candidatos=lista.filter(a=>a.id_mentorado===r.id_mentorado&&a.data===dia(r.data));
+    const a=r.id_agendamento?candidatos.find(a=>a.id_agendamento===r.id_agendamento):(candidatos.length===1?candidatos[0]:null);
+    if(a){a.status_resultado=tipos[r.tipo_atendimento];a.id_resultado=r.id_registro;}
+    else lista.push({id_agendamento:'atendimento:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:r.usuario||'',data:dia(r.data),hora_inicio:'',status_resultado:tipos[r.tipo_atendimento],id_resultado:r.id_registro,ids_origem:[],sem_agendamento:true});
+  });
+  return lista.sort((a,b)=>(a.data+' '+(a.hora_inicio||'')).localeCompare(b.data+' '+(b.hora_inicio||'')));
+}
+
+
+let agendaEncontros=[];
+let relatorioEncontrosCarregando=false;
+function encontroAindaPendente(r){
+  const encontro=encontrosDoPainel().find(a=>a.ids_origem.includes(r.id_registro));
+  return !encontro||encontro.status_resultado==='Pendente';
+}
+function renderizarRelatorioEncontros(){
+  const lista=encontrosDoPainel().filter(a=>a.status_resultado==='Pendente');
+  const body=document.getElementById('encontrosTabela');body.replaceChildren();
+  lista.forEach(a=>{
+    const row=body.insertRow();
+    [formatarData(a.data)+(a.hora_inicio?' · '+a.hora_inicio:''),a.nome_aluno,a.professora||'Não informada'].forEach((v,i)=>{const cell=row.insertCell();cell.textContent=v;cell.dataset.label=['Data do encontro','Mentorado','Professora'][i];});
+    const cell=row.insertCell();cell.dataset.label='Status';const select=document.createElement('select');select.setAttribute('aria-label','Status do encontro de '+a.nome_aluno);
+    ['Pendente','Realizado','Ausência do aluno','Remarcado'].forEach(s=>{const opt=new Option(s,s);opt.disabled=s==='Pendente'||(a.data>hojeISO()&&['Realizado','Ausência do aluno'].includes(s));select.add(opt);});select.value=a.status_resultado;cell.append(select);
+    const salvar=document.createElement('button');salvar.type='button';salvar.className='btn-secundario';salvar.textContent='Salvar';salvar.style.marginLeft='8px';salvar.disabled=true;cell.append(salvar);
+    select.onchange=()=>salvar.disabled=select.value===a.status_resultado;
+    salvar.onclick=async()=>{
+      
+      const tipos={'Realizado':'Encontro individual','Ausência do aluno':'Ausência de encontro individual','Remarcado':'Remarcação encontro individual'};
+      registrarOtimista({id_mentorado:a.id_mentorado,nome_mentorado:a.nome_aluno,id_agendamento:a.id_agendamento,tipo_atendimento:tipos[select.value],data:a.data,usuario:atendenteAtual()});
+      renderizarRelatorioEncontros();
+    };
+  });
+  if(!lista.length){const cell=body.insertRow().insertCell();cell.colSpan=4;cell.textContent='Nenhum encontro nesta lista.';}
+}
+async function carregarRelatorioEncontros(){
+  if(relatorioEncontrosCarregando)return;
+  const status=document.getElementById('encontrosStatus');
+  if(gravacoesPendentes){status.textContent='';renderizarRelatorioEncontros();return;}
+  const revisao=versaoDados;relatorioEncontrosCarregando=true;status.textContent='';
+  try{
+    const d=await chamarApi('listarRelatorioEncontros');
+    agendaEncontros=d.agenda||[];
+    // Não substitui alterações locais enviadas durante a consulta.
+    if(!gravacoesPendentes&&revisao===versaoDados)registros=d.registros;
+    renderizarRelatorioEncontros();renderizarTabela();status.textContent='';
+  }catch(err){status.textContent='Não foi possível atualizar. '+err.message;}
+  finally{relatorioEncontrosCarregando=false;}
+}
+document.getElementById('btnTelaEncontros').onclick=()=>{esconderTodasTelas();document.getElementById('telaEncontros').classList.remove('oculto');document.getElementById('btnTelaEncontros').classList.add('ativo');renderizarRelatorioEncontros();carregarRelatorioEncontros();};
+document.getElementById('encontrosAtualizar').onclick=carregarRelatorioEncontros;
+
+
+// Fila por entidade: mantém alterações locais e confirma sem mudar a tela aberta.
+const filasEntidades=new WeakMap();
+let versaoDados=0;
+function avisarFalha(texto,recuperar){falhasGravacao.push({texto,rotulo:'Tentar novamente',recuperar});atualizarStatusGravacao();}
+function redesenharDados(id){
+  atualizarVisaoLocal(id);
+  if(!document.getElementById('telaDashboard').classList.contains('oculto'))renderizarDashboardCompleto();
+  if(mentoradoSelecionado?.id_mentorado===id&&!document.getElementById('telaDetalhe').classList.contains('oculto')){
+    renderizarIndicacoesDoMentorado(id);renderizarProjetosDoMentorado(id);
+  }
+  if(modalHistorico.classList.contains('aberto')&&mentoradoSelecionado?.id_mentorado===id)renderizarHistorico();
+  if(!document.getElementById('telaOutros').classList.contains('oculto'))renderizarTabelaOutros();
+}
+function salvarEntidade(lista,campoId,id,payload,criar,atualizar,recuperar){
+  let obj=id?lista.find(x=>x[campoId]===id):null;
+  if(!obj){obj={[campoId]:'temp_'+crypto.randomUUID(),...payload};lista.push(obj);}
+  let fila=filasEntidades.get(obj);
+  if(!fila){fila={base:{...obj},itens:[],rodando:false,nova:!id};filasEntidades.set(obj,fila);}
+  fila.itens.push({...payload});Object.assign(obj,payload);versaoDados++;gravacoesPendentes++;redesenharDados(obj.id_mentorado);
+  if(!fila.rodando)processar();
+  async function processar(){
+    fila.rodando=true;
+    while(fila.itens.length){
+      const dados=fila.itens[0];
+      try{
+        const res=await chamarApi(fila.nova?criar:atualizar,fila.nova?dados:{id:obj[campoId],...dados},0);
+        if(fila.nova){if(!res[campoId])throw Error('O servidor não confirmou o cadastro.');obj[campoId]=res[campoId];fila.base[campoId]=res[campoId];fila.nova=false;}
+        Object.assign(fila.base,dados);
+      }catch(err){
+        avisarFalha('A alteração não foi confirmada: '+err.message,recuperar||(()=>{}));
+        Object.keys(dados).forEach(k=>{if(!Object.prototype.hasOwnProperty.call(fila.base,k))delete obj[k];});
+        if(fila.nova){lista.splice(lista.indexOf(obj),1);gravacoesPendentes-=fila.itens.length;fila.itens=[];break;}
+      }
+      fila.itens.shift();gravacoesPendentes--;Object.assign(obj,fila.base,...fila.itens);versaoDados++;redesenharDados(obj.id_mentorado);
+    }
+    filasEntidades.delete(obj);versaoDados++;redesenharDados(obj.id_mentorado);atualizarStatusGravacao();
+  }
+  return obj;
+}
+function excluirEntidade(lista,campoId,id,action){
+  const obj=lista.find(x=>x[campoId]===id);if(!obj)return;
+  if(filasEntidades.has(obj)){alert('Aguarde a confirmação deste item antes de excluí-lo.');return;}
+  const index=lista.indexOf(obj);lista.splice(index,1);versaoDados++;gravacoesPendentes++;redesenharDados(obj.id_mentorado);
+  chamarApi(action,{id},0).catch(err=>{
+    lista.splice(Math.min(index,lista.length),0,obj);versaoDados++;
+    avisarFalha('A exclusão não foi confirmada: '+err.message,()=>excluirEntidade(lista,campoId,id,action));
+  }).finally(()=>{gravacoesPendentes--;redesenharDados(obj.id_mentorado);atualizarStatusGravacao();});
+}
+let indiceEncontros=null,indiceVersao=-1,indiceRegs=null,indiceAgenda=null;
+function encontrosDoPainel(){
+  if(indiceVersao!==versaoDados||indiceRegs!==registros||indiceAgenda!==agendaEncontros){
+    indiceEncontros=conciliarEncontros(agendaEncontros,registros);indiceVersao=versaoDados;indiceRegs=registros;indiceAgenda=agendaEncontros;
+  }
+  return indiceEncontros;
+}
+
+let indiceRegistros=new Map(),indiceRegistrosFonte=null,indiceRegistrosVersao=-1;
+let calSavePromise=Promise.resolve(),calSavesPending=0;
 iniciarApp();
 </script>
 
