@@ -295,28 +295,26 @@ function atualizarCacheStatus(origem){
   el.textContent=origem==='cache'?'Horários carregados da sessão':'Horários atualizados agora';
 }
 
+const consultasAgenda=new Map();
 async function carregarAgendaCompleta(forcar=false){
   if(!aluno)return;
-  let dados=null; // Consulta o saldo atualizado após presenças, ausências e remarcações.
-  if(dados){
-    agendaBase=dados;
-    atualizarCacheStatus('cache');
-    aplicarFiltrosLocais();
-    return;
-  }
-  loading(true,'Consultando agendas...');
-  try{
-    dados=await api('listarDisponibilidadeAgendamento',{id_mentorado:aluno.id_mentorado});
-    agendaBase={
-      slots:dados.slots||[],
-      limite_mes:Number(dados.limite_mes||0),
-      utilizados_por_mes:dados.utilizados_por_mes||{},
-      carregado_em:Date.now()
-    };
-    gravarCache(cacheAgendaKey(aluno.id_mentorado),agendaBase);
-    atualizarCacheStatus('rede');
-    aplicarFiltrosLocais();
-  }finally{loading(false)}
+  const id=aluno.id_mentorado;
+  const cache=!forcar?lerCache(cacheAgendaKey(id),CACHE_AGENDA_MS):null;
+  if(cache){agendaBase=cache;aplicarFiltrosLocais();atualizarCacheStatus('cache');}
+  if(consultasAgenda.has(id))return cache?undefined:consultasAgenda.get(id);
+  const consultar=(async()=>{
+    if(!cache)loading(true,'Consultando agendas...');
+    try{
+      const dados=await api('listarDisponibilidadeAgendamento',{id_mentorado:id,forcar:!!forcar});
+      const nova={slots:dados.slots||[],limite_mes:Number(dados.limite_mes||0),utilizados_por_mes:dados.utilizados_por_mes||{},carregado_em:Date.now()};
+      gravarCache(cacheAgendaKey(id),nova);
+      if(aluno?.id_mentorado!==id)return;
+      const dia=dataSelecionada;agendaBase=nova;aplicarFiltrosLocais();if(dia)renderDia(dia);atualizarCacheStatus('rede');
+    }finally{consultasAgenda.delete(id);if(!cache&&aluno?.id_mentorado===id)loading(false);}
+  })();
+  consultasAgenda.set(id,consultar);
+  if(cache){consultar.catch(()=>{if(aluno?.id_mentorado===id)document.getElementById('cacheStatus').textContent='Não foi possível atualizar. Use Atualizar horários para tentar novamente.';});return;}
+  return consultar;
 }
 
 function renderCalendario(){
