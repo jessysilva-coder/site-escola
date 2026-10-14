@@ -1,0 +1,340 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Área do aluno — Escola Karen Abecia</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap"><style>
+:root{--orange:#FF7000;--green:#57B95C;--ink:#020617;--muted:#586174;--bg:#F0F0F0;--line:#e1e5eb}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.6 Poppins,Arial,sans-serif}button,input,select{font:inherit}button,a{touch-action:manipulation}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}a{color:#a54800}h1,h2,h3{font-family:Montserrat,Arial,sans-serif;line-height:1.25}h1{font-size:clamp(28px,5vw,42px);letter-spacing:-.035em}h2{font-size:22px}h3{font-size:16px}.wrap{max-width:1180px;margin:auto;padding:0 24px}.brand{min-height:94px;display:flex;align-items:center;gap:22px;border-bottom:1px solid var(--line)}.brand img{width:155px}.brand span{border-left:1px solid #ccd2dc;padding-left:22px;font-size:12px;color:var(--muted)}.brand button{margin-left:auto}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:26px;margin-bottom:24px;box-shadow:0 8px 25px #00000005}.access{max-width:460px;margin:64px auto}.access p,.muted{color:var(--muted)}label{display:block;font-weight:500;margin:16px 0 6px}input,select{width:100%;padding:12px;border:1px solid #cbd1da;border-radius:9px;background:white;color:var(--ink)}button,.button{border:0;border-radius:9px;padding:11px 17px;background:var(--orange);color:#101010;font-weight:600;text-decoration:none;display:inline-block}.secondary{background:#fff;border:1px solid #cbd1da}.danger{background:#fff;color:#a33024;border:1px solid #e4c1bc}.access button{width:100%;margin-top:22px}.intro{padding:30px 0 12px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#a54800;font-size:11px;font-weight:600}.actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.actions h2{margin-right:auto}.overview{display:grid;grid-template-columns:1fr 1fr;gap:24px}.overview .card{height:100%}.overview{margin-bottom:24px}.metric{font:700 48px Montserrat;color:#a54800;margin:16px 0}.appointment{padding:16px 0;border-bottom:1px solid var(--line)}.appointment:last-child{border:0}.appointment p{margin:6px 0 12px}.appointment button{padding:8px 12px;font-size:12px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:15px 12px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:500}td a{font-weight:500}footer{padding:24px 0 32px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}.error{color:#a33024}.status{min-height:22px}dialog{border:1px solid var(--line);border-radius:18px;padding:28px;max-width:600px;width:calc(100% - 32px)}dialog::backdrop{background:#02061780}.tabs{display:flex;gap:24px;margin:14px 0 24px}.tab{background:none;border-radius:0;padding:6px 0;color:var(--muted)}.tab[aria-pressed=true]{text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:7px;color:var(--ink)}.calendar-top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.calendar-top h2{margin:0}.calendar-top small{color:var(--muted)}.week,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.week{text-align:center;font-size:10px;margin-bottom:10px;color:var(--muted)}.day{border:1px solid #edf0f3;border-radius:10px;min-height:128px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#f8f9fb}.day.empty{visibility:hidden}.day-number{font-size:13px}.day-title{font-size:12px;line-height:1.35;overflow-wrap:anywhere}.day-time,.day-link{font-size:10px}.day.today .day-number{text-decoration:underline;text-underline-offset:4px}.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.legend span{display:flex;align-items:center;gap:6px}.legend .dot{border:2px solid var(--legend-color);width:9px;height:9px;border-radius:50%}button:focus-visible,a:focus-visible{outline:3px solid #a54800;outline-offset:3px}@media(max-width:700px){.overview{grid-template-columns:1fr}.wrap{padding:0 16px}.card{padding:18px}.day{min-height:92px;padding:5px}.day-title{font-size:9px}.brand img{width:120px}.brand span{font-size:10px;padding-left:12px}.brand{gap:12px}.calendar-top{align-items:start;flex-direction:column}.week,.grid{gap:4px}}
+.portal-nav{display:flex;gap:24px;border-bottom:1px solid var(--line);margin:4px 0 24px;flex-wrap:wrap}.portal-nav button{background:none;border-radius:0;padding:14px 0;color:var(--muted);border-bottom:3px solid transparent}.portal-nav button[aria-pressed=true]{color:var(--ink);border-color:var(--orange)}@media(max-width:600px){.portal-nav{gap:16px}.portal-nav button{font-size:12px}}
+
+.acessos-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.acessos-grid .card{display:flex;flex-direction:column;align-items:flex-start}.acessos-grid p{color:var(--muted);flex:1}#agendaBloco>h2{margin:28px 0 20px}@media(max-width:760px){.acessos-grid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><header class="brand"><img src="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/logo-claro/escola.png" alt="Escola Karen Abecia"><span>Área exclusiva dos alunos<br><strong>Mentoria DashEagles</strong></span><button id="sair" class="secondary" hidden>Sair</button></header>
+<main><section id="login" class="card access"><span class="eyebrow">Bem-vindo à sua mentoria</span><h1>Seu próximo passo começa aqui.</h1><p>Acesse com o e-mail do seu cadastro.</p><form id="formLogin"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" maxlength="128" required><button>Entrar</button><p id="loginStatus" class="status error" role="status"></p></form><p class="muted">Esqueceu a senha? Entre em contato com a equipe da mentoria.</p></section>
+<section id="troca" class="card access" hidden><h1>Crie sua senha.</h1><p>Antes de continuar, substitua a senha inicial por uma senha só sua, com pelo menos 8 caracteres.</p><form id="formSenha"><label for="novaSenha">Nova senha</label><input id="novaSenha" type="password" autocomplete="new-password" minlength="8" maxlength="128" required><label for="confirmarSenha">Confirme a nova senha</label><input id="confirmarSenha" type="password" autocomplete="new-password" minlength="8" maxlength="128" required><button>Salvar e entrar</button><p id="senhaStatus" class="status error" role="status"></p></form></section>
+<section id="painel" hidden><div class="intro"><span class="eyebrow">Sua jornada na mentoria</span><h1 id="saudacao">Sua área do aluno.</h1></div><nav class="portal-nav" aria-label="Área do aluno"><button id="abaIndividuais" type="button" aria-pressed="true">Encontros individuais</button><button id="abaGrupos" type="button" aria-pressed="false">Calendário encontros em grupo</button><button id="abaAcessos" type="button" aria-pressed="false">Acessos rápidos</button></nav><p id="painelStatus" class="status" role="status"></p><button id="recarregar" class="secondary" hidden>Tentar novamente</button><section id="telaIndividuais"><article class="card"><div class="actions"><h2>Próximos encontros individuais</h2><button id="agendar">Agendar encontro</button></div><p id="saldoMensal" class="muted" aria-live="polite"></p><div id="encontros"></div><p class="muted">Cancele ou altere até 24 horas antes, diretamente por aqui. Ao cancelar, a vaga volta a ficar disponível no mês original e o encontro é retirado da agenda da professora.</p></article><section class="card"><h2>Gravações dos seus encontros individuais</h2><p class="muted">Do encontro mais recente para o mais antigo.</p><div class="table-wrap"><table><thead><tr><th>Data do encontro</th><th>Gravação</th><th>Transcrição</th></tr></thead><tbody id="gravacoes"></tbody></table></div></section><section id="agendaBloco"><h2>Agende seu próximo encontro</h2><div id="agendaIncorporada"></div></section></section><section id="telaGrupos" hidden><section class="card"><h2>Calendário dos encontros em grupo</h2><nav class="tabs" id="monthTabs" aria-label="Meses disponíveis"></nav><div id="calendarContent"></div></section></section><section id="telaAcessos" hidden><h2>Acessos rápidos</h2><div class="acessos-grid"><article class="card"><h3>Encontro semanal</h3><p>Acompanhe o encontro ao vivo da mentoria.</p><a class="button" href="https://teams.microsoft.com/meet/22553232127145?p=Iv3bx0uv7OyneqPj6X" target="_blank" rel="noopener">Entrar no encontro</a></article><article class="card"><h3>Área de membros</h3><p>Gravações, materiais e conteúdos da mentoria.</p><a class="button" href="https://hotmart.com/pt-br/club/karenabecia/products/1017484" target="_blank" rel="noopener">Acessar plataforma</a></article><article class="card"><h3>Central de agentes</h3><p>Agentes de I.A. para suas análises e entregas.</p><a class="button" href="https://site.escolakarenabecia.com/agentes.ia/" target="_blank" rel="noopener">Acessar agentes</a></article></div></section></section>
+</main><footer>© Escola Karen Abecia · Mentoria DashEagles</footer></div>
+<dialog id="agendaDialog"><form id="formAgendar"><div class="actions"><h2 id="agendaTitulo">Agendar encontro individual</h2><button type="button" id="fecharAgenda" class="secondary">Fechar</button></div><p id="agendaStatus" class="status" role="status"></p><label for="professora">Professora</label><select id="professora"></select><label for="dataEncontro">Data</label><select id="dataEncontro"></select><label for="horario">Horário</label><select id="horario"></select><p id="cota" class="muted"></p><div class="actions" style="margin-top:20px"><button id="confirmarAgendamento">Confirmar agendamento</button><button id="atualizarAgenda" type="button" class="secondary">Atualizar horários</button></div></form></dialog>
+<script>
+const API_URL='https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec';
+const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const COLORS=['#FF7000','#57B95C','#7030A0','#2563EB','#0891B2','#D62976','#D4A017','#DC2626','#0F766E','#64748B'];
+let token=sessionStorage.getItem('dh_aluno_token')||'',dados=null,agenda=null,editando=null,calendarioAtual='',carregandoAgenda=false,consultaAgendaVersao=0,operacao='',enviando=false;
+const dataTexto=s=>String(s||'').slice(0,10).split('-').reverse().join('/');
+async function api(action,p={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),180000);try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...p,action,token}),signal:controller.signal});if(!r.ok)throw Error('Falha na conexão.');const d=await r.json();if(d.erro){if(d.erro.includes('SESSAO_EXPIRADA')){limparSessao();tela('login');}throw Error(d.erro);}return d;}finally{clearTimeout(timer);}}
+function tela(id){for(const s of ['login','troca','painel'])el(s).hidden=s!==id;el('sair').hidden=id==='login';}
+function guardarSessao(d){token=d.token;sessionStorage.setItem('dh_aluno_token',token);sessionStorage.setItem('dh_aluno_trocar',String(!!d.trocar_senha));}
+function limparSessao(){token='';sessionStorage.removeItem('dh_aluno_token');sessionStorage.removeItem('dh_aluno_trocar');dados=null;agenda=null;if(el('agendaIncorporada').shadowRoot)el('agendaIncorporada').shadowRoot.replaceChildren();atualizarAgendamentoIntegrado=null;el('gravacoes').replaceChildren();el('encontros').replaceChildren();if(el('agendaDialog').open)el('agendaDialog').close();}
+el('formLogin').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button');btn.disabled=true;el('loginStatus').textContent='Entrando…';try{const d=await api('alunoLogin',{email:el('email').value.trim(),senha:el('senha').value});guardarSessao(d);el('senha').value='';if(d.trocar_senha)tela('troca');else await carregar();}catch(err){el('loginStatus').textContent=err.name==='AbortError'?'A conexão demorou. Tente novamente.':err.message;}finally{btn.disabled=false;}};
+el('formSenha').onsubmit=async e=>{e.preventDefault();if(el('novaSenha').value!==el('confirmarSenha').value){el('senhaStatus').textContent='As senhas devem ser iguais.';return;}const btn=e.target.querySelector('button');btn.disabled=true;el('senhaStatus').textContent='Protegendo sua nova senha…';try{const d=await api('alunoTrocarSenha',{senha:el('novaSenha').value});guardarSessao(d);e.target.reset();await carregar();}catch(err){el('senhaStatus').textContent=err.message;}finally{btn.disabled=false;}};
+el('sair').onclick=async()=>{const req=api('sair');limparSessao();tela('login');try{await req;}catch(_){};};
+async function carregar(){const sessao=token;tela('painel');el('painelStatus').textContent='Carregando sua mentoria…';el('recarregar').hidden=true;try{const d=await api('alunoDados');if(!token||token!==sessao)return;dados=d;render();el('painelStatus').textContent='';}catch(err){el('painelStatus').textContent='Não foi possível carregar: '+err.message;el('recarregar').hidden=false;}}
+el('recarregar').onclick=carregar;
+function disponibilidadeAcoesEncontro(a){
+ if(a.pode_alterar===true)return {liberado:true,motivo:''};
+ if(a.motivo)return {liberado:false,motivo:a.motivo};
+ if(!dados?.saldo)return {liberado:false,motivo:'O serviço da área do aluno precisa ser atualizado pela equipe para liberar cancelamentos e alterações deste encontro.'};
+ return {liberado:false,motivo:'Não foi possível confirmar a permissão para alterar este encontro. Atualize a página e tente novamente.'};
+}
+function render(){const saldo=dados.saldo;el('saldoMensal').textContent=saldo?('Você tem '+saldo.disponiveis+' agendamento(s) disponível(is) em '+new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(saldo.mes+'-15T12:00:00'))+' · Limite mensal: '+saldo.limite+'.'):'';el('saudacao').textContent='Olá, '+dados.nome+'.';const list=el('encontros');list.replaceChildren();for(const a of dados.encontros){const item=document.createElement('article');item.className='appointment';const title=document.createElement('strong');title.textContent=dataTexto(a.data)+(a.hora_inicio?' · '+a.hora_inicio+'–'+a.hora_fim:'');const p=document.createElement('p');p.textContent='Com '+a.professora;item.append(title,p);const permissao=disponibilidadeAcoesEncontro(a);const buttons=document.createElement('div');buttons.className='actions';const edit=document.createElement('button');edit.textContent='Alterar horário';edit.className='secondary';edit.disabled=!permissao.liberado;edit.onclick=()=>abrirAgenda(a);const cancel=document.createElement('button');cancel.textContent='Cancelar encontro';cancel.className='danger';cancel.disabled=!permissao.liberado;cancel.onclick=()=>cancelar(a,cancel);buttons.append(edit,cancel);item.append(buttons);if(!permissao.liberado){const note=document.createElement('p');note.className='muted';note.textContent=permissao.motivo;item.append(note);}
+list.append(item);}if(!dados.encontros.length)list.textContent='Você ainda não tem encontros agendados.';
+ const tbody=el('gravacoes');tbody.replaceChildren();for(const g of dados.gravacoes){const row=tbody.insertRow();row.insertCell().textContent=dataTexto(g.data);for(const [campo,nome] of [['link_gravacao','Assistir gravação'],['link_transcricao','Ver transcrição']]){const td=row.insertCell();if(/^https:\/\//.test(g[campo]||'')){const a=document.createElement('a');a.href=g[campo];a.textContent=nome;a.target='_blank';a.rel='noopener';td.append(a);}else td.textContent='Ainda não disponível';}}if(!dados.gravacoes.length){const td=tbody.insertRow().insertCell();td.colSpan=3;td.textContent='As gravações aparecerão aqui quando forem cadastradas.';}renderCalendar();prepararAgendaIncorporada();}
+function renderCalendar(){const cs=dados.calendarios||[];if(!cs.some(c=>c.posicao===calendarioAtual))calendarioAtual=cs[0]?.posicao||'';const tabs=el('monthTabs');tabs.replaceChildren();tabs.hidden=cs.length<2;cs.forEach(c=>{const b=document.createElement('button');b.className='tab';b.textContent=monthName(c.mes);b.setAttribute('aria-pressed',String(c.posicao===calendarioAtual));b.onclick=()=>{calendarioAtual=c.posicao;renderCalendar();};tabs.append(b);});const c=cs.find(c=>c.posicao===calendarioAtual);el('calendarContent').innerHTML=c?monthMarkup(c):'<p class="muted">A próxima programação será disponibilizada em breve.</p>';}
+async function cancelar(a,btn){if(!confirm('Cancelar o encontro de '+dataTexto(a.data)+' às '+a.hora_inicio+'? A vaga será liberada no mês original.'))return;btn.disabled=true;const op=btn.dataset.operacao||crypto.randomUUID();btn.dataset.operacao=op;try{await api('alunoCancelar',{id_agendamento:a.id_agendamento,operacao:op});await carregar();}catch(err){el('painelStatus').textContent=err.message+' Atualize a página para conferir antes de tentar novamente.';}finally{btn.disabled=false;}}
+function opcoes(select,values,placeholder){select.replaceChildren();select.add(new Option(placeholder,''));for(const [value,label] of values)select.add(new Option(label,value));}
+function filtrosAgenda(){let slots=agenda?.slots||[];if(editando)slots=slots.filter(s=>s.professora===editando.professora);return slots;}
+function preencherProfessoras(){const ps=[...new Set(filtrosAgenda().map(s=>s.professora))];opcoes(el('professora'),ps.map(p=>[p,p]),'Escolha a professora');if(ps.length===1)el('professora').value=ps[0];el('professora').disabled=!!editando;preencherDatas();}
+function preencherDatas(){const slots=filtrosAgenda().filter(s=>s.professora===el('professora').value);const ds=[...new Set(slots.map(s=>s.data))].sort();opcoes(el('dataEncontro'),ds.map(d=>[d,dataTexto(d)]),'Escolha a data');preencherHorarios();}
+function preencherHorarios(){const slots=filtrosAgenda().filter(s=>s.professora===el('professora').value&&s.data===el('dataEncontro').value);opcoes(el('horario'),slots.map(s=>[s.hora_inicio,s.hora_inicio+' – '+s.hora_fim]),'Escolha o horário');const mes=el('dataEncontro').value.slice(0,7);let usados=Number(agenda?.utilizados_por_mes?.[mes]||0);if(editando&&editando.data.slice(0,7)===mes)usados=Math.max(0,usados-1);el('cota').textContent=mes?'Vagas disponíveis neste mês: '+Math.max(0,Number(agenda.limite_mes)-usados):'';el('confirmarAgendamento').disabled=!slots.length||usados>=Number(agenda?.limite_mes||0);}
+el('professora').onchange=preencherDatas;el('dataEncontro').onchange=preencherHorarios;
+async function abrirAgenda(a=null){editando=a;operacao=crypto.randomUUID();agenda=null;el('agendaTitulo').textContent=a?'Alterar encontro com '+a.professora:'Agendar encontro individual';el('agendaDialog').showModal();await consultarAgenda();}
+async function consultarAgenda(forcar=false){if(enviando)return;const consulta=++consultaAgendaVersao;carregandoAgenda=true;const encontroAtual=editando?.id_agendamento||'',sessao=token;el('confirmarAgendamento').disabled=true;el('agendaStatus').textContent='Consultando horários disponíveis…';try{const resposta=await api('alunoAgenda',{forcar:!!forcar,excluir_agendamento:encontroAtual});if(consulta!==consultaAgendaVersao||token!==sessao||(editando?.id_agendamento||'')!==encontroAtual)return;agenda=resposta;preencherProfessoras();el('agendaStatus').textContent=agenda.slots.length?'Horários de Brasília.':'Nenhum horário disponível neste momento.';}catch(err){if(consulta===consultaAgendaVersao)el('agendaStatus').textContent=err.message;}finally{if(consulta===consultaAgendaVersao)carregandoAgenda=false;}}
+el('agendar').onclick=()=>el('agendaBloco').scrollIntoView({behavior:'smooth',block:'start'});el('fecharAgenda').onclick=()=>{if(!enviando){consultaAgendaVersao++;carregandoAgenda=false;el('agendaDialog').close();}};el('atualizarAgenda').onclick=()=>consultarAgenda(true);
+el('agendaDialog').addEventListener('cancel',e=>{if(enviando)e.preventDefault();});
+el('formAgendar').onsubmit=async e=>{e.preventDefault();if(enviando||!el('horario').value||!el('dataEncontro').value||!el('professora').value)return;enviando=true;el('confirmarAgendamento').disabled=true;el('agendaStatus').textContent='Confirmando na agenda da professora…';try{await api(editando?'alunoAlterar':'alunoAgendar',{id_agendamento:editando?.id_agendamento||'',professora:el('professora').value,data:el('dataEncontro').value,hora_inicio:el('horario').value,operacao});el('agendaDialog').close();await carregar();}catch(err){el('agendaStatus').textContent=err.message+' Se a conexão falhou, confira seus próximos encontros antes de repetir.';}finally{enviando=false;el('confirmarAgendamento').disabled=false;}};
+function monthName(m){const [y,n]=m.split('-');return MONTHS[Number(n)-1]+' '+y;}
+function corPastel(hex){return '#'+hex.slice(1).match(/../g).map(v=>Math.round(255*.89+parseInt(v,16)*.11).toString(16).padStart(2,'0')).join('');}
+function monthMarkup(c){
+  const [year,month]=c.mes.split('-').map(Number),first=new Date(Date.UTC(year,month-1,1)).getUTCDay(),days=new Date(Date.UTC(year,month,0)).getUTCDate();
+  const types=Object.fromEntries(c.tipos.map(t=>[t.id,t]));const color=id=>COLORS.includes(types[id]?.cor)?types[id].cor:'#64748B';
+  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  let cells='<div class="day empty" aria-hidden="true"></div>'.repeat(first);
+  for(let day=1;day<=days;day++){
+    const date=c.mes+'-'+String(day).padStart(2,'0'),e=c.eventos.find(e=>e.data===date),cor=e?color(e.tipo):'',name=e?e.titulo||types[e.tipo]?.nome||'':'';
+    cells+='<div class="day '+(e?'has-event ':'')+(date===today?'today':'')+'" '+(e?'style="background:'+corPastel(cor)+';color:#263244;border-color:'+cor+'"':'')+' aria-label="'+day+' de '+esc(monthName(c.mes))+(e?' — '+esc(name):'')+'"><span class="day-number">'+day+'</span>'+(e?'<span class="day-title">'+esc(name)+'</span>'+(e.inicio?'<span class="day-time">'+esc(e.inicio)+'</span>':'')+(e.link&&/^https:\/\//i.test(e.link)?'<a class="day-link" href="'+esc(e.link)+'" target="_blank" rel="noopener">Acessar ↗</a>':''):'')+'</div>';
+  }
+  const used=c.tipos.filter(t=>c.eventos.some(e=>e.tipo===t.id));
+  return '<div class="calendar-top"><h2>'+esc(monthName(c.mes))+'</h2><small>Horários de Brasília</small></div><div class="week">'+['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].map(d=>'<div>'+d+'</div>').join('')+'</div><div class="grid">'+cells+'</div><div class="legend" aria-label="Legenda">'+used.map(t=>'<span><i class="dot" style="--legend-color:'+color(t.id)+'"></i>'+esc(t.nome)+'</span>').join('')+'</div>'+(c.eventos.length?'':'<p class="empty-message">Nenhum encontro cadastrado para este mês.</p>');
+}
+
+let atualizarAgendamentoIntegrado=null;
+const apiAluno=(action,params)=>api(action,params);
+function mudarAba(aba){for(const nome of ['Individuais','Grupos','Acessos']){el('tela'+nome).hidden=nome!==aba;el('aba'+nome).setAttribute('aria-pressed',String(nome===aba));}}
+el('abaGrupos').onclick=()=>mudarAba('Grupos');el('abaIndividuais').onclick=()=>mudarAba('Individuais');el('abaAcessos').onclick=()=>mudarAba('Acessos');
+function prepararAgendaIncorporada(){
+if(atualizarAgendamentoIntegrado){atualizarAgendamentoIntegrado();return;}
+const host=el('agendaIncorporada'),root=host.shadowRoot||host.attachShadow({mode:'open'});
+root.innerHTML="\u003cstyle>\n:host{\n  --laranja:#FF7000;\n  --verde:#57B95C;\n  --roxo:#7030A0;\n  --bg:#0f1118;\n  --card:#171a24;\n  --card2:#11141d;\n  --borda:#292d3c;\n  --txt:#f7f8fb;\n  --muted:#9da3b7;\n  --erro:#ef6262;\n  --ok:#72d178;\n}\n*{box-sizing:border-box}\n:host{margin:0;min-height:100%;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--txt)}\n:host{background:\n  radial-gradient(circle at 12% 10%,rgba(255,112,0,.10),transparent 30%),\n  radial-gradient(circle at 88% 18%,rgba(112,48,160,.10),transparent 27%),\n  var(--bg)}\nbutton,input,select{font:inherit}\nbutton{cursor:pointer}\n.oculto{display:none!important}\n.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 50px}\n.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}\n.marca h1{font-family:'Montserrat';font-size:22px;margin:0}.marca span{font-size:12px;color:var(--laranja);font-weight:600}\n.pill{border:1px solid var(--borda);background:rgba(23,26,36,.75);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px}\n.hero{background:linear-gradient(135deg,rgba(255,112,0,.12),rgba(112,48,160,.08));border:1px solid var(--borda);border-radius:24px;padding:28px;margin-bottom:22px}\n.hero h2{font-family:'Montserrat';font-size:clamp(24px,4vw,38px);margin:0 0 8px}.hero p{margin:0;color:var(--muted);max-width:760px;line-height:1.7}\n.card{background:rgba(23,26,36,.96);border:1px solid var(--borda);border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 16px 45px rgba(0,0,0,.18)}\n.card h3{font-family:'Montserrat';font-size:16px;margin:0 0 16px}\n.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.campo label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;margin-bottom:6px}.campo input,.campo select{width:100%;background:#0b0e15;border:1px solid var(--borda);color:#fff;padding:12px 13px;border-radius:10px;outline:none}.campo input:focus,.campo select:focus{border-color:var(--laranja);box-shadow:0 0 0 3px rgba(255,112,0,.12)}\n.autocomplete-wrap{position:relative}.autocomplete-lista{position:absolute;left:0;right:0;top:calc(100% + 5px);background:#11141d;border:1px solid var(--borda);border-radius:11px;max-height:260px;overflow-y:auto;z-index:30;box-shadow:0 18px 38px rgba(0,0,0,.35);display:none}.autocomplete-lista.aberta{display:block}.autocomplete-item{width:100%;border:0;border-bottom:1px solid var(--borda);background:transparent;color:#fff;text-align:left;padding:11px 13px;font-size:13px}.autocomplete-item:last-child{border-bottom:0}.autocomplete-item:hover,.autocomplete-item.ativo{background:rgba(255,112,0,.12);color:#fff}.autocomplete-vazio{padding:11px 13px;color:var(--muted);font-size:12px}.autocomplete-ajuda{font-size:11px;color:#72798f;margin-top:6px}\n.btn-principal{border:0;border-radius:11px;background:var(--laranja);color:white;font-weight:600;padding:12px 18px}.btn-principal:hover{filter:brightness(.95)}.btn-principal:disabled{opacity:.5;cursor:not-allowed}.btn-sec{border:1px solid var(--borda);border-radius:10px;background:#10131c;color:#fff;padding:10px 14px}.btn-sec:hover{border-color:var(--laranja)}\n.linha-acoes{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}.msg{font-size:13px;color:var(--muted)}.msg.erro{color:#ff9696}.msg.ok{color:#8ee593}\n.identidade{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.aluno strong{font-family:'Montserrat'}.aluno small{display:block;color:var(--muted);margin-top:2px}.uso{min-width:250px}.uso-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}.barra{height:8px;border-radius:99px;background:#0b0e15;overflow:hidden}.barra>div{height:100%;width:0;background:var(--laranja);transition:.25s}\n.filtros{display:grid;grid-template-columns:1.4fr 1fr auto;gap:12px;align-items:end}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--borda);background:#10131c;color:#d5d8e5;padding:9px 12px;border-radius:999px;font-size:12px}.chip.ativo{border-color:var(--laranja);background:rgba(255,112,0,.14);color:#fff}.chip.karen.ativo{border-color:var(--verde);background:rgba(87,185,92,.14)}.chip.jessica.ativo{border-color:var(--roxo);background:rgba(112,48,160,.2)}\n.agenda-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.9fr);gap:18px}.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.cal-head h3{margin:0;font-size:17px}.cal-nav{display:flex;gap:7px}.cal-nav button{width:36px;height:36px;border-radius:9px;border:1px solid var(--borda);background:#10131c;color:#fff}.semana,.dias{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.semana div{text-align:center;font-size:10px;color:#7e8498;text-transform:uppercase;font-weight:600;padding:4px}.dia{min-height:86px;border:1px solid var(--borda);background:#10131c;border-radius:12px;padding:8px;position:relative;text-align:left;color:#d5d8e5;transition:.16s}.dia:hover:not(:disabled){transform:translateY(-1px);border-color:#4c536b}.dia:disabled{opacity:.35;cursor:default}.dia.vazio{visibility:hidden}.dia.disponivel{border-color:#394059}.dia.selecionado{outline:2px solid var(--laranja);background:rgba(255,112,0,.08)}.numdia{font-size:12px;font-weight:600}.pontos{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}.ponto{width:7px;height:7px;border-radius:50%}.ponto.verde{background:var(--verde)}.ponto.roxo{background:var(--roxo)}.qtd{position:absolute;right:8px;bottom:7px;font-size:10px;color:#7e8498}\n.lateral{background:#121620;border:1px solid var(--borda);border-radius:16px;padding:18px;min-height:340px}.lateral h3{font-size:15px;margin:0 0 4px}.lateral .sub{font-size:12px;color:var(--muted);margin-bottom:14px}.slots{display:flex;flex-direction:column;gap:8px}.slot{width:100%;border:1px solid var(--borda);background:#0e1118;border-radius:11px;color:#fff;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;text-align:left}.slot:hover{border-color:#59627f}.slot.karen{border-left:4px solid var(--verde)}.slot.jessica{border-left:4px solid var(--roxo)}.slot .hora{font-weight:600}.slot .prof{font-size:11px;color:var(--muted)}.slot.ativo{outline:2px solid var(--laranja)}\n.resumo-confirmar{margin-top:14px;border-top:1px solid var(--borda);padding-top:14px}.resumo-confirmar p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 12px}.resumo-confirmar strong{color:#fff}.estado-vazio{padding:40px 15px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}\n.overlay{position:fixed;inset:0;background:rgba(3,5,10,.74);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modal{width:min(460px,100%);background:#171a24;border:1px solid var(--borda);border-radius:20px;padding:26px;text-align:center}.modal .icone{font-size:42px;margin-bottom:10px}.modal h2{font-family:'Montserrat';margin:0 0 8px;font-size:21px}.modal p{color:var(--muted);font-size:13px;line-height:1.7}.modal .detalhes{background:#10131c;border:1px solid var(--borda);border-radius:12px;padding:13px;margin:14px 0;text-align:left;font-size:13px;line-height:1.8}.loading{position:fixed;inset:0;background:rgba(7,9,14,.68);display:flex;align-items:center;justify-content:center;z-index:80}.loading-box{background:#171a24;border:1px solid var(--borda);padding:20px 24px;border-radius:16px;font-size:13px}.spin{width:24px;height:24px;border:3px solid #303548;border-top-color:var(--laranja);border-radius:50%;animation:girar .8s linear infinite;margin:0 auto 10px}@keyframes girar{to{transform:rotate(360deg)}}\n.rodape{text-align:center;color:#676d82;font-size:11px;padding-top:16px}\n@media(max-width:850px){.agenda-grid{grid-template-columns:1fr}.filtros{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.dia{min-height:72px}.uso{width:100%;min-width:0}}\n@media(max-width:560px){.wrap{padding:18px 10px 35px}.hero,.card{padding:17px;border-radius:16px}.topo{margin-bottom:18px}.pill{display:none}.semana,.dias{gap:4px}.dia{min-height:62px;border-radius:9px;padding:6px}.qtd{display:none}.pontos{margin-top:8px}.agenda-grid{gap:12px}}\n\n.etapa-cabecalho{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}\n.etapa-cabecalho h3{margin:0}\n.etapa-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--laranja)}\n.cache-status{font-size:11px;color:var(--muted);margin-left:auto;align-self:center}\n.btn-link{background:transparent;border:none;color:var(--laranja);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:6px 0}\n.btn-link:hover{text-decoration:underline}\n.aviso-limite{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 16px}\n\n\n/* Identidade visual da home Escola Karen Abecia. */\n:host{--bg:#F0F0F0;--card:#fff;--card2:#f7f8fa;--borda:#dce0e6;--txt:#020617;--muted:#586174;--erro:#b42318;--ok:#287630}\n:host{background:var(--bg);line-height:1.7}\n.wrap{max-width:1180px;padding:0 24px 0;min-height:100vh;display:flex;flex-direction:column}\n.topo{min-height:94px;margin:0;gap:24px;border-bottom:1px solid var(--borda)}\n.marca{display:flex;align-items:center;gap:24px}.marca img{width:155px;height:auto;display:block}.marca span{border-left:1px solid #cdd2da;padding-left:24px;color:var(--muted);font-size:12px}\n.pill{background:#fff;color:var(--muted);padding:8px 14px}\n.hero{background:none;border:0;border-radius:0;padding:48px 0 32px;margin:0}\n.eyebrow{display:block;text-transform:uppercase;letter-spacing:.14em;font:700 11px Montserrat,sans-serif;color:#a54800;margin-bottom:16px}\n.hero h2{font-size:clamp(30px,4.3vw,48px);line-height:1.15;letter-spacing:-.04em;margin-bottom:16px;font-weight:700}.hero h2 em{font-style:normal;color:var(--laranja)}\n.hero p{font-size:14px;max-width:680px;color:var(--muted)}\n.card{background:#fff;border:1px solid #e5e7eb;padding:28px;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,.04);margin-bottom:22px}\n.card h3{font-size:18px;letter-spacing:-.02em}.step-caption{margin:-6px 0 22px;color:var(--muted);font-size:13px}\n#cardIdentificacao{position:relative;border-top:4px solid var(--laranja);padding:32px}\n.campo label{font-size:11px;color:#495267;margin-bottom:8px}.campo input,.campo select{background:#fafbfc;color:var(--txt);padding:13px 14px;min-height:48px}\n.autocomplete-lista{background:#fff;box-shadow:0 12px 30px #02061718}.autocomplete-item{color:var(--txt);padding:13px 14px}.autocomplete-item:hover,.autocomplete-item.ativo{color:var(--txt);background:#fff1e6}.autocomplete-ajuda{color:var(--muted);margin-top:9px}\n.btn-principal{background:var(--laranja);color:#020617;border-radius:10px;padding:13px 24px;min-height:48px;font-weight:600;transition:box-shadow .18s,background .18s}.btn-principal:hover{filter:none;background:#f08029;box-shadow:0 6px 18px #ff700026}.btn-principal:disabled{opacity:.55}\n.btn-sec,.cal-nav button{background:#fff;color:var(--txt)}.btn-sec{min-height:48px}.btn-link{color:#a54800}.linha-acoes{margin-top:24px;gap:16px}\n.msg.erro{color:#b42318}.msg.ok{color:#287630}.barra{background:#eef0f4}\n.chip{background:#fff;color:#495267;padding:10px 14px;min-height:44px}.chip.ativo{color:#853800;background:#fff1e6}.chip.karen.ativo{color:#256c2a;background:#eef8ef}.chip.jessica.ativo{color:#7030a0;background:#f5eefb}\n.etapa-tag{color:#a54800;margin-bottom:5px}.cache-status{grid-column:1/-1;margin-top:0}.filtros{gap:14px}\n.agenda-grid{gap:28px;grid-template-columns:minmax(0,1.45fr) minmax(290px,1fr)}.cal-head{margin-bottom:20px}.cal-nav button{width:42px;height:42px;font-size:24px}.semana div{color:#586174;padding:8px 0}.dia{background:#f7f8fa;color:var(--txt);min-height:80px}.dia:disabled{opacity:1;color:#949cab;background:#f8f9fb;border-color:#edf0f3}.dia.disponivel{background:#fff;border-color:#9da9b7;box-shadow:0 2px 4px #02061705}.dia:hover:not(:disabled){border-color:var(--laranja)}.dia.selecionado{background:#fff1e6;border-color:var(--laranja)}.qtd{color:#586174}\n.lateral{background:#f7f8fa;border-color:#e5e7eb;padding:22px}.slot{background:#fff;color:var(--txt);min-height:54px}.slot:hover{border-color:#7d8796}.slot.ativo{background:#fff1e6}.resumo-confirmar strong{color:var(--txt)}\n.modal,.loading-box{background:#fff;color:var(--txt);box-shadow:0 18px 60px #02061726}.modal .detalhes{background:#f7f8fa}.modal .icone{color:#287630}.loading{background:#f0f0f0f5}.spin{border-color:#e5e7eb;border-top-color:var(--laranja)}\n.rodape{margin-top:auto;padding:28px 0 24px;border-top:1px solid #dce0e6;display:flex;justify-content:space-between;align-items:center;gap:20px;color:#586174;font-size:12px}.rodape strong{display:block;color:var(--txt);font:700 13px Montserrat,sans-serif;margin-bottom:4px}.rodape a{color:var(--txt);font-weight:500;text-decoration:none;border-bottom:2px solid var(--laranja);padding:6px 0}.rodape a:hover{color:#a54800}\nbutton:focus-visible,a:focus-visible{outline:3px solid #a54800;outline-offset:4px}\n@media(max-width:850px){.agenda-grid{grid-template-columns:1fr}.filtros{grid-template-columns:1fr}.hero{padding-top:36px}.marca{gap:16px}.marca span{padding-left:16px}.pill{font-size:10px}.dia{min-height:72px}}\n@media(max-width:560px){.wrap{padding:0 16px}.topo{min-height:82px}.marca img{width:130px}.marca span{font-size:10px;max-width:125px}.hero{padding:30px 0 24px}.hero h2{font-size:32px}.hero p{font-size:13px}.card,#cardIdentificacao{padding:22px 18px;border-radius:18px}.card h3{font-size:16px}.etapa-cabecalho{align-items:flex-start}.btn-link{font-size:11px}.chip{padding:9px 11px;font-size:11px}.lateral{padding:18px}.dia{min-height:60px}.rodape{align-items:flex-start;flex-direction:column;gap:12px;margin-top:16px}.linha-acoes>.btn-principal{width:100%}}\n@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.spin{animation-duration:1.8s}}\n\n/* Indicadores em linhas próprias evitam sobreposição em células estreitas. */\n.dia{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:5px}\n.dia .pontos{margin-top:auto;min-height:7px;flex-shrink:0}\n.dia .ponto{flex-shrink:0}\n.dia .qtd{position:static;font-size:9px;line-height:1.3;max-width:100%;overflow-wrap:anywhere}\n.slot{gap:12px}\n.slot-descricao{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;row-gap:2px;min-width:0;line-height:1.6}\n.slot .hora,.slot .prof{font-size:13px;font-weight:600;color:var(--txt)}\n.slot .hora{white-space:nowrap}\n.slot>.slot-seta{flex-shrink:0}\n\n.brand,.intro,footer,#cardIdentificacao,#btnTrocarAluno{display:none!important}:host{background:#fff}.wrap{padding:0!important}.calendar-layout{margin:0}#areaAgenda{display:block!important}\n\n:host{display:block;position:relative}.loading,.modal{position:absolute}\n:host{background:transparent}.wrap{max-width:none;margin:0;padding:0}#areaAgenda>.card{margin:0 0 24px} .loading{position:absolute;inset:0}.overlay .modal{position:relative}\u003c/style>\n\u003cdiv class=\"wrap oculto\" id=\"appAgendamento\">\n  \u003csection class=\"card\" id=\"cardIdentificacao\">\n    \u003cdiv class=\"etapa-tag\">Etapa 1 de 2\u003c/div>\u003ch3>Vamos começar por você\u003c/h3>\u003cp class=\"step-caption\">Confirme seu nome para consultar a agenda da mentoria.\u003c/p>\n    \u003cform id=\"formIdentificacao\">\n      \u003cdiv class=\"campo autocomplete-wrap\" style=\"max-width:620px\">\n        \u003clabel for=\"nome\">Nome completo\u003c/label>\n        \u003cinput id=\"nome\" type=\"text\" required autocomplete=\"off\" placeholder=\"Comece a digitar seu nome...\" aria-autocomplete=\"list\" aria-controls=\"listaNomes\" aria-expanded=\"false\">\n        \u003cdiv class=\"autocomplete-lista\" id=\"listaNomes\" role=\"listbox\">\u003c/div>\n        \u003cdiv class=\"autocomplete-ajuda\">Selecione seu nome na lista de mentorados ativos.\u003c/div>\n      \u003c/div>\n      \u003cdiv class=\"linha-acoes\">\u003cbutton class=\"btn-principal\" type=\"submit\">Continuar\u003c/button>\u003cspan class=\"msg\" id=\"msgIdentificacao\">\u003c/span>\u003c/div>\n    \u003c/form>\n  \u003c/section>\n\n  \u003cdiv id=\"areaAgenda\" class=\"oculto\">\n    \u003csection class=\"card\">\n      \u003cdiv class=\"etapa-cabecalho\">\n        \u003cdiv>\n          \n          \u003ch3>Escolha seu horário\u003c/h3>\n        \u003c/div>\n        \u003cbutton class=\"btn-link\" id=\"btnTrocarAluno\" type=\"button\">← Trocar aluno\u003c/button>\n      \u003c/div>\n      \u003cp class=\"aviso-limite\" id=\"avisoLimiteMes\">\u003c/p>\n      \u003cdiv class=\"filtros\">\n        \u003cdiv class=\"campo\">\u003clabel>Professora\u003c/label>\u003cdiv class=\"chips\" id=\"filtroProf\">\n          \u003cbutton class=\"chip ativo\" data-prof=\"todas\" type=\"button\">Todas\u003c/button>\n          \u003cbutton class=\"chip karen\" data-prof=\"Karen Abecia\" type=\"button\">● Karen Abecia\u003c/button>\n          \u003cbutton class=\"chip jessica\" data-prof=\"Jéssica Gleiciane\" type=\"button\">● Jéssica Gleiciane\u003c/button>\n        \u003c/div>\u003c/div>\n        \u003cdiv class=\"campo\">\u003clabel>Período\u003c/label>\u003cselect id=\"filtroPeriodo\">\u003coption value=\"todos\">Todos os períodos\u003c/option>\u003coption value=\"manha\">Manhã\u003c/option>\u003coption value=\"tarde\">Tarde\u003c/option>\u003coption value=\"noite\">Noite\u003c/option>\u003c/select>\u003c/div>\n        \u003cbutton class=\"btn-sec\" id=\"btnAtualizar\" type=\"button\">Atualizar horários\u003c/button>\u003cspan class=\"cache-status\" id=\"cacheStatus\">\u003c/span>\n      \u003c/div>\n    \u003c/section>\n\n    \u003csection class=\"card\">\n      \u003cdiv class=\"agenda-grid\">\n        \u003cdiv>\n          \u003cdiv class=\"cal-head\">\u003ch3 id=\"tituloMes\">—\u003c/h3>\u003cdiv class=\"cal-nav\">\u003cbutton id=\"mesAnterior\" type=\"button\" aria-label=\"Mês anterior\">‹\u003c/button>\u003cbutton id=\"mesProximo\" type=\"button\" aria-label=\"Próximo mês\">›\u003c/button>\u003c/div>\u003c/div>\n          \u003cdiv class=\"semana\">\u003cdiv>Dom\u003c/div>\u003cdiv>Seg\u003c/div>\u003cdiv>Ter\u003c/div>\u003cdiv>Qua\u003c/div>\u003cdiv>Qui\u003c/div>\u003cdiv>Sex\u003c/div>\u003cdiv>Sáb\u003c/div>\u003c/div>\n          \u003cdiv class=\"dias\" id=\"calendario\">\u003c/div>\n        \u003c/div>\n        \u003caside class=\"lateral\">\n          \u003ch3 id=\"tituloDia\">Selecione uma data\u003c/h3>\n          \u003cdiv class=\"sub\" id=\"subDia\">Os horários aparecerão aqui.\u003c/div>\n          \u003cdiv class=\"slots\" id=\"listaSlots\">\u003cdiv class=\"estado-vazio\">Escolha no calendário um dia destacado como disponível.\u003c/div>\u003c/div>\n          \u003cdiv class=\"resumo-confirmar oculto\" id=\"resumoConfirmar\">\u003cp id=\"textoResumo\">\u003c/p>\u003cbutton class=\"btn-principal\" id=\"btnConfirmar\" type=\"button\" style=\"width:100%\">Confirmar agendamento\u003c/button>\u003c/div>\n        \u003c/aside>\n      \u003c/div>\n    \u003c/section>\n  \u003c/div>\n\n\n\u003c/div>\n\n\u003cdiv class=\"overlay oculto\" id=\"modalSucesso\">\n  \u003cdiv class=\"modal\">\u003cdiv class=\"icone\">✓\u003c/div>\u003ch2>Agendamento confirmado!\u003c/h2>\u003cp>Seu encontro foi reservado e a confirmação foi enviada por e-mail.\u003c/p>\u003cdiv class=\"detalhes\" id=\"detalhesSucesso\">\u003c/div>\u003cbutton class=\"btn-principal\" id=\"fecharSucesso\" type=\"button\">Voltar ao calendário\u003c/button>\u003c/div>\n\u003c/div>\n\u003cdiv class=\"loading\" id=\"loading\">\n  \u003cdiv class=\"loading-box\" id=\"loadingBox\" style=\"text-align:center;max-width:420px\">\n    \u003cdiv class=\"spin\" id=\"loadingSpin\">\u003c/div>\n    \u003cdiv id=\"loadingTexto\">Carregando lista de mentorados...\u003c/div>\n    \u003cbutton class=\"btn-principal oculto\" id=\"btnTentarNovamente\" type=\"button\" style=\"margin-top:14px\">Tentar novamente\u003c/button>\n  \u003c/div>\n\u003c/div>\n\n";
+const document={getElementById:id=>root.getElementById(id),querySelector:s=>root.querySelector(s),querySelectorAll:s=>root.querySelectorAll(s),createElement:tag=>window.document.createElement(tag),addEventListener:(...args)=>root.addEventListener(...args)};
+const sessionStorage={getItem:()=>null,setItem(){},removeItem(){}};
+
+const CONFIG={API_URL:'https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec'};
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const CACHE_ATIVOS='dasheagles_agendamento_ativos_v4';
+const CACHE_ATIVOS_MS=10*60*1000;
+const CACHE_AGENDA_MS=5*60*1000;
+
+let aluno=null, mesVisual=inicioMesAtual(), professoraFiltro='todas', periodoFiltro='todos';
+let agendaBase={slots:[],limite_mes:0,utilizados_por_mes:{},carregado_em:0};
+let slots=[], dataSelecionada='', slotSelecionado=null, limiteMes=0, utilizadosMes=0;
+let mentoradosAtivos=[], nomeSelecionado=null, indiceSugestao=-1;
+
+function inicioMesAtual(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)}
+async function api(action,params={}){const mapa={listarDisponibilidadeAgendamento:'alunoAgenda',criarAgendamento:'alunoAgendar'};if(!mapa[action])throw Error('Ação indisponível.');const r=await apiAluno(mapa[action],params);if(action==='criarAgendamento')carregar();return r;}
+function loading(on,texto='Carregando...'){
+  const el=document.getElementById('loading');
+  const spin=document.getElementById('loadingSpin');
+  const btn=document.getElementById('btnTentarNovamente');
+  el.classList.toggle('oculto',!on);
+  document.getElementById('loadingTexto').textContent=texto;
+  if(on){spin.classList.remove('oculto');btn.classList.add('oculto')}
+}
+function isoMes(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function formatarData(iso){const [a,m,d]=iso.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(new Date(a,m-1,d))}
+function professoraClasse(nome){return nome.startsWith('Karen')?'karen':'jessica'}
+function periodoDoHorario(hora){const h=Number(String(hora).split(':')[0]);return h<12?'manha':h<18?'tarde':'noite'}
+function normalizarTexto(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ')}
+function cacheAgendaKey(id){return `dasheagles_agendamento_agenda_v4_${id}`}
+function lerCache(chave,ttl){
+  try{
+    const item=JSON.parse(sessionStorage.getItem(chave)||'null');
+    if(!item||!item.ts||Date.now()-item.ts>ttl)return null;
+    return item.data;
+  }catch(e){return null}
+}
+function gravarCache(chave,data){try{sessionStorage.setItem(chave,JSON.stringify({ts:Date.now(),data}))}catch(e){}}
+function apagarCacheAgenda(){if(aluno)try{sessionStorage.removeItem(cacheAgendaKey(aluno.id_mentorado))}catch(e){}}
+
+function sugestoesAtuais(){
+  const q=normalizarTexto(document.getElementById('nome').value);
+  if(!q)return [];
+  return mentoradosAtivos.filter(m=>normalizarTexto(m.nome).includes(q)).slice(0,8);
+}
+function fecharAutocomplete(){
+  const l=document.getElementById('listaNomes');l.classList.remove('aberta');l.innerHTML='';
+  document.getElementById('nome').setAttribute('aria-expanded','false');indiceSugestao=-1;
+}
+function selecionarNome(m){
+  nomeSelecionado=m;document.getElementById('nome').value=m.nome;fecharAutocomplete();
+  document.getElementById('msgIdentificacao').textContent='';
+}
+function renderAutocomplete(){
+  const lista=document.getElementById('listaNomes'),sugs=sugestoesAtuais();lista.innerHTML='';indiceSugestao=-1;
+  if(!sugs.length){fecharAutocomplete();return}
+  sugs.forEach(m=>{const b=document.createElement('button');b.type='button';b.className='autocomplete-item';b.textContent=m.nome;b.setAttribute('role','option');b.addEventListener('click',()=>selecionarNome(m));lista.appendChild(b)});
+  lista.classList.add('aberta');document.getElementById('nome').setAttribute('aria-expanded','true');
+}
+
+async function carregarMentoradosAtivos(forcar=false){
+  const app=document.getElementById('appAgendamento'),loadingEl=document.getElementById('loading'),spin=document.getElementById('loadingSpin'),btnRetry=document.getElementById('btnTentarNovamente');
+  app.classList.add('oculto');loadingEl.classList.remove('oculto');spin.classList.remove('oculto');btnRetry.classList.add('oculto');
+  document.getElementById('loadingTexto').textContent='Carregando lista de mentorados...';
+  try{
+    let dados=!forcar?lerCache(CACHE_ATIVOS,CACHE_ATIVOS_MS):null;
+    if(!dados){
+      const r=await api('listarMentoradosAtivos');
+      dados=(r.mentorados||[]);
+      gravarCache(CACHE_ATIVOS,dados);
+    }
+    mentoradosAtivos=dados.filter(m=>m&&m.nome&&m.id_mentorado).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+    if(!mentoradosAtivos.length)throw new Error('Nenhum mentorado ativo foi encontrado no momento.');
+    app.classList.remove('oculto');loadingEl.classList.add('oculto');
+  }catch(e){
+    document.getElementById('loadingTexto').textContent='Não foi possível carregar a lista de mentorados. Verifique sua conexão e tente novamente.';
+    spin.classList.add('oculto');btnRetry.classList.remove('oculto');
+  }
+}
+
+function aplicarFiltrosLocais(){
+  const mes=isoMes(mesVisual);
+  slots=(agendaBase.slots||[]).filter(s=>{
+    if(String(s.data||'').substring(0,7)!==mes)return false;
+    if(professoraFiltro!=='todas'&&s.professora!==professoraFiltro)return false;
+    if(periodoFiltro!=='todos'&&periodoDoHorario(s.hora_inicio)!==periodoFiltro)return false;
+    return true;
+  });
+  limiteMes=Number(agendaBase.limite_mes||0);
+  utilizadosMes=Number((agendaBase.utilizados_por_mes||{})[mes]||0);
+  atualizarInfoMes();
+  renderCalendario();
+  renderDia('');
+}
+function atualizarInfoMes(){
+  const mes=MESES[mesVisual.getMonth()].toLowerCase();
+  const el=document.getElementById('avisoLimiteMes');
+  if(limiteMes&&utilizadosMes>=limiteMes)el.textContent=`Você já utilizou ${utilizadosMes} de ${limiteMes} agendamentos disponíveis em ${mes}.`;
+  else if(limiteMes)el.textContent=`Neste mês você utilizou ${utilizadosMes} de ${limiteMes} agendamentos disponíveis.`;
+  else el.textContent='';
+}
+function atualizarCacheStatus(origem){
+  const el=document.getElementById('cacheStatus');
+  if(!el)return;
+  el.textContent=origem==='cache'?'Horários carregados da sessão':'Horários atualizados agora';
+}
+
+async function carregarAgendaCompleta(forcar=false){
+  if(!aluno)return;
+  let dados=null; // Consulta o saldo atualizado após presenças, ausências e remarcações.
+  if(dados){
+    agendaBase=dados;
+    atualizarCacheStatus('cache');
+    aplicarFiltrosLocais();
+    return;
+  }
+  loading(true,'Consultando agendas...');
+  try{
+    dados=await api('listarDisponibilidadeAgendamento',{id_mentorado:aluno.id_mentorado,forcar:!!forcar});
+    agendaBase={
+      slots:dados.slots||[],
+      limite_mes:Number(dados.limite_mes||0),
+      utilizados_por_mes:dados.utilizados_por_mes||{},
+      carregado_em:Date.now()
+    };
+    gravarCache(cacheAgendaKey(aluno.id_mentorado),agendaBase);
+    atualizarCacheStatus('rede');
+    aplicarFiltrosLocais();
+  }finally{loading(false)}
+}
+
+function renderCalendario(){
+  document.getElementById('tituloMes').textContent=`${MESES[mesVisual.getMonth()]} ${mesVisual.getFullYear()}`;
+  const el=document.getElementById('calendario');el.innerHTML='';
+  const ano=mesVisual.getFullYear(),mes=mesVisual.getMonth(),primeiro=new Date(ano,mes,1).getDay(),total=new Date(ano,mes+1,0).getDate();
+  for(let i=0;i<primeiro;i++){const b=document.createElement('button');b.className='dia vazio';b.disabled=true;el.appendChild(b)}
+  for(let d=1;d<=total;d++){
+    const iso=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const diaSlots=slots.filter(s=>s.data===iso);
+    const b=document.createElement('button');b.type='button';b.className='dia'+(diaSlots.length?' disponivel':'');b.disabled=!diaSlots.length;b.dataset.data=iso;
+    const profs=[...new Set(diaSlots.map(s=>s.professora))];
+    b.innerHTML=`<span class="numdia">${d}</span><div class="pontos">${profs.map(p=>`<span class="ponto ${professoraClasse(p)==='karen'?'verde':'roxo'}"></span>`).join('')}</div>${diaSlots.length?`<span class="qtd">${diaSlots.length} horário${diaSlots.length>1?'s':''}</span>`:''}`;
+    b.addEventListener('click',()=>{document.querySelectorAll('.dia.selecionado').forEach(x=>x.classList.remove('selecionado'));b.classList.add('selecionado');dataSelecionada=iso;slotSelecionado=null;renderDia(iso)});
+    el.appendChild(b);
+  }
+}
+function renderDia(iso){
+  const titulo=document.getElementById('tituloDia'),sub=document.getElementById('subDia'),lista=document.getElementById('listaSlots'),resumo=document.getElementById('resumoConfirmar');
+  resumo.classList.add('oculto');lista.innerHTML='';
+  if(!iso){titulo.textContent='Selecione uma data';sub.textContent='Os horários aparecerão aqui.';lista.innerHTML='<div class="estado-vazio">Escolha no calendário um dia destacado como disponível.</div>';return}
+  titulo.textContent=formatarData(iso);
+  const diaSlots=slots.filter(s=>s.data===iso).sort((a,b)=>a.hora_inicio.localeCompare(b.hora_inicio));
+  sub.textContent=`${diaSlots.length} horário${diaSlots.length===1?'':'s'} disponível${diaSlots.length===1?'':'is'}`;
+  if(!diaSlots.length){lista.innerHTML='<div class="estado-vazio">Não há horários disponíveis nesse dia.</div>';return}
+  diaSlots.forEach(s=>{
+    const b=document.createElement('button');b.type='button';b.className=`slot ${professoraClasse(s.professora)}`;
+    b.innerHTML=`<span class="slot-descricao"><span class="hora">${s.hora_inicio} - ${s.hora_fim}</span> <span class="prof">com a ${s.professora}</span></span><span class="slot-seta">›</span>`;
+    b.addEventListener('click',()=>{document.querySelectorAll('.slot.ativo').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');slotSelecionado=s;mostrarResumo()});
+    lista.appendChild(b);
+  });
+}
+function mostrarResumo(){
+  if(!slotSelecionado)return;
+  document.getElementById('textoResumo').innerHTML=`Você está reservando com <strong>${slotSelecionado.professora}</strong><br>${formatarData(slotSelecionado.data)} · ${slotSelecionado.hora_inicio} às ${slotSelecionado.hora_fim}`;
+  document.getElementById('resumoConfirmar').classList.remove('oculto');
+}
+function removerSlotConfirmadoDoCache(s){
+  agendaBase.slots=(agendaBase.slots||[]).filter(x=>!(x.professora===s.professora&&x.data===s.data&&x.hora_inicio===s.hora_inicio));
+  const mes=String(s.data).substring(0,7);
+  agendaBase.utilizados_por_mes=agendaBase.utilizados_por_mes||{};
+  agendaBase.utilizados_por_mes[mes]=Number(agendaBase.utilizados_por_mes[mes]||0)+1;
+  agendaBase.carregado_em=Date.now();
+  gravarCache(cacheAgendaKey(aluno.id_mentorado),agendaBase);
+}
+
+const inputNome=document.getElementById('nome');
+inputNome.addEventListener('input',()=>{nomeSelecionado=null;renderAutocomplete()});
+inputNome.addEventListener('focus',()=>{if(inputNome.value.trim())renderAutocomplete()});
+inputNome.addEventListener('keydown',e=>{
+  const lista=document.getElementById('listaNomes');if(!lista.classList.contains('aberta'))return;
+  const itens=[...lista.querySelectorAll('.autocomplete-item')];if(!itens.length)return;
+  if(e.key==='ArrowDown'){e.preventDefault();indiceSugestao=(indiceSugestao+1)%itens.length}
+  else if(e.key==='ArrowUp'){e.preventDefault();indiceSugestao=(indiceSugestao-1+itens.length)%itens.length}
+  else if(e.key==='Enter'&&indiceSugestao>=0){e.preventDefault();const sugs=sugestoesAtuais();if(sugs[indiceSugestao])selecionarNome(sugs[indiceSugestao]);return}
+  else if(e.key==='Escape'){fecharAutocomplete();return}else{return}
+  itens.forEach((x,i)=>x.classList.toggle('ativo',i===indiceSugestao));itens[indiceSugestao]?.scrollIntoView({block:'nearest'});
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))fecharAutocomplete()});
+document.getElementById('btnTentarNovamente').addEventListener('click',()=>carregarAgendaCompleta(true));
+document.getElementById('appAgendamento').classList.remove('oculto');aluno={id_mentorado:'sessao',nome:'Você'};document.getElementById('areaAgenda').classList.remove('oculto');carregarAgendaCompleta(false).catch(e=>{document.getElementById('cacheStatus').textContent=e.message;});
+
+document.getElementById('formIdentificacao').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const nome=inputNome.value.trim(),msg=document.getElementById('msgIdentificacao');msg.textContent='';
+  if(!nome)return;
+  if(!nomeSelecionado){
+    const exatos=mentoradosAtivos.filter(m=>normalizarTexto(m.nome)===normalizarTexto(nome));
+    if(exatos.length===1)nomeSelecionado=exatos[0];
+    else{msg.textContent='Selecione seu nome na lista de mentorados ativos.';msg.className='msg erro';renderAutocomplete();return}
+  }
+  aluno={id_mentorado:nomeSelecionado.id_mentorado,nome:nomeSelecionado.nome};
+  try{
+    await carregarAgendaCompleta(false);
+    document.getElementById('cardIdentificacao').classList.add('oculto');
+    document.getElementById('areaAgenda').classList.remove('oculto');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){
+    msg.textContent=err.message;msg.className='msg erro';
+  }
+});
+
+document.getElementById('btnTrocarAluno').addEventListener('click',()=>{
+  aluno=null;agendaBase={slots:[],limite_mes:0,utilizados_por_mes:{},carregado_em:0};slots=[];slotSelecionado=null;dataSelecionada='';
+  document.getElementById('areaAgenda').classList.add('oculto');
+  document.getElementById('cardIdentificacao').classList.remove('oculto');
+  inputNome.focus();
+});
+
+document.querySelectorAll('#filtroProf .chip').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#filtroProf .chip').forEach(x=>x.classList.remove('ativo'));b.classList.add('ativo');
+  professoraFiltro=b.dataset.prof;aplicarFiltrosLocais();
+}));
+document.getElementById('filtroPeriodo').addEventListener('change',e=>{periodoFiltro=e.target.value;aplicarFiltrosLocais()});
+document.getElementById('btnAtualizar').addEventListener('click',async()=>{
+  apagarCacheAgenda();
+  try{await carregarAgendaCompleta(true)}catch(e){alert(e.message)}
+});
+document.getElementById('mesAnterior').addEventListener('click',()=>{mesVisual=new Date(mesVisual.getFullYear(),mesVisual.getMonth()-1,1);aplicarFiltrosLocais()});
+document.getElementById('mesProximo').addEventListener('click',()=>{mesVisual=new Date(mesVisual.getFullYear(),mesVisual.getMonth()+1,1);aplicarFiltrosLocais()});
+
+document.getElementById('btnConfirmar').addEventListener('click',async()=>{
+  if(!slotSelecionado||!aluno)return;
+  const mes=String(slotSelecionado.data).substring(0,7);
+  const usados=Number((agendaBase.utilizados_por_mes||{})[mes]||0);
+  const limite=Number(agendaBase.limite_mes||0);
+  if(limite&&usados>=limite){alert('Você já utilizou o limite de agendamentos deste mês.');return}
+  const selecionado={...slotSelecionado};
+  loading(true,'Confirmando seu horário...');
+  try{
+    const r=await api('criarAgendamento',{
+      id_mentorado:aluno.id_mentorado,
+      professora:selecionado.professora,
+      data:selecionado.data,
+      hora_inicio:selecionado.hora_inicio
+    });
+
+    // O backend só responde sucesso depois de criar o evento, gravar nas planilhas e enviar os e-mails.
+    removerSlotConfirmadoDoCache(selecionado);
+    aplicarFiltrosLocais();
+    loading(false);
+
+    document.getElementById('detalhesSucesso').innerHTML=`<strong>${r.professora}</strong><br>${formatarData(r.data)}<br>${r.hora_inicio} às ${r.hora_fim}<br>Horário de Brasília`;
+    document.getElementById('modalSucesso').classList.remove('oculto');
+  }catch(err){
+    apagarCacheAgenda();
+    try{await carregarAgendaCompleta(true)}catch(_){}
+    loading(false);
+    alert(err.message);
+  }
+});
+document.getElementById('fecharSucesso').addEventListener('click',()=>document.getElementById('modalSucesso').classList.add('oculto'));
+
+
+atualizarAgendamentoIntegrado=()=>carregarAgendaCompleta(true).catch(e=>{el('painelStatus').textContent=e.message;});
+}
+if(token){if(sessionStorage.getItem('dh_aluno_trocar')==='true')tela('troca');else carregar();}else tela('login');
+
+</script></body></html>
