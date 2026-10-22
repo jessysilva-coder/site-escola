@@ -2526,7 +2526,7 @@ function prepararModulosEmSegundoPlano(){
 function normalizarNomeProfessora(nome){const original=String(nome||'').trim();const chave=original.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');return ['jessica','jessica gleiciane'].includes(chave)?'Jéssica Gleiciane':original;}
 function conciliarEncontros(agenda, registros) {
   agenda=agenda.map(a=>({...a,professora:normalizarNomeProfessora(a.professora)}));
-  const tipos={'Encontro individual':'Realizado','Ausência de encontro individual':'Ausência do aluno','Remarcação encontro individual':'Remarcado'};
+  const tipos={'Encontro individual':'Realizado','Ausência de encontro individual':'Ausência do aluno','Remarcação encontro individual':'Remarcado','Cancelamento de encontro individual':'Cancelado'};
   const dia=v=>String(v||'').slice(0,10);
   const lista=agenda.filter(a=>!['Cancelado','Cancelada'].includes(a.status)).map(a=>({...a,data:dia(a.data),status_resultado:'Pendente',ids_origem:[]}));
   registros.filter(r=>r.tipo_atendimento==='Agendamento de solicitações'&&r.data_agendamento).forEach(r=>{
@@ -2560,7 +2560,7 @@ function renderizarRelatorioEncontros(){
     const row=body.insertRow();
     [formatarData(a.data)+(a.hora_inicio?' · '+a.hora_inicio:''),a.nome_aluno,a.professora==='Jéssica Gleiciane'?'Jessica Gleiciane':a.professora||'Não informada'].forEach((v,i)=>{const cell=row.insertCell();cell.textContent=v;if(i===1){cell.tabIndex=0;cell.style.cursor='pointer';cell.title='Clique duas vezes para abrir o perfil';cell.ondblclick=()=>abrirDetalhe(a.id_mentorado);cell.onkeydown=e=>{if(e.key==='Enter')abrirDetalhe(a.id_mentorado);};}cell.dataset.label=['Data do encontro','Mentorado','Professora'][i];});
     const cell=row.insertCell();cell.dataset.label='Status';const select=document.createElement('select');select.setAttribute('aria-label','Status do encontro de '+a.nome_aluno);
-    ['Pendente','Realizado','Ausência do aluno','Remarcado'].forEach(s=>{const opt=new Option(s,s);opt.disabled=s==='Pendente';select.add(opt);});select.value=a.status_resultado;cell.append(select);
+    ['Pendente','Realizado','Ausência do aluno','Remarcado','Cancelado'].forEach(s=>{const opt=new Option(s,s);opt.disabled=s==='Pendente';select.add(opt);});select.value=a.status_resultado;cell.append(select);
     select.className='encontro-status-select';
     select.onchange=()=>{
       const escolhido=select.value;
@@ -2705,7 +2705,7 @@ document.getElementById('formGravacao').onsubmit=e=>{e.preventDefault();if(encon
 const baixasEncontros=new Set();
 function baixarEncontro(encontro,status,links={}){
  if(baixasEncontros.has(encontro.id_agendamento))return;
- const tipos={'Realizado':'Encontro individual','Ausência do aluno':'Ausência de encontro individual','Remarcado':'Remarcação encontro individual'};
+ const tipos={'Realizado':'Encontro individual','Ausência do aluno':'Ausência de encontro individual','Remarcado':'Remarcação encontro individual','Cancelado':'Cancelamento de encontro individual'};
  const payload={id_agendamento:encontro.id_agendamento,tipo_atendimento:tipos[status],usuario:atendenteAtual(),...links,exigir_gravacao:status==='Realizado'&&!links.nao_gravado};
  const temp={id_registro:'resultado_temp_'+crypto.randomUUID(),id_mentorado:encontro.id_mentorado,nome_mentorado:encontro.nome_aluno,observacao:links.observacao||'',tipo_atendimento:tipos[status],data:encontro.data,id_agendamento:encontro.id_agendamento,usuario:atendenteAtual(),criado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),_pendente:true};
  baixasEncontros.add(encontro.id_agendamento);registros.push(temp);gravacoesPendentes++;atualizarVisaoLocal(encontro.id_mentorado);
