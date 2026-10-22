@@ -276,7 +276,7 @@ function aplicarFiltrosLocais(){
     if(periodoFiltro!=='todos'&&periodoDoHorario(s.hora_inicio)!==periodoFiltro)return false;
     return true;
   });
-  limiteMes=Number(agendaBase.limite_mes||0);
+  limiteMes=Number(agendaBase.limites_por_mes?.[mes]??agendaBase.limite_mes??0);
   utilizadosMes=Number((agendaBase.utilizados_por_mes||{})[mes]||0);
   atualizarInfoMes();
   renderCalendario();
@@ -302,7 +302,7 @@ async function carregarAgendaCompleta(forcar=false){
  if(consultasAgenda.has(id))return cache?undefined:consultasAgenda.get(id);
  const consulta=(async()=>{
   if(!cache)loading(true,'Consultando agendas...');
-  try{const d=await api('listarDisponibilidadeAgendamento',{id_mentorado:id,forcar:!!forcar});const nova={slots:d.slots||[],limite_mes:Number(d.limite_mes||0),utilizados_por_mes:d.utilizados_por_mes||{},carregado_em:Date.now()};gravarCache(cacheAgendaKey(id),nova);if(aluno?.id_mentorado!==id)return;const dia=dataSelecionada;agendaBase=nova;aplicarFiltrosLocais();if(dia)renderDia(dia);atualizarCacheStatus('rede');}
+  try{const d=await api('listarDisponibilidadeAgendamento',{id_mentorado:id,forcar:!!forcar});const nova={slots:d.slots||[],limite_mes:Number(d.limite_mes||0),limites_por_mes:d.limites_por_mes||{},utilizados_por_mes:d.utilizados_por_mes||{},carregado_em:Date.now()};gravarCache(cacheAgendaKey(id),nova);if(aluno?.id_mentorado!==id)return;const dia=dataSelecionada;agendaBase=nova;aplicarFiltrosLocais();if(dia)renderDia(dia);atualizarCacheStatus('rede');}
   finally{consultasAgenda.delete(id);if(!cache&&aluno?.id_mentorado===id)loading(false);}
  })();consultasAgenda.set(id,consulta);
  if(cache){consulta.catch(()=>{if(aluno?.id_mentorado===id)document.getElementById('cacheStatus').textContent='Não foi possível atualizar. Use Atualizar horários para tentar novamente.';});return;}return consulta;
@@ -411,7 +411,7 @@ document.getElementById('btnConfirmar').addEventListener('click',async()=>{
   if(!slotSelecionado||!aluno)return;
   const mes=String(slotSelecionado.data).substring(0,7);
   const usados=Number((agendaBase.utilizados_por_mes||{})[mes]||0);
-  const limite=Number(agendaBase.limite_mes||0);
+  const limite=Number(agendaBase.limites_por_mes?.[mes]??agendaBase.limite_mes??0);
   if(limite&&usados>=limite){alert('Você já utilizou o limite de agendamentos deste mês.');return}
   const selecionado={...slotSelecionado};
   loading(true,'Confirmando seu horário...');

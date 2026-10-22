@@ -402,6 +402,7 @@
 .cal-config-grid{grid-template-columns:minmax(0,1fr);gap:22px}.cal-preview-bloco{position:static;top:auto}.cal-config-grid>.bloco{padding:24px}.cal-tabela th:first-child{width:24%}.cal-tabela th:nth-child(2){width:48%}.cal-tabela input,.cal-tabela select{font-size:13px;padding:11px 10px}.cal-tabela th,.cal-tabela td{padding:9px 6px}@media(max-width:600px){.cal-config-grid>.bloco{padding:16px}}
 .sb-btn{transition:background-color .18s ease,color .18s ease}.sb-submenu{overflow:hidden;transition:max-height .22s ease,opacity .18s ease;margin-bottom:0}.sb-expansor>span{transition:transform .22s ease}.sb-submenu .sb-btn{margin-bottom:4px}.sb-submenu[hidden]{display:none}#inicioLoading{position:fixed;inset:0;z-index:200;background:#10121a;display:grid;place-items:center;padding:24px}#inicioLoading[hidden]{display:none}.inicio-caixa{max-width:480px;text-align:center;color:#c7cbe0}.inicio-caixa h2{font:700 23px Montserrat;color:#fff;margin-bottom:14px}.inicio-caixa p{font-size:13px;line-height:1.7}.inicio-spinner{width:34px;height:34px;border:3px solid #303548;border-top-color:var(--laranja);border-radius:50%;animation:inicioGiro .8s linear infinite;margin:0 auto 22px}@keyframes inicioGiro{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.sb-btn,.sb-submenu,.sb-expansor>span{transition:none}}
 .modulo-pendente>:not(.modulo-status){display:none!important}.modulo-status{padding:32px;background:var(--escuro-card);border:1px solid var(--escuro-borda);border-radius:14px;color:#c7cbe0;font-size:13px}.modulo-status p{margin-bottom:14px}.modulo-status[hidden]{display:none}
+#dialogGravacao{max-height:calc(100dvh - 24px);max-width:calc(100vw - 24px);overflow:auto;width:520px}#tituloGravacao{user-select:none}
 </style>
 </head>
 <body><div id="loginAdminPortal" style="position:fixed;inset:0;background:#12141c;z-index:100000;display:grid;place-items:center" hidden><form id="formLoginAdmin" class="bloco" style="width:min(420px,90vw)"><h2>Acompanhamento</h2><p>Entre com a senha administrativa do sistema.</p><label for="senhaAdminPortal">Senha</label><input id="senhaAdminPortal" type="password" autocomplete="current-password" required><button type="submit" class="btn-salvar">Entrar</button><p id="erroLoginAdmin" role="status"></p></form></div>
@@ -433,7 +434,7 @@
     <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuProjetometro">Projetômetro<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuProjetometro" hidden><button class="sb-btn" id="btnTelaProjetometro" type="button">Tela do Projetômetro</button><a class="sb-btn" id="btnLinkProjetoAluno" href="https://site.escolakarenabecia.com/dasheagles/cad-projeto.html" target="_blank" rel="noopener">Link projeto p/ aluno</a></div></div>
     <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuEncontro">Encontro Individual<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuEncontro" hidden><button class="sb-btn" type="button" id="btnTelaEncontros">Próximos encontros individuais</button><button class="sb-btn" id="btnTelaAgenda" type="button">Configurar agenda</button><a class="sb-btn" id="btnLinkAgendamento" href="https://site.escolakarenabecia.com/dasheagles/agendamento" target="_blank" rel="noopener">Link de agendamento</a></div></div>
     <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuCalendario">Calendário mensal<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuCalendario" hidden><button class="sb-btn" type="button" id="btnConfigCalendario">Configurar calendário</button><a class="sb-btn" href="https://sites.karenabecia.com.br/dasheagles/alunos/" target="_blank" rel="noopener">Link do calendário ↗</a></div></div>
-    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuOutros">Outros<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuOutros" hidden><button class="sb-btn" type="button" id="btnTelaAniversariantes">Aniversariantes</button><button class="sb-btn" type="button" id="btnTelaBrindes">Brindes</button><button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button></div></div>
+    <div class="sb-grupo"><button class="sb-btn sb-expansor" type="button" aria-expanded="false" aria-controls="menuOutros">Outros<span aria-hidden="true">⌄</span></button><div class="sb-submenu" id="menuOutros" hidden><button class="sb-btn" type="button" id="btnTelaAniversariantes">Aniversariantes</button><a class="sb-btn" href="apresentacoes.html">Apresentações dos mentorados</a><button class="sb-btn" type="button" id="btnTelaBrindes">Brindes</button><button class="sb-btn" id="btnAbrirOutros" type="button">Outros mentorados</button></div></div>
     <div class="sb-secao">Indicadores e relatórios</div>
     <button class="sb-btn" id="btnTelaDashboard" type="button">Dashboard</button>
     <button class="sb-btn" id="btnRelatorioResumo" type="button">📄 Resumo do programa</button>
@@ -588,7 +589,7 @@
 
             <div class="bloco">
               <h3 class="secao">Registrar atendimento</h3>
-              <form id="formRegistro">
+              <form id="formRegistro"><div id="camposExtraEncontro" class="oculto"><p>A liberação soma encontros ao limite normal somente no mês escolhido. Ela não reserva um horário.</p><div class="linha-campos"><div class="campo"><label for="rMesExtra">Mês da liberação</label><input type="month" id="rMesExtra"></div><div class="campo"><label for="rQuantidadeExtra">Quantidade de encontros extras</label><input type="number" min="1" max="50" value="1" id="rQuantidadeExtra"></div></div></div>
                 <div class="linha-campos">
                   <div class="campo"><label for="rTipo">Tipo de atendimento</label><select id="rTipo"></select></div>
                   <div class="campo"><label for="rData">Data do atendimento</label><input type="date" id="rData"></div>
@@ -816,7 +817,7 @@
       <p id="cCepStatus" role="status" style="font-size:12px;margin-bottom:14px;color:#a3a8bd"></p>
       <div class="linha-campos"><div class="campo"><label for="cRua">Rua</label><input type="text" id="cRua" ></div><div class="campo"><label for="cBairro">Bairro</label><input type="text" id="cBairro" ></div></div>
       <div class="linha-campos"><div class="campo"><label for="cCidade">Cidade</label><input type="text" id="cCidade" ></div><div class="campo"><label for="cEstado">Estado (UF)</label><input type="text" id="cEstado" maxlength="2"></div></div>
-      <div class="linha-campos"><div class="campo"><label for="cNumero">Número</label><input type="text" id="cNumero" ></div><div class="campo"><label for="cComplemento">Complemento</label><input type="text" id="cComplemento" ></div></div>
+      <h3>Um pouco sobre você</h3><p>Informações opcionais para conhecermos você melhor.</p><div class="campo"><label for="familia_tem_filhos">Você tem filhos?</label><select id="familia_tem_filhos"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Prefiro não informar</option></select></div><div class="campo"><label for="familia_estado_civil">Estado civil</label><select id="familia_estado_civil"><option value="">Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Separado(a)</option><option>Divorciado(a)</option><option>Viúvo(a)</option><option>Prefiro não informar</option></select></div><div id="familia_filhos_bloco" hidden><label for="familia_quantidade_filhos">Quantidade de filhos</label><input id="familia_quantidade_filhos" type="number" min="1" max="99"><label for="familia_nomes_filhos">Nome dos filhos</label><input id="familia_nomes_filhos" maxlength="500" placeholder="Separe os nomes por vírgula"></div><h3>Quem seria nosso cúmplice? 🤫</h3><p>Se estivermos tramando uma surpresa para você, com quem da sua família podemos falar para pedir uma ajudinha?</p><div class="campo"><label for="familia_cumplice_nome">Nome do cúmplice</label><input id="familia_cumplice_nome" maxlength="500"></div><div class="campo"><label for="familia_cumplice_parentesco">Parentesco</label><input id="familia_cumplice_parentesco" maxlength="500"></div><div class="campo"><label for="familia_cumplice_contato">Telefone ou WhatsApp do cúmplice</label><input id="familia_cumplice_contato" maxlength="500"></div><div class="linha-campos"><div class="campo"><label for="cInstagram">Instagram</label><input type="text" id="cInstagram" placeholder="@perfil ou link"></div><div class="campo"><label for="cLinkedin">LinkedIn</label><input type="text" id="cLinkedin" placeholder="Link do perfil"></div></div><div class="linha-campos"><div class="campo"><label for="cNumero">Número</label><input type="text" id="cNumero" ></div><div class="campo"><label for="cComplemento">Complemento</label><input type="text" id="cComplemento" ></div></div>
       <div class="campo"><label for="cTipoEndereco">Tipo de endereço</label><select id="cTipoEndereco"><option value="">Selecione</option><option>Casa</option><option>Trabalho</option><option>Outro</option></select></div>
       <h3 class="secao" style="margin-top:22px">Outras informações</h3><div class="campo"><label for="dLinkGrupo">Link do grupo</label><input type="text" id="dLinkGrupo"></div>
 <div class="campo"><label for="dDetalhesPagamento">Observação do pagamento</label><input type="text" id="dDetalhesPagamento"></div>
@@ -968,7 +969,7 @@ const CONFIG = {
 
 const DEFAULT_ATENDENTES = ['Fabiola', 'Karen', 'Stefano', 'Jessica'];
 const DEFAULT_TIPOS = [
-  'Mensagem de acompanhamento', 'Encontro individual', 'Encontro em grupo', 'Envio de brinde', 'Ausência de encontro individual', 'Remarcação encontro individual',
+  'Liberação de encontro extra', 'Mensagem de acompanhamento', 'Encontro individual', 'Encontro em grupo', 'Envio de brinde', 'Ausência de encontro individual', 'Remarcação encontro individual',
   'Análise individual', 'Indicação de projeto', 'Mensagem de dúvida',
   'Agendamento de solicitações', 'Lançamento de pagamento', 'Outros'
 ];
@@ -1003,7 +1004,7 @@ function listaFerramentas() {
 /* ===================== Utilidades ===================== */
 async function chamarApi(action,params={},tentativasRestantes=0){
   if(!/^(listar|contar|verificar|validar)/.test(action))versaoDados++;
-  return requisicaoAdmin(action,params);
+  return atendimentoEmFila(action,params)?enfileirarAtendimento(action,params):requisicaoAdmin(action,params);
 }
 
 function diasDesde(dataStr) {
@@ -1216,6 +1217,7 @@ function lerCache() {
 }
 
 function aplicarDados(dados) {
+  queueMicrotask(recuperarFilaAtendimentos);
   versaoDados++;
   gravacoes = dados.gravacoes || [];
   agendaEncontros = dados.agenda_encontros || [];
@@ -1653,6 +1655,7 @@ document.getElementById('formRegistro').addEventListener('submit', async ev => {
   const m=mentoradoSelecionado,brinde=document.getElementById('rTipo').value==='Envio de brinde';
   const payload={id_mentorado:m.id_mentorado,nome_mentorado:m.nome,usuario:atendenteAtual(),tipo_atendimento:document.getElementById('rTipo').value,data:document.getElementById('rData').value||hojeISO(),data_agendamento:document.getElementById('rTipo').value===TIPO_AGENDAMENTO?document.getElementById('rDataAgendamento').value:'',observacao:document.getElementById('rObservacao').value};
   if(payload.tipo_atendimento===TIPO_AGENDAMENTO){payload.professora=document.getElementById('rProfessoraAgenda').value;payload.hora_inicio=document.getElementById('rHoraAgenda').value;if(!payload.data_agendamento||!payload.hora_inicio){alert('Informe data, professora e horário do agendamento.');return;}}
+  if(payload.tipo_atendimento==='Liberação de encontro extra'){payload.mes_extra=document.getElementById('rMesExtra').value;payload.quantidade_extra=Number(document.getElementById('rQuantidadeExtra').value);if(!payload.mes_extra||!Number.isInteger(payload.quantidade_extra)||payload.quantidade_extra<1||payload.quantidade_extra>50){alert('Informe o mês e a quantidade de encontros extras.');return;}}
   if(brinde){Object.assign(payload,{motivo_brinde:document.getElementById('rMotivoBrinde').value.trim(),codigo_rastreio:document.getElementById('rCodigoRastreio').value.trim(),data_envio:document.getElementById('rDataEnvio').value});if(!payload.motivo_brinde||!payload.data_envio){alert('Informe o motivo e a data de envio.');return;}payload.data=payload.data_envio;}
   registrarOtimista(payload);
   document.getElementById('rObservacao').value='';document.getElementById('rDataAgendamento').value='';
@@ -1897,7 +1900,7 @@ document.getElementById('formMentorado').addEventListener('submit', async (ev) =
 /* ===================== Lançamento em massa ===================== */
 function prepararTelaMassa() {
   preencherSelectTipos(document.getElementById('massaTipo'));
-  [...document.getElementById('massaTipo').options].filter(o=>o.value==='Envio de brinde'||o.value===TIPO_AGENDAMENTO).forEach(o=>o.remove());
+  [...document.getElementById('massaTipo').options].filter(o=>o.value==='Liberação de encontro extra'||o.value==='Envio de brinde'||o.value===TIPO_AGENDAMENTO).forEach(o=>o.remove());
   document.getElementById('massaData').value = hojeISO();
   const ativos = mentoradosAtivosOrdenados('');
   document.getElementById('listaCheagemMassa').innerHTML = ativos.map(m => `
@@ -2139,7 +2142,7 @@ document.querySelectorAll('.prof-config').forEach(card => {
   });
 });
 
-const CAMPOS_ENDERECO={cep:'cCep',rua:'cRua',bairro:'cBairro',cidade:'cCidade',estado:'cEstado',numero:'cNumero',complemento:'cComplemento',tipo_endereco:'cTipoEndereco'};
+const CAMPOS_ENDERECO={tem_filhos:'familia_tem_filhos',quantidade_filhos:'familia_quantidade_filhos',nomes_filhos:'familia_nomes_filhos',estado_civil:'familia_estado_civil',cumplice_nome:'familia_cumplice_nome',cumplice_parentesco:'familia_cumplice_parentesco',cumplice_contato:'familia_cumplice_contato',instagram:'cInstagram',linkedin:'cLinkedin',cep:'cCep',rua:'cRua',bairro:'cBairro',cidade:'cCidade',estado:'cEstado',numero:'cNumero',complemento:'cComplemento',tipo_endereco:'cTipoEndereco'};
 let cepRequest=null, cadastroFocus=null;
 const modalCadastro=document.getElementById('modalCadastroCompleto');
 async function salvarCadastroApi(action,payload){
@@ -2148,10 +2151,12 @@ async function salvarCadastroApi(action,payload){
   return resposta;
 }
 function enderecoPayload(){return Object.fromEntries(Object.entries(CAMPOS_ENDERECO).map(([key,id])=>[key,document.getElementById(id).value.trim()]));}
+function alternarFilhosCadastro(){const sim=document.getElementById('familia_tem_filhos').value==='Sim';document.getElementById('familia_filhos_bloco').hidden=!sim;for(const k of ['quantidade_filhos','nomes_filhos']){const c=document.getElementById('familia_'+k);c.required=sim;c.disabled=!sim;}}
+document.getElementById('familia_tem_filhos').onchange=alternarFilhosCadastro;
 function preencherCadastroExtra(m){
   if(cepRequest)cepRequest.abort();
   Object.entries(CAMPOS_ENDERECO).forEach(([key,id])=>document.getElementById(id).value=m[key]||'');
-  document.getElementById('cCepStatus').textContent='';
+  alternarFilhosCadastro();document.getElementById('cCepStatus').textContent='';
   document.getElementById('dDataInicioCiclo').value=String(m.data_inicio_ciclo||'').split('T')[0];
   document.getElementById('dAniversario').value=String(m.aniversario||'').split('T')[0];
   document.getElementById('rMotivoBrinde').value='';
@@ -2206,6 +2211,7 @@ document.getElementById('formCadastroCompleto').addEventListener('submit',async 
   fecharCadastroCompleto();
 });
 function atualizarCamposBrinde(){
+ document.getElementById('camposExtraEncontro').classList.toggle('oculto',document.getElementById('rTipo').value!=='Liberação de encontro extra');
   const ativo=document.getElementById('rTipo').value==='Envio de brinde';
   document.getElementById('camposBrinde').classList.toggle('oculto',!ativo);
   ['rMotivoBrinde','rCodigoRastreio','rDataEnvio'].forEach(id=>{const el=document.getElementById(id);el.disabled=!ativo;el.required=ativo&&id!=='rCodigoRastreio';});
@@ -2283,6 +2289,22 @@ function gravarAlteracaoOtimista(objeto,payload,action,idMentorado,descricao){
     gravacoesPorObjeto.delete(objeto);
   }
 }
+
+const filaAtendimentos=[];let filaRodando=false,filaRestaurada=false;
+function atendimentoEmFila(action,p){return ['criarRegistro','criarRegistrosEmMassa'].includes(action)&&!['Agendamento de solicitações','Encontro individual','Ausência de encontro individual','Remarcação encontro individual','Envio de brinde'].includes(p.tipo_atendimento);}
+function guardarFila(){sessionStorage.setItem('dh_fila_atendimentos',JSON.stringify(filaAtendimentos.map(t=>({action:t.action,params:t.params}))));}
+function avisoFila(erro=''){let box=document.getElementById('avisoFilaAtendimentos');if(!box){box=document.createElement('div');box.id='avisoFilaAtendimentos';box.style.cssText='position:fixed;bottom:16px;right:16px;z-index:2000;max-width:420px;padding:14px;background:#171a24;color:#fff;border:1px solid #FF7000;border-radius:10px';document.body.append(box);}box.replaceChildren();box.hidden=!filaAtendimentos.length;if(box.hidden)return;const txt=document.createElement('span');txt.textContent=erro?('Envio pausado. '+erro+' Os registros continuam guardados nesta aba.'):filaAtendimentos.length+' atendimento(s) aguardando confirmação. Não feche esta aba.';box.append(txt);if(erro){const btn=document.createElement('button');btn.textContent='Tentar novamente';btn.onclick=processarFilaAtendimentos;box.append(btn);}}
+function enfileirarAtendimento(action,params){return new Promise((resolve,reject)=>{const tarefa={action,params:{...params,operacao_atendimento:params.operacao_atendimento||crypto.randomUUID()},resolve};filaAtendimentos.push(tarefa);try{guardarFila();}catch(e){filaAtendimentos.pop();reject(Error('Não foi possível guardar o registro nesta aba. Libere espaço no navegador e tente novamente.'));return;}processarFilaAtendimentos();});}
+async function processarFilaAtendimentos(){if(filaRodando)return;filaRodando=true;let restaurados=false;
+try{try{const compat=await requisicaoAdmin('verificarFilaAtendimentos');if(!compat.fila_segura)throw Error('Publique o Code.gs atualizado.');}catch(e){avisoFila('Confira a implantação do Code.gs. '+e.message);return;}while(filaAtendimentos.length){avisoFila();const t=filaAtendimentos[0];let resp;
+try{resp=await requisicaoAdmin(t.action,t.params);if(!resp.fila_segura)throw Error('Publique o Code.gs atualizado antes de continuar.');}
+catch(e){avisoFila(e.message);return;}
+filaAtendimentos.shift();guardarFila();if(t.resolve)t.resolve(resp);else restaurados=true;
+}}
+finally{filaRodando=false;if(!filaAtendimentos.length){avisoFila();if(restaurados)carregarDados();}}}
+function recuperarFilaAtendimentos(){if(filaRestaurada)return;filaRestaurada=true;try{const itens=JSON.parse(sessionStorage.getItem('dh_fila_atendimentos')||'[]');for(const t of itens)if(atendimentoEmFila(t.action,t.params)&&t.params.operacao_atendimento)filaAtendimentos.push(t);if(filaAtendimentos.length)processarFilaAtendimentos();}catch(e){avisarFalha('Não foi possível recuperar a fila local: '+e.message);}}
+window.addEventListener('beforeunload',e=>{if(filaAtendimentos.length){e.preventDefault();e.returnValue='';}});
+
 function registrarOtimista(payload){
   const agora=new Date().toISOString();
   const registro={id_registro:'reg_temp_'+crypto.randomUUID(),...payload,criado_em:agora,atualizado_em:agora,_pendente:true};
@@ -2660,7 +2682,7 @@ function mostrarLoginAdmin(){document.getElementById('loginAdminPortal').hidden=
 function prepararLoginAdmin(){if(sessionStorage.getItem('dh_admin_token')){document.getElementById('loginAdminPortal').style.display='none';iniciarApp();}else mostrarLoginAdmin();}
 document.getElementById('formLoginAdmin').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button');btn.disabled=true;document.getElementById('erroLoginAdmin').textContent='';try{const d=await requisicaoAdmin('adminLogin',{senha:document.getElementById('senhaAdminPortal').value});sessionStorage.setItem('dh_admin_token',d.token);document.getElementById('senhaAdminPortal').value='';document.getElementById('loginAdminPortal').style.display='none';if(!adminJaCarregado)await iniciarApp();}catch(err){document.getElementById('erroLoginAdmin').textContent=err.message;}finally{btn.disabled=false;}};
 function renderizarGravacoes(id){const box=document.getElementById('detGravacoes');box.replaceChildren();const lista=gravacoes.filter(g=>g.id_mentorado===id).sort((a,b)=>String(b.data).localeCompare(String(a.data)));if(!lista.length){box.textContent='Nenhuma gravação cadastrada.';return;}const tabela=document.createElement('table');tabela.innerHTML='<thead><tr><th>Data</th><th>Gravação</th><th>Transcrição</th><th></th></tr></thead>';const body=tabela.createTBody();for(const g of lista){const row=body.insertRow();row.insertCell().textContent=formatarData(g.data);for(const [campo,nome] of [['link_gravacao','Abrir gravação'],['link_transcricao','Abrir transcrição']]){const td=row.insertCell();if(/^https:\/\//.test(g[campo]||'')){const a=document.createElement('a');a.href=g[campo];a.textContent=nome;a.target='_blank';a.rel='noopener';td.append(a);}else td.textContent='—';}const btn=document.createElement('button');btn.type='button';btn.className='btn-secundario';btn.textContent='Editar';btn.disabled=!!g._pendente;btn.onclick=()=>abrirGravacao(g);row.insertCell().append(btn);}box.append(tabela);}
-function abrirGravacao(g=null,encontro=null){gravacaoEditando=g;encontroGravacao=encontro;mentoradoGravacao=encontro?{id_mentorado:encontro.id_mentorado,nome:encontro.nome_aluno}:mentoradoSelecionado;if(!mentoradoGravacao)return;document.getElementById('gravData').value=g?.data||encontro?.data||hojeISO();document.getElementById('gravData').disabled=!!encontro;document.getElementById('gravLink').value=g?.link_gravacao||'';document.getElementById('gravTranscricao').value=g?.link_transcricao||'';document.getElementById('gravErro').textContent='';document.getElementById('tituloGravacao').textContent=encontro?'Concluir encontro — '+encontro.nome_aluno:'Gravação do encontro';document.getElementById('dialogGravacao').showModal();}
+function abrirGravacao(g=null,encontro=null){gravacaoEditando=g;encontroGravacao=encontro;mentoradoGravacao=encontro?{id_mentorado:encontro.id_mentorado,nome:encontro.nome_aluno}:mentoradoSelecionado;if(!mentoradoGravacao)return;document.getElementById('gravData').value=g?.data||encontro?.data||hojeISO();document.getElementById('gravData').disabled=!!encontro;document.getElementById('gravLink').value=g?.link_gravacao||'';document.getElementById('gravTranscricao').value=g?.link_transcricao||'';document.getElementById('gravErro').textContent='';document.getElementById('tituloGravacao').textContent=encontro?'Concluir encontro — '+encontro.nome_aluno:'Gravação do encontro';document.getElementById('dialogGravacao').showModal();centralizarGravacao();}
 document.getElementById('btnNovaGravacao').onclick=()=>abrirGravacao();document.getElementById('fecharGravacao').onclick=()=>document.getElementById('dialogGravacao').close();
 
 document.getElementById('formGravacao').onsubmit=e=>{e.preventDefault();const p={id_gravacao:gravacaoEditando?.id_gravacao||'grav_'+crypto.randomUUID(),id_mentorado:mentoradoGravacao.id_mentorado,data:document.getElementById('gravData').value,link_gravacao:document.getElementById('gravLink').value.trim(),link_transcricao:document.getElementById('gravTranscricao').value.trim(),id_agendamento:encontroGravacao?.id_agendamento||gravacaoEditando?.id_agendamento||''};if(!/^https:\/\//.test(p.link_gravacao)||(p.link_transcricao&&!/^https:\/\//.test(p.link_transcricao))){document.getElementById('gravErro').textContent='Informe links HTTPS válidos.';return;}
@@ -2690,6 +2712,10 @@ document.getElementById('buscaEncontros').addEventListener('input',()=>{
 document.addEventListener('click',e=>{if(!e.target.closest('#telaEncontros .autocomplete-wrap'))document.getElementById('listaAutocompleteEncontros').classList.remove('aberta');});
 
 prepararLoginAdmin();
+
+function centralizarGravacao(){const d=document.getElementById('dialogGravacao');d.style.position='fixed';d.style.margin='0';d.style.transform='none';const r=d.getBoundingClientRect();d.style.left=Math.max(8,(innerWidth-r.width)/2)+'px';d.style.top=Math.max(8,(innerHeight-r.height)/2)+'px';d.style.right='auto';d.style.bottom='auto';}
+(function(){const d=document.getElementById('dialogGravacao'),handle=document.getElementById('tituloGravacao');handle.style.cursor='move';handle.style.touchAction='none';let drag=null;handle.addEventListener('pointerdown',e=>{if(e.button!==0)return;const r=d.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};handle.setPointerCapture(e.pointerId);e.preventDefault();});handle.addEventListener('pointermove',e=>{if(!drag)return;const r=d.getBoundingClientRect();d.style.left=Math.max(0,Math.min(innerWidth-r.width,e.clientX-drag.x))+'px';d.style.top=Math.max(0,Math.min(innerHeight-r.height,e.clientY-drag.y))+'px';});for(const event of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(event,()=>drag=null);window.addEventListener('resize',()=>{if(d.open)centralizarGravacao();});})();
+
 </script>
 
 </body>
