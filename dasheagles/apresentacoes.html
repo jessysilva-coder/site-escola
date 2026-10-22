@@ -1,3 +1,37 @@
-<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apresentações dos mentorados</title><style>body{font:15px/1.6 Arial;background:#f0f0f0;color:#020617;margin:32px}main{max-width:1200px;margin:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}article{background:white;padding:16px;border-radius:16px;min-width:0}iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}button{padding:12px;border:0;background:#ff7000;border-radius:8px}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.grid{grid-template-columns:1fr}}</style><main><h1>Apresentações dos mentorados</h1><p>Mentorados ativos, em ordem alfabética. Use a conta Google da equipe para assistir.</p><button id="atualizar">Atualizar</button> <a href="acompanhamento.html">Voltar ao acompanhamento</a><p id="status" role="status"></p><div id="galeria" class="grid"></div></main><script>
-async function carregar(){const status=document.getElementById('status'),token=sessionStorage.getItem('dh_admin_token');if(!token){status.textContent='Entre no acompanhamento e abra esta página pelo menu Outros.';return;}status.textContent='Carregando…';try{const res=await fetch('https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec',{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'listarVideosApresentacao',token})}),d=await res.json();if(d.erro)throw Error(d.erro);const box=document.getElementById('galeria');box.replaceChildren();for(const m of d.colegas){const card=document.createElement('article'),name=document.createElement('h2'),frame=document.createElement('iframe'),link=document.createElement('a');name.textContent=m.nome;frame.title='Apresentação de '+m.nome;frame.loading='lazy';frame.allow='fullscreen';frame.src='https://drive.google.com/file/d/'+encodeURIComponent(m.video_id)+'/preview';link.href='https://drive.google.com/file/d/'+encodeURIComponent(m.video_id)+'/view';link.target='_blank';link.rel='noopener';link.textContent='Abrir no Drive';card.append(name,frame,link);box.append(card);}status.textContent=d.colegas.length?'':'Nenhuma apresentação cadastrada.';}catch(e){status.textContent=e.message;}}
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apresentações dos mentorados</title><style>body{font:15px/1.6 Arial;background:#f0f0f0;color:#020617;margin:32px}main{max-width:1200px;margin:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}article{background:white;padding:16px;border-radius:16px;min-width:0}iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}button{padding:12px;border:0;background:#ff7000;border-radius:8px}@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.grid{grid-template-columns:1fr}}</style><main><h1>Apresentações dos mentorados</h1><p>Mentorados ativos, em ordem alfabética. Use a conta Google da equipe para assistir.</p><button id="atualizar">Atualizar</button> <a href="acompanhamento.html">Voltar ao acompanhamento</a><p id="status" role="status"></p><div id="galeria" class="grid"></div></main><style>
+.video-expandir{display:block;margin:12px 0 6px;padding:10px 14px;border:0;border-radius:9px;background:#ff7000;color:#111;font:600 14px/1.4 Arial;cursor:pointer}
+.video-dialog{box-sizing:border-box;position:fixed;inset:0;margin:auto;width:min(1000px,94vw);max-width:94vw;max-height:94dvh;padding:20px;border:1px solid #e2e8f0;border-radius:18px;background:#fff;color:#020617;overflow:auto}
+.video-dialog::backdrop{background:rgba(2,6,23,.72)}
+.video-dialog header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.video-dialog h2{margin:0;font:600 20px/1.4 Arial;overflow-wrap:anywhere}
+.video-dialog button{flex-shrink:0;cursor:pointer;padding:10px 14px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#111}
+.video-dialog iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
+.video-dialog a{display:inline-block;margin-top:12px}
+</style><script>
+function criarBotaoAmpliarVideo(frame,nome){
+  const botao=document.createElement('button');
+  botao.type='button';botao.className='video-expandir';botao.textContent='Ampliar vídeo';
+  botao.setAttribute('aria-label','Ampliar apresentação de '+nome);
+  frame.allow='autoplay; fullscreen; picture-in-picture';frame.allowFullscreen=true;
+  botao.addEventListener('click',()=>{
+    const dialog=document.createElement('dialog');dialog.className='video-dialog';
+    dialog.setAttribute('aria-label','Apresentação de '+nome);
+    const header=document.createElement('header'),titulo=document.createElement('h2'),fechar=document.createElement('button');
+    titulo.textContent=nome;fechar.type='button';fechar.textContent='Fechar';
+    header.append(titulo,fechar);
+    const player=document.createElement('iframe');player.title='Apresentação de '+nome;
+    player.allow='autoplay; fullscreen; picture-in-picture';player.allowFullscreen=true;player.src=frame.src;
+    const link=document.createElement('a');link.href=frame.src.replace(/\/preview$/, '/view');link.target='_blank';link.rel='noopener';link.textContent='Abrir no Drive';
+    dialog.append(header,player,link);document.body.append(dialog);
+    // Interrompe uma possível reprodução no card antes de abrir o player maior.
+    frame.src=frame.src;
+    fechar.onclick=()=>dialog.close();
+    dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
+    dialog.addEventListener('close',()=>{player.src='about:blank';dialog.remove();botao.focus();},{once:true});
+    dialog.showModal();fechar.focus();
+  });
+  return botao;
+}
+</script><script>
+async function carregar(){const status=document.getElementById('status'),token=sessionStorage.getItem('dh_admin_token');if(!token){status.textContent='Entre no acompanhamento e abra esta página pelo menu Outros.';return;}status.textContent='Carregando…';try{const res=await fetch('https://script.google.com/macros/s/AKfycbyPEnqp0v2d8f6njitEMR6O9gH7AxghHxmBmKGayEowh---7-b7-Z6I2zrg8LTk55BI2Q/exec',{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'listarVideosApresentacao',token})}),d=await res.json();if(d.erro)throw Error(d.erro);const box=document.getElementById('galeria');box.replaceChildren();for(const m of d.colegas){const card=document.createElement('article'),name=document.createElement('h2'),frame=document.createElement('iframe'),link=document.createElement('a');name.textContent=m.nome;frame.title='Apresentação de '+m.nome;frame.loading='lazy';frame.allow='fullscreen';frame.src='https://drive.google.com/file/d/'+encodeURIComponent(m.video_id)+'/preview';link.href='https://drive.google.com/file/d/'+encodeURIComponent(m.video_id)+'/view';link.target='_blank';link.rel='noopener';link.textContent='Abrir no Drive';card.append(name,frame,criarBotaoAmpliarVideo(frame,m.nome),link);box.append(card);}status.textContent=d.colegas.length?'':'Nenhuma apresentação cadastrada.';}catch(e){status.textContent=e.message;}}
 document.getElementById('atualizar').onclick=carregar;carregar();</script></html>

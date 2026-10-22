@@ -402,11 +402,22 @@
 .cal-config-grid{grid-template-columns:minmax(0,1fr);gap:22px}.cal-preview-bloco{position:static;top:auto}.cal-config-grid>.bloco{padding:24px}.cal-tabela th:first-child{width:24%}.cal-tabela th:nth-child(2){width:48%}.cal-tabela input,.cal-tabela select{font-size:13px;padding:11px 10px}.cal-tabela th,.cal-tabela td{padding:9px 6px}@media(max-width:600px){.cal-config-grid>.bloco{padding:16px}}
 .sb-btn{transition:background-color .18s ease,color .18s ease}.sb-submenu{overflow:hidden;transition:max-height .22s ease,opacity .18s ease;margin-bottom:0}.sb-expansor>span{transition:transform .22s ease}.sb-submenu .sb-btn{margin-bottom:4px}.sb-submenu[hidden]{display:none}#inicioLoading{position:fixed;inset:0;z-index:200;background:#10121a;display:grid;place-items:center;padding:24px}#inicioLoading[hidden]{display:none}.inicio-caixa{max-width:480px;text-align:center;color:#c7cbe0}.inicio-caixa h2{font:700 23px Montserrat;color:#fff;margin-bottom:14px}.inicio-caixa p{font-size:13px;line-height:1.7}.inicio-spinner{width:34px;height:34px;border:3px solid #303548;border-top-color:var(--laranja);border-radius:50%;animation:inicioGiro .8s linear infinite;margin:0 auto 22px}@keyframes inicioGiro{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.sb-btn,.sb-submenu,.sb-expansor>span{transition:none}}
 .modulo-pendente>:not(.modulo-status){display:none!important}.modulo-status{padding:32px;background:var(--escuro-card);border:1px solid var(--escuro-borda);border-radius:14px;color:#c7cbe0;font-size:13px}.modulo-status p{margin-bottom:14px}.modulo-status[hidden]{display:none}
-#dialogGravacao{max-height:calc(100dvh - 24px);max-width:calc(100vw - 24px);overflow:auto;width:520px}#tituloGravacao{user-select:none}
+#dialogGravacao{background:#1c1f2b;color:#fff;border:2px solid #45495a;border-radius:20px;padding:32px;width:720px;max-height:calc(100dvh - 32px);max-width:calc(100vw - 32px);overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+#dialogGravacao::backdrop{background:rgba(5,7,14,.72)}
+#tituloGravacao{user-select:none;font-size:24px;line-height:1.35;margin:0 0 26px;padding-bottom:18px;border-bottom:1px solid #45495a;overflow-wrap:anywhere}
+#formGravacao .campo{margin-bottom:22px}
+#formGravacao .campo label{margin-bottom:9px}
+#formGravacao .campo input{min-height:48px;padding:12px 14px;font-size:15px}
+#gravErro:empty{display:none}
+#gravErro:not(:empty){margin:0 0 18px;color:#ff9b9b}
+#formGravacao .gravacao-acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid #45495a}
+#formGravacao .gravacao-acoes button{min-height:46px;padding:12px 24px;font-size:14px;border-radius:10px}
+#filtroProfessoraEncontros{padding:11px 14px;min-height:44px;max-width:100%;background:#0f1119;color:#fff;border:1px solid #45495a;border-radius:9px;font:inherit}
+@media(max-width:560px){#dialogGravacao{padding:22px;border-radius:16px}#tituloGravacao{font-size:21px;margin-bottom:22px}}
 </style>
 </head>
 <body><div id="loginAdminPortal" style="position:fixed;inset:0;background:#12141c;z-index:100000;display:grid;place-items:center" hidden><form id="formLoginAdmin" class="bloco" style="width:min(420px,90vw)"><h2>Acompanhamento</h2><p>Entre com a senha administrativa do sistema.</p><label for="senhaAdminPortal">Senha</label><input id="senhaAdminPortal" type="password" autocomplete="current-password" required><button type="submit" class="btn-salvar">Entrar</button><p id="erroLoginAdmin" role="status"></p></form></div>
-<dialog id="dialogGravacao" style="background:#1c1f2b;color:#fff;border:1px solid #45495a;border-radius:14px;width:min(560px,90vw)"><form id="formGravacao"><h2 id="tituloGravacao">Gravação do encontro</h2><div class="campo"><label for="gravData">Data do encontro</label><input id="gravData" type="date" required></div><div class="campo"><label for="gravLink">Link da gravação</label><input id="gravLink" type="url" placeholder="https://..." required></div><div class="campo"><label for="gravTranscricao">Link da transcrição (opcional)</label><input id="gravTranscricao" type="url" placeholder="https://..."></div><p id="gravErro" role="status"></p><button class="btn-salvar" type="submit">Salvar</button> <button class="btn-secundario" type="button" id="fecharGravacao">Cancelar</button></form></dialog>
+<dialog id="dialogGravacao" aria-labelledby="tituloGravacao"><form id="formGravacao"><h2 id="tituloGravacao">Gravação do encontro</h2><div class="campo"><label for="gravData">Data do encontro</label><input id="gravData" type="date" required></div><label id="opcaoNaoGravado" hidden style="display:flex;gap:10px;align-items:center;margin-bottom:22px"><input type="checkbox" id="gravNaoGravado"> Encontro não gravado</label><div class="campo"><label for="gravLink">Link da gravação</label><input id="gravLink" type="url" placeholder="https://..." required></div><div class="campo"><label for="gravTranscricao">Link da transcrição (opcional)</label><input id="gravTranscricao" type="url" placeholder="https://..."></div><p id="gravErro" role="status"></p><div class="gravacao-acoes"><button class="btn-salvar" type="submit">Salvar</button><button class="btn-secundario" type="button" id="fecharGravacao">Cancelar</button></div></form></dialog>
 <div id="inicioLoading" role="status"><div class="inicio-caixa"><div class="inicio-spinner" id="inicioSpinner"></div><h2>Carregando seu acompanhamento</h2><p id="inicioMensagem">Carregando resumo e dados dos mentorados…</p><button id="inicioTentar" type="button" class="btn-salvar" hidden>Tentar novamente</button></div></div>
 
 
@@ -594,15 +605,29 @@
                   <div class="campo"><label for="rTipo">Tipo de atendimento</label><select id="rTipo"></select></div>
                   <div class="campo"><label for="rData">Data do atendimento</label><input type="date" id="rData"></div>
                 </div>
-                <div class="campo oculto" id="campoDataAgendamento"><label for="rDataAgendamento">Data do próximo encontro agendado</label><input type="date" id="rDataAgendamento"><div class="linha-campos"><div class="campo"><label for="rProfessoraAgenda">Professora</label><select id="rProfessoraAgenda"><option value="Karen Abecia">Karen Abecia</option><option value="Jéssica Gleiciane">Jéssica Gleiciane</option></select></div><div class="campo"><label for="rHoraAgenda">Horário de início</label><input type="time" id="rHoraAgenda"></div></div></div>
+                <div class="campo oculto" id="campoDataAgendamento"><label for="rDataAgendamento">Data do próximo encontro agendado</label><input type="date" id="rDataAgendamento"><div class="linha-campos"><div class="campo"><label for="rProfessoraAgenda">Professora</label><select id="rProfessoraAgenda"><option value="Karen Abecia">Karen Abecia</option><option value="Jéssica Gleiciane">Jessica Gleiciane</option></select></div><div class="campo"><label for="rHoraAgenda">Horário de início</label><input type="time" id="rHoraAgenda"></div></div></div>
                 <div id="camposBrinde" class="oculto"><div class="linha-campos"><div class="campo"><label for="rDataEnvio">Data do envio</label><input type="date" id="rDataEnvio" disabled></div><div class="campo"><label for="rCodigoRastreio">Código de rastreio</label><input type="text" id="rCodigoRastreio" disabled></div></div><div class="campo"><label for="rMotivoBrinde">Motivo do brinde</label><input type="text" id="rMotivoBrinde" disabled></div></div><div class="campo"><label for="rObservacao">Observação</label><textarea id="rObservacao"></textarea></div>
                 <button type="submit" class="btn-salvar">Registrar</button>
               </form>
             </div>
 
-            <div class="bloco"><h3 class="secao">Gravações dos encontros <button class="btn-secundario" type="button" id="btnNovaGravacao">+ Incluir gravação</button></h3><div id="detGravacoes"></div></div>
+<div class="bloco">
+              <h3 class="secao">Últimos registros</h3>
+              <ul class="lista-registros" id="detUltimosRegistros"></ul>
+              <div style="margin-top:14px;">
+                <button class="btn-secundario" id="btnHistoricoCompleto" type="button">Ver histórico completo</button>
+              </div>
+            </div>
+<div class="bloco"><h3 class="secao">Gravações dos encontros <button class="btn-secundario" type="button" id="btnNovaGravacao">+ Incluir gravação</button></h3><div id="detGravacoes"></div></div>
 
+          </div>
+
+          <div>
             <div class="bloco">
+              <h3 class="secao">Indicadores</h3>
+              <div id="detIndicadores"></div>
+            </div>
+<div class="bloco">
               <h3 class="secao" style="display:flex; justify-content:space-between; align-items:center;">
                 <span>Projetos</span>
                 <button class="btn-secundario" id="btnNovoProjeto" type="button" style="text-transform:none; font-size:12px;">+ Novo projeto</button>
@@ -617,27 +642,12 @@
               </h3>
               <ul class="lista-indicacoes" id="detIndicacoes"></ul>
             </div>
-
-            <div class="bloco">
-              <h3 class="secao">Últimos registros</h3>
-              <ul class="lista-registros" id="detUltimosRegistros"></ul>
-              <div style="margin-top:14px;">
-                <button class="btn-secundario" id="btnHistoricoCompleto" type="button">Ver histórico completo</button>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="bloco">
-              <h3 class="secao">Indicadores</h3>
-              <div id="detIndicadores"></div>
-            </div>
           </div>
         </div>
       </section>
 
       <!-- ===================== TELA: OUTROS MENTORADOS ===================== -->
-      <section id="telaEncontros" class="oculto"><div class="detalhe-topo"><h2>Próximos encontros individuais</h2></div><p class="agenda-ajuda">Confira o resultado de cada encontro. Ausência consome a vaga do mês; remarcação libera essa vaga para novo agendamento no mesmo mês.</p><div class="toolbar"><div class="autocomplete-wrap"><input type="search" id="buscaEncontros" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar mentorado" autocomplete="off"><div class="autocomplete-lista" id="listaAutocompleteEncontros"></div></div><button type="button" class="btn-secundario" id="encontrosAtualizar">Atualizar</button></div><p id="encontrosStatus" role="status"></p><div style="overflow-x:auto"><table><thead><tr><th>Data do encontro</th><th>Mentorado</th><th>Professora</th><th>Status</th></tr></thead><tbody id="encontrosTabela"></tbody></table></div></section>
+      <section id="telaEncontros" class="oculto"><div class="detalhe-topo"><h2>Próximos encontros individuais</h2></div><p class="agenda-ajuda">Confira o resultado de cada encontro. Ausência consome a vaga do mês; remarcação libera essa vaga para novo agendamento no mesmo mês.</p><div class="toolbar"><div class="autocomplete-wrap"><input type="search" id="buscaEncontros" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar mentorado" autocomplete="off"><div class="autocomplete-lista" id="listaAutocompleteEncontros"></div></div><select id="filtroProfessoraEncontros" aria-label="Filtrar por professora"><option value="">Todas as professoras</option></select><button type="button" class="btn-secundario" id="encontrosAtualizar">Atualizar</button></div><p id="encontrosStatus" role="status"></p><div style="overflow-x:auto"><table><thead><tr><th>Data do encontro</th><th>Mentorado</th><th>Professora</th><th>Status</th></tr></thead><tbody id="encontrosTabela"></tbody></table></div></section>
 <section id="telaOutros" class="oculto">
         <div class="detalhe-topo"><h2>Outros mentorados (inativos e bloqueados)</h2></div>
         <div class="toolbar">
@@ -1683,56 +1693,17 @@ function renderizarHistorico() {
 }
 
 /* ===================== Exportar PDF do mentorado ===================== */
-document.getElementById('btnExportarPDF').addEventListener('click', () => {
-  if (!mentoradoSelecionado) return;
-  const m = mentoradoSelecionado;
-  const regs = registrosDoMentorado(m.id_mentorado);
-  const linhas = regs.map(r => `
-    <tr>
-      <td style="padding:6px; border-bottom:1px solid #444;">${formatarData(r.data)}</td>
-      <td style="padding:6px; border-bottom:1px solid #444;">${r.usuario || '—'}</td>
-      <td style="padding:6px; border-bottom:1px solid #444;">${r.tipo_atendimento}</td>
-      <td style="padding:6px; border-bottom:1px solid #444;">${r.observacao || '—'}</td>
-    </tr>`).join('');
-
-  document.getElementById('areaImpressao').innerHTML = `
-    <div style="font-family:Arial, sans-serif; padding:24px; background:#12141c; color:#fff;">
-      <h1 style="color:#FF7000; font-size:20px; margin-bottom:4px;">Ficha do Mentorado — ${m.nome}</h1>
-      <p style="color:#a3a8bd; font-size:12px; margin-bottom:18px;">DashEagles · Escola Karen Abecia</p>
-
-      <h2 style="font-size:14px; border-bottom:1px solid #444; padding-bottom:6px; margin-bottom:10px;">Dados cadastrais</h2>
-      <table style="width:100%; font-size:12px; margin-bottom:20px;">
-        <tr><td style="padding:4px; color:#a3a8bd; width:200px;">E-mail</td><td style="padding:4px;">${m.email || '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Telefone</td><td style="padding:4px;">${m.telefone || '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Status</td><td style="padding:4px;">${m.status}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Fim do ciclo</td><td style="padding:4px;">${formatarData(m.data_fim_ciclo)}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Duração do ciclo</td><td style="padding:4px;">${m.duracao_ciclo_meses ? m.duracao_ciclo_meses + ' meses' : '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Total de ciclos contínuos</td><td style="padding:4px;">${m.total_ciclos || '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Disponível para projetos</td><td style="padding:4px;">${m.disponivel_projetos || 'Não'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Área de membros</td><td style="padding:4px;">${m.area_membros || 'Não'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Status do pagamento</td><td style="padding:4px;">${m.status_pagamento || 'Não quitado'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Observação do pagamento</td><td style="padding:4px;">${m.detalhes_pagamento || '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd;">Link do grupo</td><td style="padding:4px;">${m.link_grupo || '—'}</td></tr>
-        <tr><td style="padding:4px; color:#a3a8bd; vertical-align:top;">Observação inicial</td><td style="padding:4px;">${m.observacao_inicial || '—'}</td></tr>
-      </table>
-
-      <h2 style="font-size:14px; border-bottom:1px solid #444; padding-bottom:6px; margin-bottom:10px;">Histórico completo de atendimentos</h2>
-      <table style="width:100%; border-collapse:collapse; font-size:12px;">
-        <thead><tr>
-          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Data</th>
-          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Usuário</th>
-          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Tipo</th>
-          <th style="text-align:left; padding:6px; border-bottom:2px solid #FF7000; color:#FF7000;">Observação</th>
-        </tr></thead>
-        <tbody>${linhas || '<tr><td colspan="4" style="padding:6px;">Nenhum atendimento registrado.</td></tr>'}</tbody>
-      </table>
-
-      <p style="margin-top:30px; font-size:10px; color:#7c8199; border-top:1px solid #444; padding-top:10px;">
-        PDF gerado por ${atendenteAtual() || 'usuário não identificado'} em ${agoraLegivel()}
-      </p>
-    </div>
-  `;
-  window.print();
+function escaparPdf(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.getElementById('btnExportarPDF').addEventListener('click',()=>{
+ if(!mentoradoSelecionado)return;
+ const m=mentoradoSelecionado,regs=registrosDoMentorado(m.id_mentorado);
+ const campos={nome:'Nome',email:'E-mail',telefone:'Telefone',aniversario:'Aniversário',status:'Status',data_inicio_ciclo:'Início do ciclo',data_fim_ciclo:'Fim do ciclo',duracao_ciclo_meses:'Duração do ciclo (meses)',total_ciclos:'Total de ciclos contínuos',status_pagamento:'Pagamento',disponivel_projetos:'Disponível para projetos',area_membros:'Área de membros',cep:'CEP',rua:'Rua',numero:'Número',complemento:'Complemento',bairro:'Bairro',cidade:'Cidade',estado:'Estado',tipo_endereco:'Tipo de endereço',instagram:'Instagram',linkedin:'LinkedIn',tem_filhos:'Tem filhos',quantidade_filhos:'Quantidade de filhos',nomes_filhos:'Nome dos filhos',estado_civil:'Estado civil',cumplice_nome:'Nome do cúmplice',cumplice_parentesco:'Parentesco do cúmplice',cumplice_contato:'Telefone / WhatsApp do cúmplice',video_apresentacao_link:'Vídeo de apresentação',link_grupo:'Link do grupo',detalhes_pagamento:'Observação do pagamento',observacao_inicial:'Observação inicial'};
+ const rows=Object.entries(campos).map(([k,label])=>{let v=m[k];if(k==='video_apresentacao_link'&&!v&&m.video_apresentacao_id)v='https://drive.google.com/file/d/'+encodeURIComponent(m.video_apresentacao_id)+'/view';if(['aniversario','data_inicio_ciclo','data_fim_ciclo'].includes(k)&&v)v=formatarData(v);return '<tr><th>'+escaparPdf(label)+'</th><td>'+escaparPdf(v===undefined||v===null||v===''?'—':v)+'</td></tr>';}).join('');
+ renderizarIndicadores(m.id_mentorado,regs);
+ const indicadores=[...document.querySelectorAll('#detIndicadores .sidebar-card')].map(card=>{const label=card.querySelector('.lbl')?.textContent||'',num=card.querySelector('.num');const value=num?num.textContent:[...card.querySelectorAll('li')].map(li=>li.textContent).join('\n');return '<tr><th>'+escaparPdf(label)+'</th><td>'+escaparPdf(value)+'</td></tr>';}).join('');
+ const historico=regs.map(r=>{const extra=[r.observacao,r.data_agendamento?'Próximo encontro: '+formatarData(r.data_agendamento):'',r.motivo_brinde?'Motivo do brinde: '+r.motivo_brinde:'',r.codigo_rastreio?'Rastreio: '+r.codigo_rastreio:'',r.data_envio?'Data do envio: '+formatarData(r.data_envio):'',r._pendente?'Atualização em andamento':''].filter(Boolean).join('\n');return '<tr><td>'+escaparPdf(formatarData(r.data))+'</td><td>'+escaparPdf(r.usuario||'—')+'</td><td>'+escaparPdf(r.tipo_atendimento)+'</td><td>'+escaparPdf(extra||'—')+'</td></tr>';}).join('');
+ document.getElementById('areaImpressao').innerHTML='<style>#areaImpressao .ficha-pdf{background:white;color:#111;font:12px/1.5 Arial;padding:12px}#areaImpressao h1{font-size:21px;margin-bottom:8px}#areaImpressao h2{font-size:16px;margin:24px 0 10px;break-after:avoid}#areaImpressao table{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:18px}#areaImpressao th,#areaImpressao td{padding:8px;border:1px solid #ddd;text-align:left;vertical-align:top;overflow-wrap:anywhere;white-space:pre-wrap;background:white;color:#111}#areaImpressao .dados th{width:32%}#areaImpressao thead{display:table-header-group}#areaImpressao tr{break-inside:avoid}</style><div class="ficha-pdf"><h1>Ficha do mentorado — '+escaparPdf(m.nome)+'</h1><p>DashEagles · Escola Karen Abecia</p><h2>Dados cadastrais</h2><table class="dados">'+rows+'</table><h2>Resumo dos indicadores</h2><table class="dados">'+indicadores+'</table><h2>Histórico completo de atendimentos</h2><table><thead><tr><th style="width:14%">Data</th><th style="width:18%">Atendente</th><th style="width:23%">Tipo</th><th>Observação</th></tr></thead><tbody>'+ (historico||'<tr><td colspan="4">Nenhum atendimento registrado.</td></tr>')+'</tbody></table><p>PDF gerado por '+escaparPdf(atendenteAtual()||'usuário não identificado')+' em '+escaparPdf(agoraLegivel())+'</p></div>';
+ window.print();
 });
 
 /* ===================== Relatórios em CSV ===================== */
@@ -2552,21 +2523,23 @@ function prepararModulosEmSegundoPlano(){
 }
 
 // Mesma conciliação no painel e no servidor. Um atendimento resolve apenas um encontro.
+function normalizarNomeProfessora(nome){const original=String(nome||'').trim();const chave=original.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ');return ['jessica','jessica gleiciane'].includes(chave)?'Jéssica Gleiciane':original;}
 function conciliarEncontros(agenda, registros) {
+  agenda=agenda.map(a=>({...a,professora:normalizarNomeProfessora(a.professora)}));
   const tipos={'Encontro individual':'Realizado','Ausência de encontro individual':'Ausência do aluno','Remarcação encontro individual':'Remarcado'};
   const dia=v=>String(v||'').slice(0,10);
   const lista=agenda.filter(a=>!['Cancelado','Cancelada'].includes(a.status)).map(a=>({...a,data:dia(a.data),status_resultado:'Pendente',ids_origem:[]}));
   registros.filter(r=>r.tipo_atendimento==='Agendamento de solicitações'&&r.data_agendamento).forEach(r=>{
     const candidatos=lista.filter(a=>a.id_mentorado===r.id_mentorado&&a.data===dia(r.data_agendamento));
-    const a=lista.find(a=>r.id_agendamento&&a.id_agendamento===r.id_agendamento)||candidatos.find(a=>a.professora===r.usuario&&String(r.observacao||'').includes(a.hora_inicio))||(candidatos.length===1?candidatos[0]:null);
+    const a=lista.find(a=>r.id_agendamento&&a.id_agendamento===r.id_agendamento)||candidatos.find(a=>a.professora===normalizarNomeProfessora(r.usuario)&&String(r.observacao||'').includes(a.hora_inicio))||(candidatos.length===1?candidatos[0]:null);
     if(a)a.ids_origem.push(r.id_registro);
-    else lista.push({id_agendamento:'manual:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:r.usuario||'',data:dia(r.data_agendamento),hora_inicio:'',status_resultado:'Pendente',ids_origem:[r.id_registro]});
+    else lista.push({id_agendamento:'manual:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:normalizarNomeProfessora(r.professora||r.usuario),data:dia(r.data_agendamento),hora_inicio:'',status_resultado:'Pendente',ids_origem:[r.id_registro]});
   });
   registros.filter(r=>tipos[r.tipo_atendimento]).sort((a,b)=>String(a.atualizado_em||a.criado_em).localeCompare(String(b.atualizado_em||b.criado_em))).forEach(r=>{
     const candidatos=lista.filter(a=>a.id_mentorado===r.id_mentorado&&a.data===dia(r.data));
     const a=r.id_agendamento?candidatos.find(a=>a.id_agendamento===r.id_agendamento):(candidatos.length===1?candidatos[0]:null);
     if(a){a.status_resultado=tipos[r.tipo_atendimento];a.id_resultado=r.id_registro;}
-    else lista.push({id_agendamento:'atendimento:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:r.usuario||'',data:dia(r.data),hora_inicio:'',status_resultado:tipos[r.tipo_atendimento],id_resultado:r.id_registro,ids_origem:[],sem_agendamento:true});
+    else lista.push({id_agendamento:'atendimento:'+r.id_registro,id_mentorado:r.id_mentorado,nome_aluno:r.nome_mentorado,professora:normalizarNomeProfessora(r.professora||r.usuario),data:dia(r.data),hora_inicio:'',status_resultado:tipos[r.tipo_atendimento],id_resultado:r.id_registro,ids_origem:[],sem_agendamento:true});
   });
   return lista.sort((a,b)=>(a.data+' '+(a.hora_inicio||'')).localeCompare(b.data+' '+(b.hora_inicio||'')));
 }
@@ -2580,11 +2553,12 @@ function encontroAindaPendente(r){
 }
 function renderizarRelatorioEncontros(){
   const termo=normalizarBuscaLista(document.getElementById('buscaEncontros').value);
-  const lista=encontrosDoPainel().filter(a=>a.status_resultado==='Pendente'&&normalizarBuscaLista(a.nome_aluno+' '+(mentorados.find(m=>m.id_mentorado===a.id_mentorado)?.email||'')).includes(termo));
+  const filtro=document.getElementById('filtroProfessoraEncontros'),selecionada=filtro.value;const todos=encontrosDoPainel();const professoras=[...new Set(todos.map(a=>a.professora||'Não informada'))].sort((a,b)=>a.localeCompare(b,'pt-BR'));filtro.replaceChildren(new Option('Todas as professoras',''),...professoras.map(p=>new Option(p==='Jéssica Gleiciane'?'Jessica Gleiciane':p,p)));if(professoras.includes(selecionada))filtro.value=selecionada;
+  const lista=todos.filter(a=>(!filtro.value||(a.professora||'Não informada')===filtro.value)&&a.status_resultado==='Pendente'&&normalizarBuscaLista(a.nome_aluno+' '+(mentorados.find(m=>m.id_mentorado===a.id_mentorado)?.email||'')).includes(termo));
   const body=document.getElementById('encontrosTabela');body.replaceChildren();
   lista.forEach(a=>{
     const row=body.insertRow();
-    [formatarData(a.data)+(a.hora_inicio?' · '+a.hora_inicio:''),a.nome_aluno,a.professora||'Não informada'].forEach((v,i)=>{const cell=row.insertCell();cell.textContent=v;cell.dataset.label=['Data do encontro','Mentorado','Professora'][i];});
+    [formatarData(a.data)+(a.hora_inicio?' · '+a.hora_inicio:''),a.nome_aluno,a.professora==='Jéssica Gleiciane'?'Jessica Gleiciane':a.professora||'Não informada'].forEach((v,i)=>{const cell=row.insertCell();cell.textContent=v;if(i===1){cell.tabIndex=0;cell.style.cursor='pointer';cell.title='Clique duas vezes para abrir o perfil';cell.ondblclick=()=>abrirDetalhe(a.id_mentorado);cell.onkeydown=e=>{if(e.key==='Enter')abrirDetalhe(a.id_mentorado);};}cell.dataset.label=['Data do encontro','Mentorado','Professora'][i];});
     const cell=row.insertCell();cell.dataset.label='Status';const select=document.createElement('select');select.setAttribute('aria-label','Status do encontro de '+a.nome_aluno);
     ['Pendente','Realizado','Ausência do aluno','Remarcado'].forEach(s=>{const opt=new Option(s,s);opt.disabled=s==='Pendente';select.add(opt);});select.value=a.status_resultado;cell.append(select);
     select.className='encontro-status-select';
@@ -2682,11 +2656,46 @@ async function requisicaoAdmin(action,params={}){
 function mostrarLoginAdmin(){document.getElementById('loginAdminPortal').hidden=false;document.getElementById('loginAdminPortal').style.display='grid';document.getElementById('inicioLoading').hidden=true;}
 function prepararLoginAdmin(){if(sessionStorage.getItem('dh_admin_token')){document.getElementById('loginAdminPortal').style.display='none';iniciarApp();}else mostrarLoginAdmin();}
 document.getElementById('formLoginAdmin').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button');btn.disabled=true;document.getElementById('erroLoginAdmin').textContent='';try{const d=await requisicaoAdmin('adminLogin',{senha:document.getElementById('senhaAdminPortal').value});sessionStorage.setItem('dh_admin_token',d.token);document.getElementById('senhaAdminPortal').value='';document.getElementById('loginAdminPortal').style.display='none';if(!adminJaCarregado)await iniciarApp();}catch(err){document.getElementById('erroLoginAdmin').textContent=err.message;}finally{btn.disabled=false;}};
-function renderizarGravacoes(id){const box=document.getElementById('detGravacoes');box.replaceChildren();const lista=gravacoes.filter(g=>g.id_mentorado===id).sort((a,b)=>String(b.data).localeCompare(String(a.data)));if(!lista.length){box.textContent='Nenhuma gravação cadastrada.';return;}const tabela=document.createElement('table');tabela.innerHTML='<thead><tr><th>Data</th><th>Gravação</th><th>Transcrição</th><th></th></tr></thead>';const body=tabela.createTBody();for(const g of lista){const row=body.insertRow();row.insertCell().textContent=formatarData(g.data);for(const [campo,nome] of [['link_gravacao','Abrir gravação'],['link_transcricao','Abrir transcrição']]){const td=row.insertCell();if(/^https:\/\//.test(g[campo]||'')){const a=document.createElement('a');a.href=g[campo];a.textContent=nome;a.target='_blank';a.rel='noopener';td.append(a);}else td.textContent='—';}const btn=document.createElement('button');btn.type='button';btn.className='btn-secundario';btn.textContent='Editar';btn.disabled=!!g._pendente;btn.onclick=()=>abrirGravacao(g);row.insertCell().append(btn);}box.append(tabela);}
-function abrirGravacao(g=null,encontro=null){gravacaoEditando=g;encontroGravacao=encontro;mentoradoGravacao=encontro?{id_mentorado:encontro.id_mentorado,nome:encontro.nome_aluno}:mentoradoSelecionado;if(!mentoradoGravacao)return;document.getElementById('gravData').value=g?.data||encontro?.data||hojeISO();document.getElementById('gravData').disabled=!!encontro;document.getElementById('gravLink').value=g?.link_gravacao||'';document.getElementById('gravTranscricao').value=g?.link_transcricao||'';document.getElementById('gravErro').textContent='';document.getElementById('tituloGravacao').textContent=encontro?'Concluir encontro — '+encontro.nome_aluno:'Gravação do encontro';document.getElementById('dialogGravacao').showModal();centralizarGravacao();}
+
+async function excluirGravacaoEquipe(g){
+ if(g._pendente||!confirm('Excluir a data e os links desta gravação do sistema e da área do aluno? O encontro realizado e os arquivos no Drive serão mantidos.'))return;
+ gravacoes=gravacoes.filter(x=>x.id_gravacao!==g.id_gravacao);gravacoesPendentes++;renderizarGravacoes(g.id_mentorado);atualizarStatusGravacao();
+ try{const d=await requisicaoAdmin('excluirGravacao',{id_gravacao:g.id_gravacao,id_mentorado:g.id_mentorado});if(!d.sucesso)throw Error('Exclusão não confirmada.');}
+ catch(e){if(!gravacoes.some(x=>x.id_gravacao===g.id_gravacao))gravacoes.push(g);avisarFalha('Não foi possível excluir a gravação: '+e.message,()=>excluirGravacaoEquipe(g));}
+ finally{gravacoesPendentes--;if(mentoradoSelecionado?.id_mentorado===g.id_mentorado)renderizarGravacoes(g.id_mentorado);atualizarStatusGravacao();}
+}
+
+function renderizarGravacoes(id){
+ const box=document.getElementById('detGravacoes');box.replaceChildren();
+ const itens=gravacoes.filter(g=>g.id_mentorado===id).sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+ if(!itens.length){box.textContent='Nenhuma gravação cadastrada.';return;}
+ const lista=document.createElement('ul');lista.className='lista-registros';
+ for(const g of itens){
+  const item=document.createElement('li');item.className='encontro-individual';
+  const linha=document.createElement('div');linha.className='reg-linha';
+  const info=document.createElement('div');info.className='reg-info';
+  const titulo=document.createElement('div');titulo.className='tipo';titulo.textContent='Gravação do encontro';
+  const data=document.createElement('div');data.className='meta';data.textContent=formatarData(g.data);
+  const links=document.createElement('div');links.className='obs';links.style.display='flex';links.style.flexWrap='wrap';links.style.gap='6px 14px';
+  for(const [campo,label] of [['link_gravacao','Abrir gravação'],['link_transcricao','Abrir transcrição']]){
+   if(/^https:\/\//.test(g[campo]||'')){const a=document.createElement('a');a.href=g[campo];a.textContent=label;a.target='_blank';a.rel='noopener';links.append(a);}
+   else if(campo==='link_transcricao'){const aviso=document.createElement('span');aviso.textContent='Transcrição não cadastrada';links.append(aviso);}
+  }
+  info.append(titulo,data,links);
+  const acoes=document.createElement('div');acoes.className='reg-acoes';
+  for(const [icone,label,acao] of [['✏️','Editar gravação',()=>abrirGravacao(g)],['🗑️','Excluir gravação',()=>excluirGravacaoEquipe(g)]]){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=icone;btn.title=label;btn.setAttribute('aria-label',label+' de '+formatarData(g.data));btn.disabled=!!g._pendente;btn.onclick=acao;acoes.append(btn);
+  }
+  linha.append(info,acoes);item.append(linha);lista.append(item);
+ }
+ box.append(lista);
+}
+function abrirGravacao(g=null,encontro=null){gravacaoEditando=g;encontroGravacao=encontro;mentoradoGravacao=encontro?{id_mentorado:encontro.id_mentorado,nome:encontro.nome_aluno}:mentoradoSelecionado;if(!mentoradoGravacao)return;document.getElementById('gravData').value=g?.data||encontro?.data||hojeISO();document.getElementById('gravData').disabled=!!encontro;document.getElementById('gravLink').value=g?.link_gravacao||'';document.getElementById('gravTranscricao').value=g?.link_transcricao||'';document.getElementById('gravErro').textContent='';document.getElementById('opcaoNaoGravado').hidden=!encontro;document.getElementById('opcaoNaoGravado').style.display=encontro?'flex':'none';document.getElementById('gravNaoGravado').checked=false;ajustarNaoGravado();document.getElementById('tituloGravacao').textContent=encontro?'Concluir encontro — '+encontro.nome_aluno:'Gravação do encontro';document.getElementById('dialogGravacao').showModal();centralizarGravacao();}
 document.getElementById('btnNovaGravacao').onclick=()=>abrirGravacao();document.getElementById('fecharGravacao').onclick=()=>document.getElementById('dialogGravacao').close();
 
-document.getElementById('formGravacao').onsubmit=e=>{e.preventDefault();const p={id_gravacao:gravacaoEditando?.id_gravacao||'grav_'+crypto.randomUUID(),id_mentorado:mentoradoGravacao.id_mentorado,data:document.getElementById('gravData').value,link_gravacao:document.getElementById('gravLink').value.trim(),link_transcricao:document.getElementById('gravTranscricao').value.trim(),id_agendamento:encontroGravacao?.id_agendamento||gravacaoEditando?.id_agendamento||''};if(!/^https:\/\//.test(p.link_gravacao)||(p.link_transcricao&&!/^https:\/\//.test(p.link_transcricao))){document.getElementById('gravErro').textContent='Informe links HTTPS válidos.';return;}
+function ajustarNaoGravado(){const sem=!!encontroGravacao&&document.getElementById('gravNaoGravado').checked;document.getElementById('gravLink').required=!sem;for(const id of ['gravLink','gravTranscricao'])document.getElementById(id).disabled=sem;}
+document.getElementById('gravNaoGravado').onchange=ajustarNaoGravado;
+document.getElementById('formGravacao').onsubmit=e=>{e.preventDefault();if(encontroGravacao&&document.getElementById('gravNaoGravado').checked){baixarEncontro(encontroGravacao,'Realizado',{nao_gravado:true,observacao:'Encontro não gravado.'});document.getElementById('dialogGravacao').close();return;}const p={id_gravacao:gravacaoEditando?.id_gravacao||'grav_'+crypto.randomUUID(),id_mentorado:mentoradoGravacao.id_mentorado,data:document.getElementById('gravData').value,link_gravacao:document.getElementById('gravLink').value.trim(),link_transcricao:document.getElementById('gravTranscricao').value.trim(),id_agendamento:encontroGravacao?.id_agendamento||gravacaoEditando?.id_agendamento||''};if(!/^https:\/\//.test(p.link_gravacao)||(p.link_transcricao&&!/^https:\/\//.test(p.link_transcricao))){document.getElementById('gravErro').textContent='Informe links HTTPS válidos.';return;}
  const encontro=encontroGravacao;if(encontro){baixarEncontro(encontro,'Realizado',p);document.getElementById('dialogGravacao').close();return;}
  const anterior=gravacaoEditando?{...gravacaoEditando}:null,temp={...p,id_gravacao:p.id_gravacao||'temp_'+crypto.randomUUID(),_pendente:true};gravacoes=gravacoes.filter(g=>g.id_gravacao!==temp.id_gravacao);gravacoes.push(temp);gravacoesPendentes++;renderizarGravacoes(p.id_mentorado);document.getElementById('dialogGravacao').close();
  requisicaoAdmin('salvarGravacao',p).then(d=>{gravacoes=gravacoes.filter(g=>g!==temp&&g.id_gravacao!==d.gravacao.id_gravacao);gravacoes.push(d.gravacao);}).catch(err=>{gravacoes=gravacoes.filter(g=>g!==temp);if(anterior)gravacoes.push(anterior);avisarFalha('A gravação não foi confirmada: '+err.message,()=>{abrirDetalhe(p.id_mentorado);abrirGravacao({...p});});}).finally(()=>{gravacoesPendentes--;if(mentoradoSelecionado?.id_mentorado===p.id_mentorado)renderizarGravacoes(p.id_mentorado);atualizarStatusGravacao();});
@@ -2697,14 +2706,15 @@ const baixasEncontros=new Set();
 function baixarEncontro(encontro,status,links={}){
  if(baixasEncontros.has(encontro.id_agendamento))return;
  const tipos={'Realizado':'Encontro individual','Ausência do aluno':'Ausência de encontro individual','Remarcado':'Remarcação encontro individual'};
- const payload={id_agendamento:encontro.id_agendamento,tipo_atendimento:tipos[status],usuario:atendenteAtual(),...links,exigir_gravacao:status==='Realizado'};
- const temp={id_registro:'resultado_temp_'+crypto.randomUUID(),id_mentorado:encontro.id_mentorado,nome_mentorado:encontro.nome_aluno,tipo_atendimento:tipos[status],data:encontro.data,id_agendamento:encontro.id_agendamento,usuario:atendenteAtual(),criado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),_pendente:true};
+ const payload={id_agendamento:encontro.id_agendamento,tipo_atendimento:tipos[status],usuario:atendenteAtual(),...links,exigir_gravacao:status==='Realizado'&&!links.nao_gravado};
+ const temp={id_registro:'resultado_temp_'+crypto.randomUUID(),id_mentorado:encontro.id_mentorado,nome_mentorado:encontro.nome_aluno,observacao:links.observacao||'',tipo_atendimento:tipos[status],data:encontro.data,id_agendamento:encontro.id_agendamento,usuario:atendenteAtual(),criado_em:new Date().toISOString(),atualizado_em:new Date().toISOString(),_pendente:true};
  baixasEncontros.add(encontro.id_agendamento);registros.push(temp);gravacoesPendentes++;atualizarVisaoLocal(encontro.id_mentorado);
  requisicaoAdmin('registrarResultadoEncontro',payload).then(resp=>{if(!resp.registro)throw Error('A resposta não confirmou o status. Atualize o Code.gs.');registros=registros.filter(r=>r!==temp&&r.id_registro!==resp.registro.id_registro);registros.push(resp.registro);if(resp.gravacao){gravacoes=gravacoes.filter(g=>g.id_gravacao!==resp.gravacao.id_gravacao);gravacoes.push(resp.gravacao);}}).catch(err=>{
  registros=registros.filter(r=>r!==temp);document.getElementById('encontrosStatus').textContent='Não foi possível confirmar o status: '+err.message;
  avisarFalha('O status do encontro de '+encontro.nome_aluno+' não foi confirmado: '+err.message,()=>{if(status==='Realizado'){abrirGravacao(null,encontro);document.getElementById('gravLink').value=links.link_gravacao||'';document.getElementById('gravTranscricao').value=links.link_transcricao||'';}else baixarEncontro(encontro,status,links);});
  }).finally(()=>{baixasEncontros.delete(encontro.id_agendamento);gravacoesPendentes--;atualizarVisaoLocal(encontro.id_mentorado);if(mentoradoSelecionado?.id_mentorado===encontro.id_mentorado)renderizarGravacoes(encontro.id_mentorado);atualizarStatusGravacao();});
 }
+document.getElementById('filtroProfessoraEncontros').onchange=renderizarRelatorioEncontros;
 document.getElementById('buscaEncontros').addEventListener('input',()=>{
  renderizarRelatorioEncontros();const termo=normalizarBuscaLista(document.getElementById('buscaEncontros').value),box=document.getElementById('listaAutocompleteEncontros');box.replaceChildren();
  const ids=new Set(encontrosDoPainel().filter(a=>a.status_resultado==='Pendente').map(a=>a.id_mentorado));const lista=termo?mentorados.filter(m=>ids.has(m.id_mentorado)&&normalizarBuscaLista(m.nome+' '+m.email).includes(termo)).slice(0,8):[];
