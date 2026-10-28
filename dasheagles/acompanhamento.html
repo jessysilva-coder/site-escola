@@ -595,7 +595,7 @@
                     <select id="dDisponivelProjetos"><option>Não</option><option>Sim</option></select>
                   </div><div class="campo"><label for="dAreaMembros">Área de membros</label>
                     <select id="dAreaMembros"><option>Não</option><option>Sim</option></select>
-                  </div></div><button type="submit" class="btn-salvar">Salvar alterações</button></form>
+                  </div></div><button type="submit" class="btn-salvar">Salvar alterações</button> <button type="button" class="btn-secundario" id="btnRedefinirSenha">Redefinir senha</button></form>
             </div>
 
             <div class="bloco">
@@ -2727,6 +2727,20 @@ prepararLoginAdmin();
 function centralizarGravacao(){const d=document.getElementById('dialogGravacao');d.style.position='fixed';d.style.margin='0';d.style.transform='none';const r=d.getBoundingClientRect();d.style.left=Math.max(8,(innerWidth-r.width)/2)+'px';d.style.top=Math.max(8,(innerHeight-r.height)/2)+'px';d.style.right='auto';d.style.bottom='auto';}
 (function(){const d=document.getElementById('dialogGravacao'),handle=document.getElementById('tituloGravacao');handle.style.cursor='move';handle.style.touchAction='none';let drag=null;handle.addEventListener('pointerdown',e=>{if(e.button!==0)return;const r=d.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};handle.setPointerCapture(e.pointerId);e.preventDefault();});handle.addEventListener('pointermove',e=>{if(!drag)return;const r=d.getBoundingClientRect();d.style.left=Math.max(0,Math.min(innerWidth-r.width,e.clientX-drag.x))+'px';d.style.top=Math.max(0,Math.min(innerHeight-r.height,e.clientY-drag.y))+'px';});for(const event of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(event,()=>drag=null);window.addEventListener('resize',()=>{if(d.open)centralizarGravacao();});})();
 
+
+document.getElementById('btnRedefinirSenha').onclick=async()=>{
+ const m=mentoradoSelecionado;if(!m)return;
+ if(!await confirmarAcao('Redefinir a senha de '+m.nome+'? Os acessos anteriores serão encerrados e o aluno precisará trocar a senha temporária.'))return;
+ const btn=document.getElementById('btnRedefinirSenha');btn.disabled=true;btn.textContent='Redefinindo…';
+ try{const d=await requisicaoAdmin('redefinirSenhaAluno',{id_mentorado:m.id_mentorado});if(!d.sucesso||!d.senha_temporaria)throw Error('A redefinição não foi confirmada.');
+ const dialog=document.createElement('dialog');dialog.style.cssText='margin:auto;padding:28px;width:min(520px,90vw);border:1px solid #45495a;border-radius:18px;background:#1c1f2b;color:white';dialog.setAttribute('aria-label','Senha temporária');
+ const titulo=document.createElement('h2');titulo.textContent='Senha redefinida';const texto=document.createElement('p');texto.style.margin='16px 0';texto.textContent=d.nome+' — Login: '+d.email+'. Envie a senha temporária ao aluno. Ele deverá escolher outra no próximo acesso.';
+ const input=document.createElement('input');input.readOnly=true;input.value=d.senha_temporaria;input.setAttribute('aria-label','Senha temporária');input.style.cssText='width:100%;padding:12px;font-size:18px;margin-bottom:18px';
+ const copiar=document.createElement('button');copiar.type='button';copiar.className='btn-salvar';copiar.textContent='Copiar senha';copiar.onclick=async()=>{try{await navigator.clipboard.writeText(input.value);copiar.textContent='Copiada!';}catch(_){input.focus();input.select();copiar.textContent='Selecione e copie a senha';}};
+ const fechar=document.createElement('button');fechar.type='button';fechar.className='btn-secundario';fechar.style.marginLeft='12px';fechar.textContent='Fechar';fechar.onclick=()=>dialog.close();dialog.addEventListener('close',()=>{input.value='';dialog.remove();});dialog.append(titulo,texto,input,copiar,fechar);document.body.append(dialog);dialog.showModal();
+ }catch(e){alert('Não foi possível confirmar a redefinição: '+e.message+' Se necessário, tente redefinir novamente para gerar uma nova senha.');}
+ finally{btn.disabled=false;btn.textContent='Redefinir senha';}
+};
 </script>
 
 </body>
