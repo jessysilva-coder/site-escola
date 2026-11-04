@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Implementação Claude — Central de Links T4</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --accent:  #d97757;
+      --accent2: #e8956a;
+      --bg:      #0c0b0a;
+      --card:    #1a1714;
+      --card2:   #211e1a;
+      --border:  #2e2822;
+      --border2: #3d3630;
+      --text:    #f0ebe4;
+      --muted:   #8a7f74;
+      --muted2:  #5e5650;
+      --radius:  12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .5;
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(217,119,87,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(217,119,87,.04) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── HEADER ── */
+    header { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+    .header-logo {
+      background: #111;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 32px; gap: 16px; flex-wrap: wrap;
+    }
+    .header-logo img {
+      height: 60px; display: block;
+      object-fit: contain;
+    }
+    .logo-text-fb { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: .05em; color: var(--text); }
+    .logo-text-fb span { color: var(--accent); }
+    .badge {
+      font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .1em;
+      text-transform: uppercase; background: rgba(217,119,87,.12); color: var(--accent);
+      border: 1px solid rgba(217,119,87,.25); padding: 6px 16px; border-radius: 100px;
+      text-decoration: none; transition: background .2s; white-space: nowrap;
+    }
+    .badge:hover { background: rgba(217,119,87,.22); }
+
+    /* ── HERO ── */
+    .hero { padding: 52px 0 38px; text-align: center; position: relative; border-top: none !important; }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 640px; height: 320px;
+      background: radial-gradient(ellipse at center, rgba(217,119,87,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .15em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; opacity: .85; }
+    h1 { font-family: 'Anton', sans-serif; font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 400; line-height: 1.1; margin-bottom: 16px; letter-spacing: .02em; }
+    h1 span { color: var(--accent); }
+    .hero-sub { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 540px; margin: 0 auto; }
+
+    /* ── SECTIONS ── */
+    section { padding: 46px 0; border-top: 1px solid var(--border); }
+    .section-label { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; opacity: .8; }
+    h2 { font-family: 'Anton', sans-serif; font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 400; letter-spacing: .03em; margin-bottom: 26px; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: var(--radius); font-family: 'Open Sans', sans-serif; font-size: .88rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all .2s; border: none; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(217,119,87,.35); }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-2px); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .btn-wa { background: #1a5c33; color: #fff; border: 1px solid #25d366; }
+    .btn-wa:hover { background: #1f7040; transform: translateY(-2px); }
+
+    /* ── SCHEDULE ── */
+    .schedule { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .aula { display: flex; align-items: flex-start; gap: 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; position: relative; overflow: hidden; }
+    .aula::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+    .aula.next::before { background: var(--accent); }
+    .aula.soon::before { background: var(--border2); }
+    .aula.next { border-color: rgba(217,119,87,.35); background: rgba(217,119,87,.05); }
+    .aula-date { flex-shrink: 0; text-align: center; min-width: 52px; }
+    .day { font-family: 'Anton', sans-serif; font-size: 1.7rem; font-weight: 400; line-height: 1; color: var(--accent); }
+    .aula.soon .day { color: var(--muted2); }
+    .month-lbl { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+    .aula-info { flex: 1; }
+    .aula-info h3 { font-family: 'Anton', sans-serif; font-size: 1rem; font-weight: 400; letter-spacing: .02em; margin-bottom: 4px; }
+    .aula.soon .aula-info h3 { color: var(--muted); }
+    .aula-info p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+    .aula-badge { flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; align-self: center; }
+    .aula.next .aula-badge { background: rgba(217,119,87,.15); color: var(--accent); border: 1px solid rgba(217,119,87,.3); }
+    .aula.soon .aula-badge { background: rgba(94,86,80,.12); color: var(--muted2); border: 1px solid var(--border); }
+    .aula.next .aula-badge::before { content: '● '; animation: pdot 1.5s infinite; }
+    @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── AULA AO VIVO CTA (simples, no final do cronograma) ── */
+    .live-cta {
+      display: flex; justify-content: center;
+    }
+
+    /* ── ACCESS GRID ── */
+    .access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .access-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
+    .access-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+    .ac-icon { width: 40px; height: 40px; background: rgba(217,119,87,.12); border: 1px solid rgba(217,119,87,.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .access-card h3 { font-family: 'Anton', sans-serif; font-size: .95rem; font-weight: 400; letter-spacing: .02em; }
+    .access-card p { font-size: .82rem; color: var(--muted); line-height: 1.6; flex: 1; }
+    .access-card .btn { align-self: flex-start; font-size: .8rem; padding: 9px 16px; }
+
+    /* ── FAQ ── */
+    .faq { display: flex; flex-direction: column; gap: 8px; }
+    .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color .2s; }
+    .faq-item.open { border-color: rgba(217,119,87,.3); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 18px 20px; cursor: pointer; user-select: none;
+      font-family: 'Open Sans', sans-serif; font-size: .92rem; font-weight: 600;
+      color: var(--text); background: transparent; border: none; width: 100%; text-align: left; transition: color .2s;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-item.open .faq-q { color: var(--accent); }
+    .faq-arrow { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: rgba(217,119,87,.1); display: flex; align-items: center; justify-content: center; transition: transform .3s, background .2s; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); background: rgba(217,119,87,.2); }
+    .faq-arrow svg { width: 12px; height: 12px; stroke: var(--accent); fill: none; stroke-width: 2.5; }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .25s ease; padding: 0 20px; }
+    .faq-item.open .faq-a { max-height: 500px; padding: 0 20px 18px; }
+    .faq-a p { font-size: .85rem; color: var(--muted); line-height: 1.75; }
+    .faq-a p a { color: var(--accent); text-decoration: underline; }
+    .faq-a p strong { color: var(--text); font-weight: 600; }
+
+    /* ── SUPPORT ── */
+    .support-block { background: var(--card2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 32px 24px; text-align: center; margin-top: 40px; }
+    .support-block h3 { font-family: 'Anton', sans-serif; font-size: 1.3rem; font-weight: 400; letter-spacing: .03em; margin-bottom: 10px; }
+    .support-block p { font-size: .85rem; color: var(--muted); margin-bottom: 22px; line-height: 1.65; }
+    .support-block .btn { margin: 0 auto; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 0 32px; text-align: center; }
+    footer p { font-size: .78rem; color: var(--muted2); }
+    footer p span { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .aula { flex-wrap: wrap; }
+      .aula-badge { align-self: flex-start; }
+      .header-logo { justify-content: center; }
+    }
+    .fi { animation: fu .45s ease both; }
+    @keyframes fu { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .fi:nth-child(1){animation-delay:.04s} .fi:nth-child(2){animation-delay:.1s}
+    .fi:nth-child(3){animation-delay:.16s} .fi:nth-child(4){animation-delay:.22s}
+    .fi:nth-child(5){animation-delay:.28s}
+  
+    .lesson-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .lesson-links .btn { white-space: nowrap; }
+    .aula.done::before { background: #647264; }
+    .aula.done .day { color: #879989; }
+    .aula.done .aula-badge { background: rgba(100,114,100,.12); color: #98aa99; border: 1px solid rgba(100,114,100,.26); }
+    .aula.done .aula-info h3 { color: var(--muted); }
+    .live-cta .btn[hidden] { display: none; }
+    a:focus-visible,button:focus-visible { outline: 2px solid var(--accent2); outline-offset: 3px; }
+    @media (max-width: 600px) { .lesson-links { flex-direction: column; align-items: flex-start; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .fi,.aula.next .aula-badge::before { animation: none; } }
+
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-logo">
+    <img src="https://raw.githubusercontent.com/jessysilva-coder/site-escola/refs/heads/main/implementacao-claudev/logo_branco.png" alt="Implementação Claude" onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'"/>
+    <div id="ltxt" style="display:none" class="logo-text-fb">IMPLEMENTAÇÃO <span>CLAUDE</span></div>
+    <a class="badge" href="https://hotmart.com/pt-br/club/karenabecia/products/7622385" target="_blank" rel="noopener noreferrer">▶ Acessar Hotmart</a>
+  </div>
+</header>
+<main>
+  <section class="hero" style="border-top:none">
+    <div class="wrap">
+      <div class="hero-tag">Treinamento Ao Vivo · Turma 4 · Nov–Dez 2026</div>
+      <h1>Bem-vindo(a) à<br/><span>Implementação Claude</span></h1>
+      <p class="hero-sub">Seis encontros para transformar o Claude em resultado real no seu trabalho, com implementação guiada e aplicações práticas.</p>
+    </div>
+  </section>
+  <section id="cronograma">
+    <div class="wrap">
+      <div class="section-label">Cronograma</div>
+      <h2>Aulas ao Vivo · Turma 4</h2>
+      <div class="schedule">
+      <div class="aula next fi" data-date="2026-11-16" id="t4-0">
+        <div class="aula-date"><div class="day">16</div><div class="month-lbl">Seg · Nov</div></div>
+        <div class="aula-info"><h3>T4-0 · Integração e Nivelamento</h3><p>Encontro junto com o Dúvidas DashWay: preparação para acompanhar o treinamento.</p></div>
+        <div class="aula-badge">Próxima aula</div>
+      </div>
+      <div class="aula soon fi" data-date="2026-11-18" id="t4-1">
+        <div class="aula-date"><div class="day">18</div><div class="month-lbl">Qua · Nov</div></div>
+        <div class="aula-info"><h3>T4-1 · O que precisa saber sobre o Claude I.A.</h3><p>Configuração profissional e fundamentos de engenharia de prompts.</p></div>
+        <div class="aula-badge">Agendada</div>
+      </div>
+      <div class="aula soon fi" data-date="2026-11-25" id="t4-2">
+        <div class="aula-date"><div class="day">25</div><div class="month-lbl">Qua · Nov</div></div>
+        <div class="aula-info"><h3>T4-2 · Claude no Excel</h3><p>Limpeza de dados, tratamento e fórmulas avançadas.</p></div>
+        <div class="aula-badge">Agendada</div>
+      </div>
+      <div class="aula soon fi" data-date="2026-12-02" id="t4-3">
+        <div class="aula-date"><div class="day">02</div><div class="month-lbl">Qua · Dez</div></div>
+        <div class="aula-info"><h3>T4-3 · Claude no Power BI</h3><p>Criação de medidas DAX e modelagem assistida por IA.</p></div>
+        <div class="aula-badge">Agendada</div>
+      </div>
+      <div class="aula soon fi" data-date="2026-12-09" id="t4-4">
+        <div class="aula-date"><div class="day">09</div><div class="month-lbl">Qua · Dez</div></div>
+        <div class="aula-info"><h3>T4-4 · Dashboards com Claude Live Artifacts</h3><p>Visualização de dados e criação de entregas interativas.</p></div>
+        <div class="aula-badge">Agendada</div>
+      </div>
+      <div class="aula soon fi" data-date="2026-12-16" id="t4-5">
+        <div class="aula-date"><div class="day">16</div><div class="month-lbl">Qua · Dez</div></div>
+        <div class="aula-info"><h3>T4-5 · Visual, aplicativos e páginas</h3><p>Publicação e design de interfaces para entregas profissionais.</p></div>
+        <div class="aula-badge">Agendada</div>
+      </div>
+      </div>
+      <div class="live-cta"><a id="live-cta-link" class="btn btn-primary" href="https://teams.microsoft.com/meet/237650092326770?p=MU2YaYd2SEgnndrGwB" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg><span id="live-cta-text">Entrar na Aula 0 ao Vivo</span></a></div>
+    </div>
+  </section>
+  <section id="acessos">
+    <div class="wrap">
+      <div class="section-label">Acesso</div><h2>Tudo que você precisa</h2>
+      <div class="access-grid">
+        <div class="access-card fi"><div class="ac-icon">🎥</div><h3>Aulas Ao Vivo</h3><p>A aula zero e as demais aulas têm salas diferentes no Microsoft Teams. Escolha o encontro que vai assistir.</p><div class="lesson-links"><a class="btn btn-primary" href="https://teams.microsoft.com/meet/237650092326770?p=MU2YaYd2SEgnndrGwB" target="_blank" rel="noopener noreferrer">Aula 0 · Teams</a><a class="btn btn-ghost" href="https://teams.microsoft.com/meet/2248136200738010?p=yPpIP1FACTshLLBGPh" target="_blank" rel="noopener noreferrer">Aulas 1 a 5 · Teams</a></div></div>
+        <div class="access-card fi"><div class="ac-icon">📅</div><h3>Adicione à Agenda</h3><p>Consulte as datas dos seis encontros e salve-as na sua agenda.</p><a class="btn btn-ghost" href="#cronograma">Ver cronograma</a></div>
+        <div class="access-card fi"><div class="ac-icon">💬</div><h3>Grupo VIP WhatsApp</h3><p>Suporte contínuo, compartilhamento de dashboards e tira-dúvidas durante o treinamento.</p><a class="btn btn-wa" href="https://sndflw.com/i/BckRwXkF5gOgPvlwakXY" target="_blank" rel="noopener noreferrer">Entrar no Grupo</a></div>
+        <div class="access-card fi"><div class="ac-icon">⚙️</div><h3>Requisito Técnico</h3><p>Para acompanhar os exercícios práticos você precisa de uma conta <strong>Claude Pro</strong> ativa.</p><a class="btn btn-ghost" href="https://claude.ai/upgrade" target="_blank" rel="noopener noreferrer">Contratar Claude Pro</a></div>
+      </div>
+    </div>
+  </section>
+  <section id="duvidas">
+    <div class="wrap"><div class="section-label">Dúvidas Frequentes</div><h2>Perguntas &amp; Respostas</h2>
+      <div class="faq">
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Onde ficam as gravações das aulas?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>As gravações ficam na plataforma <strong>Hotmart</strong>, dentro da sua área de membros, após a liberação de cada encontro.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Em quais dias acontecem as aulas?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>A <strong>T4-0 acontece na segunda-feira, 16/11/2026</strong>, junto com o Dúvidas DashWay. As aulas <strong>T4-1 a T4-5 acontecem às quartas-feiras</strong>: 18/11, 25/11, 02/12, 09/12 e 16/12/2026. A aula zero usa um link do Teams diferente das demais aulas.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Se eu perder uma aula ao vivo, posso assistir depois?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>Sim. A gravação será disponibilizada na Hotmart após a liberação do respectivo encontro. Você poderá rever o conteúdo e acompanhar os exercícios.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Por quanto tempo tenho acesso ao conteúdo gravado?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>Consulte o prazo de acesso exibido na sua área de membros da <strong>Hotmart</strong>. Se precisar confirmar as condições da sua inscrição, fale com o suporte.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Preciso ter o Claude Pro para participar?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>Sim. Para acompanhar os exercícios práticos e aproveitar ao máximo as aulas, é necessário ter uma conta <strong>Claude Pro</strong> ativa. Você pode assinar em <a href="https://claude.ai/upgrade" target="_blank" rel="noopener noreferrer">claude.ai/upgrade</a>.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Como funciona o suporte durante o treinamento?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>O suporte acontece pelo <strong>Grupo VIP do WhatsApp</strong> e diretamente na <strong>Hotmart</strong>, nos comentários abaixo das aulas gravadas.</p></div></div>
+
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Qual é o foco do treinamento?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>O treinamento tem foco <strong>prático</strong>, voltado ao ambiente de trabalho. As aulas cobrem aplicações em <strong>Excel, Power BI, dashboards</strong> e desenvolvimento de interfaces profissionais usando o Claude.</p></div></div>
+      </div>
+      <div class="support-block"><h3>Precisa de ajuda?</h3><p>Nossa equipe está disponível para tirar dúvidas sobre o treinamento, acessos e qualquer outro assunto.</p><a class="btn btn-wa" href="https://api.whatsapp.com/send?phone=5511958152954" target="_blank" rel="noopener noreferrer">Fale com o Suporte</a></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap"><p>© 2026 <span>Escola Karen Abecia</span> · Todos os direitos reservados</p></div></footer>
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => { el.classList.remove('open'); el.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
+    if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+  }
+  (() => {
+    const parts = new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const get = type => parts.find(part => part.type === type).value;
+    const today = get('year') + '-' + get('month') + '-' + get('day');
+    const lessons = [...document.querySelectorAll('.aula[data-date]')];
+    let upcoming = false;
+    lessons.forEach(card => {
+      const date = card.dataset.date;
+      const badge = card.querySelector('.aula-badge');
+      badge.hidden = false;
+      card.classList.remove('next','soon','done');
+      if (date >= today && !upcoming) { card.classList.add('next'); badge.textContent = 'Próxima aula'; upcoming = true; }
+      else if (date > today) { card.classList.add('soon'); badge.textContent = 'Agendada'; }
+      else { card.classList.add('done'); badge.hidden = true; }
+    });
+    const next = lessons.find(card => card.classList.contains('next'));
+    const cta = document.getElementById('live-cta-link');
+    const text = document.getElementById('live-cta-text');
+    if (!next) { cta.hidden = true; }
+    else if (next.dataset.date === '2026-11-16') { cta.href = 'https://teams.microsoft.com/meet/237650092326770?p=MU2YaYd2SEgnndrGwB'; text.textContent = 'Entrar na Aula 0 ao Vivo'; }
+    else { cta.href = 'https://teams.microsoft.com/meet/2248136200738010?p=yPpIP1FACTshLLBGPh'; text.textContent = 'Entrar nas Aulas 1 a 5 ao Vivo'; }
+  })();
+</script>
+</body>
+</html>
