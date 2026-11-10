@@ -2565,6 +2565,7 @@ function renderizarRelatorioEncontros(){
     select.onchange=()=>{
       const escolhido=select.value;
       if(escolhido==='Pendente')return;
+      if(escolhido==='Remarcado'){abrirRemarcacaoEquipe(a);select.value='Pendente';return;}
       if(escolhido==='Realizado'){abrirGravacao(null,a);select.value='Pendente';return;}
       baixarEncontro(a,escolhido);
     };
@@ -2650,8 +2651,8 @@ let calSavePromise=Promise.resolve(),calSavesPending=0;
 
 let gravacoes=[],gravacaoEditando=null,encontroGravacao=null,mentoradoGravacao=null,adminJaCarregado=false;
 async function requisicaoAdmin(action,params={}){
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),90000);
- try{const r=await fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...params,action,token:sessionStorage.getItem('dh_admin_token')||''}),signal:controller.signal});if(!r.ok)throw Error('Falha na conexão.');const d=await r.json();if(d.erro){if(d.erro.includes('SESSAO_EXPIRADA')){sessionStorage.removeItem('dh_admin_token');mostrarLoginAdmin();}throw Error(d.erro);}return d;}finally{clearTimeout(timer);}
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),action==='remarcarEncontroEquipe'?180000:90000);
+ try{const r=await fetch(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...params,action,token:sessionStorage.getItem('dh_admin_token')||''}),signal:controller.signal});if(!r.ok)throw Error('Falha na conexão.');const d=await r.json();if(d.erro){if(d.erro.includes('SESSAO_EXPIRADA')){sessionStorage.removeItem('dh_admin_token');mostrarLoginAdmin();}throw Error(d.erro);}return d;}catch(e){if(e.name==='AbortError')throw Error('A confirmação demorou mais que o esperado. O servidor pode ter concluído a alteração. Clique novamente em Confirmar remarcação sem mudar os campos para conferir, sem duplicar o encontro.');throw e;}finally{clearTimeout(timer);}
 }
 function mostrarLoginAdmin(){document.getElementById('loginAdminPortal').hidden=false;document.getElementById('loginAdminPortal').style.display='grid';document.getElementById('inicioLoading').hidden=true;}
 function prepararLoginAdmin(){if(sessionStorage.getItem('dh_admin_token')){document.getElementById('loginAdminPortal').style.display='none';iniciarApp();}else mostrarLoginAdmin();}
@@ -2741,6 +2742,18 @@ document.getElementById('btnRedefinirSenha').onclick=async()=>{
  }catch(e){alert('Não foi possível confirmar a redefinição: '+e.message+' Se necessário, tente redefinir novamente para gerar uma nova senha.');}
  finally{btn.disabled=false;btn.textContent='Redefinir senha';}
 };
+
+function abrirRemarcacaoEquipe(encontro){
+ const dialog=document.createElement('dialog');dialog.style.cssText='position:fixed;inset:0;margin:auto;padding:28px;width:min(620px,92vw);max-height:90vh;overflow:auto;border:2px solid #45495a;border-radius:18px;background:#1c1f2b;color:white';dialog.setAttribute('aria-label','Remarcar encontro');
+ dialog.innerHTML='<form><h2 style="margin-bottom:22px">Remarcar encontro</h2><p class="nome" style="margin-bottom:18px"></p><div class="campo"><label>Nova data<input name="data" type="date" required></label></div><div class="campo"><label>Novo horário<input name="hora" type="time" required></label></div><div class="campo"><label>Professora<select name="professora"><option value="Karen Abecia">Karen Abecia</option><option value="Jéssica Gleiciane">Jessica Gleiciane</option></select></label></div><label style="display:flex;align-items:center;gap:10px;margin:18px 0 6px"><input name="ignorarConflitos" type="checkbox" style="width:auto"> Ignorar agenda da professora</label><p style="font-size:12px;color:#a3a8bd;margin-bottom:18px">Permite sobreposição de horários. O evento será atualizado no Google Agenda.</p><p role="status" style="margin-bottom:16px"></p><button class="btn-salvar" type="submit">Confirmar remarcação</button> <button class="btn-secundario" type="button">Cancelar</button></form>';
+ const form=dialog.querySelector('form'),status=dialog.querySelector('[role=status]'),submit=dialog.querySelector('[type=submit]'),cancel=dialog.querySelector('[type=button]');
+ dialog.querySelector('.nome').textContent=encontro.nome_aluno;form.elements.data.value=encontro.data;form.elements.hora.value=encontro.hora_inicio||'';form.elements.professora.value=normalizarNomeProfessora(encontro.professora);if(!form.elements.professora.value)form.elements.professora.selectedIndex=0;
+ let ocupado=false;const operacao=crypto.randomUUID();cancel.onclick=()=>dialog.close();dialog.addEventListener('cancel',e=>{if(ocupado)e.preventDefault();});dialog.addEventListener('close',()=>dialog.remove());
+ form.onsubmit=async e=>{e.preventDefault();if(ocupado)return;ocupado=true;submit.disabled=true;cancel.disabled=true;status.textContent='Atualizando o encontro e a agenda da professora…';
+ try{const d=await requisicaoAdmin('remarcarEncontroEquipe',{id_agendamento:encontro.id_agendamento,data:form.elements.data.value,hora_inicio:form.elements.hora.value,professora:form.elements.professora.value,ignorar_conflitos:form.elements.ignorarConflitos.checked,usuario:atendenteAtual(),operacao});if(!d.sucesso||!Array.isArray(d.agenda)||!Array.isArray(d.registros))throw Error('Remarcação não confirmada. Confira a implantação do Code.gs.');agendaEncontros=d.agenda;const ids=new Set(d.registros.map(r=>r.id_registro));registros=[...d.registros,...registros.filter(r=>r._pendente&&!ids.has(r.id_registro))];atualizarVisaoLocal(encontro.id_mentorado);dialog.close();}
+ catch(err){status.textContent=err.message;}finally{ocupado=false;submit.disabled=false;cancel.disabled=false;}
+ };document.body.append(dialog);dialog.showModal();
+}
 </script>
 
 </body>
