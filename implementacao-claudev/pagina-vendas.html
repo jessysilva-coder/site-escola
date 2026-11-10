@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPLEMENTAÇÃO CLAUDE | Workshop Ao Vivo</title>
+    <title>IMPLEMENTAÇÃO CLAUDE | Turma 4</title>
+    <script>
+        // A matrícula da T4 encerra em 20/11/2026, à 00h em São Paulo.
+        (() => {
+            const waitlistUrl = "https://sites.karenabecia.com.br/implementacao-claude/lista-espera";
+            const redirectAt = new Date("2026-11-20T00:00:00-03:00").getTime();
+            const redirect = () => {
+                if (Date.now() >= redirectAt) {
+                    window.location.replace(waitlistUrl);
+                }
+            };
+            redirect();
+            const delay = redirectAt - Date.now();
+            if (delay > 0) window.setTimeout(redirect, delay);
+            document.addEventListener("visibilitychange", redirect);
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -135,7 +151,7 @@
     <section class="relative py-20 px-6 overflow-hidden">
         <div class="max-w-5xl mx-auto text-center relative z-10">
             <h1 class="text-3xl md:text-5xl font-black mb-8 tracking-tight leading-tight text-white uppercase">
-                5 aulas para transformar o <span class="text-orange-500 text-glitch">Claude</span> <br/>
+                5 aulas + integração para transformar o <span class="text-orange-500 text-glitch">Claude</span> <br/>
                 em resultado real no seu trabalho
             </h1>
             <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 font-light">
@@ -187,17 +203,17 @@
             <div class="space-y-4">
                 <div class="flex items-center gap-8 p-6 cyber-card extra-class-card">
                     <div class="mono extra-class-date text-xl font-bold text-center leading-none">
-                        02<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        16<br/><span class="text-[10px] uppercase opacity-70">NOV</span>
                     </div>
                     <div>
                         <div class="mono text-[10px] extra-class-label uppercase tracking-[0.25em] mb-2 font-bold">Aula extra de integração</div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Integração e Nivelamento</h4>
-                        <p class="text-sm text-gray-500 mt-1 font-light italic">Encontro para responder as principais dúvidas sobre o Claude, instalar os suplementos na máquina e entender as licenças da ferramenta.</p>
+                        <p class="text-sm text-gray-500 mt-1 font-light italic">Encontro junto com o Dúvidas DashWay para responder às principais dúvidas sobre o Claude, instalar os suplementos e entender as licenças da ferramenta.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        08<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        18<br/><span class="text-[10px] uppercase opacity-70">NOV</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">O que precisa saber sobre o Claude I.A</h4>
@@ -206,7 +222,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        15<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        25<br/><span class="text-[10px] uppercase opacity-70">NOV</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Excel</h4>
@@ -215,7 +231,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        22<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        02<br/><span class="text-[10px] uppercase opacity-70">DEZ</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Claude no Power BI</h4>
@@ -224,7 +240,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        29<br/><span class="text-[10px] uppercase opacity-70">JUN</span>
+                        09<br/><span class="text-[10px] uppercase opacity-70">DEZ</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Criação de Dashboards com Claude Live Artifacts</h4>
@@ -233,7 +249,7 @@
                 </div>
                 <div class="flex items-center gap-8 p-6 cyber-card border-l-4 border-orange-500">
                     <div class="mono text-orange-500 text-xl font-bold text-center leading-none">
-                        06<br/><span class="text-[10px] uppercase opacity-70">JUL</span>
+                        16<br/><span class="text-[10px] uppercase opacity-70">DEZ</span>
                     </div>
                     <div>
                         <h4 class="text-lg font-bold text-white uppercase tracking-tight">Visual, aplicativos e páginas</h4>
@@ -401,3 +417,4 @@
     </script>
 </body>
 </html>
+
