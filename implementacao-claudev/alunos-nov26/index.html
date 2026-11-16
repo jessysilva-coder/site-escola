@@ -177,6 +177,26 @@
     @media (max-width: 600px) { .lesson-links { flex-direction: column; align-items: flex-start; } }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .fi,.aula.next .aula-badge::before { animation: none; } }
 
+    /* ── POPUP AO VIVO ── */
+    .live-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(12,11,10,.82); backdrop-filter: blur(6px); animation: lmfade .25s ease both; }
+    .live-modal[hidden] { display: none; }
+    .live-modal-card { position: relative; width: 100%; max-width: 440px; background: var(--card); border: 1px solid rgba(217,119,87,.42); border-radius: 18px; padding: 34px 28px 28px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(217,119,87,.08) inset; animation: lmrise .3s ease both; }
+    .live-modal-card::before { content: ''; position: absolute; top: -70px; left: 50%; transform: translateX(-50%); width: 300px; height: 160px; background: radial-gradient(ellipse at center, rgba(217,119,87,.22), transparent 70%); pointer-events: none; }
+    .live-modal-card > * { position: relative; }
+    .live-tag { display: inline-flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); background: rgba(217,119,87,.12); border: 1px solid rgba(217,119,87,.3); border-radius: 100px; padding: 5px 14px; margin-bottom: 16px; }
+    .live-tag::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pdot 1.5s infinite; }
+    .live-modal-card h2 { font-size: clamp(1.5rem, 5vw, 1.9rem); margin-bottom: 10px; }
+    .live-modal-card p { font-size: .88rem; color: var(--muted); line-height: 1.65; margin-bottom: 22px; }
+    .live-modal-card p strong { color: var(--text); }
+    .live-modal-card .btn { width: 100%; justify-content: center; font-size: .95rem; padding: 15px 24px; }
+    .live-close { position: absolute !important; top: 10px; right: 12px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border2); background: transparent; color: var(--muted); font-size: 1.2rem; line-height: 1; cursor: pointer; transition: all .2s; }
+    .live-close:hover { color: var(--text); border-color: var(--accent); }
+    .live-later { display: inline-block; margin-top: 14px; background: none; border: none; color: var(--muted2); font-family: 'Open Sans', sans-serif; font-size: .78rem; cursor: pointer; text-decoration: underline; }
+    .live-later:hover { color: var(--muted); }
+    @keyframes lmfade { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes lmrise { from { opacity: 0; transform: translateY(16px) scale(.97) } to { opacity: 1; transform: none } }
+    @media (prefers-reduced-motion: reduce) { .live-modal, .live-modal-card, .live-tag::before { animation: none; } }
+
   </style>
 </head>
 <body>
@@ -268,6 +288,16 @@
   </section>
 </main>
 <footer><div class="wrap"><p>© 2026 <span>Escola Karen Abecia</span> · Todos os direitos reservados</p></div></footer>
+<div class="live-modal" id="live-modal" role="dialog" aria-modal="true" aria-labelledby="live-title" hidden>
+  <div class="live-modal-card">
+    <button class="live-close" type="button" id="live-close" aria-label="Fechar aviso">×</button>
+    <div class="live-tag">Aula ao vivo hoje</div>
+    <h2 id="live-title">Participar ao vivo</h2>
+    <p id="live-desc">Hoje tem encontro da Implementação Claude. Entre na sala e acompanhe o passo a passo com a gente.</p>
+    <a class="btn btn-primary" id="live-modal-link" href="https://teams.microsoft.com/meet/2248136200738010?p=yPpIP1FACTshLLBGPh" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>Participar ao vivo</a>
+    <button class="live-later" type="button" id="live-later">Ver a página primeiro</button>
+  </div>
+</div>
 <script>
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
@@ -276,31 +306,77 @@
     if (!isOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
   }
   (() => {
-    const parts = new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
-    const get = type => parts.find(part => part.type === type).value;
-    const today = get('year') + '-' + get('month') + '-' + get('day');
-    const nowKey = today + 'T' + get('hour') + ':' + get('minute');
+    const LINK_AULA0 = 'https://teams.microsoft.com/meet/237650092326770?p=MU2YaYd2SEgnndrGwB';
+    const LINK_AULAS = 'https://teams.microsoft.com/meet/2248136200738010?p=yPpIP1FACTshLLBGPh';
+    const LIVE_FROM = '19:00', LIVE_TO = '20:45';
+    const fmt = new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
     const lessons = [...document.querySelectorAll('.aula[data-date]')];
-    let upcoming = false;
-    lessons.forEach(card => {
-      const date = card.dataset.date;
-      const badge = card.querySelector('.aula-badge');
-      const material = card.querySelector('.material');
-      const finished = card.dataset.end ? nowKey >= card.dataset.end : date < today;
-      badge.hidden = false;
-      card.classList.remove('next','soon','done','has-material');
-      if (material) material.hidden = true;
-      if (!finished && !upcoming) { card.classList.add('next'); badge.textContent = 'Próxima aula'; upcoming = true; }
-      else if (!finished) { card.classList.add('soon'); badge.textContent = 'Agendada'; }
-      else if (card.dataset.material) { card.classList.add('done','has-material'); badge.textContent = 'Material disponível'; if (material) material.hidden = false; }
-      else { card.classList.add('done'); badge.hidden = true; }
-    });
-    const next = lessons.find(card => card.classList.contains('next'));
+    const modal = document.getElementById('live-modal');
     const cta = document.getElementById('live-cta-link');
-    const text = document.getElementById('live-cta-text');
-    if (!next) { cta.hidden = true; }
-    else if (next.id === 't4-0') { cta.href = 'https://teams.microsoft.com/meet/237650092326770?p=MU2YaYd2SEgnndrGwB'; text.textContent = 'Entrar na Aula 0 ao Vivo'; }
-    else { cta.href = 'https://teams.microsoft.com/meet/2248136200738010?p=yPpIP1FACTshLLBGPh'; text.textContent = 'Entrar nas Aulas 1 a 5 ao Vivo'; }
+    const ctaText = document.getElementById('live-cta-text');
+    let dismissed = false;
+    const linkFor = card => card.id === 't4-0' ? LINK_AULA0 : LINK_AULAS;
+    const nameFor = card => card.querySelector('h3').textContent;
+    function store(action, key, val) { try { return action === 'get' ? sessionStorage.getItem(key) : sessionStorage.setItem(key, val); } catch (e) { return null; } }
+
+    function update() {
+      const parts = fmt.formatToParts(new Date());
+      const get = type => parts.find(part => part.type === type).value;
+      const today = get('year') + '-' + get('month') + '-' + get('day');
+      const hhmm = get('hour') + ':' + get('minute');
+      const nowKey = today + 'T' + hhmm;
+      let upcoming = false;
+      lessons.forEach(card => {
+        const date = card.dataset.date;
+        const badge = card.querySelector('.aula-badge');
+        const material = card.querySelector('.material');
+        const finished = card.dataset.end ? nowKey >= card.dataset.end : date < today;
+        badge.hidden = false;
+        card.classList.remove('next','soon','done','has-material');
+        if (material) material.hidden = true;
+        if (!finished && !upcoming) { card.classList.add('next'); badge.textContent = 'Próxima aula'; upcoming = true; }
+        else if (!finished) { card.classList.add('soon'); badge.textContent = 'Agendada'; }
+        else if (card.dataset.material) { card.classList.add('done','has-material'); badge.textContent = 'Material disponível'; if (material) material.hidden = false; }
+        else { card.classList.add('done'); badge.hidden = true; }
+      });
+
+      // Janela ao vivo: dias de aula, das 19:00 às 20:45 (horário de Brasília)
+      const todays = lessons.find(card => card.dataset.date === today);
+      const isLive = !!todays && hhmm >= LIVE_FROM && hhmm < LIVE_TO;
+
+      const next = lessons.find(card => card.classList.contains('next'));
+      const target = isLive ? todays : next;
+      if (!target) { cta.hidden = true; }
+      else {
+        cta.hidden = false;
+        cta.href = linkFor(target);
+        ctaText.textContent = target.id === 't4-0' ? 'Entrar na Aula 0 ao Vivo' : 'Entrar nas Aulas 1 a 5 ao Vivo';
+      }
+
+      if (isLive) {
+        document.getElementById('live-modal-link').href = linkFor(todays);
+        document.getElementById('live-desc').innerHTML = '<strong>' + nameFor(todays) + '</strong><br>Entre na sala e acompanhe o passo a passo com a gente.';
+        if (!dismissed && !store('get', 'liveDismissed-' + today)) {
+          if (modal.hidden) { modal.hidden = false; document.getElementById('live-modal-link').focus(); }
+        }
+      } else if (!modal.hidden) {
+        modal.hidden = true;
+      }
+      return today;
+    }
+
+    function close() {
+      dismissed = true; modal.hidden = true;
+      store('set', 'liveDismissed-' + update(), '1');
+    }
+    document.getElementById('live-close').addEventListener('click', close);
+    document.getElementById('live-later').addEventListener('click', close);
+    document.getElementById('live-modal-link').addEventListener('click', () => { dismissed = true; });
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) close(); });
+
+    update();
+    setInterval(update, 30000);
   })();
 </script>
 </body>
