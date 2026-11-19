@@ -18,6 +18,8 @@
       --muted:   #8a7f74;
       --muted2:  #5e5650;
       --radius:  12px;
+      --purple:  #7c5cbf;
+      --purple2: #9b7dd4;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -86,9 +88,10 @@
     .schedule { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
     .aula { display: flex; align-items: flex-start; gap: 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; position: relative; overflow: hidden; }
     .aula::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-    .aula.next::before { background: var(--accent); }
+    .aula.next::before { background: var(--purple); }
     .aula.soon::before { background: var(--border2); }
-    .aula.next { border-color: rgba(217,119,87,.35); background: rgba(217,119,87,.05); }
+    .aula.next { border-color: rgba(155,125,212,.4); background: rgba(124,92,191,.08); }
+    .aula.next .day { color: var(--purple2); }
     .aula-date { flex-shrink: 0; text-align: center; min-width: 52px; }
     .day { font-family: 'Anton', sans-serif; font-size: 1.7rem; font-weight: 400; line-height: 1; color: var(--accent); }
     .aula.soon .day { color: var(--muted2); }
@@ -98,7 +101,7 @@
     .aula.soon .aula-info h3 { color: var(--muted); }
     .aula-info p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
     .aula-badge { flex-shrink: 0; font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; align-self: center; }
-    .aula.next .aula-badge { background: rgba(217,119,87,.15); color: var(--accent); border: 1px solid rgba(217,119,87,.3); }
+    .aula.next .aula-badge { background: rgba(124,92,191,.18); color: var(--purple2); border: 1px solid rgba(155,125,212,.4); }
     .aula.soon .aula-badge { background: rgba(94,86,80,.12); color: var(--muted2); border: 1px solid var(--border); }
     .aula.next .aula-badge::before { content: '● '; animation: pdot 1.5s infinite; }
     @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -226,7 +229,7 @@
         <div class="aula-badge">Próxima aula</div>
       </div>
       <div class="aula soon fi" data-date="2026-11-23" id="t4-1">
-        <div class="aula-date"><div class="day">23</div><div class="month-lbl">seg · Nov</div></div>
+        <div class="aula-date"><div class="day">23</div><div class="month-lbl">Seg · Nov</div></div>
         <div class="aula-info"><h3>1 · O que precisa saber sobre o Claude I.A.</h3><p>Configuração profissional e fundamentos de engenharia de prompts.</p></div>
         <div class="aula-badge">Agendada</div>
       </div>
@@ -271,7 +274,7 @@
 
       <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Onde ficam as gravações das aulas?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>As gravações ficam na plataforma <strong>Hotmart</strong>, dentro da sua área de membros, após a liberação de cada encontro.</p></div></div>
 
-      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Em quais dias acontecem as aulas?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>A <strong>T4-0 acontece na segunda-feira, 16/11/2026</strong>, junto com o Dúvidas DashWay. As aulas <strong>T4-1 a T4-5 acontecem às quartas-feiras</strong>: 18/11, 25/11, 02/12, 09/12 e 16/12/2026. A aula zero usa um link do Teams diferente das demais aulas.</p></div></div>
+      <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Em quais dias acontecem as aulas?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>A <strong>T4-0 aconteceu na quarta-feira, 18/11/2026</strong>, e o material já está disponível. A <strong>T4-1 acontece na segunda-feira, 23/11/2026</strong>. As aulas <strong>T4-2 a T4-5 acontecem às quartas-feiras</strong>: 25/11, 02/12, 09/12 e 16/12/2026. A aula zero usa um link do Teams diferente das demais aulas.</p></div></div>
 
       <div class="faq-item"><button class="faq-q" type="button" aria-expanded="false" onclick="toggleFaq(this)">Se eu perder uma aula ao vivo, posso assistir depois?<span class="faq-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></span></button><div class="faq-a"><p>Sim. A gravação será disponibilizada na Hotmart após a liberação do respectivo encontro. Você poderá rever o conteúdo e acompanhar os exercícios.</p></div></div>
 
