@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 2 — Claude no Excel | Implementação Claude</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--chat:#d97757;--chat2:#e8956a;--cwork:#7c5cbf;--cwork2:#9b7dd4;--code:#c45c8a;--code2:#d97aaa;--bg:#0c0b0a;--card:#1a1714;--card2:#211e1a;--border:#2e2822;--border2:#3d3630;--text:#f0ebe4;--muted:#8a7f74;--muted2:#5e5650;--ok:#4caf7d;--no:#e07070;--part:#d4a843;--radius:12px;--hh:64px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hh) + 12px)}
+body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.45}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:100;background:rgba(17,15,13,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:var(--hh)}
+.header-inner{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 28px;gap:14px}
+.header-inner img{height:38px;object-fit:contain}.logo-text-fb{font-family:'Anton',sans-serif;font-size:1rem;color:var(--text)}.logo-text-fb span{color:var(--chat)}.header-btns{display:flex;gap:8px;align-items:center}
+.hbtn{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;padding:6px 13px;border-radius:100px;text-decoration:none;transition:all .2s;white-space:nowrap;border:none;cursor:pointer}.hbtn-back{color:var(--muted);border:1px solid var(--border2);background:transparent}.hbtn-pdf{background:var(--card2);color:var(--muted);border:1px solid var(--border2)}
+.hbtn:hover{color:var(--text)}
+.hero{padding:48px 0 34px;text-align:center;position:relative}.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:680px;height:300px;background:radial-gradient(ellipse at center,rgba(124,92,191,.16) 0%,rgba(217,119,87,.08) 36%,transparent 72%);pointer-events:none}.hero-tag{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:block}
+h1{font-family:'Anton',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:400;line-height:1.1;margin-bottom:12px;letter-spacing:.02em}.hero-sub{font-size:.92rem;color:var(--muted);line-height:1.75;max-width:680px;margin:0 auto}
+.section{padding:44px 0;border-top:1px solid var(--border)}.section-label{font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}h2{font-family:'Anton',sans-serif;font-size:clamp(1.3rem,3vw,1.85rem);font-weight:400;letter-spacing:.03em;margin-bottom:22px}h3{font-family:'Anton',sans-serif;font-size:1.02rem;font-weight:400;letter-spacing:.02em;margin-bottom:10px}p{line-height:1.72}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.action-btn{display:inline-flex;align-items:center;gap:8px;border-radius:100px;padding:10px 15px;font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .2s;border:1px solid var(--border2);color:var(--text);background:var(--card2)}.action-btn.primary{background:var(--chat);color:#fff;border-color:var(--chat2)}.action-btn.purple{background:rgba(124,92,191,.18);color:var(--cwork2);border-color:rgba(124,92,191,.35)}.action-btn.pink{background:rgba(196,92,138,.18);color:var(--code2);border-color:rgba(196,92,138,.35)}
+.info-box{background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 17px;display:flex;gap:11px;align-items:flex-start;margin-bottom:20px}.info-box .ico{font-size:1rem;flex-shrink:0;margin-top:2px}.info-box p{font-size:.84rem;color:var(--muted);line-height:1.66}.info-box strong{color:var(--text)}
+.attention-box{background:rgba(224,112,112,.08);border:1px solid rgba(224,112,112,.24);border-radius:var(--radius);padding:15px 17px;margin-top:16px}.attention-box strong.t{display:block;font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.03em;font-size:1rem;color:#f1c0c0;margin-bottom:6px}.attention-box p,.attention-box li{font-size:.84rem;color:var(--muted);line-height:1.65}.attention-box strong{color:var(--text)}.attention-box strong.t{color:#f1c0c0}.attention-box ol,.attention-box ul{margin-left:18px;display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.purple-note{background:linear-gradient(135deg,rgba(124,92,191,.18),rgba(169,141,255,.08));border:1px solid rgba(169,141,255,.34);border-radius:var(--radius);padding:15px 17px;display:flex;gap:11px;align-items:flex-start;margin-top:16px}.purple-note .ico{font-size:1rem;flex-shrink:0;margin-top:2px}.purple-note strong.t{display:block;font-family:'Anton',sans-serif;font-size:1rem;font-weight:400;letter-spacing:.03em;color:#cbbcff;margin-bottom:5px}.purple-note p{font-size:.84rem;color:var(--muted)}.purple-note strong{color:var(--text)}.purple-note strong.t{color:#cbbcff}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px}.card.orange{border-top:3px solid var(--chat)}.card.purple{border-top:3px solid var(--cwork)}.card.pink{border-top:3px solid var(--code)}.card.green{border-top:3px solid var(--ok)}.card.gold{border-top:3px solid var(--part)}.card p,.card li{font-size:.82rem;color:var(--muted);line-height:1.62}.card strong{color:var(--text)}.card ul{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:8px}.card li{display:flex;gap:7px}.card li::before{content:'→';color:var(--chat);flex-shrink:0}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-bottom:18px}.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 15px}.plan-card h3{font-family:'Anton',sans-serif;font-size:1.08rem;font-weight:400;color:var(--text);margin-bottom:4px}.plan-price{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--chat);margin-bottom:2px;font-weight:500}.plan-brl{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--text);margin-bottom:6px;font-weight:500}.plan-for{font-size:.73rem;color:var(--muted2);margin-bottom:10px;font-style:italic}.plan-card p{font-size:.77rem;color:var(--muted);line-height:1.6}.plan-card.plan-pro{border-color:rgba(217,119,87,.42);box-shadow:0 0 0 1px rgba(217,119,87,.10) inset}
+.cambio{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 15px;margin-bottom:16px;font-size:.8rem;color:var(--muted)}.cambio label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.cambio input{width:84px;background:var(--bg);color:var(--text);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;font-family:'DM Mono',monospace;font-size:.8rem}
+.mini-list{display:flex;flex-direction:column;gap:10px}.mini-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:10px}.mini-item .num{width:26px;height:26px;border-radius:50%;background:rgba(217,119,87,.12);border:1px solid rgba(217,119,87,.32);color:var(--chat2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.68rem;flex-shrink:0}.mini-item p{font-size:.83rem;color:var(--muted)}.mini-item strong{color:var(--text)}
+.prompt-box{background:#11100f;border:1px solid var(--border2);border-radius:11px;overflow:hidden;margin-top:14px}.prompt-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}.prompt-tools span{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2)}.copy-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:100px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:.61rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);border:1px solid rgba(217,119,87,.35);background:rgba(217,119,87,.12);cursor:pointer;transition:all .2s}.copy-btn.copied{background:rgba(76,175,125,.16);border-color:rgba(76,175,125,.35);color:#bde8d1}.prompt-text{width:100%;min-height:360px;border:none;resize:vertical;outline:none;display:block;padding:15px;background:transparent;color:#e7ddd3;font-family:'DM Mono',monospace;font-size:.75rem;line-height:1.65}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:14px}table{width:100%;border-collapse:collapse;background:var(--card)}th{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:var(--card2);border-bottom:1px solid var(--border);white-space:nowrap}td{font-size:.81rem;color:var(--muted);padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top}tr:last-child td{border-bottom:none}td:first-child{color:var(--text);font-weight:600}
+.v-yes{color:var(--ok)!important;font-weight:600}.v-no{color:var(--no)!important;font-weight:600}.v-part{color:var(--part)!important;font-weight:600}
+.sub-t{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin:26px 0 10px}
+.image-clean{width:100%;display:block;border-radius:14px;margin:18px 0 0}
+.chip-novo{display:inline-block;white-space:nowrap;font-family:'DM Mono',monospace;font-size:.56rem;line-height:1;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:rgba(217,119,87,.15);color:var(--chat2);border:1px solid rgba(217,119,87,.3);margin-left:6px;vertical-align:1px}
+.card.resumo li{display:block;position:relative;padding-left:18px}
+.card.resumo li::before{position:absolute;left:0;top:0}
+.fonte{font-size:.74rem;color:var(--muted2);margin-top:12px;line-height:1.6}
+.fonte a{color:var(--muted)}
+footer{border-top:1px solid var(--border);padding:24px 0 28px;text-align:center;margin-top:48px}footer p{font-size:.78rem;color:var(--muted2)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--chat2);outline-offset:2px}
+@media(max-width:780px){.grid-2,.grid-3{grid-template-columns:1fr}.header-inner{padding:0 14px;gap:8px}.hbtn{padding:6px 10px}.prompt-text{min-height:520px}}
+
+.model-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.model-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px}
+.model-card:nth-child(1){border-top:3px solid var(--part)}.model-card:nth-child(2){border-top:3px solid var(--cwork)}.model-card:nth-child(3){border-top:3px solid var(--chat)}.model-card:nth-child(4){border-top:3px solid var(--ok)}
+.model-card h3{font-family:'Anton',sans-serif;font-size:1.15rem;font-weight:400;margin-bottom:2px}
+.model-card .mv{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px}
+.model-card p{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.model-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--border)}
+.model-row .mk{font-size:.75rem;color:var(--muted)}.model-row .mv2{font-size:.75rem;color:var(--text);font-weight:600;text-align:right}
+.mini-list .mini-item p a{color:var(--chat2)}
+@media(max-width:780px){.model-grid{grid-template-columns:1fr}}
+.btn-dl{display:inline-flex;align-items:center;gap:8px;background:var(--chat);color:#fff!important;font-weight:700;font-size:.85rem;padding:10px 16px;border-radius:10px;text-decoration:none;margin-top:10px}.btn-dl:hover{background:var(--chat2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <img src="https://raw.githubusercontent.com/karenabecia/sites.karenabecia/main/imagens/logo-escuro/implementacao-claude.png" alt="Implementação Claude" onerror="this.style.display='none';document.getElementById('ltxt').style.display='block'">
+    <div id="ltxt" style="display:none" class="logo-text-fb">IMPL. <span>CLAUDE</span></div>
+    <div class="header-btns">
+      <a class="hbtn hbtn-back" href="index.html">← Início</a>
+      <button class="hbtn hbtn-pdf" onclick="downloadPDF()">Baixar PDF</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="border-top:none">
+  <div class="wrap">
+    <span class="hero-tag">Material de Apoio</span>
+    <h1>Aula 2 — Claude no Excel</h1>
+    <p class="hero-sub">Limpeza, validação e análise de dados direto no Excel, com as operações nativas, instruções fixas e contexto compartilhado com PowerPoint, Word e Outlook.</p>
+  </div>
+</section>
+
+<div id="main-content">
+
+<!-- 2. OPERAÇÕES NATIVAS -->
+<section class="section" id="nativas">
+  <div class="wrap">
+    <div class="section-label">Recursos</div>
+    <h2>Operações nativas do Excel</h2>
+    <div class="info-box"><div class="ico">⚡</div><p><strong>O Claude agora usa os recursos do próprio Excel, e não só fórmulas.</strong> Peça direto, com o nome do recurso.</p></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Recurso</th><th>Como pedir</th></tr></thead>
+      <tbody>
+        <tr><td>Ordenar e filtrar</td><td>"Ordene por valor, do maior para o menor"</td></tr>
+        <tr><td>Tabelas dinâmicas e gráficos</td><td>"Crie uma tabela dinâmica de faturamento por categoria"</td></tr>
+        <tr><td>Formatação condicional</td><td>"Pinte de vermelho as linhas com férias vencidas"</td></tr>
+        <tr><td>Validação de dados</td><td>"Crie uma lista suspensa de departamentos"</td></tr>
+      </tbody>
+    </table></div>
+    <div class="purple-note"><div class="ico">🚧</div><div><strong class="t">O que ainda não funciona</strong><p>Macros, VBA e tabelas de dados (análise de hipóteses) não são suportados pelo suplemento.</p></div></div>
+  </div>
+</section>
+
+<!-- 3. PARTE 1 -->
+<section class="section" id="padronizacao">
+  <div class="wrap">
+    <div class="section-label">Parte 1</div>
+    <h2>Limpeza e padronização de dados</h2>
+    <div class="info-box"><div class="ico">🧹</div><p><strong>Dica:</strong> mostre ao Claude um exemplo do formato desejado para a coluna inteira. Assim ele não precisa adivinhar.</p></div>
+
+    <h3 style="margin-top:26px">Exercício 1 — Padronizar direto na base</h3>
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p><strong>Baixe a planilha da aula</strong> e trabalhe em uma cópia. Ela tem quatro abas, uma para cada exercício.<br><a class="btn-dl" href="https://drive.google.com/uc?export=download&id=1JOx_U8t2EBWzIO3GhjSGEUqaBFf72rq3" target="_blank" rel="noopener">⬇ Baixar planilha da aula</a></p></div>
+      <div class="mini-item"><div class="num">2</div><p><strong>Abra a aba "Padronização direto na base"</strong>, ative o suplemento e cole o prompt abaixo.</p></div>
+    </div>
+    <!-- REVISAR: testar o link de download da planilha (arquivo AULA2_INICIAL.xlsx no Drive) em janela anônima. -->
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 1</span><button class="copy-btn" onclick="copyPrompt('promptEx1', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx1" class="prompt-text" style="min-height:330px" readonly>CONTEXTO
+Na aba "Padronização direto na base" tenho um cadastro de funcionários fictícios com nome, CPF, telefone e CEP em formatos diferentes.
+
+OBJETIVO
+Padronizar essas colunas direto na base.
+
+DIREÇÃO
+- Nome: inicial de cada palavra maiúscula e as demais letras minúsculas.
+- CPF: formato 000.000.000-00. Se não tiver 11 dígitos, escreva "Revisar".
+- Telefone: 11 dígitos no formato 00 00000-0000 e 10 dígitos no formato 00 0000-0000.
+- CEP: formato 00000-000, preservando os zeros à esquerda (se vier com 7 dígitos, complete com zero).
+- Altere só essas colunas e, no fim, liste o que não conseguiu padronizar.</textarea>
+    </div>
+
+    <h3 style="margin-top:34px">Exercício 2 — Colunas automáticas, sem mexer na base</h3>
+    <div class="info-box"><div class="ico">➕</div><p><strong>Na aba "Criar colunas auxiliares", a base original não pode mudar.</strong> O Claude cria colunas novas, ao final da tabela.</p></div>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 2</span><button class="copy-btn" onclick="copyPrompt('promptEx2', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx2" class="prompt-text" style="min-height:290px" readonly>CONTEXTO
+Na aba "Criar colunas auxiliares" não posso alterar as colunas originais.
+
+OBJETIVO
+Criar colunas de apoio ao final da tabela.
+
+DIREÇÃO
+- Status do Cadastro: "Completo" quando CPF, telefone e CEP estiverem preenchidos, senão "Pendente".
+- Tipo de Telefone: "Celular" (11 dígitos), "Fixo" (10 dígitos) ou "Revisar".
+- Use fórmulas que valham para todas as linhas e funcionem no Excel Online.
+- Não altere as colunas originais.</textarea>
+    </div>
+    <div class="info-box" style="margin-top:14px"><div class="ico">✅</div><p><strong>Você terminou quando</strong> a base estiver padronizada, as duas colunas novas funcionarem e você tiver conferido 3 linhas à mão.</p></div>
+  </div>
+</section>
+
+<!-- 4. PARTE 2 -->
+<section class="section" id="automacao">
+  <div class="wrap">
+    <div class="section-label">Parte 2</div>
+    <h2>Automações: validação e formatação condicional</h2>
+    <div class="info-box"><div class="ico">🛡️</div><p><strong>Automatizar é evitar o erro antes que ele aconteça.</strong> Uma lista suspensa impede que "RH" e "Recursos Humanos" apareçam na mesma coluna.</p></div>
+
+    <h3 style="margin-top:26px">Exercício 3 — Validação de dados</h3>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:12px">Use a aba <strong style="color:var(--text)">"Automação"</strong>.</p>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 3</span><button class="copy-btn" onclick="copyPrompt('promptEx3', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx3" class="prompt-text" style="min-height:300px" readonly>CONTEXTO
+Na aba "Automação", as colunas Departamento e Escolaridade aceitam qualquer texto, e isso gera variações como "RH" e "Recursos Humanos".
+
+OBJETIVO
+Criar listas suspensas para essas duas colunas.
+
+DIREÇÃO
+- Crie uma aba "Parâmetros" com uma tabela de Departamento e outra de Escolaridade, usando os valores que já existem na base.
+- Aplique a validação de dados (lista suspensa) nas duas colunas, ligada a essas tabelas.
+- Novos itens incluídos em "Parâmetros" devem aparecer nas listas automaticamente.
+- Use recursos compatíveis com Excel Online e nomes claros.</textarea>
+    </div>
+
+    <h3 style="margin-top:34px">Exercício 4 — Status de férias com cor</h3>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 4</span><button class="copy-btn" onclick="copyPrompt('promptEx4', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx4" class="prompt-text" style="min-height:330px" readonly>CONTEXTO
+Na aba "Automação", o RH precisa saber quem está com as férias vencidas.
+
+OBJETIVO
+Criar a coluna "Status de Férias" e destacar quem está vencido.
+
+DIREÇÃO
+- "Férias vencidas": mais de 365 dias desde "Últimas Férias".
+- "Dentro do prazo": até 365 dias.
+- "Revisar": data vazia ou inválida.
+- Use a data de hoje na fórmula, para o status se atualizar sozinho com o tempo.
+- Aplique formatação condicional que pinte de vermelho a linha com "Férias vencidas".
+- Não altere os dados originais e explique a fórmula em uma linha.</textarea>
+    </div>
+    <div class="info-box" style="margin-top:14px"><div class="ico">✅</div><p><strong>Você terminou quando</strong> testar a lista suspensa, incluir um departamento em "Parâmetros" e vê-lo aparecer na lista, e mudar uma data de férias e ver a cor mudar.</p></div>
+  </div>
+</section>
+
+<!-- 5. PARTE 3 -->
+<section class="section" id="analise">
+  <div class="wrap">
+    <div class="section-label">Parte 3</div>
+    <h2>Dashboard com tabelas dinâmicas e segmentações</h2>
+    <div class="info-box"><div class="ico">📊</div><p><strong>Use a aba "Base de vendas", com cerca de 1.100 pedidos.</strong> A planilha não tem uma coluna de valor total, então o Claude precisa calcular quantidade × valor unitário.</p></div>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 5</span><button class="copy-btn" onclick="copyPrompt('promptEx5', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx5" class="prompt-text" style="min-height:380px" readonly>CONTEXTO
+A aba "Base de vendas" tem cerca de 1.100 pedidos, com data, produto, categoria, quantidade, valor unitário, nota fiscal, pedido e UF. Preciso de um Dashboard para a diretoria.
+
+OBJETIVO
+Criar uma aba "Dashboard" automática, com tabelas dinâmicas, gráficos e segmentações de dados.
+
+DIREÇÃO
+- Primeiro, crie as colunas "Valor total" (quantidade × valor unitário), "Ano" e "Mês".
+- Segmentações de dados: Ano, Mês e Categoria.
+- Indicadores: total faturado, top 5 produtos mais vendidos, categoria mais e menos vendida, mês de maior e menor faturamento e faturamento ao longo do ano (gráfico de linha).
+- Visual limpo, com títulos claros.
+- No fim, me diga como conferir o total faturado.</textarea>
+    </div>
+    <!-- REVISAR: confirmar se o suplemento cria segmentações de dados; a documentação cita edição de tabelas dinâmicas, mas não cita segmentações. -->
+    <div class="attention-box" style="margin-top:14px"><strong class="t">Se faltar a segmentação</strong><ul>
+      <li>Se o Claude não conseguir criar as segmentações, insira você mesmo: clique na tabela dinâmica e use <strong>Inserir Segmentação de Dados</strong>.</li>
+      <li>Confira o total faturado com uma soma sua, como você fez com as notas fiscais.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- 6. SKILLS E INSTRUÇÕES -->
+<section class="section" id="skills">
+  <div class="wrap">
+    <div class="section-label">Personalização</div>
+    <h2>Instruções fixas e skills dentro do suplemento</h2>
+    <div class="grid-2">
+      <div class="card orange"><h3>Instruções</h3><p><strong>Preferências que valem sempre.</strong> Ficam nas configurações do suplemento e se aplicam a toda conversa no Excel, como o formato de números e as regras de linguagem.</p></div>
+      <div class="card purple"><h3>Skills</h3><p><strong>Receitas que você repete.</strong> As skills ativadas nas suas configurações do Claude aparecem no suplemento. O Claude as aplica sozinho ou você digita <strong>/</strong> na barra lateral para chamar uma. Vamos criar skills na Aula 3.</p></div>
+    </div>
+
+    <h3 style="margin-top:26px">Exercício 6 — Criar uma instrução fixa</h3>
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p><strong>Abra as configurações do suplemento</strong> e cole o texto abaixo no campo <strong>Instruções (Instructions)</strong>.</p></div>
+      <div class="mini-item"><div class="num">2</div><p><strong>Teste:</strong> na "Base de vendas", peça "crie uma coluna com o valor total" e veja se ele seguiu as regras.</p></div>
+    </div>
+    <!-- REVISAR: confirmar o nome e a posição do campo de instruções nas configurações da barra lateral do suplemento. -->
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Instruções fixas para o Excel</span><button class="copy-btn" onclick="copyPrompt('promptInstr', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptInstr" class="prompt-text" style="min-height:230px" readonly>Responda sempre em português do Brasil.
+Use datas no formato DD/MM/AAAA e valores em reais, como R$ 1.234,56.
+Não altere nem apague dados originais sem me avisar antes.
+Prefira fórmulas a valores digitados.
+Dê nomes claros às abas e às colunas.
+Ao terminar, explique em até 3 linhas o que fez e liste o que não conseguiu confirmar.</textarea>
+    </div>
+    <div class="attention-box" style="margin-top:14px"><strong class="t">Atenção</strong><p>Depois das atualizações do Microsoft 365 de setembro e outubro, alguns usuários do Windows perderam o histórico e as skills no suplemento. A Anthropic informa que trabalha com a Microsoft na correção. Se acontecer, o conteúdo das suas configurações do Claude continua lá.</p></div>
+  </div>
+</section>
+
+<!-- 7. CONTEXTO COMPARTILHADO -->
+<section class="section" id="apps">
+  <div class="wrap">
+    <div class="section-label">Integração</div>
+    <h2>Contexto compartilhado com PowerPoint, Word e Outlook</h2>
+    <div class="info-box"><div class="ico">🔗</div><p><strong>O Claude lê em um aplicativo e escreve em outro, na mesma conversa.</strong> Ele leva o contexto de uma planilha para uma apresentação, um memorando ou um e-mail, sem você copiar e colar.</p></div>
+    <div class="grid-2">
+      <div class="card green"><h3>O que ele faz</h3><ul>
+        <li>Leva números do Excel para um slide ou para um memorando no Word.</li>
+        <li>Atualiza um gráfico do PowerPoint com os dados novos da planilha.</li>
+        <li>Resume um documento do Word em slides.</li></ul></div>
+      <div class="card gold"><h3>O que você precisa</h3><ul>
+        <li>Os suplementos de Excel, PowerPoint, Word e Outlook instalados e ativados ao menos uma vez.</li>
+        <li>A opção de trabalhar entre arquivos ligada nas configurações de cada suplemento. No Pro e no Max, ela já vem ligada.</li>
+        <li>Os arquivos abertos ao mesmo tempo.</li></ul></div>
+    </div>
+    <!-- REVISAR: conferir o nome da opção "Let Claude work across files" em português no app e se o suplemento do Outlook ainda está em beta. -->
+    <div class="purple-note"><div class="ico">📍</div><div><strong class="t">Outlook ainda é beta</strong><p>O suplemento do Outlook está em beta nos planos pagos. Excel, PowerPoint e Word já estão disponíveis para todos.</p></div></div>
+
+    <h3 style="margin-top:26px">Exercício 7 — Do Dashboard para uma apresentação do Claude</h3>
+    <!-- REVISAR: conferir no app o nome do botão de apresentações (Slides) e as opções de exportar para .pptx e PDF. -->
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p><strong>Abra uma conversa nova no Claude</strong> (site ou aplicativo) e anexe a planilha com o Dashboard que você montou no exercício 5. Use só dados fictícios.</p></div>
+      <div class="mini-item"><div class="num">2</div><p><strong>Cole o prompt abaixo.</strong> O Claude cria a apresentação como uma apresentação do Claude (Slides), que abre ao lado da conversa.</p></div>
+      <div class="mini-item"><div class="num">3</div><p><strong>Ajuste direto nos slides</strong> (títulos, textos, ordem) ou peça a mudança na conversa. Quando terminar, exporte para PowerPoint (.pptx) ou PDF.</p></div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-tools"><span>Prompt do exercício 7</span><button class="copy-btn" onclick="copyPrompt('promptEx7', this)">⧉ Copiar prompt</button></div>
+      <textarea id="promptEx7" class="prompt-text" style="min-height:300px" readonly>CONTEXTO
+Anexei a planilha com o Dashboard de vendas (dados fictícios). Os números estão nas tabelas dinâmicas e nos gráficos.
+
+OBJETIVO
+Criar, nas apresentações do Claude (Slides), uma apresentação de 3 slides para a diretoria com os números do Dashboard.
+
+DIREÇÃO
+- Slide 1: total faturado e categoria líder.
+- Slide 2: faturamento por mês, com gráfico.
+- Slide 3: top 5 produtos.
+- Linguagem direta e pouco texto em cada slide.
+- Use somente os números da planilha, sem estimar nada.
+- No fim, liste os números usados e de onde cada um veio.</textarea>
+    </div>
+    <div class="info-box" style="margin-top:14px"><div class="ico">✅</div><p><strong>Você terminou quando</strong> os 3 slides existirem, você tiver conferido um número de cada slide com o Dashboard e exportado a apresentação.</p></div>
+  </div>
+</section>
+
+<!-- 8. SHEETS -->
+<section class="section" id="sheets">
+  <div class="wrap">
+    <div class="section-label">Beta</div>
+    <h2>Claude Sheets: quando usar no lugar do Excel</h2>
+    <div class="grid-2">
+      <div class="card orange"><h3>Claude no Excel</h3><p><strong>Para arquivos que já vivem no Excel.</strong> Tem os recursos completos, como tabelas dinâmicas e segmentações.</p></div>
+      <div class="card purple"><h3>Claude Sheets (beta)</h3><p><strong>Para uma planilha leve, criada no chat.</strong> É um artefato com abas, fórmulas, formatação condicional, listas suspensas e gráficos. Ainda não tem tabelas dinâmicas, macros, VBA nem Power Query.</p></div>
+    </div>
+    <div class="purple-note"><div class="ico">💡</div><div><strong class="t">Regra prática</strong><p>Comece o rascunho no Sheets. Quando precisar de tabela dinâmica ou macro, exporte para .xlsx e continue no Excel com o suplemento.</p></div></div>
+    <div class="mini-list">
+      <div class="mini-item"><div class="num">1</div><p><strong>No chat, peça:</strong> "Crie uma planilha de controle de férias com colaborador, últimas férias e um status calculado por fórmula".</p></div>
+      <div class="mini-item"><div class="num">2</div><p><strong>Exporte para .xlsx</strong> e abra no Excel para ver o que veio junto.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. LIÇÃO DE CASA -->
+<section class="section" id="casa">
+  <div class="wrap">
+    <div style="background:linear-gradient(135deg,rgba(212,168,67,.10),rgba(196,92,138,.05));border:1px solid rgba(212,168,67,.30);border-radius:24px;padding:28px 30px">
+      <div class="section-label">Lição de casa</div>
+      <h2>Prática para entregar autonomia ao aluno</h2>
+      <p style="font-size:.92rem;color:var(--muted);line-height:1.75">Você deve usar o Claude para extrair informações importantes de uma base de dados com cadastro de produtos.<br>Da base, extraia as seguintes colunas:</p>
+      <ul style="margin:10px 0 10px 4px;padding-left:18px;color:var(--muted);font-size:.92rem;line-height:1.9">
+        <li style="color:var(--part)"><strong>Tipo</strong></li>
+        <li style="color:var(--part)"><strong>Categoria</strong></li>
+        <li style="color:var(--part)"><strong>Avaliação</strong></li>
+        <li style="color:var(--part)"><strong>Data da avaliação</strong></li>
+      </ul>
+      <p style="font-size:.92rem;color:var(--muted);line-height:1.75">Após extrair as informações, crie um breve relatório para apresentação ao gestor com <strong style="color:var(--part)">3 melhorias</strong> que podem ser realizadas no processo.</p>
+      <p style="font-size:.92rem;color:var(--muted);line-height:1.75;margin-top:14px"><strong style="color:var(--part)">Importante:</strong> nesta atividade, o aluno deve pensar no próprio prompt. A ideia é praticar a escrita da solicitação, o contexto e a validação do resultado.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer><div class="wrap"><p>© 2026 Escola Karen Abecia · Todos os direitos reservados</p></div></footer>
+
+<script>
+function copyText(text, btn){navigator.clipboard.writeText(text).then(()=>{if(btn){const original=btn.innerHTML;btn.classList.add('copied');btn.innerHTML='✓ Copiado';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=original},1800)}})}
+function copyPrompt(id, btn){const textarea=document.getElementById(id);if(!textarea)return;copyText(textarea.value,btn)}
+function downloadPDF(){const original=document.title;document.title='implementacao_claude_aula2';window.print();document.title=original}
+</script>
+
+<style media="print">
+@page{margin:14mm;size:A4;background:#1a1714}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{background:#1a1714!important;color:#f0ebe4!important}body::before,body::after{display:none}header{position:static!important;background:#111!important}.hbtn-pdf,.hbtn-back,.copy-btn,.btn-dl{display:none!important}.section,.card,.info-box,.attention-box,.purple-note,.mini-item,.model-card{break-inside:avoid}a{color:inherit!important;text-decoration:none!important}.prompt-text{min-height:auto;height:auto}
+</style>
+</body>
+</html>
